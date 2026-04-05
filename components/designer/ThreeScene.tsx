@@ -627,8 +627,8 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
 
   if (type === 'window') {
     const sillY = 3.5; // must match SILL_HEIGHT in SegmentedWall
-    const trimT = 0.12;
-    const trimD = 0.08;
+    const trimT = 0.3;  // 3.5" wide trim
+    const trimD = 0.15; // sticks out visibly
     // Grid: 2 columns x 3 rows of panes
     const paneRows = 3;
     const paneCols = 2;
@@ -685,8 +685,8 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   if (type === 'rollup') {
     // Solid white door face with subtle horizontal grooves (normal map)
     const doorNormal = usePanelNormal('horizontal', 1, oh * 2.5); // many fine horizontal lines
-    const trimT = 0.15;
-    const trimD = 0.1;
+    const trimT = 0.3;
+    const trimD = 0.15;
 
     return (
       <group position={[cx, oh / 2, depthOff]}
