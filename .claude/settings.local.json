@@ -43,7 +43,13 @@
       "Bash(taskkill /F /IM \"node.exe\")",
       "Bash(grep -r \"ANTHROPIC\\\\|OPENAI\\\\|AI_\" C:/Users/13183/steel_sync/.env*)",
       "Bash(ls C:/Users/13183/steel_sync/.env*)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(vercel ls:*)",
+      "Bash(vercel logs:*)",
+      "Bash(vercel inspect:*)",
+      "Bash(vercel link:*)",
+      "Bash(vercel deploy:*)",
+      "Bash(vercel project:*)"
     ]
   }
 }

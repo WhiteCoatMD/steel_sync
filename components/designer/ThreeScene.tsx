@@ -26,16 +26,22 @@ const WAINSCOT_HEIGHT = 3; // standard 36" wainscot band
 // dir='h' → ribs run horizontally (normal varies in V/Y)
 
 function makePanelNormalMap(dir: 'v' | 'h'): THREE.DataTexture {
-  const SZ = 256;
+  const SZ = 512; // higher res for sharp lines
   const data = new Uint8Array(SZ * SZ * 4);
-  const A = 0.6; // subtle realistic corrugation
+  const A = 1.8; // strong but thin rib
+  const ribWidth = 0.04; // 4% of spacing = very thin line (like real R-panel seams)
 
   for (let row = 0; row < SZ; row++) {
     for (let col = 0; col < SZ; col++) {
       const t = dir === 'v' ? col / SZ : row / SZ;
-      const phase = t * 2 * Math.PI;
-      // Derivative of cosine profile → steeper near rib transitions
-      const dh = A * Math.sin(phase);
+      // Distance from nearest rib center (at t=0.5 in each tile)
+      const distFromRib = Math.abs(t - 0.5);
+      let dh = 0;
+      if (distFromRib < ribWidth) {
+        // Sharp V-groove: linear slope through the rib
+        const s = (t - 0.5) / ribWidth; // -1 to 1 across rib
+        dh = -A * s;
+      }
       const nx = dir === 'v' ? -dh : 0;
       const ny = dir === 'h' ? -dh : 0;
       const nz = 1.0;
@@ -63,20 +69,24 @@ function getPanelNormal(dir: 'v' | 'h'): THREE.DataTexture {
   return _panelNormalH ?? (_panelNormalH = makePanelNormalMap('h'));
 }
 
-// Returns a cloned texture with the given repeat — cheap (shares GPU data)
+// Returns a cloned texture with the given repeat + offset for world-space alignment
 function usePanelNormal(
   dir: 'horizontal' | 'vertical',
   repeatU: number,
   repeatV: number,
+  offsetU: number = 0,
+  offsetV: number = 0,
 ): THREE.Texture {
   return useMemo(() => {
     const base = getPanelNormal(dir === 'vertical' ? 'v' : 'h');
     const t = base.clone();
     t.repeat.set(repeatU, repeatV);
+    t.offset.set(offsetU % 1, offsetV % 1);
     t.needsUpdate = true;
     return t;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dir, Math.round(repeatU * 10), Math.round(repeatV * 10)]);
+  }, [dir, Math.round(repeatU * 10), Math.round(repeatV * 10),
+      Math.round(offsetU * 100), Math.round(offsetV * 100)]);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -456,7 +466,10 @@ function PanelPanel({ x, y, w, h, zOff, color, panelDir }: {
 }) {
   const ribsU = panelDir === 'vertical' ? w * RIBS_PER_FOOT : 1;
   const ribsV = panelDir === 'horizontal' ? h * RIBS_PER_FOOT : 1;
-  const normalMap = usePanelNormal(panelDir, ribsU, ribsV);
+  // World-space offset so ribs align across adjacent wall segments
+  const offU = panelDir === 'vertical' ? x * RIBS_PER_FOOT : 0;
+  const offV = panelDir === 'horizontal' ? y * RIBS_PER_FOOT : 0;
+  const normalMap = usePanelNormal(panelDir, ribsU, ribsV, offU, offV);
   return (
     <mesh position={[x + w / 2, y + h / 2, zOff / 2]} castShadow receiveShadow>
       <boxGeometry args={[w + 0.04, h + 0.02, WALL_THICKNESS]} />
