@@ -41,8 +41,8 @@ export function findColor(id: string): ColorOption {
 // ─── Default Colors ─────────────────────────────────────────
 
 const DEFAULT_COLORS: BuildingColors = {
-  roof: findColor('galvalume'),
-  walls: findColor('white'),
+  roof: findColor('white'),
+  walls: findColor('barn-red'),
   trim: findColor('white'),
   wainscot: null,
 };

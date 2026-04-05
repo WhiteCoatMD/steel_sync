@@ -243,8 +243,8 @@ function BuildingModel() {
       {!isOpen && <SideWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} roofStyle={config.building.roofStyle} />
-      {/* Trim temporarily simplified — only ridge cap */}
-      <RidgeCapMesh result={result} color={config.colors.trim.hex} />
+      <TrimMeshes result={result} color={config.colors.trim.hex} />
+      <DoorTrimMeshes config={config} />
       <LeanToMeshes result={result} />
     </group>
   );
@@ -652,65 +652,49 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   }
 
   if (type === 'rollup') {
-    // Realistic sectional roll-up door
-    const trackW = 0.25;      // guide track width
-    const trackD = 0.18;      // guide track depth
-    const headerH = 0.25;     // header height
-    const panelGap = 0.04;    // gap between panels
-    const innerW = ow - trackW * 2; // door face width inside tracks
-    const sectionCount = Math.max(3, Math.round(oh / 1.8)); // ~1.5-2ft per section
-    const sectionH = (oh - headerH - panelGap * (sectionCount - 1)) / sectionCount;
+    // Commercial roll-up door — white face with many thin horizontal slats
+    const trackW = 0.2;
+    const innerW = ow - trackW * 2;
+    const slatCount = Math.max(8, Math.round(oh / 0.5)); // thin slats ~6" each
+    const slatH = oh / slatCount;
 
     return (
       <group position={[cx, oh / 2, depthOff]}
         onPointerDown={handlePointerDown}>
         {highlight}
 
-        {/* Door sections — horizontal raised panels */}
-        {Array.from({ length: sectionCount }).map((_, i) => {
-          const sectionY = -oh / 2 + sectionH / 2 + i * (sectionH + panelGap);
+        {/* Door face — white background */}
+        <mesh castShadow>
+          <boxGeometry args={[innerW, oh, 0.06]} />
+          <meshStandardMaterial color="#f0f0f0" metalness={0.3} roughness={0.5} />
+        </mesh>
+
+        {/* Horizontal slat lines */}
+        {Array.from({ length: slatCount - 1 }).map((_, i) => {
+          const y = -oh / 2 + (i + 1) * slatH;
           return (
-            <group key={`sec-${i}`} position={[0, sectionY, 0]}>
-              {/* Main panel face */}
-              <mesh castShadow>
-                <boxGeometry args={[innerW, sectionH - 0.02, 0.08]} />
-                <meshStandardMaterial color="#e0e0e0" metalness={0.4} roughness={0.45} />
-              </mesh>
-              {/* Raised center (gives the raised-panel look) */}
-              <mesh position={[0, 0, 0.045]}>
-                <boxGeometry args={[innerW - 0.4, sectionH - 0.25, 0.02]} />
-                <meshStandardMaterial color="#e8e8e8" metalness={0.35} roughness={0.5} />
-              </mesh>
-            </group>
+            <mesh key={`slat-${i}`} position={[0, y, 0.032]}>
+              <boxGeometry args={[innerW + 0.01, 0.02, 0.005]} />
+              <meshStandardMaterial color="#c8c8c8" metalness={0.3} roughness={0.6} />
+            </mesh>
           );
         })}
 
-        {/* Left guide track */}
-        <mesh position={[-(innerW / 2 + trackW / 2), 0, 0.02]} castShadow>
-          <boxGeometry args={[trackW, oh + 0.1, trackD]} />
-          <meshStandardMaterial color="#353535" metalness={0.7} roughness={0.3} />
+        {/* Left track */}
+        <mesh position={[-(innerW / 2 + trackW / 2), 0, 0.01]} castShadow>
+          <boxGeometry args={[trackW, oh + 0.1, 0.14]} />
+          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
         </mesh>
-        {/* Right guide track */}
-        <mesh position={[(innerW / 2 + trackW / 2), 0, 0.02]} castShadow>
-          <boxGeometry args={[trackW, oh + 0.1, trackD]} />
-          <meshStandardMaterial color="#353535" metalness={0.7} roughness={0.3} />
-        </mesh>
-
-        {/* Header (drum housing) */}
-        <mesh position={[0, oh / 2 + headerH / 2, 0.02]} castShadow>
-          <boxGeometry args={[ow + 0.2, headerH, trackD + 0.05]} />
-          <meshStandardMaterial color="#353535" metalness={0.65} roughness={0.35} />
+        {/* Right track */}
+        <mesh position={[(innerW / 2 + trackW / 2), 0, 0.01]} castShadow>
+          <boxGeometry args={[trackW, oh + 0.1, 0.14]} />
+          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
         </mesh>
 
-        {/* Bottom bar with handle */}
-        <mesh position={[0, -oh / 2 + 0.06, 0.05]}>
-          <boxGeometry args={[innerW, 0.12, 0.1]} />
-          <meshStandardMaterial color="#b0b0b0" metalness={0.55} roughness={0.35} />
-        </mesh>
-        {/* Handle */}
-        <mesh position={[0, -oh / 2 + 0.06, 0.12]}>
-          <boxGeometry args={[1.0, 0.08, 0.04]} />
-          <meshStandardMaterial color="#808080" metalness={0.6} roughness={0.3} />
+        {/* Bottom bar */}
+        <mesh position={[0, -oh / 2 + 0.04, 0.04]}>
+          <boxGeometry args={[innerW, 0.08, 0.08]} />
+          <meshStandardMaterial color="#d0d0d0" metalness={0.5} roughness={0.4} />
         </mesh>
       </group>
     );
@@ -858,15 +842,76 @@ function RoofMeshes({ result, color, panelDir, roofStyle }: {
 
 function TrimMeshes({ result, color }: { result: BuildingResult; color: string }) {
   const { pieces } = result.trim;
+  // Render all trim except rake (overlaps with roof edges)
+  const filtered = pieces.filter(p => p.category !== 'rake');
 
   return (
     <group>
-      {pieces.map((piece) => (
+      {filtered.map((piece) => (
         <mesh key={piece.id} position={piece.position} rotation={piece.rotation}>
           <boxGeometry args={piece.size} />
           <meshStandardMaterial color={color} metalness={0.3} roughness={0.6} />
         </mesh>
       ))}
+    </group>
+  );
+}
+
+function DoorTrimMeshes({ config }: { config: BuildingConfig }) {
+  const trimColor = config.colors.trim.hex;
+  const W = config.building.widthFt;
+  const L = config.building.lengthFt;
+  const T = 0.15; // trim strip width
+  const D = 0.1;  // trim depth
+
+  return (
+    <group position={[-W / 2, 0, -L / 2]}>
+      {config.openings.map((op) => {
+        const isWindow = op.type === 'window';
+        const isDoor = op.type === 'rollup' || op.type === 'walkin';
+        if (!isWindow && !isDoor) return null;
+
+        // Get wall transform
+        let gx = 0, gy = 0, gz = 0, ry = 0;
+        const wallLen = op.wall === 'front' || op.wall === 'back' ? W : L;
+        if (op.wall === 'front') { gz = -WALL_THICKNESS - 0.01; }
+        else if (op.wall === 'back') { gx = W; gz = L + WALL_THICKNESS + 0.01; ry = Math.PI; }
+        else if (op.wall === 'left') { ry = -Math.PI / 2; gz = 0; }
+        else if (op.wall === 'right') { gx = W; gz = L; ry = Math.PI / 2; }
+
+        const cx = op.positionFt + op.widthFt / 2;
+        const sillY = isWindow ? 3.5 : 0;
+        const cy = sillY + op.heightFt / 2;
+        const hw = op.widthFt / 2;
+        const hh = op.heightFt / 2;
+
+        return (
+          <group key={`dtrim-${op.id}`} position={[gx, gy, gz]} rotation={[0, ry, 0]}>
+            {/* Left jamb */}
+            <mesh position={[cx - hw - T / 2, cy, 0]}>
+              <boxGeometry args={[T, op.heightFt + T, D]} />
+              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+            </mesh>
+            {/* Right jamb */}
+            <mesh position={[cx + hw + T / 2, cy, 0]}>
+              <boxGeometry args={[T, op.heightFt + T, D]} />
+              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+            </mesh>
+            {/* Header */}
+            <mesh position={[cx, cy + hh + T / 2, 0]}>
+              <boxGeometry args={[op.widthFt + T * 2, T, D]} />
+              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+            </mesh>
+            {/* Sill (for windows) */}
+            {isWindow && (
+              <mesh position={[cx, cy - hh - T / 2, 0]}>
+                <boxGeometry args={[op.widthFt + T * 2, T, D]} />
+                <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+              </mesh>
+            )}
+          </group>
+        );
+      })}
     </group>
   );
 }
