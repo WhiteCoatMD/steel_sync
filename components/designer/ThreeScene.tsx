@@ -560,6 +560,28 @@ function SegmentedWall({ wallLength, wallHeight, color, openings, zOff, panelDir
 
   return (
     <group>
+      {/* Invisible drag surface — captures pointer during opening drag */}
+      <mesh
+        position={[wallLength / 2, wallHeight / 2, zOff / 2]}
+        onPointerMove={(e: any) => {
+          const s = useDesignerStore.getState();
+          if (!s.isDraggingOpening || !s.selectedOpeningId) return;
+          e.stopPropagation();
+          // e.point → wall-local coords via parent group
+          const local = e.object.parent!.worldToLocal(e.point.clone());
+          const op = s.config?.openings.find((o: Opening) => o.id === s.selectedOpeningId);
+          if (!op) return;
+          const newPos = Math.max(0, Math.min(wallLength - op.widthFt, local.x - op.widthFt / 2));
+          s.updateOpening(op.id, { positionFt: Math.round(newPos * 2) / 2 }); // snap to 0.5ft
+        }}
+        onPointerUp={() => {
+          useDesignerStore.setState({ isDraggingOpening: false });
+        }}
+      >
+        <planeGeometry args={[wallLength + 4, wallHeight + 4]} />
+        <meshBasicMaterial transparent opacity={0} side={THREE.DoubleSide} />
+      </mesh>
+
       {segments.map((seg, i) => (
         <WallSegMesh
           key={`wseg-${i}-${seg.x.toFixed(1)}-${seg.y.toFixed(1)}`}
@@ -583,51 +605,16 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
 }) {
   const { positionFt: ox, widthFt: ow, heightFt: oh, type } = opening;
   const selectOpening = useDesignerStore((s) => s.selectOpening);
-  const updateOpening = useDesignerStore((s) => s.updateOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
   const isSelected = selectedId === opening.id;
   const cx = ox + ow / 2;
   const depthOff = Math.sign(zOff) * (Math.abs(zOff) + 0.05);
-  const { gl, camera } = useThree();
 
   const handlePointerDown = (e: any) => {
     e.stopPropagation();
     selectOpening(opening.id);
+    // Start drag — the invisible wall plane in SegmentedWall handles movement
     useDesignerStore.setState({ isDraggingOpening: true });
-
-    const startScreenX = e.clientX ?? e.nativeEvent?.clientX ?? 0;
-    const startPos = ox;
-    const cam = camera;
-    const rect = gl.domElement.getBoundingClientRect();
-
-    // Get the wall's world-space direction by finding the wall group's X axis
-    // Walk up from the hit object to find the group with rotation
-    let wallGroup = e.object as THREE.Object3D;
-    while (wallGroup.parent && wallGroup.parent.type === 'Group') wallGroup = wallGroup.parent;
-    const origin = new THREE.Vector3().setFromMatrixPosition(wallGroup.matrixWorld);
-    const xDir = new THREE.Vector3(1, 0, 0).transformDirection(wallGroup.matrixWorld);
-
-    // Project a 1ft segment at the opening's actual depth to get pixels-per-foot
-    const hitPt = e.point as THREE.Vector3;
-    const p0 = hitPt.clone().project(cam);
-    const p1 = hitPt.clone().add(xDir).project(cam);
-    const pxPerFoot = Math.abs((p1.x - p0.x) * rect.width / 2) || 20;
-
-    const onMove = (evt: PointerEvent) => {
-      const dx = evt.clientX - startScreenX;
-      const deltaFt = dx / pxPerFoot;
-      const newPos = Math.max(0, Math.min(wallLength - ow, Math.round(startPos + deltaFt)));
-      updateOpening(opening.id, { positionFt: newPos });
-    };
-
-    const onUp = () => {
-      useDesignerStore.setState({ isDraggingOpening: false });
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-    };
-
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
   };
 
   // Selection highlight — blue glow behind the opening
