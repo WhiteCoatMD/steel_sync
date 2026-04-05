@@ -652,43 +652,65 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   }
 
   if (type === 'rollup') {
-    const ribCount = Math.max(2, Math.floor(oh / 1.2));
+    // Realistic sectional roll-up door
+    const trackW = 0.25;      // guide track width
+    const trackD = 0.18;      // guide track depth
+    const headerH = 0.25;     // header height
+    const panelGap = 0.04;    // gap between panels
+    const innerW = ow - trackW * 2; // door face width inside tracks
+    const sectionCount = Math.max(3, Math.round(oh / 1.8)); // ~1.5-2ft per section
+    const sectionH = (oh - headerH - panelGap * (sectionCount - 1)) / sectionCount;
+
     return (
       <group position={[cx, oh / 2, depthOff]}
         onPointerDown={handlePointerDown}>
         {highlight}
-        <mesh castShadow>
-          <boxGeometry args={[ow - 0.3, oh - 0.15, 0.12]} />
-          <meshStandardMaterial color="#d8d8d8" metalness={0.5} roughness={0.4} />
-        </mesh>
-        <mesh position={[-ow / 2, 0, 0]} castShadow>
-          <boxGeometry args={[0.3, oh + 0.1, 0.2]} />
-          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
-        </mesh>
-        <mesh position={[ow / 2, 0, 0]} castShadow>
-          <boxGeometry args={[0.3, oh + 0.1, 0.2]} />
-          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
-        </mesh>
-        <mesh position={[0, oh / 2 + 0.1, 0]} castShadow>
-          <boxGeometry args={[ow + 0.3, 0.3, 0.22]} />
-          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
-        </mesh>
-        <mesh position={[0, -oh / 2, 0]}>
-          <boxGeometry args={[ow, 0.15, 0.15]} />
-          <meshStandardMaterial color="#505050" metalness={0.6} roughness={0.4} />
-        </mesh>
-        {Array.from({ length: ribCount }).map((_, i) => {
-          const ribY = -oh / 2 + 0.5 + (i * (oh - 1)) / Math.max(1, ribCount - 1);
+
+        {/* Door sections — horizontal raised panels */}
+        {Array.from({ length: sectionCount }).map((_, i) => {
+          const sectionY = -oh / 2 + sectionH / 2 + i * (sectionH + panelGap);
           return (
-            <mesh key={`rib-${i}`} position={[0, ribY, 0.07]}>
-              <boxGeometry args={[ow - 0.5, 0.04, 0.015]} />
-              <meshStandardMaterial color="#b0b0b0" metalness={0.4} roughness={0.5} />
-            </mesh>
+            <group key={`sec-${i}`} position={[0, sectionY, 0]}>
+              {/* Main panel face */}
+              <mesh castShadow>
+                <boxGeometry args={[innerW, sectionH - 0.02, 0.08]} />
+                <meshStandardMaterial color="#e0e0e0" metalness={0.4} roughness={0.45} />
+              </mesh>
+              {/* Raised center (gives the raised-panel look) */}
+              <mesh position={[0, 0, 0.045]}>
+                <boxGeometry args={[innerW - 0.4, sectionH - 0.25, 0.02]} />
+                <meshStandardMaterial color="#e8e8e8" metalness={0.35} roughness={0.5} />
+              </mesh>
+            </group>
           );
         })}
-        <mesh position={[0, -oh / 2 + 1.5, 0.1]}>
-          <boxGeometry args={[1.2, 0.15, 0.06]} />
-          <meshStandardMaterial color="#909090" metalness={0.6} roughness={0.3} />
+
+        {/* Left guide track */}
+        <mesh position={[-(innerW / 2 + trackW / 2), 0, 0.02]} castShadow>
+          <boxGeometry args={[trackW, oh + 0.1, trackD]} />
+          <meshStandardMaterial color="#353535" metalness={0.7} roughness={0.3} />
+        </mesh>
+        {/* Right guide track */}
+        <mesh position={[(innerW / 2 + trackW / 2), 0, 0.02]} castShadow>
+          <boxGeometry args={[trackW, oh + 0.1, trackD]} />
+          <meshStandardMaterial color="#353535" metalness={0.7} roughness={0.3} />
+        </mesh>
+
+        {/* Header (drum housing) */}
+        <mesh position={[0, oh / 2 + headerH / 2, 0.02]} castShadow>
+          <boxGeometry args={[ow + 0.2, headerH, trackD + 0.05]} />
+          <meshStandardMaterial color="#353535" metalness={0.65} roughness={0.35} />
+        </mesh>
+
+        {/* Bottom bar with handle */}
+        <mesh position={[0, -oh / 2 + 0.06, 0.05]}>
+          <boxGeometry args={[innerW, 0.12, 0.1]} />
+          <meshStandardMaterial color="#b0b0b0" metalness={0.55} roughness={0.35} />
+        </mesh>
+        {/* Handle */}
+        <mesh position={[0, -oh / 2 + 0.06, 0.12]}>
+          <boxGeometry args={[1.0, 0.08, 0.04]} />
+          <meshStandardMaterial color="#808080" metalness={0.6} roughness={0.3} />
         </mesh>
       </group>
     );
