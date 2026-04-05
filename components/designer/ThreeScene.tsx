@@ -597,13 +597,21 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
 
     const startScreenX = e.clientX ?? e.nativeEvent?.clientX ?? 0;
     const startPos = ox;
-
-    // Calculate screen pixels per foot by projecting wall endpoints
     const cam = camera;
-    const v0 = new THREE.Vector3(0, 0, 0).project(cam);
-    const v1 = new THREE.Vector3(1, 0, 0).project(cam);
     const rect = gl.domElement.getBoundingClientRect();
-    const pxPerFoot = Math.abs((v1.x - v0.x) * rect.width / 2) || 20;
+
+    // Get the wall's world-space direction by finding the wall group's X axis
+    // Walk up from the hit object to find the group with rotation
+    let wallGroup = e.object as THREE.Object3D;
+    while (wallGroup.parent && wallGroup.parent.type === 'Group') wallGroup = wallGroup.parent;
+    const origin = new THREE.Vector3().setFromMatrixPosition(wallGroup.matrixWorld);
+    const xDir = new THREE.Vector3(1, 0, 0).transformDirection(wallGroup.matrixWorld);
+
+    // Project a 1ft segment at the opening's actual depth to get pixels-per-foot
+    const hitPt = e.point as THREE.Vector3;
+    const p0 = hitPt.clone().project(cam);
+    const p1 = hitPt.clone().add(xDir).project(cam);
+    const pxPerFoot = Math.abs((p1.x - p0.x) * rect.width / 2) || 20;
 
     const onMove = (evt: PointerEvent) => {
       const dx = evt.clientX - startScreenX;
