@@ -159,14 +159,7 @@ function SceneContents() {
       />
 
       <CameraController controlsRef={controlsRef} />
-      <OrbitControls
-        ref={controlsRef}
-        makeDefault
-        enablePan
-        maxPolarAngle={Math.PI / 2 - 0.02}
-        minDistance={8}
-        maxDistance={250}
-      />
+      <OrbitControlsWrapper controlsRef={controlsRef} />
     </>
   );
 }
@@ -209,6 +202,21 @@ function CameraController({ controlsRef }: { controlsRef: React.RefObject<any> }
   }, [building, camera, controlsRef]);
 
   return null;
+}
+
+function OrbitControlsWrapper({ controlsRef }: { controlsRef: React.RefObject<any> }) {
+  const isDragging = useDesignerStore((s) => s.isDraggingOpening);
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      makeDefault
+      enablePan
+      enabled={!isDragging}
+      maxPolarAngle={Math.PI / 2 - 0.02}
+      minDistance={8}
+      maxDistance={250}
+    />
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -578,32 +586,66 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   const updateOpening = useDesignerStore((s) => s.updateOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
   const isSelected = selectedId === opening.id;
-  const isDragging = useRef(false);
+  const dragRef = useRef(false);
   const cx = ox + ow / 2;
   const depthOff = Math.sign(zOff) * (Math.abs(zOff) + 0.05);
+  const { gl, camera } = useThree();
 
-  const handlePointerDown = (e: any) => {
+  // Click to select (single click without drag)
+  const handleClick = (e: any) => {
     e.stopPropagation();
     selectOpening(opening.id);
-    isDragging.current = true;
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
   };
-  const handlePointerMove = (e: any) => {
-    if (!isDragging.current || !e.point) return;
+
+  // Double-click to start drag mode
+  const handleDoubleClick = (e: any) => {
     e.stopPropagation();
-    // e.point is world space — convert to wall-local X via the parent group
-    const localPt = e.object.parent?.worldToLocal(e.point.clone());
-    if (!localPt) return;
-    const newPos = Math.round(Math.max(0, Math.min(wallLength - ow, localPt.x - ow / 2)));
-    updateOpening(opening.id, { positionFt: newPos });
+    selectOpening(opening.id);
+    dragRef.current = true;
+    useDesignerStore.setState({ isDraggingOpening: true });
+
+    const cam = camera; // capture for closure
+    const onMove = (evt: PointerEvent) => {
+      if (!dragRef.current) return;
+      const rect = gl.domElement.getBoundingClientRect();
+      const mouseX = ((evt.clientX - rect.left) / rect.width) * 2 - 1;
+      const mouseY = -((evt.clientY - rect.top) / rect.height) * 2 + 1;
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), cam);
+
+      // Intersect with a horizontal plane at the opening's height
+      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -oh / 2);
+      const hitPoint = new THREE.Vector3();
+      raycaster.ray.intersectPlane(plane, hitPoint);
+      if (!hitPoint) return;
+
+      // Convert to wall-local position (approximate — works for front/back walls)
+      const store = useDesignerStore.getState();
+      const config = store.config;
+      if (!config) return;
+      const wallW = opening.wall === 'front' || opening.wall === 'back' ? config.building.widthFt : config.building.lengthFt;
+      // hitPoint.x is in world coords, building is centered
+      const localX = hitPoint.x + wallW / 2;
+      const newPos = Math.max(0, Math.min(wallW - ow, Math.round(localX - ow / 2)));
+      updateOpening(opening.id, { positionFt: newPos });
+    };
+
+    const onUp = () => {
+      dragRef.current = false;
+      useDesignerStore.setState({ isDraggingOpening: false });
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
   };
-  const handlePointerUp = () => { isDragging.current = false; };
 
   if (type === 'window') {
     const sillY = 3.5; // must match SILL_HEIGHT in SegmentedWall
     return (
       <group position={[cx, sillY + oh / 2, depthOff]}
-        onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
+        onClick={handleClick} onDoubleClick={handleDoubleClick}>
         <mesh position={[0, 0, 0.01]}>
           <boxGeometry args={[ow + 0.3, oh + 0.3, 0.08]} />
           <meshStandardMaterial color="#d0d0d0" metalness={0.4} roughness={0.5} />
@@ -628,7 +670,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
     const ribCount = Math.max(2, Math.floor(oh / 1.2));
     return (
       <group position={[cx, oh / 2, depthOff]}
-        onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
+        onClick={handleClick} onDoubleClick={handleDoubleClick}>
         <mesh castShadow>
           <boxGeometry args={[ow - 0.3, oh - 0.15, 0.12]} />
           <meshStandardMaterial color="#d8d8d8" metalness={0.5} roughness={0.4} />
@@ -669,7 +711,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   // Walk-in door
   return (
     <group position={[cx, oh / 2, depthOff]}
-      onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
+      onClick={handleClick} onDoubleClick={handleDoubleClick}>
       <mesh castShadow>
         <boxGeometry args={[ow - 0.15, oh - 0.1, 0.1]} />
         <meshStandardMaterial color="#6b5b45" roughness={0.75} metalness={0.1} />

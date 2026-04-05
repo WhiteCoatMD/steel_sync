@@ -34,6 +34,7 @@ interface DesignerStore {
   activeStep: ConfigStep;
   isQuoteFormOpen: boolean;
   selectedOpeningId: string | null;
+  isDraggingOpening: boolean;
 
   initialize: (dealerId: string) => void;
 
@@ -77,6 +78,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   activeStep: 'dimensions',
   isQuoteFormOpen: false,
   selectedOpeningId: null,
+  isDraggingOpening: false,
 
   initialize: (dealerId) => {
     const config = createDefaultConfig(dealerId);
