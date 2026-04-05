@@ -231,7 +231,7 @@ function BuildingModel() {
   return (
     <group position={[-d.width / 2, 0, -d.length / 2]}>
       <SlabMesh result={result} />
-      <FrameMeshes result={result} />
+      {isOpen && <FrameMeshes result={result} />}
       {!isOpen && <SideWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} roofStyle={config.building.roofStyle} />
