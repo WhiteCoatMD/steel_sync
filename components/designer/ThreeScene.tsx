@@ -244,7 +244,6 @@ function BuildingModel() {
       {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} roofStyle={config.building.roofStyle} />
       <TrimMeshes result={result} color={config.colors.trim.hex} />
-      <DoorTrimMeshes config={config} />
       <LeanToMeshes result={result} />
     </group>
   );
@@ -606,6 +605,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   const { positionFt: ox, widthFt: ow, heightFt: oh, type } = opening;
   const selectOpening = useDesignerStore((s) => s.selectOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
+  const trimColor = useDesignerStore((s) => s.config?.colors.trim.hex ?? '#ffffff');
   const isSelected = selectedId === opening.id;
   const cx = ox + ow / 2;
   const depthOff = Math.sign(zOff) * (Math.abs(zOff) + 0.05);
@@ -627,107 +627,128 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
 
   if (type === 'window') {
     const sillY = 3.5; // must match SILL_HEIGHT in SegmentedWall
+    const trimT = 0.12;
+    const trimD = 0.08;
+    // Grid: 2 columns x 3 rows of panes
+    const paneRows = 3;
+    const paneCols = 2;
+    const mullionW = 0.08;
+    const paneW = (ow - mullionW * (paneCols + 1)) / paneCols;
+    const paneH = (oh - mullionW * (paneRows + 1)) / paneRows;
+
     return (
       <group position={[cx, sillY + oh / 2, depthOff]}
         onPointerDown={handlePointerDown}>
         {highlight}
+
+        {/* White window frame (outer) */}
         <mesh position={[0, 0, 0.01]}>
-          <boxGeometry args={[ow + 0.3, oh + 0.3, 0.08]} />
-          <meshStandardMaterial color="#d0d0d0" metalness={0.4} roughness={0.5} />
+          <boxGeometry args={[ow + 0.1, oh + 0.1, 0.06]} />
+          <meshStandardMaterial color="#f0f0f0" metalness={0.3} roughness={0.5} />
         </mesh>
-        <mesh position={[0, 0, 0.06]}>
-          <planeGeometry args={[ow - 0.15, oh - 0.15]} />
-          <meshPhysicalMaterial color="#8ec8e8" transparent opacity={0.3} roughness={0.05} metalness={0.1} side={THREE.DoubleSide} />
+
+        {/* Glass panes in grid */}
+        {Array.from({ length: paneRows }).map((_, r) =>
+          Array.from({ length: paneCols }).map((_, c) => {
+            const px = -ow / 2 + mullionW + paneW / 2 + c * (paneW + mullionW);
+            const py = -oh / 2 + mullionW + paneH / 2 + r * (paneH + mullionW);
+            return (
+              <mesh key={`pane-${r}-${c}`} position={[px, py, 0.045]}>
+                <planeGeometry args={[paneW, paneH]} />
+                <meshPhysicalMaterial color="#9ac8e0" transparent opacity={0.35} roughness={0.05} metalness={0.1} side={THREE.DoubleSide} />
+              </mesh>
+            );
+          })
+        )}
+
+        {/* Trim frame — attached to window */}
+        <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+          <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        <mesh position={[0, 0, 0.07]}>
-          <boxGeometry args={[0.1, oh - 0.2, 0.04]} />
-          <meshStandardMaterial color="#c0c0c0" metalness={0.5} roughness={0.4} />
+        <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+          <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        <mesh position={[0, 0, 0.07]}>
-          <boxGeometry args={[ow - 0.2, 0.1, 0.04]} />
-          <meshStandardMaterial color="#c0c0c0" metalness={0.5} roughness={0.4} />
+        <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+          <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+        </mesh>
+        <mesh position={[0, -oh / 2 - trimT / 2, 0]}>
+          <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
       </group>
     );
   }
 
   if (type === 'rollup') {
-    // Commercial roll-up door — white face with many thin horizontal slats
-    const trackW = 0.2;
-    const innerW = ow - trackW * 2;
-    const slatCount = Math.max(8, Math.round(oh / 0.5)); // thin slats ~6" each
-    const slatH = oh / slatCount;
+    // Solid white door face with subtle horizontal grooves (normal map)
+    const doorNormal = usePanelNormal('horizontal', 1, oh * 2.5); // many fine horizontal lines
+    const trimT = 0.15;
+    const trimD = 0.1;
 
     return (
       <group position={[cx, oh / 2, depthOff]}
         onPointerDown={handlePointerDown}>
         {highlight}
 
-        {/* Door face — white background */}
+        {/* Solid door face with horizontal groove texture */}
         <mesh castShadow>
-          <boxGeometry args={[innerW, oh, 0.06]} />
-          <meshStandardMaterial color="#f0f0f0" metalness={0.3} roughness={0.5} />
+          <boxGeometry args={[ow, oh, 0.06]} />
+          <meshStandardMaterial color="#f2f2f2" metalness={0.25} roughness={0.55}
+            normalMap={doorNormal} normalScale={new THREE.Vector2(0.4, 0.4)} />
         </mesh>
 
-        {/* Horizontal slat lines */}
-        {Array.from({ length: slatCount - 1 }).map((_, i) => {
-          const y = -oh / 2 + (i + 1) * slatH;
-          return (
-            <mesh key={`slat-${i}`} position={[0, y, 0.032]}>
-              <boxGeometry args={[innerW + 0.01, 0.02, 0.005]} />
-              <meshStandardMaterial color="#c8c8c8" metalness={0.3} roughness={0.6} />
-            </mesh>
-          );
-        })}
-
-        {/* Left track */}
-        <mesh position={[-(innerW / 2 + trackW / 2), 0, 0.01]} castShadow>
-          <boxGeometry args={[trackW, oh + 0.1, 0.14]} />
-          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
+        {/* Trim frame — attached directly to the door */}
+        {/* Left jamb */}
+        <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+          <boxGeometry args={[trimT, oh + trimT, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        {/* Right track */}
-        <mesh position={[(innerW / 2 + trackW / 2), 0, 0.01]} castShadow>
-          <boxGeometry args={[trackW, oh + 0.1, 0.14]} />
-          <meshStandardMaterial color="#404040" metalness={0.65} roughness={0.35} />
+        {/* Right jamb */}
+        <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+          <boxGeometry args={[trimT, oh + trimT, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-
-        {/* Bottom bar */}
-        <mesh position={[0, -oh / 2 + 0.04, 0.04]}>
-          <boxGeometry args={[innerW, 0.08, 0.08]} />
-          <meshStandardMaterial color="#d0d0d0" metalness={0.5} roughness={0.4} />
+        {/* Header */}
+        <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+          <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
+          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
       </group>
     );
   }
 
   // Walk-in door
+  const trimT = 0.12;
+  const trimD = 0.08;
   return (
     <group position={[cx, oh / 2, depthOff]}
       onPointerDown={handlePointerDown}>
       {highlight}
+      {/* Door panel */}
       <mesh castShadow>
-        <boxGeometry args={[ow - 0.15, oh - 0.1, 0.1]} />
-        <meshStandardMaterial color="#6b5b45" roughness={0.75} metalness={0.1} />
+        <boxGeometry args={[ow, oh, 0.08]} />
+        <meshStandardMaterial color="#f0f0f0" metalness={0.25} roughness={0.6} />
       </mesh>
-      <mesh position={[-ow / 2, 0, 0]} castShadow>
-        <boxGeometry args={[0.2, oh + 0.1, 0.15]} />
-        <meshStandardMaterial color="#404040" metalness={0.5} roughness={0.5} />
+      {/* Door knob */}
+      <mesh position={[ow / 2 - 0.3, -0.2, 0.06]}>
+        <sphereGeometry args={[0.08, 12, 8]} />
+        <meshStandardMaterial color="#b0a060" metalness={0.8} roughness={0.2} />
       </mesh>
-      <mesh position={[ow / 2, 0, 0]} castShadow>
-        <boxGeometry args={[0.2, oh + 0.1, 0.15]} />
-        <meshStandardMaterial color="#404040" metalness={0.5} roughness={0.5} />
+      {/* Trim — attached to door */}
+      <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+        <boxGeometry args={[trimT, oh + trimT, trimD]} />
+        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
-      <mesh position={[0, oh / 2 + 0.05, 0]} castShadow>
-        <boxGeometry args={[ow + 0.2, 0.2, 0.15]} />
-        <meshStandardMaterial color="#404040" metalness={0.5} roughness={0.5} />
+      <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+        <boxGeometry args={[trimT, oh + trimT, trimD]} />
+        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
-      <mesh position={[ow / 2 - 0.4, -0.3, 0.08]}>
-        <sphereGeometry args={[0.1, 12, 8]} />
-        <meshStandardMaterial color="#c0a060" metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[ow / 2 - 0.4, 0.3, 0.07]}>
-        <cylinderGeometry args={[0.06, 0.06, 0.05, 12]} />
-        <meshStandardMaterial color="#b0a060" metalness={0.7} roughness={0.3} />
+      <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+        <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
+        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
     </group>
   );
@@ -763,11 +784,17 @@ function RoofMeshes({ result, color, panelDir, roofStyle }: {
     const zF = -ovh;
     const zB = L + ovh;
 
+    // Eave behavior per roof style:
+    // Regular: roof edge at wall face (x=0, x=W), curves down 6" along wall
+    // A-Frame/Vertical: roof extends 6" past wall (eave overhang)
+    const eaveOvh = isRegular ? 0 : 0.5; // side overhang past wall
+    const DROOP = 0.5; // 6" curve on regular style
+
     if (!isRegular) {
-      // A-Frame / Vertical: simple straight slopes, 4 verts per side
+      // A-Frame / Vertical: straight slopes with 6" eave overhang past walls
       const verts = new Float32Array([
-        0,  H,        zF,   0,  H,        zB,   hw, H+rise, zB,   hw, H+rise, zF,
-        W,  H,        zF,   W,  H,        zB,   hw, H+rise, zB,   hw, H+rise, zF,
+        -eaveOvh, H, zF,   -eaveOvh, H, zB,   hw, H+rise, zB,   hw, H+rise, zF,
+        W+eaveOvh, H, zF,  W+eaveOvh, H, zB,  hw, H+rise, zB,   hw, H+rise, zF,
       ]);
       const uvs = new Float32Array([
         0,0, 0,1, 1,1, 1,0,
@@ -777,29 +804,25 @@ function RoofMeshes({ result, color, panelDir, roofStyle }: {
       geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
       geo.setIndex([0,2,1, 0,3,2, 4,5,6, 4,6,7]);
     } else {
-      // Regular: curved eave — add intermediate verts for the curve
-      // Curve happens in the bottom 20% of the slope, dropping 6"
-      const DROOP = 0.5; // 6 inches
-      const curveFrac = 0.15; // curve zone = bottom 15% of slope
-      // Transition point: 15% of the way from eave toward ridge
-      const tX = hw * curveFrac;       // x offset from eave toward ridge
-      const tY = rise * curveFrac;     // y offset from eave height
-      // 6 verts per slope: eave (drooped), transition, ridge
+      // Regular: roof at wall edge, curves down 6" along the wall face
+      const curveFrac = 0.12;
+      const tX = hw * curveFrac;
+      const tY = rise * curveFrac;
       const verts = new Float32Array([
         // Left slope: eave(0,1) → transition(2,3) → ridge(4,5)
-        0,         H - DROOP,     zF,  // 0: eave front (drooped)
-        0,         H - DROOP,     zB,  // 1: eave back
-        tX,        H + tY,        zF,  // 2: transition front
-        tX,        H + tY,        zB,  // 3: transition back
-        hw,        H + rise,      zF,  // 4: ridge front
-        hw,        H + rise,      zB,  // 5: ridge back
+        0,         H - DROOP,     zF,
+        0,         H - DROOP,     zB,
+        tX,        H + tY,        zF,
+        tX,        H + tY,        zB,
+        hw,        H + rise,      zF,
+        hw,        H + rise,      zB,
         // Right slope: eave(6,7) → transition(8,9) → ridge(10,11)
-        W,         H - DROOP,     zF,  // 6
-        W,         H - DROOP,     zB,  // 7
-        W - tX,    H + tY,        zF,  // 8
-        W - tX,    H + tY,        zB,  // 9
-        hw,        H + rise,      zF,  // 10
-        hw,        H + rise,      zB,  // 11
+        W,         H - DROOP,     zF,
+        W,         H - DROOP,     zB,
+        W - tX,    H + tY,        zF,
+        W - tX,    H + tY,        zB,
+        hw,        H + rise,      zF,
+        hw,        H + rise,      zB,
       ]);
       const uvs = new Float32Array([
         0,0, 0,1, curveFrac,0, curveFrac,1, 1,0, 1,1,
@@ -808,9 +831,7 @@ function RoofMeshes({ result, color, panelDir, roofStyle }: {
       geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
       geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
       geo.setIndex([
-        // Left: eave quad + main quad
         0,3,1, 0,2,3,   2,5,3, 2,4,5,
-        // Right: eave quad + main quad
         6,7,9, 6,9,8,   8,9,11, 8,11,10,
       ]);
     }
@@ -853,65 +874,6 @@ function TrimMeshes({ result, color }: { result: BuildingResult; color: string }
           <meshStandardMaterial color={color} metalness={0.3} roughness={0.6} />
         </mesh>
       ))}
-    </group>
-  );
-}
-
-function DoorTrimMeshes({ config }: { config: BuildingConfig }) {
-  const trimColor = config.colors.trim.hex;
-  const W = config.building.widthFt;
-  const L = config.building.lengthFt;
-  const T = 0.15; // trim strip width
-  const D = 0.1;  // trim depth
-
-  return (
-    <group position={[-W / 2, 0, -L / 2]}>
-      {config.openings.map((op) => {
-        const isWindow = op.type === 'window';
-        const isDoor = op.type === 'rollup' || op.type === 'walkin';
-        if (!isWindow && !isDoor) return null;
-
-        // Get wall transform
-        let gx = 0, gy = 0, gz = 0, ry = 0;
-        const wallLen = op.wall === 'front' || op.wall === 'back' ? W : L;
-        if (op.wall === 'front') { gz = -WALL_THICKNESS - 0.01; }
-        else if (op.wall === 'back') { gx = W; gz = L + WALL_THICKNESS + 0.01; ry = Math.PI; }
-        else if (op.wall === 'left') { ry = -Math.PI / 2; gz = 0; }
-        else if (op.wall === 'right') { gx = W; gz = L; ry = Math.PI / 2; }
-
-        const cx = op.positionFt + op.widthFt / 2;
-        const sillY = isWindow ? 3.5 : 0;
-        const cy = sillY + op.heightFt / 2;
-        const hw = op.widthFt / 2;
-        const hh = op.heightFt / 2;
-
-        return (
-          <group key={`dtrim-${op.id}`} position={[gx, gy, gz]} rotation={[0, ry, 0]}>
-            {/* Left jamb */}
-            <mesh position={[cx - hw - T / 2, cy, 0]}>
-              <boxGeometry args={[T, op.heightFt + T, D]} />
-              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
-            </mesh>
-            {/* Right jamb */}
-            <mesh position={[cx + hw + T / 2, cy, 0]}>
-              <boxGeometry args={[T, op.heightFt + T, D]} />
-              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
-            </mesh>
-            {/* Header */}
-            <mesh position={[cx, cy + hh + T / 2, 0]}>
-              <boxGeometry args={[op.widthFt + T * 2, T, D]} />
-              <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
-            </mesh>
-            {/* Sill (for windows) */}
-            {isWindow && (
-              <mesh position={[cx, cy - hh - T / 2, 0]}>
-                <boxGeometry args={[op.widthFt + T * 2, T, D]} />
-                <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
-              </mesh>
-            )}
-          </group>
-        );
-      })}
     </group>
   );
 }

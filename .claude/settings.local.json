@@ -49,7 +49,8 @@
       "Bash(vercel inspect:*)",
       "Bash(vercel link:*)",
       "Bash(vercel deploy:*)",
-      "Bash(vercel project:*)"
+      "Bash(vercel project:*)",
+      "Bash(sed:*)"
     ]
   }
 }
