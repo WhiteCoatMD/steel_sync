@@ -579,7 +579,7 @@ function SegmentedWall({ wallLength, wallHeight, color, openings, zOff, panelDir
         }}
       >
         <planeGeometry args={[wallLength + 4, wallHeight + 4]} />
-        <meshBasicMaterial transparent opacity={0} side={THREE.DoubleSide} />
+        <meshBasicMaterial colorWrite={false} depthWrite={false} side={THREE.DoubleSide} />
       </mesh>
 
       {segments.map((seg, i) => (
