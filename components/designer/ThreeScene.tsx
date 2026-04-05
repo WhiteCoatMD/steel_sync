@@ -586,52 +586,33 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   const updateOpening = useDesignerStore((s) => s.updateOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
   const isSelected = selectedId === opening.id;
-  const dragRef = useRef(false);
   const cx = ox + ow / 2;
   const depthOff = Math.sign(zOff) * (Math.abs(zOff) + 0.05);
   const { gl, camera } = useThree();
 
-  // Click to select (single click without drag)
-  const handleClick = (e: any) => {
+  const handlePointerDown = (e: any) => {
     e.stopPropagation();
     selectOpening(opening.id);
-  };
-
-  // Double-click to start drag mode
-  const handleDoubleClick = (e: any) => {
-    e.stopPropagation();
-    selectOpening(opening.id);
-    dragRef.current = true;
     useDesignerStore.setState({ isDraggingOpening: true });
 
-    const cam = camera; // capture for closure
+    const startScreenX = e.clientX ?? e.nativeEvent?.clientX ?? 0;
+    const startPos = ox;
+
+    // Calculate screen pixels per foot by projecting wall endpoints
+    const cam = camera;
+    const v0 = new THREE.Vector3(0, 0, 0).project(cam);
+    const v1 = new THREE.Vector3(1, 0, 0).project(cam);
+    const rect = gl.domElement.getBoundingClientRect();
+    const pxPerFoot = Math.abs((v1.x - v0.x) * rect.width / 2) || 20;
+
     const onMove = (evt: PointerEvent) => {
-      if (!dragRef.current) return;
-      const rect = gl.domElement.getBoundingClientRect();
-      const mouseX = ((evt.clientX - rect.left) / rect.width) * 2 - 1;
-      const mouseY = -((evt.clientY - rect.top) / rect.height) * 2 + 1;
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), cam);
-
-      // Intersect with a horizontal plane at the opening's height
-      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -oh / 2);
-      const hitPoint = new THREE.Vector3();
-      raycaster.ray.intersectPlane(plane, hitPoint);
-      if (!hitPoint) return;
-
-      // Convert to wall-local position (approximate — works for front/back walls)
-      const store = useDesignerStore.getState();
-      const config = store.config;
-      if (!config) return;
-      const wallW = opening.wall === 'front' || opening.wall === 'back' ? config.building.widthFt : config.building.lengthFt;
-      // hitPoint.x is in world coords, building is centered
-      const localX = hitPoint.x + wallW / 2;
-      const newPos = Math.max(0, Math.min(wallW - ow, Math.round(localX - ow / 2)));
+      const dx = evt.clientX - startScreenX;
+      const deltaFt = dx / pxPerFoot;
+      const newPos = Math.max(0, Math.min(wallLength - ow, Math.round(startPos + deltaFt)));
       updateOpening(opening.id, { positionFt: newPos });
     };
 
     const onUp = () => {
-      dragRef.current = false;
       useDesignerStore.setState({ isDraggingOpening: false });
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
@@ -641,11 +622,20 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
     window.addEventListener('pointerup', onUp);
   };
 
+  // Selection highlight — blue glow behind the opening
+  const highlight = isSelected ? (
+    <mesh position={[0, 0, -0.02]}>
+      <boxGeometry args={[ow + 0.8, oh + 0.8, 0.02]} />
+      <meshBasicMaterial color="#3b82f6" transparent opacity={0.4} />
+    </mesh>
+  ) : null;
+
   if (type === 'window') {
     const sillY = 3.5; // must match SILL_HEIGHT in SegmentedWall
     return (
       <group position={[cx, sillY + oh / 2, depthOff]}
-        onClick={handleClick} onDoubleClick={handleDoubleClick}>
+        onPointerDown={handlePointerDown}>
+        {highlight}
         <mesh position={[0, 0, 0.01]}>
           <boxGeometry args={[ow + 0.3, oh + 0.3, 0.08]} />
           <meshStandardMaterial color="#d0d0d0" metalness={0.4} roughness={0.5} />
@@ -670,7 +660,8 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
     const ribCount = Math.max(2, Math.floor(oh / 1.2));
     return (
       <group position={[cx, oh / 2, depthOff]}
-        onClick={handleClick} onDoubleClick={handleDoubleClick}>
+        onPointerDown={handlePointerDown}>
+        {highlight}
         <mesh castShadow>
           <boxGeometry args={[ow - 0.3, oh - 0.15, 0.12]} />
           <meshStandardMaterial color="#d8d8d8" metalness={0.5} roughness={0.4} />
@@ -711,7 +702,8 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   // Walk-in door
   return (
     <group position={[cx, oh / 2, depthOff]}
-      onClick={handleClick} onDoubleClick={handleDoubleClick}>
+      onPointerDown={handlePointerDown}>
+      {highlight}
       <mesh castShadow>
         <boxGeometry args={[ow - 0.15, oh - 0.1, 0.1]} />
         <meshStandardMaterial color="#6b5b45" roughness={0.75} metalness={0.1} />
