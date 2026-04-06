@@ -661,20 +661,20 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
           })
         )}
 
-        {/* Trim frame — attached to window */}
-        <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+        {/* Trim frame — pushed forward to sit on wall surface */}
+        <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+        <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+        <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        <mesh position={[0, -oh / 2 - trimT / 2, 0]}>
+        <mesh position={[0, -oh / 2 - trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
@@ -700,19 +700,16 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
             normalMap={doorNormal} normalScale={new THREE.Vector2(0.4, 0.4)} />
         </mesh>
 
-        {/* Trim frame — attached directly to the door */}
-        {/* Left jamb */}
-        <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+        {/* Trim frame — pushed forward */}
+        <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        {/* Right jamb */}
-        <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+        <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
-        {/* Header */}
-        <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+        <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
           <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
         </mesh>
@@ -737,16 +734,16 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         <sphereGeometry args={[0.08, 12, 8]} />
         <meshStandardMaterial color="#b0a060" metalness={0.8} roughness={0.2} />
       </mesh>
-      {/* Trim — attached to door */}
-      <mesh position={[-ow / 2 - trimT / 2, 0, 0]}>
+      {/* Trim — pushed forward */}
+      <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
         <boxGeometry args={[trimT, oh + trimT, trimD]} />
         <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
-      <mesh position={[ow / 2 + trimT / 2, 0, 0]}>
+      <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
         <boxGeometry args={[trimT, oh + trimT, trimD]} />
         <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
-      <mesh position={[0, oh / 2 + trimT / 2, 0]}>
+      <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
         <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
         <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
       </mesh>
