@@ -2,7 +2,7 @@
 // Generates panel strip descriptors for walls, split around openings.
 
 import type { BuildingDimensions, Opening, WallId, PanelDirection } from './types';
-import { wallLengthFt } from './geometry';
+import { wallFrame } from './wallFrame';
 
 // ─── Constants ─────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ export function buildWallPanels(
   wall: WallId,
   openings: Opening[],
 ): WallPanelResult {
-  const wLen = wallLengthFt(wall, config);
+  const wLen = wallFrame(wall, config).lengthFt;
   const wH = config.legHeightFt;
   const wallOpenings = openings.filter(o => o.wall === wall);
 

@@ -2,7 +2,29 @@
 // Manages door/window placement, validation, and collision detection.
 
 import type { BuildingDimensions, Opening, WallId } from './types';
-import { wallLengthFt } from './geometry';
+import { wallFrame, pointOnWall, type Vec3 } from './wallFrame';
+
+/** Sit openings proud of the wall panel; kills z-fighting with the panel surface. */
+const OPENING_PROUD_FT = 0.02;
+
+export interface OpeningPlacement {
+  /** World-space centre of the opening, offset proud of the wall panel. */
+  centre: Vec3;
+  /** Y-rotation to orient the opening mesh onto its wall. */
+  rotationY: number;
+}
+
+/** World-space placement (centre + rotation) for an opening, derived from wallFrame. */
+export function openingPlacement(opening: Opening, building: BuildingDimensions): OpeningPlacement {
+  const f = wallFrame(opening.wall, building);
+  const centre = pointOnWall(
+    f,
+    opening.positionFt + opening.widthFt / 2,
+    opening.heightFt / 2,
+    OPENING_PROUD_FT,
+  );
+  return { centre, rotationY: f.rotationY };
+}
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -50,7 +72,7 @@ export function validateOpening(
   building: BuildingDimensions,
 ): OpeningValidation {
   const errors: string[] = [];
-  const wLen = wallLengthFt(opening.wall, building);
+  const wLen = wallFrame(opening.wall, building).lengthFt;
   const wH = building.legHeightFt;
 
   if (opening.positionFt < 0) {
@@ -171,7 +193,7 @@ export function findOpenSlot(
   building: BuildingDimensions,
   margin = 1,
 ): number | null {
-  const wLen = wallLengthFt(wall, building);
+  const wLen = wallFrame(wall, building).lengthFt;
   const wallOpenings = existing
     .filter(o => o.wall === wall)
     .sort((a, b) => a.positionFt - b.positionFt);

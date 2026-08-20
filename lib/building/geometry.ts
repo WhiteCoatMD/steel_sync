@@ -2,7 +2,8 @@
 // All building measurements are in feet. Three.js scene uses 1 unit = 1 foot
 // (no artificial scale factor — makes debugging trivial).
 
-import type { BuildingDimensions, Opening, WallId } from './types';
+import type { BuildingDimensions, Opening } from './types';
+import { wallFrame } from './wallFrame';
 
 /** Roof pitch string → rise-per-run ratio */
 const PITCH_RATIOS: Record<string, number> = {
@@ -38,14 +39,9 @@ export function roofSlopeAngle(b: BuildingDimensions): number {
   return Math.atan2(rise, run);
 }
 
-/** Length of a given wall face (feet) */
-export function wallLengthFt(wall: WallId, b: BuildingDimensions): number {
-  return wall === 'front' || wall === 'back' ? b.widthFt : b.lengthFt;
-}
-
 /** Check if an opening fits on its wall */
 export function openingFitsOnWall(o: Opening, b: BuildingDimensions): boolean {
-  const wLen = wallLengthFt(o.wall, b);
+  const wLen = wallFrame(o.wall, b).lengthFt;
   return o.positionFt >= 0
     && o.positionFt + o.widthFt <= wLen
     && o.heightFt <= b.legHeightFt;
