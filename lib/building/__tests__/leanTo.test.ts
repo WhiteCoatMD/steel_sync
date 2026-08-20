@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildLeanTo } from '../leanTo';
+import { createLeanTo } from '../defaultConfig';
 import type { BuildingDimensions, LeanTo, WallId } from '../types';
 
 const B: BuildingDimensions = {
@@ -75,5 +76,25 @@ describe('lean-to attachment', () => {
     expect(parts).toContain('wall-outer');
     expect(parts).toContain('wall-left');
     expect(parts).toContain('wall-right');
+  });
+});
+
+describe('createLeanTo defaults', () => {
+  const barnRed = { id: 'barn-red', hex: '#7B2D26' };
+  const charcoal = { id: 'charcoal', hex: '#36454F' };
+
+  it('inherits the building\'s current roof and wall colours instead of defaulting to white', () => {
+    const lt = createLeanTo('lt1', 'left', B, { roof: charcoal, walls: barnRed });
+    expect(lt.roofColor).toEqual(charcoal);
+    expect(lt.wallColor).toEqual(barnRed);
+  });
+
+  it('copies the colour objects so later mutation of the building colours does not affect the lean', () => {
+    const colors = { roof: { ...charcoal }, walls: { ...barnRed } };
+    const lt = createLeanTo('lt1', 'left', B, colors);
+    colors.roof.hex = '#000000';
+    colors.walls.hex = '#000000';
+    expect(lt.roofColor.hex).toBe('#36454F');
+    expect(lt.wallColor.hex).toBe('#7B2D26');
   });
 });

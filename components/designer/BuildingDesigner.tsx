@@ -514,13 +514,14 @@ function OpeningSection() {
 function LeanToSection() {
   const leanTos = useDesignerStore((s) => s.config!.leanTos);
   const building = useDesignerStore((s) => s.config!.building);
+  const colors = useDesignerStore((s) => s.config!.colors);
   const addLeanTo = useDesignerStore((s) => s.addLeanTo);
   const removeLeanTo = useDesignerStore((s) => s.removeLeanTo);
 
   const handleAdd = useCallback((wall: WallId) => {
-    const lt = createLeanTo(`lean_${Date.now()}`, wall, building);
+    const lt = createLeanTo(`lean_${Date.now()}`, wall, building, colors);
     addLeanTo(lt);
-  }, [addLeanTo, building]);
+  }, [addLeanTo, building, colors]);
 
   // Walls that already have a lean-to
   const usedWalls = new Set(leanTos.map(lt => lt.wall));

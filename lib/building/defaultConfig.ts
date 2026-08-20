@@ -117,14 +117,19 @@ const DEFAULT_DELIVERY: DeliveryInfo = {
 
 // ─── Lean-To Factory ─────────────────────────────────────────
 
-export function createLeanTo(id: string, wall: WallId, parent: BuildingDimensions): LeanTo {
+export function createLeanTo(
+  id: string,
+  wall: WallId,
+  parent: BuildingDimensions,
+  colors: Pick<BuildingColors, 'roof' | 'walls'>,
+): LeanTo {
   return {
     id, wall,
     widthFt: 5,                                     // industry default projection
     lengthFt: wall === 'front' || wall === 'back' ? parent.widthFt : parent.lengthFt,
     heightFt: Math.max(6, parent.legHeightFt - 2),  // must sit below the main eave
-    roofColor: findColor('white'),
-    wallColor: findColor('white'),
+    roofColor: { ...colors.roof },
+    wallColor: { ...colors.walls },
     openings: [],
     walls: 'open',
   };
