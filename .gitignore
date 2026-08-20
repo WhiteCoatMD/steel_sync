@@ -12,3 +12,5 @@ freecad-mcp/
 .vercel
 
 .playwright-mcp/
+.claude/worktrees/
+.superpowers/
