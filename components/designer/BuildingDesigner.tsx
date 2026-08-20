@@ -6,15 +6,19 @@ import { useDesignerStore } from '@/lib/store/designerStore';
 import { STANDARD_COLORS, findColor, createLeanTo } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 import { ThreeScene } from './ThreeScene';
-import type { BuildingType, ColorOption, CustomerInfo, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
+import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
-export default function BuildingDesigner() {
+interface BuildingDesignerProps {
+  dealerId: string;
+  dealer: DealerSettings | null;
+}
+
+export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerProps) {
   const searchParams = useSearchParams();
-  const dealerId = searchParams.get('dealer') ?? 'default';
   const designParam = searchParams.get('design');
   const initialize = useDesignerStore((s) => s.initialize);
   const loadDesign = useDesignerStore((s) => s.loadDesign);
@@ -22,12 +26,12 @@ export default function BuildingDesigner() {
   const isQuoteFormOpen = useDesignerStore((s) => s.isQuoteFormOpen);
 
   useEffect(() => {
-    initialize(dealerId);
+    initialize(dealerId, dealer);
     // If a shared design is in the URL, load it
     if (designParam) {
       loadDesign(designParam);
     }
-  }, [dealerId, designParam, initialize, loadDesign]);
+  }, [dealerId, dealer, designParam, initialize, loadDesign]);
 
   if (!config) {
     return (

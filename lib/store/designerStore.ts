@@ -48,7 +48,7 @@ interface DesignerStore {
   selectedOpeningId: string | null;
   isDraggingOpening: boolean;
 
-  initialize: (dealerId: string) => void;
+  initialize: (dealerId: string, dealer?: DealerSettings | null) => void;
 
   // Building
   updateBuilding: (partial: Partial<BuildingDimensions>) => void;
@@ -92,9 +92,9 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   selectedOpeningId: null,
   isDraggingOpening: false,
 
-  initialize: (dealerId) => {
+  initialize: (dealerId, dealer = null) => {
     const config = createDefaultConfig(dealerId);
-    set({ config: withPricing(config) });
+    set({ dealerSettings: dealer, config: withPricing(config, dealer) });
   },
 
   updateBuilding: (partial) => {
