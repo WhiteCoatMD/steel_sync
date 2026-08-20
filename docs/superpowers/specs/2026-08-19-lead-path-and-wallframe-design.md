@@ -220,6 +220,31 @@ submitQuote: async (customer) => {
 Seed one `tejasmex` row whose `pricing_rules` initially carries the existing
 `DEFAULT_PRICING_RULES` values as a **clearly-labelled placeholder** (§6.1).
 
+### 3.4 Lead notification
+
+**DECISION: Twilio SMS + Resend email**, both fired after the `quotes` row commits.
+
+| Channel | Provider | Provisioning | Carries |
+|---------|----------|--------------|---------|
+| SMS | Twilio | Manual — not on the Marketplace. Owner creates the account; `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` set via `vercel env add` | Instant ping: name, size, price, phone |
+| Email | Resend | `vercel integration add resend/resend-email` (auto env vars) | Full quote detail, reply-to the customer |
+
+Rules:
+
+- **Notification failure must never fail the request.** The row is already
+  committed; the customer has already been told it succeeded. Wrap both sends and
+  log failures — never let a Twilio outage produce a 503 on a lead that was saved.
+- Recipients come from the `dealers` row (`phone`, `email`), not from config, so
+  each dealer is notified on their own channels.
+- SMS body stays under 160 chars: `New lead: {first} {last} — {W}x{L} {type}, ${total}. {phone}`
+- Email `reply-to` is the customer's address so the dealer can respond directly.
+- Both sends are fire-and-forget relative to the HTTP response. If a send throws,
+  record it on the quote row (`status = 'notify_failed'`) so nothing is lost
+  silently — the failure mode this whole project exists to eliminate.
+
+Deferred: retry/queue for failed notifications, and per-dealer channel
+preferences. A logged failure plus a visible status is sufficient at this volume.
+
 ---
 
 ## 4. `wallFrame`
@@ -366,9 +391,13 @@ matching TejasMex pricing.**
 
 ### 6.2 Other open items
 
-- **Dealer notification.** Nothing tells the dealer a lead arrived. Email is a
-  separate `messaging` integration (Resend). Deferred, but the gap is real the day
-  this ships. The reference product routes leads into HubSpot.
+- **Dealer notification.** Resolved — see §3.4 (Twilio SMS + Resend email). Note
+  the reference product routes leads into HubSpot; a CRM integration is not in
+  scope here but is the natural successor.
+- **Twilio account.** Must be created by the owner; account creation is not
+  something the assistant performs. This is a hard prerequisite for §3.4's SMS
+  channel and blocks that half of the notification work until credentials exist.
+  The email channel ships independently of it.
 - **Rate limiting.** `POST /api/quote` is unauthenticated and writes to a database.
   Needs at least IP-based limiting before public traffic.
 - **Pricing float drift.** `PricingResult` uses floating-point dollars. Not changed
