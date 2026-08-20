@@ -15,6 +15,7 @@ import type {
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
 import { createDefaultConfig, DEFAULT_PRICING_RULES } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
+import { wallFrame } from '../building/wallFrame';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -24,6 +25,17 @@ type ColorTarget = 'roof' | 'walls' | 'trim' | 'wainscot';
 function withPricing(config: BuildingConfig, dealer?: DealerSettings | null): BuildingConfig {
   const rules = dealer?.pricing ?? DEFAULT_PRICING_RULES;
   return { ...config, pricing: calculatePrice(config, rules), updatedAt: new Date().toISOString() };
+}
+
+/**
+ * Clamp a lean-to's stored lengthFt to its attached wall's length, so the
+ * stored config always agrees with the clamped extent buildLeanTo() renders
+ * (and thus with what calculatePrice() quotes).
+ */
+function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo {
+  const wallLengthFt = wallFrame(leanTo.wall, building).lengthFt;
+  if (leanTo.lengthFt <= wallLengthFt) return leanTo;
+  return { ...leanTo, lengthFt: wallLengthFt };
 }
 
 // ─── Store Interface ────────────────────────────────────────
@@ -100,9 +112,13 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       };
     }
 
+    const nextBuilding = { ...config.building, ...updates };
     const next: BuildingConfig = {
       ...config,
-      building: { ...config.building, ...updates },
+      building: nextBuilding,
+      // Building may have shrunk — re-clamp any lean whose stored length now
+      // overruns its wall, so geometry and pricing keep agreeing.
+      leanTos: config.leanTos.map(lt => clampLeanToLength(lt, nextBuilding)),
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -176,7 +192,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     if (!config) return;
     const next: BuildingConfig = {
       ...config,
-      leanTos: [...config.leanTos, leanTo],
+      leanTos: [...config.leanTos, clampLeanToLength(leanTo, config.building)],
     };
     set({ config: withPricing(next, dealerSettings) });
   },

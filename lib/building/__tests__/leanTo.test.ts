@@ -61,6 +61,23 @@ describe('lean-to attachment', () => {
     expect(Math.max(a[0], b[0])).toBeCloseTo(24, 6);
   });
 
+  it('centres a clamped extent that is strictly shorter than the wall with equal margins', () => {
+    // 10ft lean on the 24ft front wall: clamped extent (10) < wall length (24),
+    // so u0 = (24-10)/2 = 7 either way — unlike the 30ft-on-24ft case above,
+    // where u0 = 0 regardless of whether centring is implemented correctly.
+    // This is the case that actually exercises the centring formula.
+    const r = buildLeanTo(lean('front', { lengthFt: 10 }), B);
+    expect(r.extentFt).toBe(10);
+    const a = toWorld([0, 0, 0], r.groupPosition, r.groupRotationY);
+    const b = toWorld([r.extentFt, 0, 0], r.groupPosition, r.groupRotationY);
+    const lo = Math.min(a[0], b[0]);
+    const hi = Math.max(a[0], b[0]);
+    // Equal 7ft margins on both sides of the 24ft wall.
+    expect(lo).toBeCloseTo(7, 6);
+    expect(hi).toBeCloseTo(17, 6);
+    expect(24 - hi).toBeCloseTo(lo, 6);
+  });
+
   it('an open lean emits a roof but no walls', () => {
     const r = buildLeanTo(lean('left', { walls: 'open' }), B);
     const parts = r.meshes.map(m => m.part);
