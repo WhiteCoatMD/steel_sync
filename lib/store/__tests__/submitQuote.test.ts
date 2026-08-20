@@ -20,19 +20,37 @@ describe('submitQuote', () => {
 
   // The bug: any failure previously fell through to the success path.
   it('reports failure and KEEPS the form open on a non-ok response', async () => {
+    const configBefore = useDesignerStore.getState().config;
     vi.stubGlobal('fetch', vi.fn(async () => new Response(
       JSON.stringify({ error: 'Unknown dealer' }), { status: 404 })));
     const r = await useDesignerStore.getState().submitQuote(customer);
     expect(r.ok).toBe(false);
     expect(useDesignerStore.getState().isQuoteFormOpen).toBe(true);
     expect(useDesignerStore.getState().submitError).toBe('Unknown dealer');
+    expect(useDesignerStore.getState().config).toEqual(configBefore);
   });
 
   it('reports failure on a network error', async () => {
+    const configBefore = useDesignerStore.getState().config;
     vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('offline'); }));
     const r = await useDesignerStore.getState().submitQuote(customer);
     expect(r.ok).toBe(false);
     expect(useDesignerStore.getState().isQuoteFormOpen).toBe(true);
     expect(useDesignerStore.getState().submitError).toMatch(/network/i);
+    expect(useDesignerStore.getState().config).toEqual(configBefore);
+  });
+
+  // Reached through the "ok" branch: a 201 whose body has no quoteId must
+  // NOT be treated as success — otherwise the customer is told their quote
+  // was submitted with no id to reference it by.
+  it('reports failure and KEEPS the form open on a 201 with a malformed/empty body', async () => {
+    const configBefore = useDesignerStore.getState().config;
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(
+      JSON.stringify({}), { status: 201 })));
+    const r = await useDesignerStore.getState().submitQuote(customer);
+    expect(r.ok).toBe(false);
+    expect(useDesignerStore.getState().isQuoteFormOpen).toBe(true);
+    expect(useDesignerStore.getState().submitError).toBeTruthy();
+    expect(useDesignerStore.getState().config).toEqual(configBefore);
   });
 });

@@ -299,7 +299,11 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
   submitQuote: async (customer) => {
     const { config } = get();
-    if (!config) return { ok: false, error: 'No configuration' };
+    if (!config) {
+      const error = 'No configuration';
+      set({ submitError: error });
+      return { ok: false, error };
+    }
 
     set({ isSubmitting: true, submitError: null });
     const payload = { ...config, customer, updatedAt: new Date().toISOString() };
@@ -318,7 +322,17 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
         return { ok: false, error };
       }
 
-      const { quoteId } = await res.json();
+      const body = await res.json().catch(() => ({} as any));
+      const quoteId = typeof body.quoteId === 'string' && body.quoteId.length > 0
+        ? body.quoteId
+        : null;
+
+      if (!quoteId) {
+        const error = 'Something went wrong on our end. Please try again or call us.';
+        set({ isSubmitting: false, submitError: error });
+        return { ok: false, error };
+      }
+
       set({
         config: { ...payload, quoteId },
         isQuoteFormOpen: false,
