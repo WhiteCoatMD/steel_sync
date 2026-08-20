@@ -10,3 +10,5 @@ next-env.d.ts
 freecad-mcp/
 
 .vercel
+
+.playwright-mcp/
