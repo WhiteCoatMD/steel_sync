@@ -40,11 +40,17 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
 
 // ─── Store Interface ────────────────────────────────────────
 
+export type SubmitResult =
+  | { ok: true; quoteId: string }
+  | { ok: false; error: string };
+
 interface DesignerStore {
   config: BuildingConfig | null;
   dealerSettings: DealerSettings | null;
   activeStep: ConfigStep;
   isQuoteFormOpen: boolean;
+  isSubmitting: boolean;
+  submitError: string | null;
   selectedOpeningId: string | null;
   isDraggingOpening: boolean;
 
@@ -72,7 +78,7 @@ interface DesignerStore {
   setActiveStep: (step: ConfigStep) => void;
   openQuoteForm: () => void;
   closeQuoteForm: () => void;
-  submitQuote: (customer: CustomerInfo) => Promise<void>;
+  submitQuote: (customer: CustomerInfo) => Promise<SubmitResult>;
 
   // AI
   applyAIConfig: (aiResult: any) => void;
@@ -89,6 +95,8 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   dealerSettings: null,
   activeStep: 'dimensions',
   isQuoteFormOpen: false,
+  isSubmitting: false,
+  submitError: null,
   selectedOpeningId: null,
   isDraggingOpening: false,
 
@@ -291,29 +299,36 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
   submitQuote: async (customer) => {
     const { config } = get();
-    if (!config) return;
+    if (!config) return { ok: false, error: 'No configuration' };
 
-    const quoteConfig: BuildingConfig = {
-      ...config,
-      customer,
-      quoteId: `qt_${Date.now()}`,
-      updatedAt: new Date().toISOString(),
-    };
+    set({ isSubmitting: true, submitError: null });
+    const payload = { ...config, customer, updatedAt: new Date().toISOString() };
 
     try {
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(quoteConfig),
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (data.quoteId) {
-        quoteConfig.quoteId = data.quoteId;
-      }
-    } catch {
-      // Offline/error — still save locally so user doesn't lose work
-    }
 
-    set({ config: quoteConfig, isQuoteFormOpen: false });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({} as any));
+        const error = b.error ?? 'Submission failed. Please try again.';
+        set({ isSubmitting: false, submitError: error });
+        return { ok: false, error };
+      }
+
+      const { quoteId } = await res.json();
+      set({
+        config: { ...payload, quoteId },
+        isQuoteFormOpen: false,
+        isSubmitting: false,
+      });
+      return { ok: true, quoteId };
+    } catch {
+      const error = 'Network error — please check your connection and try again.';
+      set({ isSubmitting: false, submitError: error });
+      return { ok: false, error };
+    }
   },
 }));
