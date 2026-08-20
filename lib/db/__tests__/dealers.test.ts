@@ -63,6 +63,39 @@ describe('mergePricingRules', () => {
     const result = calculatePrice(createDefaultConfig('x'), merged);
     expect(Number.isFinite(result.total)).toBe(true);
   });
+
+  it('treats an explicit null scalar as absent and falls back to the default', () => {
+    const merged = mergePricingRules({ basePricePerSqft: null });
+    expect(merged.basePricePerSqft).toBe(DEFAULT_PRICING_RULES.basePricePerSqft);
+  });
+
+  it('still keeps an explicit 0 scalar (regression guard — the null-check must not become a falsy-check)', () => {
+    const merged = mergePricingRules({ basePricePerSqft: 0 });
+    expect(merged.basePricePerSqft).toBe(0);
+  });
+
+  it('applies the null-is-absent rule uniformly, including installPricePerSqft', () => {
+    // installPricePerSqft is `number | null` in the type — a dealer could
+    // plausibly mean "we don't offer install" by setting it to null.
+    // mergePricingRules cannot distinguish that intent from a malformed or
+    // accidentally-null value in hand-typed JSONB, so per the null-is-absent
+    // rule this now falls back to the default like every other scalar.
+    const merged = mergePricingRules({ installPricePerSqft: null });
+    expect(merged.installPricePerSqft).toBe(DEFAULT_PRICING_RULES.installPricePerSqft);
+  });
+
+  it('end-to-end: calculatePrice returns a finite number for a rules object with every scalar explicitly null', () => {
+    const merged = mergePricingRules({
+      basePricePerSqft: null,
+      heightModifierPerFt: null,
+      leanToPricePerSqft: null,
+      installPricePerSqft: null,
+      markupPercent: null,
+      taxRate: null,
+    });
+    const result = calculatePrice(createDefaultConfig('x'), merged);
+    expect(Number.isFinite(result.total)).toBe(true);
+  });
 });
 
 /** calculatePrice only exercises deliveryZones.sort()/.find() when a distance is set. */

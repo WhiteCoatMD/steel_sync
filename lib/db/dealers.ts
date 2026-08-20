@@ -29,9 +29,17 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
 export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _placeholder?: boolean } {
   const d = isPlainObject(dbValue) ? dbValue : {};
 
+  // `null` is treated the same as "absent" here (falls back to default), not
+  // preserved as-is. Every scalar this feeds flows into arithmetic inside
+  // calculatePrice (multiplication/addition), and `null` coerces to 0 there
+  // rather than throwing — so a hand-typed `null` wouldn't crash, it would
+  // silently zero out or corrupt a price line into NaN territory depending
+  // on the operation. Only `0` and `false` must survive untouched, which is
+  // why this checks strict (in)equality rather than falsy-ness (`||` would
+  // wrongly replace a deliberate `0` with the default).
   const scalar = <T>(key: keyof DealerPricingRules, fallback: T): T => {
     const v = d[key];
-    return v !== undefined ? (v as T) : fallback;
+    return v !== undefined && v !== null ? (v as T) : fallback;
   };
 
   const mergeNested = <T extends object>(key: keyof DealerPricingRules, fallback: T): T => {
