@@ -7,7 +7,9 @@ import type {
   ColorOption,
   DealerPricingRules,
   DeliveryInfo,
+  LeanTo,
   Opening,
+  WallId,
 } from './types';
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from './types';
 
@@ -112,6 +114,21 @@ const DEFAULT_DELIVERY: DeliveryInfo = {
   distanceMiles: null,
   zone: null,
 };
+
+// ─── Lean-To Factory ─────────────────────────────────────────
+
+export function createLeanTo(id: string, wall: WallId, parent: BuildingDimensions): LeanTo {
+  return {
+    id, wall,
+    widthFt: 5,                                     // industry default projection
+    lengthFt: wall === 'front' || wall === 'back' ? parent.widthFt : parent.lengthFt,
+    heightFt: Math.max(6, parent.legHeightFt - 2),  // must sit below the main eave
+    roofColor: findColor('white'),
+    wallColor: findColor('white'),
+    openings: [],
+    walls: 'open',
+  };
+}
 
 // ─── Factory Function ───────────────────────────────────────
 

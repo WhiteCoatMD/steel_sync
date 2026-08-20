@@ -3,10 +3,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useDesignerStore } from '@/lib/store/designerStore';
-import { STANDARD_COLORS, findColor } from '@/lib/building/defaultConfig';
+import { STANDARD_COLORS, findColor, createLeanTo } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 import { ThreeScene } from './ThreeScene';
-import type { BuildingType, ColorOption, CustomerInfo, LeanTo, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
+import type { BuildingType, ColorOption, CustomerInfo, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
@@ -513,24 +513,14 @@ function OpeningSection() {
 
 function LeanToSection() {
   const leanTos = useDesignerStore((s) => s.config!.leanTos);
-  const colors = useDesignerStore((s) => s.config!.colors);
   const building = useDesignerStore((s) => s.config!.building);
   const addLeanTo = useDesignerStore((s) => s.addLeanTo);
   const removeLeanTo = useDesignerStore((s) => s.removeLeanTo);
 
   const handleAdd = useCallback((wall: WallId) => {
-    const lt: LeanTo = {
-      id: `lean_${Date.now()}`,
-      wall,
-      widthFt: 10,
-      lengthFt: building.lengthFt,
-      heightFt: Math.min(building.legHeightFt - 2, 8),
-      roofColor: colors.roof,
-      wallColor: colors.walls,
-      openings: [],
-    };
+    const lt = createLeanTo(`lean_${Date.now()}`, wall, building);
     addLeanTo(lt);
-  }, [addLeanTo, building, colors]);
+  }, [addLeanTo, building]);
 
   // Walls that already have a lean-to
   const usedWalls = new Set(leanTos.map(lt => lt.wall));

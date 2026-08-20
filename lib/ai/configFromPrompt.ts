@@ -186,6 +186,7 @@ export function configFromPrompt(
       roofColor: config.colors.roof,
       wallColor: config.colors.walls,
       openings: [],
+      walls: 'open',
     };
     config.leanTos = [leanTo];
   }

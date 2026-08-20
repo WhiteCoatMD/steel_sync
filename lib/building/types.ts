@@ -76,6 +76,8 @@ export interface LeanTo {
   widthFt: number;           // projection outward (max 12)
   lengthFt: number;          // along the wall (max = parent wall length)
   heightFt: number;          // must be < main building leg height
+  /** 'open' = roof on posts only (default, matches industry "Open Lean"). */
+  walls: 'open' | 'enclosed';
   roofColor: ColorOption;
   wallColor: ColorOption;
   openings: Opening[];
