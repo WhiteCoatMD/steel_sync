@@ -222,18 +222,26 @@ Seed one `tejasmex` row whose `pricing_rules` initially carries the existing
 
 ### 3.4 Lead notification
 
-**DECISION: Twilio SMS + Resend email**, both fired after the `quotes` row commits.
+**DECISION: Telnyx SMS + Resend email**, both fired after the `quotes` row commits.
 
 | Channel | Provider | Provisioning | Carries |
 |---------|----------|--------------|---------|
-| SMS | Twilio | Manual — not on the Marketplace. Owner creates the account; `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` set via `vercel env add` | Instant ping: name, size, price, phone |
+| SMS | Telnyx | Manual — not on the Marketplace. Account and number already provisioned by the owner. `TELNYX_API_KEY`, `TELNYX_FROM_NUMBER` | Instant ping: name, size, price, phone |
 | Email | Resend | `vercel integration add resend/resend-email` (auto env vars) | Full quote detail, reply-to the customer |
+
+Telnyx is called over plain REST (`POST https://api.telnyx.com/v2/messages`,
+Bearer auth) rather than through the `telnyx` npm SDK. The request is three
+fields; a dependency buys nothing and the SDK is substantially heavier.
+
+Sending number: `+18665120244`, active with messaging profile
+`40019b00-71ff-4656-9447-aca370088402`. A Telnyx number **must** have a
+messaging profile attached or sends fail.
 
 Rules:
 
 - **Notification failure must never fail the request.** The row is already
   committed; the customer has already been told it succeeded. Wrap both sends and
-  log failures — never let a Twilio outage produce a 503 on a lead that was saved.
+  log failures — never let a Telnyx outage produce a 503 on a lead that was saved.
 - Recipients come from the `dealers` row (`phone`, `email`), not from config, so
   each dealer is notified on their own channels.
 - SMS body stays under 160 chars: `New lead: {first} {last} — {W}x{L} {type}, ${total}. {phone}`
@@ -391,13 +399,13 @@ matching TejasMex pricing.**
 
 ### 6.2 Other open items
 
-- **Dealer notification.** Resolved — see §3.4 (Twilio SMS + Resend email). Note
+- **Dealer notification.** Resolved — see §3.4 (Telnyx SMS + Resend email). Note
   the reference product routes leads into HubSpot; a CRM integration is not in
   scope here but is the natural successor.
-- **Twilio account.** Must be created by the owner; account creation is not
-  something the assistant performs. This is a hard prerequisite for §3.4's SMS
-  channel and blocks that half of the notification work until credentials exist.
-  The email channel ships independently of it.
+- **Telnyx account.** Resolved — account, API key, and number `+18665120244` are
+  provisioned and verified against the live API. Credentials live in `.env.local`
+  (gitignored) and must also be added to Vercel via `vercel env add` before
+  production deploy.
 - **Rate limiting.** `POST /api/quote` is unauthenticated and writes to a database.
   Needs at least IP-based limiting before public traffic.
 - **Pricing float drift.** `PricingResult` uses floating-point dollars. Not changed

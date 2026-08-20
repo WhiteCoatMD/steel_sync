@@ -6,7 +6,7 @@
 
 **Architecture:** Two independent halves. The **geometry half** (Tasks 1-3) adds a Vitest harness and a pure-function `wallFrame()` module that becomes the single source of truth for wall position/orientation, then migrates `leanTo`, `openings`, and `trim` onto it. The **lead-path half** (Tasks 4-10) replaces a filesystem write that cannot work on Vercel with Neon Postgres, makes quote submission report failure honestly, wires per-dealer pricing, and notifies the dealer by SMS and email. The halves share no code and may be executed in either order; geometry is sequenced first because it has zero infrastructure dependencies and can proceed while Neon is being provisioned.
 
-**Tech Stack:** Next.js 15 (App Router), React 19, TypeScript 5.7, three.js / @react-three/fiber, zustand 5, Vitest, Neon Postgres (`@neondatabase/serverless`), Resend, Twilio.
+**Tech Stack:** Next.js 15 (App Router), React 19, TypeScript 5.7, three.js / @react-three/fiber, zustand 5, Vitest, Neon Postgres (`@neondatabase/serverless`), Resend, Telnyx (REST).
 
 **Spec:** `docs/superpowers/specs/2026-08-19-lead-path-and-wallframe-design.md`
 
@@ -35,7 +35,7 @@
 - `lib/db/dealers.ts` — dealer read + row mapping
 - `lib/db/quotes.ts` — quote insert
 - `lib/notify/index.ts` — `notifyNewLead`, orchestrates both channels
-- `lib/notify/sms.ts` — Twilio
+- `lib/notify/sms.ts` — Telnyx (REST, no SDK)
 - `lib/notify/email.ts` — Resend
 - `scripts/migrate.ts` — applies `schema.sql`
 - `scripts/seed-dealer.ts` — seeds the `tejasmex` row
@@ -1460,23 +1460,30 @@ git commit -m "feat: email the dealer when a lead arrives (Resend)"
 
 ---
 
-## Task 10: SMS notification via Twilio
+## Task 10: SMS notification via Telnyx
 
 **Files:**
 - Create: `lib/notify/sms.ts`, `lib/notify/__tests__/sms.test.ts`
 
 **Interfaces:**
-- Produces: `sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<void>`; `buildSmsBody(dealer, lead): string`
+- Produces: `sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<void>`; `buildSmsBody(lead: Lead): string`
 
-**Prerequisite (operator, cannot be automated):** create a Twilio account and buy a number at <https://twilio.com>. Account creation is not performed by the assistant. Then:
+**Prerequisite — already satisfied.** The Telnyx account, API key, and sending
+number are provisioned and verified against the live API (`GET /v2/phone_numbers`
+returned 200 with three active numbers). `TELNYX_API_KEY` and
+`TELNYX_FROM_NUMBER=+18665120244` are already present in `.env.local`.
+
+No npm dependency is required — Telnyx is called over plain REST.
+
+Before production deploy, push the credentials to Vercel:
 
 ```bash
-npm i twilio
-vercel env add TWILIO_ACCOUNT_SID
-vercel env add TWILIO_AUTH_TOKEN
-vercel env add TWILIO_FROM_NUMBER
-vercel env pull .env.local --yes
+vercel env add TELNYX_API_KEY
+vercel env add TELNYX_FROM_NUMBER
 ```
+
+**Note:** the sending number must have a messaging profile attached or Telnyx
+rejects the send. `+18665120244` has profile `40019b00-71ff-4656-9447-aca370088402`.
 
 - [ ] **Step 1: Write the failing test for the message body**
 
@@ -1518,11 +1525,16 @@ Expected: FAIL — `Cannot find module '../sms'`
 Create `lib/notify/sms.ts`:
 
 ```ts
-import twilio from 'twilio';
 import type { Lead } from './index';
 import type { DealerSettings } from '../building/types';
 
-/** Kept under 160 chars so it never splits into billed segments. */
+const TELNYX_MESSAGES_URL = 'https://api.telnyx.com/v2/messages';
+
+/**
+ * Kept under 160 chars so it never splits into multiple billed segments.
+ * The em dash is a single GSM-7 character; avoid emoji, which force UCS-2
+ * and halve the segment limit to 70.
+ */
 export function buildSmsBody(lead: Lead): string {
   const b = lead.config.building;
   const c = lead.customer;
@@ -1531,19 +1543,27 @@ export function buildSmsBody(lead: Lead): string {
 }
 
 export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<void> {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_FROM_NUMBER;
-  if (!sid || !token || !from || !dealer.phone) {
+  const key = process.env.TELNYX_API_KEY;
+  const from = process.env.TELNYX_FROM_NUMBER;
+  if (!key || !from || !dealer.phone) {
     console.warn('[notify] sms not configured; skipping');
     return;
   }
 
-  await twilio(sid, token).messages.create({
-    from,
-    to: dealer.phone,
-    body: buildSmsBody(lead),
+  const res = await fetch(TELNYX_MESSAGES_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from, to: dealer.phone, text: buildSmsBody(lead) }),
   });
+
+  if (!res.ok) {
+    // Read the body for the reason, but never let the key reach a log line.
+    const detail = await res.text().catch(() => '');
+    throw new Error(`Telnyx send failed: ${res.status} ${detail.slice(0, 200)}`);
+  }
 }
 ```
 
@@ -1566,8 +1586,8 @@ Run: `npm test`
 Expected: all tests PASS.
 
 ```bash
-git add lib/notify/sms.ts lib/notify/__tests__/sms.test.ts package.json package-lock.json
-git commit -m "feat: text the dealer when a lead arrives (Twilio)"
+git add lib/notify/sms.ts lib/notify/__tests__/sms.test.ts
+git commit -m "feat: text the dealer when a lead arrives (Telnyx)"
 ```
 
 ---
@@ -1601,5 +1621,5 @@ No spec requirement is unimplemented.
 - Spec §5 case 4 (openings within wall bounds) is covered by `openingFitsOnWall` in Task 3 rather than a dedicated new test file.
 
 **Open risks carried into execution:**
-- Task 10 is blocked until a Twilio account exists. Tasks 1-9 do not depend on it, and `sendLeadSms` no-ops safely when unconfigured, so the plan completes without it.
+- Telnyx credentials are verified and in place, so Task 10 has no external blocker. `sendLeadSms` still no-ops safely when env vars are absent, so Tasks 1-9 run independently.
 - The seeded `tejasmex` pricing is placeholder data, flagged `_placeholder: true`. **No quote may be presented as a real TejasMex price until spec §6.1 is resolved.**
