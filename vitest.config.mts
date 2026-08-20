@@ -7,6 +7,6 @@ export default defineConfig({
     include: ['**/__tests__/**/*.test.ts'],
   },
   resolve: {
-    alias: { '@': path.resolve(__dirname, '.') },
+    alias: { '@': path.resolve(import.meta.dirname, '.') },
   },
 });
