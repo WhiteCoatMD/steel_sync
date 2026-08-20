@@ -37,7 +37,16 @@ export async function POST(req: NextRequest) {
   }
 
   // Never trust the client's total — recompute from the persisted config.
-  const pricing = calculatePrice(body, dealer.pricing);
+  // The presence check above is shallow; calculatePrice can still throw on a
+  // malformed-but-present building/colors shape. That must not escape as an
+  // uncaught 500 — this endpoint is public and unauthenticated.
+  let pricing;
+  try {
+    pricing = calculatePrice(body, dealer.pricing);
+  } catch (err) {
+    console.error('[quote] pricing failed', err);
+    return NextResponse.json({ error: 'Invalid building configuration' }, { status: 400 });
+  }
   const id = quoteId();
 
   try {
