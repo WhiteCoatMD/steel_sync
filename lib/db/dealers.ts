@@ -37,14 +37,62 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
   // on the operation. Only `0` and `false` must survive untouched, which is
   // why this checks strict (in)equality rather than falsy-ness (`||` would
   // wrongly replace a deliberate `0` with the default).
+  //
+  // installPricePerSqft does NOT use this helper — see scalarPreserveNull
+  // below. Its type is `number | null`, and `null` there is a meaningful,
+  // deliberately-entered value ("this dealer does not offer installation"),
+  // not a stand-in for "missing data." Collapsing it to the default would
+  // bill a customer for a service the dealer doesn't provide.
   const scalar = <T>(key: keyof DealerPricingRules, fallback: T): T => {
     const v = d[key];
     return v !== undefined && v !== null ? (v as T) : fallback;
   };
 
+  // Like scalar(), but only treats `undefined` (the key genuinely absent
+  // from the dealer's JSON) as "missing" — an explicit `null` is preserved
+  // as-is rather than replaced with the default. Used solely for
+  // installPricePerSqft.
+  const scalarPreserveNull = <T>(key: keyof DealerPricingRules, fallback: T): T => {
+    const v = d[key];
+    return v !== undefined ? (v as T) : fallback;
+  };
+
+  // Merge one level deep, and — inside that level — treat a `null` LEAF the
+  // same as an absent one: fall back to the default for that specific key
+  // rather than let `null` reach calculatePrice's arithmetic. There it
+  // wouldn't throw (`null` coerces to 0 in `+`/`*`), so `insulationPerSqft`
+  // and `certificationPrices` leaves in particular would otherwise silently
+  // price that line item at $0 instead of the dealer's default rate —
+  // undercharging with no signal, not a crash, but a real money bug either
+  // way. A leaf of `0` is a legitimate "no charge" value and must still
+  // survive untouched.
+  //
+  // `openingPrices` is the one open-ended map here ({[key: string]: number})
+  // — a DB key may have no default counterpart at all. For a key that is
+  // null in the DB and absent from the defaults, the key is dropped
+  // entirely rather than kept as null: calculatePrice already treats a
+  // missing opening price as "estimate by area"
+  // (`if (price != null) ... else estimate`), so dropping the key is what
+  // lands it in that branch.
   const mergeNested = <T extends object>(key: keyof DealerPricingRules, fallback: T): T => {
     const v = d[key];
-    return isPlainObject(v) ? ({ ...fallback, ...v } as T) : { ...fallback };
+    const src = isPlainObject(v) ? v : {};
+    const result: Record<string, unknown> = { ...(fallback as Record<string, unknown>) };
+    for (const leafKey of Object.keys(src)) {
+      const leaf = src[leafKey];
+      if (leaf === null || leaf === undefined) {
+        // Null/undefined leaf: if the key has a default, `result[leafKey]`
+        // already holds it from the spread above — leave it untouched. If
+        // the key has no default (only possible for openingPrices), it was
+        // never in the spread, so drop it rather than let it hold null.
+        if (!(leafKey in (fallback as Record<string, unknown>))) {
+          delete result[leafKey];
+        }
+        continue;
+      }
+      result[leafKey] = leaf;
+    }
+    return result as T;
   };
 
   const arrayOrDefault = <T>(key: keyof DealerPricingRules, fallback: T[]): T[] => {
@@ -60,7 +108,7 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
     leanToPricePerSqft: scalar('leanToPricePerSqft', DEFAULT_PRICING_RULES.leanToPricePerSqft),
     insulationPerSqft: mergeNested('insulationPerSqft', DEFAULT_PRICING_RULES.insulationPerSqft),
     anchoringPrices: mergeNested('anchoringPrices', DEFAULT_PRICING_RULES.anchoringPrices),
-    installPricePerSqft: scalar('installPricePerSqft', DEFAULT_PRICING_RULES.installPricePerSqft),
+    installPricePerSqft: scalarPreserveNull('installPricePerSqft', DEFAULT_PRICING_RULES.installPricePerSqft),
     certificationPrices: mergeNested('certificationPrices', DEFAULT_PRICING_RULES.certificationPrices),
     deliveryZones: arrayOrDefault('deliveryZones', DEFAULT_PRICING_RULES.deliveryZones),
     markupPercent: scalar('markupPercent', DEFAULT_PRICING_RULES.markupPercent),

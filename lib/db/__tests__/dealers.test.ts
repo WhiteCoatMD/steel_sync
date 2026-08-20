@@ -74,27 +74,76 @@ describe('mergePricingRules', () => {
     expect(merged.basePricePerSqft).toBe(0);
   });
 
-  it('applies the null-is-absent rule uniformly, including installPricePerSqft', () => {
-    // installPricePerSqft is `number | null` in the type — a dealer could
-    // plausibly mean "we don't offer install" by setting it to null.
-    // mergePricingRules cannot distinguish that intent from a malformed or
-    // accidentally-null value in hand-typed JSONB, so per the null-is-absent
-    // rule this now falls back to the default like every other scalar.
+  it('preserves an explicit null installPricePerSqft, which means the dealer offers no installation', () => {
+    // installPricePerSqft is `number | null` in the type, and unlike every
+    // other scalar, null there is not "missing data" — it's the deliberate
+    // value meaning "this dealer does not offer installation."
+    // calculatePrice only charges for install when
+    // `options.installation === 'included' && rules.installPricePerSqft != null`,
+    // so collapsing a dealer's explicit null to the default $/sqft would
+    // bill a customer for a service that dealer doesn't provide. Only
+    // `undefined` (the key genuinely absent from the DB JSON) should fall
+    // back to the default for this one field.
     const merged = mergePricingRules({ installPricePerSqft: null });
+    expect(merged.installPricePerSqft).toBeNull();
+  });
+
+  it('falls back to the default installPricePerSqft when the key is undefined (genuinely absent)', () => {
+    const merged = mergePricingRules({ installPricePerSqft: undefined });
     expect(merged.installPricePerSqft).toBe(DEFAULT_PRICING_RULES.installPricePerSqft);
   });
 
-  it('end-to-end: calculatePrice returns a finite number for a rules object with every scalar explicitly null', () => {
+  it('end-to-end: calculatePrice returns a finite number for a rules object with every non-install scalar explicitly null', () => {
     const merged = mergePricingRules({
       basePricePerSqft: null,
       heightModifierPerFt: null,
       leanToPricePerSqft: null,
-      installPricePerSqft: null,
       markupPercent: null,
       taxRate: null,
     });
     const result = calculatePrice(createDefaultConfig('x'), merged);
     expect(Number.isFinite(result.total)).toBe(true);
+  });
+
+  it('end-to-end: calculatePrice still returns a finite number when installPricePerSqft is preserved as null', () => {
+    const merged = mergePricingRules({ installPricePerSqft: null });
+    const config = createDefaultConfig('x');
+    const withInstall = { ...config, options: { ...config.options, installation: 'included' as const } };
+    const result = calculatePrice(withInstall, merged);
+    expect(Number.isFinite(result.total)).toBe(true);
+    expect(result.installationFee).toBe(0);
+  });
+
+  it('falls back to the default roof insulation rate when insulationPerSqft.roof is null', () => {
+    const merged = mergePricingRules({ insulationPerSqft: { roof: null } });
+    expect(merged.insulationPerSqft.roof).toBe(DEFAULT_PRICING_RULES.insulationPerSqft.roof);
+    expect(merged.insulationPerSqft.walls).toBe(DEFAULT_PRICING_RULES.insulationPerSqft.walls);
+  });
+
+  it('keeps an explicit 0 insulationPerSqft.roof (a legitimate free rate, not "missing")', () => {
+    const merged = mergePricingRules({ insulationPerSqft: { roof: 0 } });
+    expect(merged.insulationPerSqft.roof).toBe(0);
+  });
+
+  it('drops an openingPrices key that is null in the DB and has no default counterpart', () => {
+    const merged = mergePricingRules({ openingPrices: { walkin_5x9: null } });
+    expect('walkin_5x9' in merged.openingPrices).toBe(false);
+
+    // calculatePrice must not throw, and must land in its "estimate by
+    // area" branch for that opening (the same branch a genuinely-missing
+    // key already takes via `if (price != null) ... else estimate`).
+    const config = createDefaultConfig('x');
+    const withOpening = {
+      ...config,
+      openings: [
+        { id: 'o1', type: 'walkin' as const, widthFt: 5, heightFt: 9, wall: 'front' as const, positionFt: 2, color: null },
+      ],
+    };
+    expect(() => calculatePrice(withOpening, merged)).not.toThrow();
+    const result = calculatePrice(withOpening, merged);
+    expect(Number.isFinite(result.openingsTotal)).toBe(true);
+    const lineItem = result.lineItems.find(li => li.detail === 'Estimated');
+    expect(lineItem).toBeDefined();
   });
 });
 
