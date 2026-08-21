@@ -6,7 +6,8 @@ import { OrbitControls, ContactShadows, AdaptiveDpr } from '@react-three/drei';
 import * as THREE from 'three';
 import { useDesignerStore } from '@/lib/store/designerStore';
 import { buildBuilding, type BuildingResult } from '@/lib/building/buildBuilding';
-import type { Opening, BuildingConfig } from '@/lib/building/types';
+import type { Opening, BuildingConfig, BuildingDimensions } from '@/lib/building/types';
+import { buildRoofProfile } from '@/lib/building/roof';
 
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -242,7 +243,7 @@ function BuildingModel() {
       {isOpen && <FrameMeshes result={result} />}
       {!isOpen && <SideWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
       {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
-      <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} roofStyle={config.building.roofStyle} />
+      <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} building={config.building} />
       <TrimMeshes result={result} color={config.colors.trim.hex} />
       <LeanToMeshes result={result} />
     </group>
@@ -755,15 +756,14 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
 // ROOF — driven by buildBuilding().roof
 // ═══════════════════════════════════════════════════════════════
 
-function RoofMeshes({ result, color, panelDir, roofStyle }: {
+function RoofMeshes({ result, color, panelDir, building }: {
   result: BuildingResult; color: string; panelDir: 'horizontal' | 'vertical';
-  roofStyle: 'regular' | 'aframe' | 'vertical';
+  building: BuildingDimensions;
 }) {
-  const { width: W, length: L, height: H, rise } = result.dimensions;
+  const { width: W, length: L, rise } = result.dimensions;
   const ovh = ROOF_OVERHANG;
   const slopeLen = Math.sqrt((W / 2) * (W / 2) + rise * rise);
   const roofLen = L + ovh * 2;
-  const isRegular = roofStyle === 'regular';
 
   // UV: U = across slope (eave→ridge), V = along building length (front→back)
   // Vertical panels: ribs run eave-to-ridge (along U) → corrugation repeats along V
@@ -773,68 +773,18 @@ function RoofMeshes({ result, color, panelDir, roofStyle }: {
   const ribsV = panelDir === 'vertical' ? roofLen * RIBS_PER_FOOT : 1;
   const normalMap = usePanelNormal(roofNormalDir, ribsU, ribsV);
 
-  // Build roof geometry directly — no rotation matrices.
-  // Regular style: eave edge curves down 6" (same ridge height as A-Frame).
+  // Vertex/UV/index generation lives in lib/building/roof.ts (buildRoofProfile)
+  // as a pure, testable function — this component only turns that data into
+  // a BufferGeometry.
   const geometry = useMemo(() => {
+    const profile = buildRoofProfile(building, ovh);
     const geo = new THREE.BufferGeometry();
-    const hw = W / 2;
-    const zF = -ovh;
-    const zB = L + ovh;
-
-    // Eave behavior per roof style:
-    // Regular: roof edge at wall face (x=0, x=W), curves down 6" along wall
-    // A-Frame/Vertical: roof extends 6" past wall (eave overhang)
-    const eaveOvh = isRegular ? 0 : 0.5; // side overhang past wall
-    const DROOP = 0.5; // 6" curve on regular style
-
-    if (!isRegular) {
-      // A-Frame / Vertical: straight slopes with 6" eave overhang past walls
-      const verts = new Float32Array([
-        -eaveOvh, H, zF,   -eaveOvh, H, zB,   hw, H+rise, zB,   hw, H+rise, zF,
-        W+eaveOvh, H, zF,  W+eaveOvh, H, zB,  hw, H+rise, zB,   hw, H+rise, zF,
-      ]);
-      const uvs = new Float32Array([
-        0,0, 0,1, 1,1, 1,0,
-        0,0, 0,1, 1,1, 1,0,
-      ]);
-      geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
-      geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-      geo.setIndex([0,2,1, 0,3,2, 4,5,6, 4,6,7]);
-    } else {
-      // Regular: roof at wall edge, curves down 6" along the wall face
-      const curveFrac = 0.12;
-      const tX = hw * curveFrac;
-      const tY = rise * curveFrac;
-      const verts = new Float32Array([
-        // Left slope: eave(0,1) → transition(2,3) → ridge(4,5)
-        0,         H - DROOP,     zF,
-        0,         H - DROOP,     zB,
-        tX,        H + tY,        zF,
-        tX,        H + tY,        zB,
-        hw,        H + rise,      zF,
-        hw,        H + rise,      zB,
-        // Right slope: eave(6,7) → transition(8,9) → ridge(10,11)
-        W,         H - DROOP,     zF,
-        W,         H - DROOP,     zB,
-        W - tX,    H + tY,        zF,
-        W - tX,    H + tY,        zB,
-        hw,        H + rise,      zF,
-        hw,        H + rise,      zB,
-      ]);
-      const uvs = new Float32Array([
-        0,0, 0,1, curveFrac,0, curveFrac,1, 1,0, 1,1,
-        0,0, 0,1, curveFrac,0, curveFrac,1, 1,0, 1,1,
-      ]);
-      geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
-      geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-      geo.setIndex([
-        0,3,1, 0,2,3,   2,5,3, 2,4,5,
-        6,7,9, 6,9,8,   8,9,11, 8,11,10,
-      ]);
-    }
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(profile.positions), 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(profile.uvs), 2));
+    geo.setIndex(profile.indices);
     geo.computeVertexNormals();
     return geo;
-  }, [W, L, H, rise, ovh, isRegular]);
+  }, [building, ovh]);
 
   useEffect(() => {
     return () => { geometry.dispose(); };

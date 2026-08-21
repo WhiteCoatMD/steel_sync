@@ -42,34 +42,44 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   const roofLen = L + ovh * 2; // total roof length along Z
 
   const pieces: TrimPiece[] = [];
+  const isRegular = config.roofStyle === 'regular';
+  const isVertical = config.roofStyle === 'vertical';
 
   // ── Ridge cap — sits on top of roof at the peak ──
+  // Vertical gets a visibly larger ridge cap: standing-seam vertical roofs
+  // read as the premium style, and a prominent cap is the cheapest visual
+  // cue for that without touching price.
+  const ridgeScale = isVertical ? 1.8 : 1;
   pieces.push({
     id: 'ridge',
     category: 'ridge',
-    position: [halfW, H + rise + T / 2, L / 2],
-    size: [T * 4, T, roofLen],
+    position: [halfW, H + rise + (T * ridgeScale) / 2, L / 2],
+    size: [T * 4 * ridgeScale, T * ridgeScale, roofLen],
   });
 
   // ── Eave trim (left + right) — runs along the bottom edge of the roof ──
+  // Regular style has no fascia here: the wrapped panel *is* the edge, and
+  // that absence (vs. aframe/vertical) is what reads as the economy profile.
   // Derived from wallFrame: a fascia strip proud of each non-gable wall's
   // outer face, spanning exactly that wall's length (not the roof's overhang-
   // extended length — that mismatch was the source of the eave z-fighting seam).
-  const EAVE_WALLS: WallId[] = ['left', 'right'];
-  for (const wall of EAVE_WALLS) {
-    const f = wallFrame(wall, config);
-    const start = pointOnWall(f, 0, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
-    const end = pointOnWall(f, f.lengthFt, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
-    pieces.push({
-      id: `eave-${wall}`,
-      category: 'eave',
-      position: [
-        (start[0] + end[0]) / 2,
-        (start[1] + end[1]) / 2,
-        (start[2] + end[2]) / 2,
-      ],
-      size: [T, T * 2, f.lengthFt],
-    });
+  if (!isRegular) {
+    const EAVE_WALLS: WallId[] = ['left', 'right'];
+    for (const wall of EAVE_WALLS) {
+      const f = wallFrame(wall, config);
+      const start = pointOnWall(f, 0, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
+      const end = pointOnWall(f, f.lengthFt, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
+      pieces.push({
+        id: `eave-${wall}`,
+        category: 'eave',
+        position: [
+          (start[0] + end[0]) / 2,
+          (start[1] + end[1]) / 2,
+          (start[2] + end[2]) / 2,
+        ],
+        size: [T, T * 2, f.lengthFt],
+      });
+    }
   }
 
   // ── Corner trim (4 vertical wall corners) ──
@@ -123,30 +133,34 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
 
   // ── Gable rake trim (front + back, both slopes) ──
   // These follow the roof edge on the gable ends (front z=0, back z=L)
-  // Positioned at the roof surface, running along the slope
-  const gableZPositions: [number, string][] = [
-    [-ovh, 'front'],
-    [L + ovh, 'back'],
-  ];
+  // Positioned at the roof surface, running along the slope.
+  // Regular style has no rake trim, matching its bare-eave treatment above —
+  // the wrapped panel edge is the whole point of the economy look.
+  if (!isRegular) {
+    const gableZPositions: [number, string][] = [
+      [-ovh, 'front'],
+      [L + ovh, 'back'],
+    ];
 
-  gableZPositions.forEach(([z, face]) => {
-    // Left rake — runs from eave (x=0, y=H) up to ridge (x=W/2, y=H+rise)
-    pieces.push({
-      id: `rake-L-${face}`,
-      category: 'rake',
-      position: [halfW / 2, H + rise / 2, z],
-      size: [slopeLen + T, T * 1.5, T],
-      rotation: [0, 0, angle],
+    gableZPositions.forEach(([z, face]) => {
+      // Left rake — runs from eave (x=0, y=H) up to ridge (x=W/2, y=H+rise)
+      pieces.push({
+        id: `rake-L-${face}`,
+        category: 'rake',
+        position: [halfW / 2, H + rise / 2, z],
+        size: [slopeLen + T, T * 1.5, T],
+        rotation: [0, 0, angle],
+      });
+      // Right rake — runs from ridge down to eave (x=W, y=H)
+      pieces.push({
+        id: `rake-R-${face}`,
+        category: 'rake',
+        position: [W - halfW / 2, H + rise / 2, z],
+        size: [slopeLen + T, T * 1.5, T],
+        rotation: [0, 0, -angle],
+      });
     });
-    // Right rake — runs from ridge down to eave (x=W, y=H)
-    pieces.push({
-      id: `rake-R-${face}`,
-      category: 'rake',
-      position: [W - halfW / 2, H + rise / 2, z],
-      size: [slopeLen + T, T * 1.5, T],
-      rotation: [0, 0, -angle],
-    });
-  });
+  }
 
   return { pieces };
 }
