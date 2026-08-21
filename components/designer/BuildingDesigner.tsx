@@ -3,8 +3,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useDesignerStore } from '@/lib/store/designerStore';
-import { STANDARD_COLORS, findColor, createLeanTo } from '@/lib/building/defaultConfig';
+import { STANDARD_COLORS, findColor, createLeanTo, DEFAULT_PRICING_RULES } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
+import { wallFrame } from '@/lib/building/wallFrame';
+import { availableSizes } from '@/lib/building/openingSizes';
 import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 
@@ -435,11 +437,13 @@ function ColorPicker({ label, current, onChange }: {
 
 function OpeningSection() {
   const openings = useDesignerStore((s) => s.config!.openings);
+  const building = useDesignerStore((s) => s.config!.building);
   const addOpening = useDesignerStore((s) => s.addOpening);
   const removeOpening = useDesignerStore((s) => s.removeOpening);
   const updateOpening = useDesignerStore((s) => s.updateOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
   const selectOpening = useDesignerStore((s) => s.selectOpening);
+  const pricingRules = useDesignerStore((s) => s.dealerSettings?.pricing ?? DEFAULT_PRICING_RULES);
 
   const handleAdd = useCallback((type: Opening['type']) => {
     const id = `${type}_${Date.now()}`;
@@ -458,7 +462,9 @@ function OpeningSection() {
       {openings.length === 0 && (
         <p className="mb-2 text-xs text-gray-400">No openings added yet.</p>
       )}
-      {openings.map(op => (
+      {openings.map(op => {
+        const wallLengthFt = wallFrame(op.wall, building).lengthFt;
+        return (
         <div key={op.id} onClick={() => selectOpening(op.id)}
           className={`mb-2 flex cursor-pointer items-center gap-2 rounded-md border p-2 transition ${
             selectedId === op.id ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-400' : 'border-gray-200 hover:border-gray-300'
@@ -468,7 +474,20 @@ function OpeningSection() {
               {op.type === 'rollup' ? 'Roll-Up Door' : op.type === 'walkin' ? 'Walk-In Door' : op.type === 'window' ? 'Window' : 'Frame-Out'}
             </div>
             <div className="mt-0.5 flex gap-2 text-[10px] text-gray-500">
-              <span>{op.widthFt}x{op.heightFt}ft</span>
+              <select
+                value={`${op.widthFt}x${op.heightFt}`}
+                onChange={e => {
+                  const [widthFt, heightFt] = e.target.value.split('x').map(Number);
+                  updateOpening(op.id, { widthFt, heightFt });
+                }}
+                className="bg-transparent text-[10px]"
+              >
+                {availableSizes(op.type, pricingRules).map(size => (
+                  <option key={`${size.widthFt}x${size.heightFt}`} value={`${size.widthFt}x${size.heightFt}`}>
+                    {size.widthFt}x{size.heightFt} ft
+                  </option>
+                ))}
+              </select>
               <span>|</span>
               <select
                 value={op.wall}
@@ -489,6 +508,7 @@ function OpeningSection() {
                   onChange={e => updateOpening(op.id, { positionFt: Number(e.target.value) })}
                   className="w-10 bg-transparent text-[10px]"
                   min={0}
+                  max={Math.max(0, wallLengthFt - op.widthFt)}
                   step={1}
                 />
                 ft
@@ -505,7 +525,8 @@ function OpeningSection() {
             </svg>
           </button>
         </div>
-      ))}
+        );
+      })}
 
       {/* Add buttons */}
       <div className="mt-2 grid grid-cols-2 gap-2">

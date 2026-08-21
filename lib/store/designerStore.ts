@@ -39,6 +39,22 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
 }
 
 /**
+ * Clamp an opening's positionFt to its wall's extent and its heightFt to the
+ * building's leg height, mirroring clampLeanToLength above. Applied on every
+ * write (position, size, or wall change) so the stored config never holds an
+ * opening hanging off the end of its wall or taller than the wall — which
+ * would agree with neither the rendered geometry nor the quote.
+ */
+function clampOpening(opening: Opening, building: BuildingDimensions): Opening {
+  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
+  const maxPositionFt = Math.max(0, wallLengthFt - opening.widthFt);
+  const positionFt = Math.min(Math.max(opening.positionFt, 0), maxPositionFt);
+  const heightFt = Math.min(opening.heightFt, building.legHeightFt);
+  if (positionFt === opening.positionFt && heightFt === opening.heightFt) return opening;
+  return { ...opening, positionFt, heightFt };
+}
+
+/**
  * Is this decoded blob actually a design?
  *
  * `loadDesign` used to return `true` for any base64 that JSON-parsed, so
@@ -144,6 +160,9 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       // Building may have shrunk — re-clamp any lean whose stored length now
       // overruns its wall, so geometry and pricing keep agreeing.
       leanTos: config.leanTos.map(lt => clampLeanToLength(lt, nextBuilding)),
+      // Same for openings: a narrower/shorter wall or a lower leg height can
+      // strand an existing opening past the wall's end or above its height.
+      openings: config.openings.map(o => clampOpening(o, nextBuilding)),
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -193,7 +212,11 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     if (!config) return;
     const next: BuildingConfig = {
       ...config,
-      openings: config.openings.map(o => o.id === id ? { ...o, ...partial } : o),
+      // Clamp after merging so a size or wall change re-clamps position (and
+      // height) too, not just a direct positionFt/heightFt write.
+      openings: config.openings.map(o =>
+        o.id === id ? clampOpening({ ...o, ...partial }, config.building) : o
+      ),
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -246,6 +269,9 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       // live via /api/ai-config. Without it the config quotes a lean-to
       // longer than buildLeanTo() renders.
       next.leanTos = next.leanTos.map(lt => clampLeanToLength(lt, next.building));
+      // Same reasoning for openings: an AI resize can strand an existing
+      // opening past its wall's end or above the new leg height.
+      next.openings = next.openings.map(o => clampOpening(o, next.building));
     }
 
     // Apply colors
@@ -261,7 +287,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
     // Replace openings
     if (ai.openings && Array.isArray(ai.openings)) {
-      next.openings = ai.openings.map((o: any, i: number) => ({
+      next.openings = ai.openings.map((o: any, i: number) => clampOpening({
         id: `ai_${Date.now()}_${i}`,
         type: o.type || 'rollup',
         widthFt: o.widthFt || 10,
@@ -269,7 +295,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
         wall: o.wall || 'front',
         positionFt: o.positionFt || 3,
         color: null,
-      }));
+      }, next.building));
     }
 
     set({ config: withPricing(next, dealerSettings) });

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useDesignerStore } from '../designerStore';
-import type { LeanTo } from '../../building/types';
+import type { LeanTo, Opening } from '../../building/types';
 
 const WHITE = { id: 'white', hex: '#FFFFFF' };
 
@@ -166,5 +166,74 @@ describe('designerStore loadDesign', () => {
 
   it('returns false for a string that is not valid base64 JSON', () => {
     expect(useDesignerStore.getState().loadDesign('not-base64-at-all!!')).toBe(false);
+  });
+});
+
+// updateOpening previously wrote widthFt/heightFt/wall/positionFt straight
+// through, so widening an opening or moving it to a shorter wall could leave
+// it hanging off the end of its wall (or taller than the building), agreeing
+// with neither the rendered geometry nor a sane quote.
+describe('designerStore opening clamping', () => {
+  beforeEach(() => {
+    useDesignerStore.getState().initialize('test-dealer');
+  });
+
+  function addOpening(overrides: Partial<Opening>): string {
+    const id = 'op1';
+    useDesignerStore.getState().addOpening({
+      id, type: 'rollup', widthFt: 10, heightFt: 8, wall: 'front', positionFt: 0, color: null,
+      ...overrides,
+    });
+    return id;
+  }
+
+  it('widening an opening near the end of its wall pulls its position back in', () => {
+    // Default building: front/back wall length is 24ft (widthFt).
+    const id = addOpening({ wall: 'front', widthFt: 10, positionFt: 14 }); // ends exactly at 24
+    useDesignerStore.getState().updateOpening(id, { widthFt: 12 });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.widthFt).toBe(12);
+    expect(stored.positionFt).toBe(12); // 24 - 12
+  });
+
+  it('moving an opening to a shorter wall re-clamps its position', () => {
+    // Default building: left/right wall length is 30ft (lengthFt).
+    const id = addOpening({ wall: 'left', widthFt: 10, positionFt: 20 }); // ends exactly at 30
+    useDesignerStore.getState().updateOpening(id, { wall: 'front' }); // front/back is 24ft
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.wall).toBe('front');
+    expect(stored.positionFt).toBe(14); // 24 - 10
+  });
+
+  it('leaves a valid opening untouched by an unrelated update', () => {
+    const id = addOpening({ wall: 'front', widthFt: 10, positionFt: 5, heightFt: 8 });
+    useDesignerStore.getState().updateOpening(id, { color: { id: 'black', hex: '#000' } });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.positionFt).toBe(5);
+    expect(stored.widthFt).toBe(10);
+    expect(stored.heightFt).toBe(8);
+  });
+
+  it('clamps heightFt above the building leg height', () => {
+    // Default building legHeightFt is 10.
+    const id = addOpening({ heightFt: 8 });
+    useDesignerStore.getState().updateOpening(id, { heightFt: 14 });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.heightFt).toBe(10);
+  });
+
+  it('re-clamps an existing opening when the building shrinks below its wall', () => {
+    // Front/back wall length starts at 24ft (widthFt).
+    const id = addOpening({ wall: 'front', widthFt: 10, positionFt: 14 }); // ends exactly at 24
+    useDesignerStore.getState().updateBuilding({ widthFt: 18 });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.positionFt).toBe(8); // 18 - 10
+  });
+
+  it('re-clamps an existing opening\'s height when the building leg height shrinks', () => {
+    const id = addOpening({ heightFt: 10 });
+    useDesignerStore.getState().updateBuilding({ legHeightFt: 7 });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
+    expect(stored.heightFt).toBe(7);
   });
 });
