@@ -8,7 +8,7 @@ import { wallFrame, pointOnWall } from './wallFrame';
 
 export interface LeanToMesh {
   id: string;
-  part: 'roof' | 'wall-outer' | 'wall-left' | 'wall-right' | 'slab';
+  part: 'roof' | 'wall-outer' | 'wall-left' | 'wall-right' | 'slab' | 'post';
   position: [number, number, number];
   size: [number, number, number];
   rotation?: [number, number, number];
@@ -30,6 +30,14 @@ export interface LeanToResult {
 
 const SLAB_THICKNESS = 0.25;
 const WALL_THICKNESS = 0.08;
+/** Square tube-steel footprint for lean-to support posts (~3in). */
+const POST_SIZE = 0.25;
+/** Industry-standard frame spacing for the reference product: 5' OC. */
+const MAX_POST_BAY_FT = 5;
+/** Fallback frame/trim colour when the caller doesn't supply the building's
+ *  actual trim colour (e.g. tests calling buildLeanTo directly). Matches the
+ *  main building's frame member colour in ThreeScene.tsx. */
+const DEFAULT_FRAME_COLOR = '#d8d8d4';
 
 // ─── Builder ───────────────────────────────────────────────
 
@@ -44,6 +52,7 @@ const WALL_THICKNESS = 0.08;
 export function buildLeanTo(
   leanTo: LeanTo,
   parentBuilding: BuildingDimensions,
+  trimColorHex: string = DEFAULT_FRAME_COLOR,
 ): LeanToResult {
   const { groupPosition, groupRotationY, extentFt } = computeAttachment(leanTo, parentBuilding);
 
@@ -65,6 +74,20 @@ export function buildLeanTo(
     size: [extentL + 0.5, SLAB_THICKNESS, projectionW + 0.5],
     color: '#b5b5ad',
   });
+
+  // Support posts run along the OUTER edge (Z = projectionW), ground to the
+  // outer eave height. The parent-wall side needs none — the building carries
+  // that side. Emitted unconditionally: an enclosed lean still stands on
+  // posts, the walls just hide them, and this keeps the roof from floating
+  // if `walls` is ever toggled.
+  for (const x of postXPositions(extentL)) {
+    meshes.push({
+      id: `${leanTo.id}-post-${x.toFixed(3)}`, part: 'post',
+      position: [x, leanH / 2, projectionW],
+      size: [POST_SIZE, leanH, POST_SIZE],
+      color: trimColorHex,
+    });
+  }
 
   // Walls only when explicitly enclosed. An "Open Lean" is a roof on posts.
   if (leanTo.walls === 'enclosed') {
@@ -94,6 +117,21 @@ export function buildLeanTo(
   });
 
   return { leanTo, groupPosition, groupRotationY, extentFt, meshes };
+}
+
+/**
+ * Post positions (local X, along the wall) for a lean-to run of `extentFt`.
+ * Always places a post at each end, then distributes intermediate posts so
+ * no bay exceeds `MAX_POST_BAY_FT` (5' OC, the reference product's spec).
+ * e.g. a 30ft run: ceil(30/5) = 6 bays -> 7 posts, each bay exactly 5ft —
+ * not 6 bays of 5ft plus a leftover stub.
+ */
+function postXPositions(extentFt: number): number[] {
+  const bays = Math.max(1, Math.ceil(extentFt / MAX_POST_BAY_FT));
+  const bayLen = extentFt / bays;
+  const xs: number[] = [];
+  for (let i = 0; i <= bays; i++) xs.push(i * bayLen);
+  return xs;
 }
 
 /**

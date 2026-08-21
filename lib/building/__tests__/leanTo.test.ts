@@ -96,6 +96,65 @@ describe('lean-to attachment', () => {
   });
 });
 
+describe('lean-to support posts', () => {
+  // Regression guard: an open lean previously emitted a roof and slab with
+  // NOTHING holding the roof up. This is the test that would have caught it.
+  it('an open lean emits at least one post', () => {
+    const r = buildLeanTo(lean('left', { walls: 'open' }), B);
+    const posts = r.meshes.filter(m => m.part === 'post');
+    expect(posts.length).toBeGreaterThan(0);
+  });
+
+  it('an enclosed lean also emits posts (walls hide them, they still hold the roof up)', () => {
+    const r = buildLeanTo(lean('left', { walls: 'enclosed' }), B);
+    const posts = r.meshes.filter(m => m.part === 'post');
+    expect(posts.length).toBeGreaterThan(0);
+  });
+
+  it('posts sit on the outer edge (local Z = projection width), not the parent-wall edge', () => {
+    const r = buildLeanTo(lean('left', { widthFt: 5 }), B);
+    const posts = r.meshes.filter(m => m.part === 'post');
+    expect(posts.length).toBeGreaterThan(0);
+    for (const p of posts) {
+      expect(p.position[2]).toBeCloseTo(5, 6); // projectionW, not 0
+    }
+  });
+
+  it('spaces posts at 5ft max bay, with a post at each end of the extent', () => {
+    // 30ft lean along the 30ft-deep left wall -> extentFt = 30.
+    const r = buildLeanTo(lean('left', { lengthFt: 30 }), B);
+    expect(r.extentFt).toBe(30);
+    const posts = r.meshes.filter(m => m.part === 'post');
+    const xs = posts.map(p => p.position[0]).sort((a, b) => a - b);
+
+    // A post at each end of the extent.
+    expect(xs[0]).toBeCloseTo(0, 6);
+    expect(xs[xs.length - 1]).toBeCloseTo(30, 6);
+
+    // No bay (gap between adjacent posts) exceeds 5ft.
+    for (let i = 1; i < xs.length; i++) {
+      expect(xs[i] - xs[i - 1]).toBeLessThanOrEqual(5.0001);
+    }
+
+    // A 30ft lean at 5ft OC should yield exactly 7 posts (6 bays), not 6
+    // posts (5 bays of 6ft, or a stub bay).
+    expect(xs.length).toBe(7);
+  });
+
+  it('every post spans from the ground to the lean\'s outer eave height', () => {
+    const r = buildLeanTo(lean('left', { heightFt: 8 }), B);
+    const posts = r.meshes.filter(m => m.part === 'post');
+    expect(posts.length).toBeGreaterThan(0);
+    for (const p of posts) {
+      // Centered box: position.y ± size.y/2 must span [0, heightFt].
+      const bottom = p.position[1] - p.size[1] / 2;
+      const top = p.position[1] + p.size[1] / 2;
+      expect(bottom).toBeCloseTo(0, 6);
+      expect(top).toBeCloseTo(8, 6);
+    }
+  });
+});
+
 describe('createLeanTo defaults', () => {
   const barnRed = { id: 'barn-red', hex: '#7B2D26' };
   const charcoal = { id: 'charcoal', hex: '#36454F' };
