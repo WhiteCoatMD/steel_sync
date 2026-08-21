@@ -16,6 +16,19 @@ function getClient(): Anthropic {
   return client;
 }
 
+/**
+ * This endpoint is public and unauthenticated: it forwards a user-supplied
+ * prompt straight to a paid Anthropic API call, with no auth and no per-user
+ * rate limiting in front of it. A length cap is the one cheap guard available
+ * here, so it must be tight enough to matter. The UI's own placeholder text
+ * ("e.g. 18x40x10 enclosed, 3 windows, 10x10 roll-up door") is well under 100
+ * characters; even a verbose, multi-sentence building description comfortably
+ * fits in a few hundred. 2000 characters — matching the `notes` field cap in
+ * /api/quote — gives generous headroom over any real use while still blocking
+ * someone from pasting megabytes of text into a paid LLM call.
+ */
+const PROMPT_MAX_LENGTH = 2000;
+
 const SYSTEM_PROMPT = `You are a metal building configurator assistant. Parse the user's building description and return a JSON object with these fields (only include fields mentioned or implied):
 
 {
@@ -54,19 +67,46 @@ Rules:
 - Return ONLY the JSON object, no explanation`;
 
 export async function POST(req: NextRequest) {
+  let body: any;
   try {
-    const { prompt } = await req.json();
-    if (!prompt || typeof prompt !== 'string') {
-      return NextResponse.json({ error: 'Missing prompt' }, { status: 400 });
-    }
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Malformed JSON' }, { status: 400 });
+  }
 
-    const message = await getClient().messages.create({
+  const prompt = body?.prompt;
+  if (!prompt || typeof prompt !== 'string') {
+    return NextResponse.json({ error: 'Missing prompt' }, { status: 400 });
+  }
+  if (prompt.length > PROMPT_MAX_LENGTH) {
+    return NextResponse.json(
+      { error: `Prompt is too long (max ${PROMPT_MAX_LENGTH} characters)` },
+      { status: 400 },
+    );
+  }
+
+  // Guards both `getClient()` itself (a missing/invalid key throws on
+  // construction) and the network call: a bad key, rate limit, or upstream
+  // outage must come back as a sane, generic 503 rather than an uncaught
+  // 500 that leaks the Anthropic error, key, or a stack to a public,
+  // unauthenticated caller.
+  let message;
+  try {
+    message = await getClient().messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: prompt }],
     });
+  } catch (err) {
+    console.error('[ai-config] Anthropic request failed', err);
+    return NextResponse.json(
+      { error: 'AI service is temporarily unavailable. Please try again.' },
+      { status: 503 },
+    );
+  }
 
+  try {
     const text = message.content[0].type === 'text' ? message.content[0].text : '';
     // Extract JSON from response (handle markdown code blocks)
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -76,11 +116,8 @@ export async function POST(req: NextRequest) {
 
     const config = JSON.parse(jsonMatch[0]);
     return NextResponse.json(config);
-  } catch (err: any) {
-    console.error('AI config error:', err);
-    return NextResponse.json(
-      { error: err.message || 'AI request failed' },
-      { status: 500 },
-    );
+  } catch (err) {
+    console.error('[ai-config] failed to parse AI response', err);
+    return NextResponse.json({ error: 'Could not parse AI response' }, { status: 500 });
   }
 }
