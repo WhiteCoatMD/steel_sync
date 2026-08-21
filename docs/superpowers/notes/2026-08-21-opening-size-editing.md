@@ -288,3 +288,166 @@ Clean — no output, exit 0.
 - `RoofStyle['aframe']`, `lib/building/wallFrame.ts`, `lib/db/**`,
   `lib/notify/**` untouched.
 - No `vercel`, `db:seed`, or `db:migrate` commands run.
+
+---
+
+## Fix round 2 (2026-08-21) — found by browser verification, not by tests
+
+The coordinator found this bug by clicking through the running app, not
+from a test failure or code review comment. Numerically confirmed:
+rollup 12x10 (after clamping) priced with total=14628 and a line item of
+{amount:1800, detail:"Estimated"}.
+
+Why two rounds of tests missed it: round 1's "every offered size prices
+without Estimated" test called calculatePrice directly on an opening built
+from an availableSizes entry -- it never routed the size through
+clampOpening. calculatePrice has no concept of "this was just clamped"; it
+prices whatever widthFt/heightFt it is handed. So a size that priced
+correctly in isolation was never checked after going through the one piece
+of code (clampOpening) that could still mutate it. The dropdown itself
+correctly offered rollup_12x12 (real price, $1,100) -- the bug only appeared
+once a customer actually selected it on a building with legHeightFt 10:
+clampOpening clamped heightFt to 10, producing an unpriced 12x10 that fell
+through to the widthFt * heightFt * 15 estimate branch ($1,800), a real $700
+overcharge silently labelled Estimated. The size select then could not find
+a matching option for 12x10 either, so it rendered its first option (8x8),
+misreporting what was actually configured.
+
+### Fix -- two halves, both required
+
+Half 1 -- availableSizes now filters by physical fit.
+lib/building/openingSizes.ts gained an OpeningFit type
+({ legHeightFt: number; wallLengthFt?: number }) and an optional third
+parameter on availableSizes(type, rules, fit?). Sizes taller than
+fit.legHeightFt, or (when fit.wallLengthFt is given) wider than the wall,
+are excluded -- applied inside sizesForType alongside the existing
+canonical-key filter from round 1, so both guarantees compose rather than
+one replacing the other. Omitting fit reproduces the pre-round-2 behaviour
+exactly (a dedicated test locks this down). defaultOpeningSize also takes
+fit now, so a newly-added opening is seeded already fitting.
+
+Added largestFittingSize(type, rules, fit): the largest (by width, then
+height) priced size for type that satisfies fit, or null if none do. This
+is what the clamp (half 2) snaps to.
+
+components/designer/BuildingDesigner.tsx: the size select now calls
+availableSizes(op.type, pricingRules, { legHeightFt: building.legHeightFt,
+wallLengthFt }), and handleAdd computes the same fit (from the type's
+placement wall) before calling defaultOpeningSize.
+
+Half 2 -- the clamp snaps to a priced size instead of clamping a dimension.
+lib/store/designerStore.ts's old clampOpening is split into two composed
+functions:
+
+- clampOpeningPosition(opening, building) -- unchanged position-clamping
+  logic, exactly as round 1 left it.
+- resizeOpeningToFit(opening, building, rules) -- new. If the opening's
+  current size already fits (heightFt <= legHeightFt and
+  widthFt <= wallLengthFt), it is returned untouched. Otherwise it is
+  replaced wholesale by largestFittingSize(...) -- never by clamping just
+  heightFt (or widthFt) to an arbitrary number. If no priced size fits at
+  all (rare -- DEFAULT_PRICING_RULES has an 8ft-tall rollup, but a dealer
+  could still have nothing that small, or a leg height below every priced
+  size, as the existing legHeightFt: 7 test now demonstrates), it falls
+  back to the old direct height-clamp as a last resort and console.warns,
+  rather than crashing or leaving the opening un-clamped.
+- clampOpening(opening, building, rules) composes the two:
+  clampOpeningPosition(resizeOpeningToFit(opening, building, rules), building).
+
+clampOpening now takes rules as a third argument, so its three call sites
+(updateOpening, updateBuilding, applyAIConfig) each compute
+dealerSettings?.pricing ?? DEFAULT_PRICING_RULES (the same fallback
+withPricing uses) and pass it through. lib/pricing/calculatePrice.ts was
+not touched.
+
+One existing round-1 test -- "re-clamps an existing opening's height when
+the building leg height shrinks" (building leg height 10 to 7) -- now
+legitimately exercises the last-resort console.warn branch, since no rollup
+in DEFAULT_PRICING_RULES is 7ft tall or shorter. Rather than let that print
+during the run, the test now spies on console.warn
+(vi.spyOn(console, 'warn').mockImplementation(() => {})), asserts it was
+called, and restores it -- keeping npm test output pristine while still
+covering the branch.
+
+### Tests -- written first, confirmed failing against the pre-round-2 code
+
+To verify this honestly (the round-2 source fix was written before the new
+tests were confirmed against pre-fix code), the three fixed files
+(lib/building/openingSizes.ts, lib/store/designerStore.ts,
+components/designer/BuildingDesigner.tsx) were stashed with
+`git stash push -- <files>` to restore the round-1 (post-fix-round-1) code,
+leaving the new test files in place, then restored with `git stash pop`
+after confirming failures.
+
+Ran `npx vitest run lib/building/__tests__/openingSizes.test.ts
+lib/store/__tests__/designerStore.test.ts` against that pre-round-2 code:
+5 of 5 new tests failed, 30 pre-existing passed:
+
+- "excludes a size taller than fit.legHeightFt (does not offer 12x12 on a
+  10ft-leg building)" -- failed; 12x12 was still offered (the fit parameter
+  did not exist yet, so it was silently ignored as an extra argument).
+- "excludes a size wider than fit.wallLengthFt when supplied" -- failed for
+  the same reason.
+- "re-clamps an existing opening's height when the building leg height
+  shrinks" -- failed: expected "warn" to be called at least once (no
+  console.warn existed pre-fix; the direct clamp was silent).
+- "selecting every size the (fit-filtered) dropdown offers, on a
+  10ft-leg-height building, never prices as Estimated" -- failed at the
+  very first assertion: 12x12 was still offered by the unfiltered
+  availableSizes.
+- "shrinking the building leg height from 12ft to 10ft converts an existing
+  12x12 roll-up into a PRICED fitting size, not 12x10" -- failed with the
+  bug's exact reproduction: the stored opening was exactly the unpriced
+  12x10 the bug report describes (assertion diff showed "no visual
+  difference" between the actual value and the forbidden {widthFt:12,
+  heightFt:10}).
+
+The "not-Estimated" test also caught a bug in itself while iterating: its
+first draft indexed config.openings[0] and searched line items by
+`li.label.includes('Roll-Up')` without first removing createDefaultConfig's
+seeded door_ru_1 rollup, so the assertions could accidentally match the
+seeded opening's line item instead of the one under test. Fixed by clearing
+door_ru_1 and win_1 at the start of each test in that describe block
+(a freshConfigWithNoOpenings helper), isolating the opening actually being
+tested. A second small test bug (wallLengthFt of 9 also admits the priced
+9-wide rollup, diluting the width-filter assertion) was caught the same way
+and fixed by tightening the wall length to 8.
+
+After restoring the round-2 fix (`git stash pop`), all 35 tests in the two
+files pass.
+
+### Updated test command and full output
+
+Test file command: `npx vitest run lib/building/__tests__/openingSizes.test.ts lib/store/__tests__/designerStore.test.ts`
+Result: Test Files 2 passed (2), Tests 35 passed (35).
+
+Full suite command: `npm test`
+Result:
+
+```
+> steel-sync@0.1.0 test
+> vitest run
+
+ RUN  v4.1.11 C:/Users/13183/steel_sync
+
+
+ Test Files  16 passed (16)
+      Tests  139 passed (139)
+   Start at  17:54:39
+   Duration  21.51s (transform 3.71s, setup 0ms, import 17.57s, tests 4.65s, environment 22.41s)
+```
+
+139 = 133 from fix round 1 + 6 new (3 in openingSizes.test.ts, 3 in
+designerStore.test.ts -- the legHeightFt: 7 test is a modification of an
+existing test, not a new one). Zero warnings, pristine output.
+
+## `tsc --noEmit` (after fix round 2)
+
+Clean -- no output, exit 0.
+
+## Constraints honored (round 2)
+
+- lib/pricing/calculatePrice.ts untouched.
+- RoofStyle['aframe'], lib/building/wallFrame.ts, lib/db/**, lib/notify/**
+  untouched.
+- No vercel, db:seed, or db:migrate commands run.

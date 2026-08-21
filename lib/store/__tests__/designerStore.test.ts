@@ -1,5 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useDesignerStore } from '../designerStore';
+import { availableSizes } from '../../building/openingSizes';
+import { wallFrame } from '../../building/wallFrame';
+import { DEFAULT_PRICING_RULES } from '../../building/defaultConfig';
 import type { LeanTo, Opening } from '../../building/types';
 
 const WHITE = { id: 'white', hex: '#FFFFFF' };
@@ -231,9 +234,108 @@ describe('designerStore opening clamping', () => {
   });
 
   it('re-clamps an existing opening\'s height when the building leg height shrinks', () => {
+    // DEFAULT_PRICING_RULES's shortest priced rollup is 8ft tall, so a 7ft leg
+    // height has NO priced rollup size that fits at all — this legitimately
+    // exercises the last-resort direct-clamp branch (and its console.warn),
+    // which round 2 added. Suppress the warning so the suite stays pristine
+    // while still asserting it fires.
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const id = addOpening({ heightFt: 10 });
     useDesignerStore.getState().updateBuilding({ legHeightFt: 7 });
     const stored = useDesignerStore.getState().config!.openings.find(o => o.id === id)!;
     expect(stored.heightFt).toBe(7);
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+});
+
+// Round 2 bug, found by clicking through the UI rather than by a test: the
+// size dropdown offered rollup_12x12 (a genuinely priced size, $1,100) on a
+// building with legHeightFt 10. Selecting it made clampOpening clamp heightFt
+// down to 10, turning the priced 12x12 into an unpriced 12x10 — calculatePrice
+// has no rollup_12x10 key, so it fell through to the area-based estimate
+// (12 * 10 * $15 = $1,800): a real $700 overcharge, silently labelled
+// 'Estimated'. Every earlier test priced a size directly, never through a
+// clamp that could alter it, so nothing caught this. These tests route a
+// size choice through the actual store (addOpening/updateOpening/
+// updateBuilding), the same path the sidebar dropdown and a shrinking
+// building take.
+describe('designerStore opening size clamping never invents an unpriced size', () => {
+  // createDefaultConfig seeds a rollup ('door_ru_1') and a window ('win_1').
+  // Remove both so a test's own opening is the only one of its type, and
+  // `.find(li => li.label.includes('Roll-Up'))` below can't ambiguously match
+  // the seeded door's line item instead of the one under test.
+  function freshConfigWithNoOpenings() {
+    useDesignerStore.getState().initialize('test-dealer');
+    useDesignerStore.getState().removeOpening('door_ru_1');
+    useDesignerStore.getState().removeOpening('win_1');
+  }
+
+  beforeEach(() => {
+    freshConfigWithNoOpenings();
+  });
+
+  it('selecting every size the (fit-filtered) dropdown offers, on a 10ft-leg-height building, never prices as Estimated', () => {
+    // Default building: legHeightFt 10, front wall (widthFt) 24ft.
+    const building = useDesignerStore.getState().config!.building;
+    expect(building.legHeightFt).toBe(10);
+
+    const offeredSizes = availableSizes('rollup', DEFAULT_PRICING_RULES, {
+      legHeightFt: building.legHeightFt,
+      wallLengthFt: wallFrame('front', building).lengthFt,
+    });
+    // The bug's exact size must not even be offered any more.
+    expect(offeredSizes).not.toContainEqual({ widthFt: 12, heightFt: 12 });
+    expect(offeredSizes.length).toBeGreaterThan(0);
+
+    for (const size of offeredSizes) {
+      freshConfigWithNoOpenings();
+      useDesignerStore.getState().addOpening({
+        id: 'op1', type: 'rollup', widthFt: 10, heightFt: 8, wall: 'front', positionFt: 0, color: null,
+      });
+      // The exact action the sidebar <select> performs on change.
+      useDesignerStore.getState().updateOpening('op1', { widthFt: size.widthFt, heightFt: size.heightFt });
+
+      const stored = useDesignerStore.getState().config!.openings.find(o => o.id === 'op1')!;
+      expect(stored.widthFt).toBe(size.widthFt);
+      expect(stored.heightFt).toBe(size.heightFt);
+
+      const lineItem = useDesignerStore.getState().config!.pricing!.lineItems
+        .find(li => li.label.includes('Roll-Up'));
+      expect(lineItem?.detail).not.toBe('Estimated');
+    }
+  });
+
+  it('shrinking the building leg height from 12ft to 10ft converts an existing 12x12 roll-up into a PRICED fitting size, not 12x10', () => {
+    useDesignerStore.getState().updateBuilding({ legHeightFt: 12 });
+    useDesignerStore.getState().addOpening({
+      id: 'op1', type: 'rollup', widthFt: 12, heightFt: 12, wall: 'front', positionFt: 0, color: null,
+    });
+    expect(useDesignerStore.getState().config!.openings.find(o => o.id === 'op1'))
+      .toMatchObject({ widthFt: 12, heightFt: 12 });
+
+    useDesignerStore.getState().updateBuilding({ legHeightFt: 10 });
+
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === 'op1')!;
+    // NOT the bug's 12x10 — the largest priced rollup size that still fits a
+    // 10ft leg height (front wall stays 24ft, so width isn't the constraint).
+    expect(stored).not.toMatchObject({ widthFt: 12, heightFt: 10 });
+    expect(stored.heightFt).toBeLessThanOrEqual(10);
+
+    const lineItem = useDesignerStore.getState().config!.pricing!.lineItems
+      .find(li => li.label.includes('Roll-Up'));
+    expect(lineItem?.detail).not.toBe('Estimated');
+  });
+
+  it('leaves an opening whose size already fits completely untouched', () => {
+    useDesignerStore.getState().addOpening({
+      id: 'op1', type: 'rollup', widthFt: 10, heightFt: 10, wall: 'front', positionFt: 5, color: null,
+    });
+    // Trigger the clamp path via an unrelated update, same as the round-1 test.
+    useDesignerStore.getState().updateOpening('op1', { color: { id: 'black', hex: '#000' } });
+    const stored = useDesignerStore.getState().config!.openings.find(o => o.id === 'op1')!;
+    expect(stored.widthFt).toBe(10);
+    expect(stored.heightFt).toBe(10);
+    expect(stored.positionFt).toBe(5);
   });
 });

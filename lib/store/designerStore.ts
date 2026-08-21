@@ -7,6 +7,7 @@ import type {
   ColorOption,
   ConfigStep,
   CustomerInfo,
+  DealerPricingRules,
   DealerSettings,
   LeanTo,
   Opening,
@@ -16,6 +17,7 @@ import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
 import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { wallFrame } from '../building/wallFrame';
+import { largestFittingSize } from '../building/openingSizes';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -39,19 +41,66 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
 }
 
 /**
- * Clamp an opening's positionFt to its wall's extent and its heightFt to the
- * building's leg height, mirroring clampLeanToLength above. Applied on every
- * write (position, size, or wall change) so the stored config never holds an
- * opening hanging off the end of its wall or taller than the wall — which
- * would agree with neither the rendered geometry nor the quote.
+ * Clamp an opening's positionFt to its wall's extent, mirroring
+ * clampLeanToLength above. Applied on every write (position, size, or wall
+ * change) so the stored config never holds an opening hanging off the end of
+ * its wall.
+ *
+ * Size is handled separately by resizeOpeningToFit below: naively clamping
+ * heightFt down to legHeightFt (a prior version of this function did that)
+ * can turn a genuinely priced size into an unpriced one — e.g. a priced
+ * rollup_12x12 whose height gets clamped to a 10ft leg height becomes a
+ * 12x10, which has no price key and silently prices as the area-based
+ * 'Estimated' fallback. Found by clicking through the UI, not by a test: no
+ * test combined a size selection with a pricing assertion routed through
+ * this clamp, so a size that priced fine in isolation (calculatePrice has no
+ * concept of "clamped") never got checked post-clamp.
  */
-function clampOpening(opening: Opening, building: BuildingDimensions): Opening {
+function clampOpeningPosition(opening: Opening, building: BuildingDimensions): Opening {
   const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
   const maxPositionFt = Math.max(0, wallLengthFt - opening.widthFt);
   const positionFt = Math.min(Math.max(opening.positionFt, 0), maxPositionFt);
-  const heightFt = Math.min(opening.heightFt, building.legHeightFt);
-  if (positionFt === opening.positionFt && heightFt === opening.heightFt) return opening;
-  return { ...opening, positionFt, heightFt };
+  if (positionFt === opening.positionFt) return opening;
+  return { ...opening, positionFt };
+}
+
+/**
+ * If `opening`'s current size no longer fits its wall (too tall for the leg
+ * height, or too wide for the wall), replace it with the largest priced size
+ * for its type that DOES fit — never with an arbitrarily clamped, unpriced
+ * dimension. Falls back to the old direct-clamp behaviour only if no priced
+ * size fits at all, which should be rare (DEFAULT_PRICING_RULES has small
+ * sizes for every type) and is logged so it's visible rather than silently
+ * quoting an estimate.
+ */
+function resizeOpeningToFit(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
+  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
+  const fitsAlready = opening.heightFt <= building.legHeightFt && opening.widthFt <= wallLengthFt;
+  if (fitsAlready) return opening;
+
+  const best = largestFittingSize(opening.type, rules, {
+    legHeightFt: building.legHeightFt,
+    wallLengthFt,
+  });
+  if (best) {
+    return { ...opening, widthFt: best.widthFt, heightFt: best.heightFt };
+  }
+
+  // No priced size fits this wall/leg height at all — last resort so the
+  // opening at least doesn't render taller than the wall. This can still
+  // yield an unpriced (Estimated) size; that's a smaller problem than
+  // crashing or leaving the opening un-clamped entirely.
+  console.warn(
+    `[designerStore] No priced ${opening.type} size fits wall "${opening.wall}" ` +
+    `(length ${wallLengthFt}ft, leg height ${building.legHeightFt}ft). ` +
+    `Clamping height directly; this opening may price as an estimate.`
+  );
+  return { ...opening, heightFt: Math.min(opening.heightFt, building.legHeightFt) };
+}
+
+/** Compose the size-fit and position clamps applied after any opening write. */
+function clampOpening(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
+  return clampOpeningPosition(resizeOpeningToFit(opening, building, rules), building);
 }
 
 /**
@@ -153,6 +202,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       };
     }
 
+    const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
     const nextBuilding = { ...config.building, ...updates };
     const next: BuildingConfig = {
       ...config,
@@ -162,7 +212,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       leanTos: config.leanTos.map(lt => clampLeanToLength(lt, nextBuilding)),
       // Same for openings: a narrower/shorter wall or a lower leg height can
       // strand an existing opening past the wall's end or above its height.
-      openings: config.openings.map(o => clampOpening(o, nextBuilding)),
+      openings: config.openings.map(o => clampOpening(o, nextBuilding, rules)),
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -210,12 +260,13 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   updateOpening: (id, partial) => {
     const { config, dealerSettings } = get();
     if (!config) return;
+    const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
     const next: BuildingConfig = {
       ...config,
       // Clamp after merging so a size or wall change re-clamps position (and
       // height) too, not just a direct positionFt/heightFt write.
       openings: config.openings.map(o =>
-        o.id === id ? clampOpening({ ...o, ...partial }, config.building) : o
+        o.id === id ? clampOpening({ ...o, ...partial }, config.building, rules) : o
       ),
     };
     set({ config: withPricing(next, dealerSettings) });
@@ -260,6 +311,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     const { config, dealerSettings } = get();
     if (!config) return;
     const next = { ...config };
+    const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
 
     // Apply building dimensions/type
     if (ai.building) {
@@ -271,7 +323,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       next.leanTos = next.leanTos.map(lt => clampLeanToLength(lt, next.building));
       // Same reasoning for openings: an AI resize can strand an existing
       // opening past its wall's end or above the new leg height.
-      next.openings = next.openings.map(o => clampOpening(o, next.building));
+      next.openings = next.openings.map(o => clampOpening(o, next.building, rules));
     }
 
     // Apply colors
@@ -295,7 +347,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
         wall: o.wall || 'front',
         positionFt: o.positionFt || 3,
         color: null,
-      }, next.building));
+      }, next.building, rules));
     }
 
     set({ config: withPricing(next, dealerSettings) });

@@ -458,9 +458,13 @@ function OpeningSection() {
       window:   { wall: 'left',  positionFt: 10 },
       frameout: { wall: 'front', positionFt: 3 },
     };
-    const { widthFt, heightFt } = defaultOpeningSize(type, pricingRules);
+    const wallLengthFt = wallFrame(placement[type].wall, building).lengthFt;
+    const { widthFt, heightFt } = defaultOpeningSize(type, pricingRules, {
+      legHeightFt: building.legHeightFt,
+      wallLengthFt,
+    });
     addOpening({ id, type, widthFt, heightFt, color: null, ...placement[type] });
-  }, [addOpening, pricingRules]);
+  }, [addOpening, pricingRules, building]);
 
   return (
     <Section title="Doors & Windows" defaultOpen>
@@ -488,7 +492,7 @@ function OpeningSection() {
                 }}
                 className="bg-transparent text-[10px]"
               >
-                {availableSizes(op.type, pricingRules).map(size => (
+                {availableSizes(op.type, pricingRules, { legHeightFt: building.legHeightFt, wallLengthFt }).map(size => (
                   <option key={`${size.widthFt}x${size.heightFt}`} value={`${size.widthFt}x${size.heightFt}`}>
                     {size.widthFt}x{size.heightFt} ft
                   </option>

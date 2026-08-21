@@ -150,6 +150,43 @@ describe('availableSizes', () => {
   });
 });
 
+// Bug found by clicking through the UI, not by a test: the dropdown offered
+// rollup_12x12 (a genuinely priced size) on a building with legHeightFt 10.
+// Picking it made the store clamp heightFt down to 10, turning a priced
+// 12x12 into an unpriced 12x10 — a real customer-facing overcharge, silently
+// labelled 'Estimated'. Every prior test priced an offered size directly,
+// never through a building short enough to clamp it, so nothing caught this.
+describe('availableSizes with a fit constraint', () => {
+  it('excludes a size taller than fit.legHeightFt (does not offer 12x12 on a 10ft-leg building)', () => {
+    const sizes = availableSizes('rollup', DEFAULT_PRICING_RULES, { legHeightFt: 10 });
+    expect(sizes).not.toContainEqual({ widthFt: 12, heightFt: 12 });
+    expect(sizes).toEqual([
+      { widthFt: 8, heightFt: 8 },
+      { widthFt: 9, heightFt: 8 },
+      { widthFt: 10, heightFt: 10 },
+    ]);
+  });
+
+  it('excludes a size wider than fit.wallLengthFt when supplied', () => {
+    // 9ft would also admit rollup_9x8 (widthFt 9) — use 8ft so only the 8x8
+    // survives, unambiguously proving the width filter, not just the height one.
+    const sizes = availableSizes('rollup', DEFAULT_PRICING_RULES, { legHeightFt: 20, wallLengthFt: 8 });
+    expect(sizes).toEqual([{ widthFt: 8, heightFt: 8 }]);
+  });
+
+  it('with no fit argument, returns exactly what it did before fit existed', () => {
+    // Same assertion as the very first test in this file, restated here to
+    // pin down that adding the optional third parameter changed nothing for
+    // every existing 2-arg call site.
+    expect(availableSizes('rollup', DEFAULT_PRICING_RULES)).toEqual([
+      { widthFt: 8, heightFt: 8 },
+      { widthFt: 9, heightFt: 8 },
+      { widthFt: 10, heightFt: 10 },
+      { widthFt: 12, heightFt: 12 },
+    ]);
+  });
+});
+
 // handleAdd in components/designer/BuildingDesigner.tsx used to write
 // hardcoded literal sizes (rollup 10x10, walkin 3x7, window 3x3, frameout
 // 10x10) straight through addOpening, never consulting availableSizes. For a

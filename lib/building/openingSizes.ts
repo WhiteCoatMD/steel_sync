@@ -16,12 +16,23 @@ export interface OpeningSize {
   heightFt: number;
 }
 
+/**
+ * Physical constraints a candidate size must fit within. `wallLengthFt` is
+ * optional because a caller may not yet know which wall an opening will land
+ * on (e.g. picking a size before a wall is chosen); `legHeightFt` is required
+ * since every opening sits on a wall of that height.
+ */
+export interface OpeningFit {
+  legHeightFt: number;
+  wallLengthFt?: number;
+}
+
 // `${type}_${width}x${height}` — e.g. "rollup_10x10". A dealer's pricing_rules
 // is hand-entered JSON that mergePricingRules does not validate key-by-key, so
 // this must ignore anything that doesn't cleanly match rather than throwing.
 const KEY_PATTERN = /^(walkin|rollup|window|frameout)_(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)$/;
 
-function sizesForType(rules: DealerPricingRules, type: OpeningType): OpeningSize[] {
+function sizesForType(rules: DealerPricingRules, type: OpeningType, fit?: OpeningFit): OpeningSize[] {
   const sizes: OpeningSize[] = [];
   const seenCanonicalKeys = new Set<string>();
   const prices = rules?.openingPrices;
@@ -57,6 +68,15 @@ function sizesForType(rules: DealerPricingRules, type: OpeningType): OpeningSize
     if (seenCanonicalKeys.has(canonicalKey)) continue;
     seenCanonicalKeys.add(canonicalKey);
 
+    // A size that's priced but physically doesn't fit is just as unusable as
+    // an unpriced one — offering it (e.g. a 12ft-tall door on a 10ft wall)
+    // is what forced clampOpening to invent an unpriced size in the first
+    // place. Filter it out here instead, at the source.
+    if (fit) {
+      if (heightFt > fit.legHeightFt) continue;
+      if (fit.wallLengthFt != null && widthFt > fit.wallLengthFt) continue;
+    }
+
     sizes.push({ widthFt, heightFt });
   }
 
@@ -70,13 +90,18 @@ function sortSizes(sizes: OpeningSize[]): OpeningSize[] {
 /**
  * The standard sizes priced for `type`, sorted by width then height.
  *
- * If the dealer's own rules have no priced size for this type, falls back to
- * DEFAULT_PRICING_RULES's sizes for that type so the dropdown is never empty.
+ * If the dealer's own rules have no priced size for this type (or none of
+ * them fit `fit`), falls back to DEFAULT_PRICING_RULES's sizes for that type
+ * (also filtered by `fit`) so the dropdown is never empty.
+ *
+ * `fit`, if supplied, excludes sizes that are physically too big: taller
+ * than `fit.legHeightFt`, or (when `fit.wallLengthFt` is given) wider than
+ * the wall. Omitting `fit` preserves the original unfiltered behaviour.
  */
-export function availableSizes(type: OpeningType, rules: DealerPricingRules): OpeningSize[] {
-  const dealerSizes = sizesForType(rules, type);
+export function availableSizes(type: OpeningType, rules: DealerPricingRules, fit?: OpeningFit): OpeningSize[] {
+  const dealerSizes = sizesForType(rules, type, fit);
   if (dealerSizes.length > 0) return sortSizes(dealerSizes);
-  return sortSizes(sizesForType(DEFAULT_PRICING_RULES, type));
+  return sortSizes(sizesForType(DEFAULT_PRICING_RULES, type, fit));
 }
 
 // Last-resort literal, used only if availableSizes() somehow returns nothing
@@ -95,9 +120,24 @@ const LAST_RESORT_SIZE: Record<OpeningType, OpeningSize> = {
  * The size a newly-added opening of `type` should start with — the first
  * (smallest) entry `availableSizes` offers, so a customer adding a door can
  * never end up with a size that isn't in the dropdown that immediately
- * follows, and never prices as the 'Estimated' fallback.
+ * follows, and never prices as the 'Estimated' fallback. Pass `fit` so the
+ * seeded size also fits the building/wall right away.
  */
-export function defaultOpeningSize(type: OpeningType, rules: DealerPricingRules): OpeningSize {
-  const sizes = availableSizes(type, rules);
+export function defaultOpeningSize(type: OpeningType, rules: DealerPricingRules, fit?: OpeningFit): OpeningSize {
+  const sizes = availableSizes(type, rules, fit);
   return sizes[0] ?? LAST_RESORT_SIZE[type];
+}
+
+/**
+ * The largest priced size (by width, then height) for `type` that fits
+ * `fit` — what an opening whose current size no longer fits should snap to,
+ * rather than having a single dimension clamped down to an arbitrary,
+ * unpriced number. Returns `null` if no priced size fits at all.
+ */
+export function largestFittingSize(type: OpeningType, rules: DealerPricingRules, fit: OpeningFit): OpeningSize | null {
+  const sizes = availableSizes(type, rules, fit);
+  if (sizes.length === 0) return null;
+  // availableSizes sorts ascending by width then height, so the last entry
+  // is the largest.
+  return sizes[sizes.length - 1];
 }
