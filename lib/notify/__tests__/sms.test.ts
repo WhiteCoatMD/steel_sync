@@ -18,9 +18,37 @@ const longLead = {
   config: { building: { widthFt: 24, lengthFt: 30, type: 'garage' } } as any,
 };
 
+// GSM 03.38 basic character set. Anything outside this (plus the extension
+// table below) forces the WHOLE message to UCS-2, which halves the
+// single-segment limit from 160 septets to 70 characters. U+2014 (em dash) is
+// in neither table — it used to be in this message body, so the previous
+// `<= 160` assertion was checking a limit that did not apply.
+const GSM7_BASIC =
+  '@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !"#¤%&\'()*+,-./0123456789:;<=>?' +
+  '¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà';
+// Extension-table characters are still GSM-7 but cost TWO septets each.
+const GSM7_EXTENDED = '\f^{}\\[~]|€';
+
+const SINGLE_SEGMENT_SEPTETS = 160;
+
+/** Characters that would force UCS-2 encoding. */
+function nonGsm7Chars(s: string): string[] {
+  return [...s].filter(ch => !GSM7_BASIC.includes(ch) && !GSM7_EXTENDED.includes(ch));
+}
+
+/** Billed length in septets, counting extension characters as two. */
+function septetLength(s: string): number {
+  return [...s].reduce((n, ch) => n + (GSM7_EXTENDED.includes(ch) ? 2 : 1), 0);
+}
+
 describe('buildSmsBody', () => {
-  it('fits in a single SMS segment', () => {
-    expect(buildSmsBody(lead as any).length).toBeLessThanOrEqual(160);
+  it('contains no characters outside GSM-7 (anything else forces UCS-2)', () => {
+    expect(nonGsm7Chars(buildSmsBody(lead as any))).toEqual([]);
+    expect(nonGsm7Chars(buildSmsBody(longLead as any))).toEqual([]);
+  });
+
+  it('fits in a single GSM-7 segment', () => {
+    expect(septetLength(buildSmsBody(lead as any))).toBeLessThanOrEqual(SINGLE_SEGMENT_SEPTETS);
   });
 
   it('carries name, size, price and callback number', () => {
@@ -31,12 +59,20 @@ describe('buildSmsBody', () => {
     expect(b).toContain('5551234567');
   });
 
-  it('fits in a single SMS segment for a realistically long name and price', () => {
+  it('fits in a single GSM-7 segment for a realistically long name and price', () => {
     const b = buildSmsBody(longLead as any);
-    expect(b.length).toBeLessThanOrEqual(160);
+    expect(septetLength(b)).toBeLessThanOrEqual(SINGLE_SEGMENT_SEPTETS);
     expect(b).toContain('Bartholomew Featherstonehaugh');
     expect(b).toContain('189,599');
     expect(b).toContain('5551234567');
+  });
+
+  // Guards the helper itself: without this, `nonGsm7Chars` returning [] for
+  // everything would make the assertions above unfalsifiable.
+  it('the GSM-7 check actually rejects an em dash and an emoji', () => {
+    expect(nonGsm7Chars('New lead: A B — 24x30')).toEqual(['—']);
+    expect(nonGsm7Chars('New lead \u{1F389}').length).toBeGreaterThan(0);
+    expect(septetLength('[]')).toBe(4);
   });
 });
 
@@ -60,10 +96,16 @@ describe('sendLeadSms', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const dealer = { phone: '+15555550100' } as any;
 
-    await sendLeadSms(dealer, lead as any);
+    const result = await sendLeadSms(dealer, lead as any);
 
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalled();
+    // 'skipped', never 'sent' — notifyNewLead counts only 'sent' as delivery.
+    expect(result).toEqual({
+      channel: 'sms',
+      status: 'skipped',
+      reason: expect.stringContaining('TELNYX_API_KEY'),
+    });
   });
 
   it('skips (no-op) when the dealer has no phone', async () => {
@@ -73,10 +115,15 @@ describe('sendLeadSms', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const dealer = { phone: '' } as any;
 
-    await sendLeadSms(dealer, lead as any);
+    const result = await sendLeadSms(dealer, lead as any);
 
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalled();
+    expect(result).toEqual({
+      channel: 'sms',
+      status: 'skipped',
+      reason: expect.stringContaining('no phone'),
+    });
   });
 
   it('POSTs to the Telnyx messages endpoint with the built body when configured', async () => {
@@ -87,7 +134,8 @@ describe('sendLeadSms', () => {
       new Response(JSON.stringify({ data: {} }), { status: 200 })
     );
 
-    await sendLeadSms(dealer, lead as any);
+    const result = await sendLeadSms(dealer, lead as any);
+    expect(result).toEqual({ channel: 'sms', status: 'sent' });
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     const [url, init] = fetchSpy.mock.calls[0];
