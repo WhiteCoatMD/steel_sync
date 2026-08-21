@@ -13,7 +13,7 @@ import type {
   RoofStyle,
 } from '../building/types';
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
-import { createDefaultConfig, DEFAULT_PRICING_RULES } from '../building/defaultConfig';
+import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { wallFrame } from '../building/wallFrame';
 
@@ -36,6 +36,23 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
   const wallLengthFt = wallFrame(leanTo.wall, building).lengthFt;
   if (leanTo.lengthFt <= wallLengthFt) return leanTo;
   return { ...leanTo, lengthFt: wallLengthFt };
+}
+
+/**
+ * Is this decoded blob actually a design?
+ *
+ * `loadDesign` used to return `true` for any base64 that JSON-parsed, so
+ * `btoa('{}')` silently replaced the shared design with a default building and
+ * reported success. A design is minimally a `building` with the three
+ * dimensions everything downstream multiplies.
+ */
+function isDesignPayload(v: unknown): v is Record<string, any> {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) return false;
+  const b = (v as Record<string, unknown>).building;
+  if (typeof b !== 'object' || b === null || Array.isArray(b)) return false;
+  const dims = b as Record<string, unknown>;
+  return (['widthFt', 'lengthFt', 'legHeightFt'] as const)
+    .every(k => typeof dims[k] === 'number' && Number.isFinite(dims[k] as number));
 }
 
 // ─── Store Interface ────────────────────────────────────────
@@ -224,11 +241,19 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     // Apply building dimensions/type
     if (ai.building) {
       next.building = { ...next.building, ...ai.building };
+      // Same re-clamp updateBuilding does: an AI result can shrink widthFt or
+      // lengthFt below an existing lean-to's stored length, and this path is
+      // live via /api/ai-config. Without it the config quotes a lean-to
+      // longer than buildLeanTo() renders.
+      next.leanTos = next.leanTos.map(lt => clampLeanToLength(lt, next.building));
     }
 
     // Apply colors
+    // `findColor` was pulled in with a bare `require()` here. That happens to
+    // work inside a webpack/Turbopack client bundle, but this is an ES module
+    // — `require` is not defined under plain ESM, so the AI colour path threw
+    // anywhere outside the Next bundler. Static import instead.
     if (ai.colors) {
-      const { findColor } = require('../building/defaultConfig');
       if (ai.colors.roof) next.colors = { ...next.colors, roof: findColor(ai.colors.roof) };
       if (ai.colors.walls) next.colors = { ...next.colors, walls: findColor(ai.colors.walls) };
       if (ai.colors.trim) next.colors = { ...next.colors, trim: findColor(ai.colors.trim) };
@@ -277,16 +302,33 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   },
 
   loadDesign: (encoded) => {
-    const { dealerSettings } = get();
+    const { config, dealerSettings } = get();
     try {
       const parsed = JSON.parse(atob(encoded));
-      const base = createDefaultConfig(parsed.dealerId ?? 'default');
+
+      // A share link is attacker-controlled input, not trusted state.
+      if (!isDesignPayload(parsed)) return false;
+
+      // The SERVER-RESOLVED dealer wins; `parsed.dealerId` is ignored
+      // entirely. Honouring it let a crafted `?design=` re-attribute the lead
+      // — along with the customer's name, phone and email — to a different
+      // active dealer, since the same value is what the quote route resolves
+      // on submit.
+      const dealerId = config?.dealerId ?? dealerSettings?.id ?? 'default';
+
+      const base = createDefaultConfig(dealerId);
+      const building = { ...base.building, ...parsed.building };
+      const leanTos: LeanTo[] = Array.isArray(parsed.leanTos) ? parsed.leanTos : base.leanTos;
       const restored: BuildingConfig = {
         ...base,
-        building: { ...base.building, ...parsed.building },
+        building,
         colors: { ...base.colors, ...parsed.colors },
-        openings: parsed.openings ?? base.openings,
-        leanTos: parsed.leanTos ?? base.leanTos,
+        openings: Array.isArray(parsed.openings) ? parsed.openings : base.openings,
+        // Restored verbatim, an encoded lean-to could overrun its wall and
+        // reopen the quote/geometry mismatch a6d0c8c closed — buildLeanTo()
+        // renders the clamped extent while the config (and therefore the
+        // quote) claims the longer one.
+        leanTos: leanTos.map(lt => clampLeanToLength(lt, building)),
         options: { ...base.options, ...parsed.options },
         certifications: { ...base.certifications, ...parsed.certifications },
       };
