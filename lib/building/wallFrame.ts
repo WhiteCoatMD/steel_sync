@@ -1,7 +1,17 @@
 // Steel Sync — Wall coordinate frame.
-// THE single source of truth for "where is this wall and which way does it face".
-// Openings, trim, and lean-to attachment all consume this. Do not re-derive
-// wall position anywhere else.
+// The intended single source of truth for "where is this wall and which way
+// does it face". Everything under lib/building — geometry, openings, panels,
+// trim, lean-to attachment — consumes it, as does the store's lean-to clamp.
+// Do not re-derive wall position in new code.
+//
+// CAVEAT: the RENDERER HAS NOT MIGRATED. components/designer/ThreeScene.tsx
+// never imports this module and disagrees with it on the two gable walls.
+// GableWalls draws the front wall in an untransformed group, so `positionFt`
+// there is measured from x=0 along +X, whereas wallFrame('front') below puts
+// the origin at [W,0,0] with `along` = -X — i.e. from the opposite edge. The
+// back wall is mirrored the same way. So an opening's rendered position and
+// its wallFrame-derived position are reflections of each other on front/back.
+// Do not assume the two agree until ThreeScene is ported onto this frame.
 //
 // Building origin (0,0,0) is the front-left corner at ground level.
 //   front wall: Z = 0, faces -Z      back wall:  Z = L, faces +Z

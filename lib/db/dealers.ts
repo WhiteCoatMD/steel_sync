@@ -20,9 +20,16 @@ function isPlainObject(v: unknown): v is Record<string, unknown> {
  * `deliveryZones`; any of those being `undefined` or a non-array throws a
  * TypeError inside the Zustand store, client-side, outside any try/catch —
  * which white-screens the designer for that dealer. This function guarantees
- * every key calculatePrice touches is present and correctly shaped, falling
- * back to DEFAULT_PRICING_RULES key-by-key (one level deep into the nested
- * maps) rather than rejecting the row outright.
+ * every TOP-LEVEL key calculatePrice touches is present and of the right kind
+ * — object where an object is indexed, array where an array is iterated or
+ * sorted — falling back to DEFAULT_PRICING_RULES key-by-key (one level deep
+ * into the nested maps) rather than rejecting the row outright.
+ *
+ * It does NOT validate array ELEMENTS or leaf VALUES. `deliveryZones: [{
+ * maxMiles: "ten" }]` survives this merge intact and produces a NaN total
+ * inside calculatePrice without throwing. app/api/quote/route.ts therefore
+ * asserts Number.isFinite(pricing.total) after pricing, and must keep doing so
+ * unless that validation moves in here.
  *
  * Exported so it can be unit-tested without touching the database.
  */
@@ -85,6 +92,14 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
         // already holds it from the spread above — leave it untouched. If
         // the key has no default (only possible for openingPrices), it was
         // never in the spread, so drop it rather than let it hold null.
+        //
+        // REACHABLE, not dead code: it fires for a key that is null in the
+        // dealer's JSON and has no counterpart in DEFAULT_PRICING_RULES,
+        // which openingPrices — the one open-ended map — allows. Exercised by
+        // dealers.test.ts ("a null openingPrices key with no default").
+        // Removing it would leave that key holding null and price the opening
+        // at $0 instead of falling into calculatePrice's estimate-by-area
+        // branch.
         if (!(leafKey in (fallback as Record<string, unknown>))) {
           delete result[leafKey];
         }
