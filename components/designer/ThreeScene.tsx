@@ -913,8 +913,8 @@ function LeanToMeshes({ result }: { result: BuildingResult }) {
               <meshStandardMaterial
                 color={m.color}
                 side={m.part === 'roof' ? THREE.DoubleSide : undefined}
-                metalness={m.part === 'slab' ? 0 : 0.35}
-                roughness={m.part === 'slab' ? 0.92 : 0.65}
+                metalness={m.part === 'slab' ? 0 : m.part === 'post' ? 0.5 : 0.35}
+                roughness={m.part === 'slab' ? 0.92 : m.part === 'post' ? 0.4 : 0.65}
               />
             </mesh>
           ))}

@@ -98,7 +98,7 @@ export function buildBuilding(config: BuildingConfig): BuildingResult {
     },
     roof: buildRoof(b),
     trim: buildTrim(b),
-    leanTos: config.leanTos.map(lt => buildLeanTo(lt, b)),
+    leanTos: config.leanTos.map(lt => buildLeanTo(lt, b, config.colors.trim.hex)),
     validation: validateAllOpenings(config.openings, b),
   };
 }
