@@ -6,7 +6,7 @@ import { useDesignerStore } from '@/lib/store/designerStore';
 import { STANDARD_COLORS, findColor, createLeanTo, DEFAULT_PRICING_RULES } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 import { wallFrame } from '@/lib/building/wallFrame';
-import { availableSizes } from '@/lib/building/openingSizes';
+import { availableSizes, defaultOpeningSize } from '@/lib/building/openingSizes';
 import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 
@@ -447,14 +447,20 @@ function OpeningSection() {
 
   const handleAdd = useCallback((type: Opening['type']) => {
     const id = `${type}_${Date.now()}`;
-    const defaults: Record<Opening['type'], Omit<Opening, 'id'>> = {
-      rollup:   { type: 'rollup',   widthFt: 10, heightFt: 10, wall: 'front', positionFt: 3, color: null },
-      walkin:   { type: 'walkin',    widthFt: 3,  heightFt: 7,  wall: 'front', positionFt: 2, color: null },
-      window:   { type: 'window',    widthFt: 3,  heightFt: 3,  wall: 'left',  positionFt: 10, color: null },
-      frameout: { type: 'frameout',  widthFt: 10, heightFt: 10, wall: 'front', positionFt: 3, color: null },
+    // Wall/position defaults per type; the SIZE comes from defaultOpeningSize
+    // below rather than a literal, so a newly-added opening is always one of
+    // the sizes the size <select> itself offers, and never prices as
+    // 'Estimated' for a dealer whose openingPrices omits these historical
+    // literal sizes.
+    const placement: Record<Opening['type'], Pick<Opening, 'wall' | 'positionFt'>> = {
+      rollup:   { wall: 'front', positionFt: 3 },
+      walkin:   { wall: 'front', positionFt: 2 },
+      window:   { wall: 'left',  positionFt: 10 },
+      frameout: { wall: 'front', positionFt: 3 },
     };
-    addOpening({ id, ...defaults[type] });
-  }, [addOpening]);
+    const { widthFt, heightFt } = defaultOpeningSize(type, pricingRules);
+    addOpening({ id, type, widthFt, heightFt, color: null, ...placement[type] });
+  }, [addOpening, pricingRules]);
 
   return (
     <Section title="Doors & Windows" defaultOpen>

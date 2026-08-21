@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { availableSizes } from '../openingSizes';
+import { availableSizes, defaultOpeningSize } from '../openingSizes';
 import { DEFAULT_PRICING_RULES } from '../defaultConfig';
 import { calculatePrice } from '../../pricing/calculatePrice';
 import type { BuildingConfig, DealerPricingRules, Opening, OpeningType } from '../types';
@@ -108,6 +108,101 @@ describe('availableSizes', () => {
         expect(lineItem).toBeDefined();
         expect(lineItem!.detail).not.toBe('Estimated');
       }
+    }
+  });
+
+  // calculatePrice looks an opening up by REBUILDING a key from the parsed
+  // numbers (`${type}_${widthFt}x${heightFt}`) — it never reuses the dealer's
+  // original string. A hand-typed non-canonical key can parse cleanly and
+  // still rebuild to a DIFFERENT string, so passing the malformed-key regex
+  // is not enough; only a key that already equals its own rebuilt form can
+  // ever match calculatePrice's lookup.
+  it('rejects a non-canonical zero-padded key (rollup_08x14) even though it parses cleanly', () => {
+    // 8x14 is not one of DEFAULT_PRICING_RULES's rollup sizes, so — unlike an
+    // 8x8 or 10x10 pick — its absence from the result can't be coincidental
+    // fallback overlap with a real default size.
+    const rules: DealerPricingRules = {
+      ...DEFAULT_PRICING_RULES,
+      openingPrices: { rollup_08x14: 900 },
+    };
+    const sizes = availableSizes('rollup', rules);
+    expect(sizes).not.toContainEqual({ widthFt: 8, heightFt: 14 });
+    // No canonical rollup key survives either, so this falls back to defaults.
+    expect(sizes).toEqual(availableSizes('rollup', DEFAULT_PRICING_RULES));
+  });
+
+  it('rejects a non-canonical decimal key (rollup_10.50x8) even though it parses cleanly', () => {
+    const rules: DealerPricingRules = {
+      ...DEFAULT_PRICING_RULES,
+      openingPrices: { 'rollup_10.50x8': 900 },
+    };
+    const sizes = availableSizes('rollup', rules);
+    expect(sizes).not.toContainEqual({ widthFt: 10.5, heightFt: 8 });
+    expect(sizes).toEqual(availableSizes('rollup', DEFAULT_PRICING_RULES));
+  });
+
+  it('offers only the canonical key when a canonical and a non-canonical key parse to the same size', () => {
+    const rules: DealerPricingRules = {
+      ...DEFAULT_PRICING_RULES,
+      openingPrices: { rollup_10x10: 850, 'rollup_010x10': 999 },
+    };
+    expect(availableSizes('rollup', rules)).toEqual([{ widthFt: 10, heightFt: 10 }]);
+  });
+});
+
+// handleAdd in components/designer/BuildingDesigner.tsx used to write
+// hardcoded literal sizes (rollup 10x10, walkin 3x7, window 3x3, frameout
+// 10x10) straight through addOpening, never consulting availableSizes. For a
+// dealer whose openingPrices lacks those exact sizes, the newly added opening
+// priced as 'Estimated' immediately, and the size <select> rendered with no
+// option matching the stored WxH. defaultOpeningSize is what handleAdd now
+// calls instead.
+describe('defaultOpeningSize (handleAdd path)', () => {
+  it('seeds every opening type from availableSizes rather than a hardcoded literal, even when the dealer lacks the old literal sizes', () => {
+    const rules: DealerPricingRules = {
+      ...DEFAULT_PRICING_RULES,
+      openingPrices: {
+        // Deliberately omit rollup_10x10, walkin_3x7, window_3x3, and
+        // frameout_10x10 — the previous hardcoded handleAdd literals — so a
+        // regression back to those literals would price as 'Estimated'.
+        rollup_12x12: 1200,
+        walkin_3x8: 400,
+        window_3x4: 200,
+        frameout_8x8: 250,
+      },
+    };
+
+    const expected: Record<OpeningType, { widthFt: number; heightFt: number }> = {
+      rollup: { widthFt: 12, heightFt: 12 },
+      walkin: { widthFt: 3, heightFt: 8 },
+      window: { widthFt: 3, heightFt: 4 },
+      frameout: { widthFt: 8, heightFt: 8 },
+    };
+
+    for (const type of Object.keys(expected) as OpeningType[]) {
+      const size = defaultOpeningSize(type, rules);
+      expect(size).toEqual(expected[type]);
+
+      const opening: Opening = {
+        id: 'o1', type, widthFt: size.widthFt, heightFt: size.heightFt,
+        wall: 'front', positionFt: 0, color: null,
+      };
+      const result = calculatePrice(configWithOpening(opening), rules);
+      const lineItem = result.lineItems.find(li => !li.label.includes('Base Building'));
+      expect(lineItem).toBeDefined();
+      expect(lineItem!.detail).not.toBe('Estimated');
+    }
+  });
+
+  it('falls back to a sane literal if availableSizes ever returns nothing, rather than throwing', () => {
+    const rules: DealerPricingRules = { ...DEFAULT_PRICING_RULES, openingPrices: {} };
+    // Even with empty dealer prices, availableSizes falls back to
+    // DEFAULT_PRICING_RULES, so this should still resolve to a real size.
+    for (const type of ['walkin', 'rollup', 'window', 'frameout'] as OpeningType[]) {
+      expect(() => defaultOpeningSize(type, rules)).not.toThrow();
+      const size = defaultOpeningSize(type, rules);
+      expect(size.widthFt).toBeGreaterThan(0);
+      expect(size.heightFt).toBeGreaterThan(0);
     }
   });
 });

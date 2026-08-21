@@ -158,3 +158,133 @@ Clean — no output, exit 0.
 None. `updateBuilding` re-clamping openings was explicitly left as a
 "do it if straightforward" call — it was straightforward (same pattern,
 same already-computed `nextBuilding`), so it's included.
+
+---
+
+## Fix round 1 (2026-08-21)
+
+Code review found two holes in the central guarantee ("an unpriced size can
+never reach a customer through the UI"):
+
+### Finding 1 — adding an opening bypassed the mechanism entirely
+
+`handleAdd` in `components/designer/BuildingDesigner.tsx` wrote hardcoded
+literal sizes (`rollup` 10x10, `walkin` 3x7, `window` 3x3, `frameout` 10x10)
+straight through `addOpening`, never consulting `availableSizes`.
+`clampOpening` only clamps position/height, not size. For a dealer whose
+`openingPrices` lacks those exact literals, a newly-added opening priced as
+`'Estimated'` immediately, and its size `<select>` rendered with no option
+matching the stored WxH.
+
+**Fix:** added `defaultOpeningSize(type, rules)` to
+`lib/building/openingSizes.ts` — returns `availableSizes(type, rules)[0]`,
+falling back to a `LAST_RESORT_SIZE` literal only if `availableSizes`
+somehow returns nothing (defensively unreachable in practice, since
+`DEFAULT_PRICING_RULES` always has at least one priced size per type — kept
+only so opening creation can never throw). `handleAdd` now calls
+`defaultOpeningSize(type, pricingRules)` for width/height instead of a
+literal; wall/position defaults per type are unchanged (those were never
+part of the pricing guarantee).
+
+### Finding 2 — the parse/rebuild round-trip was breakable
+
+`availableSizes` parsed a key to numbers; `calculatePrice` independently
+*rebuilds* the key as `` `${type}_${widthFt}x${heightFt}` ``. Those only
+agree when the dealer's key is already in that canonical form. A hand-typed
+`rollup_08x08` parsed to `{8,8}` and rebuilt to `rollup_8x8` — no match,
+silent `'Estimated'`. Same for `rollup_10.50x8` → rebuilds to `rollup_10.5x8`.
+Both passed the malformed-key regex filter, so they reached the dropdown
+looking legitimate.
+
+**Fix:** in `sizesForType` (`lib/building/openingSizes.ts`), after parsing a
+key to `{widthFt, heightFt}`, the canonical key is rebuilt exactly as
+`calculatePrice` does and the size is only kept if
+`prices[canonicalKey] != null`. `lib/pricing/calculatePrice.ts` was not
+touched — it remains the single authority on key construction;
+`availableSizes` conforms to it rather than the reverse.
+
+This surfaced a second-order bug while writing the "canonical alongside
+non-canonical" test: a non-canonical key (e.g. `rollup_010x10`) can rebuild
+to the SAME canonical key as another entry already in the map (e.g.
+`rollup_10x10`) and pass the `prices[canonicalKey] != null` check without
+itself equaling the canonical key — producing a duplicate `{10,10}` entry in
+the offered list. Fixed by deduping on the canonical key string
+(`seenCanonicalKeys` Set) inside `sizesForType`, so a canonical/non-canonical
+pair that resolves to the same size yields exactly one dropdown entry.
+
+### New tests — confirmed failing before the fix
+
+Ran `npx vitest run lib/building/__tests__/openingSizes.test.ts` against the
+pre-fix code: **5 of 5 new tests failed**, 6 pre-existing passed:
+
+- `rejects a non-canonical zero-padded key (rollup_08x14) even though it
+  parses cleanly` — failed (`08x14` was offered; pre-fix code had no
+  canonical check at all).
+- `rejects a non-canonical decimal key (rollup_10.50x8) even though it
+  parses cleanly` — failed (`10.5x8` was offered).
+- `offers only the canonical key when a canonical and a non-canonical key
+  parse to the same size` — failed (both `rollup_10x10` and
+  `rollup_010x10` were offered as two `{10,10}` entries; the array had length
+  2, expected 1).
+- `seeds every opening type from availableSizes rather than a hardcoded
+  literal...` (in the new `defaultOpeningSize` describe block) — failed with
+  `TypeError: defaultOpeningSize is not a function` (didn't exist yet).
+- `falls back to a sane literal if availableSizes ever returns nothing...`
+  — same `TypeError`, function didn't exist.
+
+After implementing both fixes, all 11 tests in the file pass (6 original + 5
+new).
+
+One test-authoring correction worth recording: the first attempt at the
+zero-padded-key test used `rollup_08x08`, asserting `{8,8}` was not offered.
+That assertion was wrong on its own terms — `DEFAULT_PRICING_RULES` already
+has a *canonical* `rollup_8x8` entry, so `{8,8}` legitimately appears in the
+result via the fallback path regardless of the `08x08` key's rejection,
+making the assertion pass or fail for the wrong reason. Reworked to
+`rollup_08x14`, a size absent from `DEFAULT_PRICING_RULES`'s rollup sizes, so
+its absence from the result can only mean the non-canonical key was
+correctly rejected.
+
+## Updated test command and full output
+
+```
+$ npx vitest run lib/building/__tests__/openingSizes.test.ts
+
+ RUN  v4.1.11 C:/Users/13183/steel_sync
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+```
+
+Full suite:
+
+```
+$ npm test
+
+> steel-sync@0.1.0 test
+> vitest run
+
+ RUN  v4.1.11 C:/Users/13183/steel_sync
+
+
+ Test Files  16 passed (16)
+      Tests  133 passed (133)
+   Start at  17:15:47
+   Duration  13.10s (transform 2.36s, setup 0ms, import 11.23s, tests 2.48s, environment 14.75s)
+```
+
+133 = 128 from the initial implementation + 5 new (11 total in
+`openingSizes.test.ts`, up from 6). Zero warnings, pristine output.
+
+## `tsc --noEmit` (after fix round 1)
+
+Clean — no output, exit 0.
+
+## Constraints honored
+
+- `lib/pricing/calculatePrice.ts` untouched — remains the sole authority on
+  key construction.
+- `RoofStyle['aframe']`, `lib/building/wallFrame.ts`, `lib/db/**`,
+  `lib/notify/**` untouched.
+- No `vercel`, `db:seed`, or `db:migrate` commands run.
