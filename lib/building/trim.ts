@@ -1,13 +1,17 @@
 // Steel Sync — Parametric Trim Generation
 // Trim pieces follow generated geometry — never manually placed.
 
-import type { BuildingDimensions } from './types';
+import type { BuildingDimensions, WallId } from './types';
 import { ridgeRiseFt, roofSlopeAngle, roofSlopeLengthFt } from './geometry';
+import { wallFrame, pointOnWall } from './wallFrame';
 
 // ─── Constants ─────────────────────────────────────────────
 
 const TRIM_T = 0.12; // trim strip thickness/depth
 const ROOF_OVERHANG = 0.5; // must match roof.ts ROOF_OVERHANG_FT
+// Must exceed OPENING_PROUD_FT (openings.ts) so trim reads on top of openings
+// instead of z-fighting with them.
+const TRIM_PROUD_FT = 0.03;
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -48,46 +52,48 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   });
 
   // ── Eave trim (left + right) — runs along the bottom edge of the roof ──
-  // Positioned at the eave line (x=0 for left, x=W for right) at roof height,
-  // as a fascia strip on the outer face of the roof edge
-  pieces.push({
-    id: 'eave-left',
-    category: 'eave',
-    position: [-T / 2, H - T / 2, L / 2],
-    size: [T, T * 2, roofLen],
-  });
-  pieces.push({
-    id: 'eave-right',
-    category: 'eave',
-    position: [W + T / 2, H - T / 2, L / 2],
-    size: [T, T * 2, roofLen],
-  });
+  // Derived from wallFrame: a fascia strip proud of each non-gable wall's
+  // outer face, spanning exactly that wall's length (not the roof's overhang-
+  // extended length — that mismatch was the source of the eave z-fighting seam).
+  const EAVE_WALLS: WallId[] = ['left', 'right'];
+  for (const wall of EAVE_WALLS) {
+    const f = wallFrame(wall, config);
+    const start = pointOnWall(f, 0, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
+    const end = pointOnWall(f, f.lengthFt, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
+    pieces.push({
+      id: `eave-${wall}`,
+      category: 'eave',
+      position: [
+        (start[0] + end[0]) / 2,
+        (start[1] + end[1]) / 2,
+        (start[2] + end[2]) / 2,
+      ],
+      size: [T, T * 2, f.lengthFt],
+    });
+  }
 
   // ── Corner trim (4 vertical wall corners) ──
-  // L-shaped trim at each corner, running full wall height
-  const cornerPositions: [number, number, string][] = [
-    [0, 0, 'FL'],     // front-left
-    [W, 0, 'FR'],     // front-right
-    [0, L, 'BL'],     // back-left
-    [W, L, 'BR'],     // back-right
-  ];
-  cornerPositions.forEach(([x, z, label]) => {
-    // Vertical strip on each wall face of the corner
-    const signX = x === 0 ? -1 : 1;
-    const signZ = z === 0 ? -1 : 1;
-    pieces.push({
-      id: `corner-x-${label}`,
-      category: 'corner',
-      position: [x + signX * T / 2, H / 2, z],
-      size: [T, H, T * 2],
-    });
-    pieces.push({
-      id: `corner-z-${label}`,
-      category: 'corner',
-      position: [x, H / 2, z + signZ * T / 2],
-      size: [T * 2, H, T],
-    });
-  });
+  // Each wall contributes a vertical strip at its u=0 and u=lengthFt edges,
+  // proud of the wall face. Every physical corner ends up with two strips —
+  // one from each adjoining wall — reproducing the original L-shaped trim
+  // without hand-picking corner coordinates.
+  const ALL_WALLS: WallId[] = ['front', 'back', 'left', 'right'];
+  for (const wall of ALL_WALLS) {
+    const f = wallFrame(wall, config);
+    // front/back run along world X; left/right run along world Z.
+    const runsAlongX = Math.abs(f.along[0]) > Math.abs(f.along[2]);
+    const size: [number, number, number] = runsAlongX
+      ? [T * 2, f.eaveHeightFt, T]
+      : [T, f.eaveHeightFt, T * 2];
+    for (const [u, label] of [[0, '0'], [f.lengthFt, 'L']] as const) {
+      pieces.push({
+        id: `corner-${wall}-${label}`,
+        category: 'corner',
+        position: pointOnWall(f, u, f.eaveHeightFt / 2, TRIM_PROUD_FT),
+        size,
+      });
+    }
+  }
 
   // ── Base trim (perimeter at ground level) ──
   pieces.push({

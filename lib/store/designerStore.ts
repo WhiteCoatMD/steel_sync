@@ -13,8 +13,9 @@ import type {
   RoofStyle,
 } from '../building/types';
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
-import { createDefaultConfig, DEFAULT_PRICING_RULES } from '../building/defaultConfig';
+import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
+import { wallFrame } from '../building/wallFrame';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -26,17 +27,51 @@ function withPricing(config: BuildingConfig, dealer?: DealerSettings | null): Bu
   return { ...config, pricing: calculatePrice(config, rules), updatedAt: new Date().toISOString() };
 }
 
+/**
+ * Clamp a lean-to's stored lengthFt to its attached wall's length, so the
+ * stored config always agrees with the clamped extent buildLeanTo() renders
+ * (and thus with what calculatePrice() quotes).
+ */
+function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo {
+  const wallLengthFt = wallFrame(leanTo.wall, building).lengthFt;
+  if (leanTo.lengthFt <= wallLengthFt) return leanTo;
+  return { ...leanTo, lengthFt: wallLengthFt };
+}
+
+/**
+ * Is this decoded blob actually a design?
+ *
+ * `loadDesign` used to return `true` for any base64 that JSON-parsed, so
+ * `btoa('{}')` silently replaced the shared design with a default building and
+ * reported success. A design is minimally a `building` with the three
+ * dimensions everything downstream multiplies.
+ */
+function isDesignPayload(v: unknown): v is Record<string, any> {
+  if (typeof v !== 'object' || v === null || Array.isArray(v)) return false;
+  const b = (v as Record<string, unknown>).building;
+  if (typeof b !== 'object' || b === null || Array.isArray(b)) return false;
+  const dims = b as Record<string, unknown>;
+  return (['widthFt', 'lengthFt', 'legHeightFt'] as const)
+    .every(k => typeof dims[k] === 'number' && Number.isFinite(dims[k] as number));
+}
+
 // ─── Store Interface ────────────────────────────────────────
+
+export type SubmitResult =
+  | { ok: true; quoteId: string }
+  | { ok: false; error: string };
 
 interface DesignerStore {
   config: BuildingConfig | null;
   dealerSettings: DealerSettings | null;
   activeStep: ConfigStep;
   isQuoteFormOpen: boolean;
+  isSubmitting: boolean;
+  submitError: string | null;
   selectedOpeningId: string | null;
   isDraggingOpening: boolean;
 
-  initialize: (dealerId: string) => void;
+  initialize: (dealerId: string, dealer?: DealerSettings | null) => void;
 
   // Building
   updateBuilding: (partial: Partial<BuildingDimensions>) => void;
@@ -60,7 +95,7 @@ interface DesignerStore {
   setActiveStep: (step: ConfigStep) => void;
   openQuoteForm: () => void;
   closeQuoteForm: () => void;
-  submitQuote: (customer: CustomerInfo) => Promise<void>;
+  submitQuote: (customer: CustomerInfo) => Promise<SubmitResult>;
 
   // AI
   applyAIConfig: (aiResult: any) => void;
@@ -77,12 +112,14 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   dealerSettings: null,
   activeStep: 'dimensions',
   isQuoteFormOpen: false,
+  isSubmitting: false,
+  submitError: null,
   selectedOpeningId: null,
   isDraggingOpening: false,
 
-  initialize: (dealerId) => {
+  initialize: (dealerId, dealer = null) => {
     const config = createDefaultConfig(dealerId);
-    set({ config: withPricing(config) });
+    set({ dealerSettings: dealer, config: withPricing(config, dealer) });
   },
 
   updateBuilding: (partial) => {
@@ -100,9 +137,13 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       };
     }
 
+    const nextBuilding = { ...config.building, ...updates };
     const next: BuildingConfig = {
       ...config,
-      building: { ...config.building, ...updates },
+      building: nextBuilding,
+      // Building may have shrunk — re-clamp any lean whose stored length now
+      // overruns its wall, so geometry and pricing keep agreeing.
+      leanTos: config.leanTos.map(lt => clampLeanToLength(lt, nextBuilding)),
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -176,7 +217,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     if (!config) return;
     const next: BuildingConfig = {
       ...config,
-      leanTos: [...config.leanTos, leanTo],
+      leanTos: [...config.leanTos, clampLeanToLength(leanTo, config.building)],
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -200,11 +241,19 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     // Apply building dimensions/type
     if (ai.building) {
       next.building = { ...next.building, ...ai.building };
+      // Same re-clamp updateBuilding does: an AI result can shrink widthFt or
+      // lengthFt below an existing lean-to's stored length, and this path is
+      // live via /api/ai-config. Without it the config quotes a lean-to
+      // longer than buildLeanTo() renders.
+      next.leanTos = next.leanTos.map(lt => clampLeanToLength(lt, next.building));
     }
 
     // Apply colors
+    // `findColor` was pulled in with a bare `require()` here. That happens to
+    // work inside a webpack/Turbopack client bundle, but this is an ES module
+    // — `require` is not defined under plain ESM, so the AI colour path threw
+    // anywhere outside the Next bundler. Static import instead.
     if (ai.colors) {
-      const { findColor } = require('../building/defaultConfig');
       if (ai.colors.roof) next.colors = { ...next.colors, roof: findColor(ai.colors.roof) };
       if (ai.colors.walls) next.colors = { ...next.colors, walls: findColor(ai.colors.walls) };
       if (ai.colors.trim) next.colors = { ...next.colors, trim: findColor(ai.colors.trim) };
@@ -253,16 +302,33 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   },
 
   loadDesign: (encoded) => {
-    const { dealerSettings } = get();
+    const { config, dealerSettings } = get();
     try {
       const parsed = JSON.parse(atob(encoded));
-      const base = createDefaultConfig(parsed.dealerId ?? 'default');
+
+      // A share link is attacker-controlled input, not trusted state.
+      if (!isDesignPayload(parsed)) return false;
+
+      // The SERVER-RESOLVED dealer wins; `parsed.dealerId` is ignored
+      // entirely. Honouring it let a crafted `?design=` re-attribute the lead
+      // — along with the customer's name, phone and email — to a different
+      // active dealer, since the same value is what the quote route resolves
+      // on submit.
+      const dealerId = config?.dealerId ?? dealerSettings?.id ?? 'default';
+
+      const base = createDefaultConfig(dealerId);
+      const building = { ...base.building, ...parsed.building };
+      const leanTos: LeanTo[] = Array.isArray(parsed.leanTos) ? parsed.leanTos : base.leanTos;
       const restored: BuildingConfig = {
         ...base,
-        building: { ...base.building, ...parsed.building },
+        building,
         colors: { ...base.colors, ...parsed.colors },
-        openings: parsed.openings ?? base.openings,
-        leanTos: parsed.leanTos ?? base.leanTos,
+        openings: Array.isArray(parsed.openings) ? parsed.openings : base.openings,
+        // Restored verbatim, an encoded lean-to could overrun its wall and
+        // reopen the quote/geometry mismatch a6d0c8c closed — buildLeanTo()
+        // renders the clamped extent while the config (and therefore the
+        // quote) claims the longer one.
+        leanTos: leanTos.map(lt => clampLeanToLength(lt, building)),
         options: { ...base.options, ...parsed.options },
         certifications: { ...base.certifications, ...parsed.certifications },
       };
@@ -275,29 +341,50 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
   submitQuote: async (customer) => {
     const { config } = get();
-    if (!config) return;
+    if (!config) {
+      const error = 'No configuration';
+      set({ submitError: error });
+      return { ok: false, error };
+    }
 
-    const quoteConfig: BuildingConfig = {
-      ...config,
-      customer,
-      quoteId: `qt_${Date.now()}`,
-      updatedAt: new Date().toISOString(),
-    };
+    set({ isSubmitting: true, submitError: null });
+    const payload = { ...config, customer, updatedAt: new Date().toISOString() };
 
     try {
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(quoteConfig),
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (data.quoteId) {
-        quoteConfig.quoteId = data.quoteId;
-      }
-    } catch {
-      // Offline/error — still save locally so user doesn't lose work
-    }
 
-    set({ config: quoteConfig, isQuoteFormOpen: false });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({} as any));
+        const error = b.error ?? 'Submission failed. Please try again.';
+        set({ isSubmitting: false, submitError: error });
+        return { ok: false, error };
+      }
+
+      const body = await res.json().catch(() => ({} as any));
+      const quoteId = typeof body.quoteId === 'string' && body.quoteId.length > 0
+        ? body.quoteId
+        : null;
+
+      if (!quoteId) {
+        const error = 'Something went wrong on our end. Please try again or call us.';
+        set({ isSubmitting: false, submitError: error });
+        return { ok: false, error };
+      }
+
+      set({
+        config: { ...payload, quoteId },
+        isQuoteFormOpen: false,
+        isSubmitting: false,
+      });
+      return { ok: true, quoteId };
+    } catch {
+      const error = 'Network error — please check your connection and try again.';
+      set({ isSubmitting: false, submitError: error });
+      return { ok: false, error };
+    }
   },
 }));

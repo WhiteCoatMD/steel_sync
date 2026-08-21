@@ -14,3 +14,8 @@ freecad-mcp/
 .playwright-mcp/
 .claude/worktrees/
 .superpowers/
+
+# Vercel/Neon integration-installed agent skills (tool artifacts, not source)
+.agents/
+.claude/skills/
+skills-lock.json

@@ -2,7 +2,7 @@
 // Manages door/window placement, validation, and collision detection.
 
 import type { BuildingDimensions, Opening, WallId } from './types';
-import { wallLengthFt } from './geometry';
+import { wallFrame } from './wallFrame';
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ export function validateOpening(
   building: BuildingDimensions,
 ): OpeningValidation {
   const errors: string[] = [];
-  const wLen = wallLengthFt(opening.wall, building);
+  const wLen = wallFrame(opening.wall, building).lengthFt;
   const wH = building.legHeightFt;
 
   if (opening.positionFt < 0) {
@@ -171,7 +171,7 @@ export function findOpenSlot(
   building: BuildingDimensions,
   margin = 1,
 ): number | null {
-  const wLen = wallLengthFt(wall, building);
+  const wLen = wallFrame(wall, building).lengthFt;
   const wallOpenings = existing
     .filter(o => o.wall === wall)
     .sort((a, b) => a.positionFt - b.positionFt);
