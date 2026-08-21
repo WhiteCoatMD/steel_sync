@@ -1,7 +1,20 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest, NextResponse } from 'next/server';
 
-const client = new Anthropic(); // uses ANTHROPIC_API_KEY env var
+/**
+ * Constructed lazily, on the same reasoning as getSql() in lib/db/index.ts.
+ *
+ * `new Anthropic()` throws when ANTHROPIC_API_KEY is absent. At module scope
+ * that throw happens during module evaluation, which `next build` performs
+ * while collecting route data — so a Vercel build environment missing the key
+ * would fail the whole build rather than this one endpoint at request time.
+ */
+let client: Anthropic | null = null;
+
+function getClient(): Anthropic {
+  if (!client) client = new Anthropic(); // uses ANTHROPIC_API_KEY env var
+  return client;
+}
 
 const SYSTEM_PROMPT = `You are a metal building configurator assistant. Parse the user's building description and return a JSON object with these fields (only include fields mentioned or implied):
 
@@ -47,7 +60,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing prompt' }, { status: 400 });
     }
 
-    const message = await client.messages.create({
+    const message = await getClient().messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
