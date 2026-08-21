@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useDesignerStore, isSuccessfulSubmit } from '@/lib/store/designerStore';
+import { useDesignerStore } from '@/lib/store/designerStore';
 import { STANDARD_COLORS, findColor, createLeanTo } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 import { ThreeScene } from './ThreeScene';
@@ -37,6 +37,10 @@ export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerP
   useEffect(() => {
     if (isQuoteFormOpen) setQuoteModalVisible(true);
   }, [isQuoteFormOpen]);
+  // Stable identity so QuoteFormModal's `dismiss` callback (and the
+  // Escape-key effect built on it) doesn't get recreated — and its
+  // listener re-attached — on every root render.
+  const closeQuoteModal = useCallback(() => setQuoteModalVisible(false), []);
 
   useEffect(() => {
     initialize(dealerId, dealer);
@@ -65,7 +69,7 @@ export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerP
           <ThreeScene />
         </main>
       </div>
-      {quoteModalVisible && <QuoteFormModal onClose={() => setQuoteModalVisible(false)} />}
+      {quoteModalVisible && <QuoteFormModal onClose={closeQuoteModal} />}
     </div>
   );
 }
@@ -813,7 +817,7 @@ export function QuoteFormModal({ onClose }: { onClose: () => void }) {
     if (!validate()) return;
     setFailure(null);
     const result = await submitQuote(form);
-    if (isSuccessfulSubmit(result)) {
+    if (result.ok) {
       setSubmitted(true); // success screen ONLY on a real success
     } else {
       setFailure(result.error);
