@@ -44,6 +44,22 @@ export type SubmitResult =
   | { ok: true; quoteId: string }
   | { ok: false; error: string };
 
+/**
+ * The exact gate that decides whether a submitQuote() outcome may show the
+ * customer a success screen. Extracted as a standalone, directly-testable
+ * predicate — and used by QuoteFormModal's handleSubmit (see
+ * components/designer/BuildingDesigner.tsx) instead of an inline
+ * `result.ok` check — so the fix for "success screen shown on failure" has
+ * unit coverage even though this repo's test setup has no JSX transform
+ * wired up for rendering that component directly (see
+ * lib/store/__tests__/isSuccessfulSubmit.test.ts for why).
+ */
+export function isSuccessfulSubmit(
+  result: SubmitResult
+): result is { ok: true; quoteId: string } {
+  return result.ok === true;
+}
+
 interface DesignerStore {
   config: BuildingConfig | null;
   dealerSettings: DealerSettings | null;

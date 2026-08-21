@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useDesignerStore } from '@/lib/store/designerStore';
+import { useDesignerStore, isSuccessfulSubmit } from '@/lib/store/designerStore';
 import { STANDARD_COLORS, findColor, createLeanTo } from '@/lib/building/defaultConfig';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 import { ThreeScene } from './ThreeScene';
@@ -24,6 +24,19 @@ export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerP
   const loadDesign = useDesignerStore((s) => s.loadDesign);
   const config = useDesignerStore((s) => s.config);
   const isQuoteFormOpen = useDesignerStore((s) => s.isQuoteFormOpen);
+  // The store closes isQuoteFormOpen the instant a submission succeeds (see
+  // submitQuote in lib/store/designerStore.ts), so it can't be used to keep
+  // the modal mounted long enough to show its own "Quote Submitted!" screen
+  // — the modal would unmount in the very same render that flips
+  // isQuoteFormOpen to false, before the success screen is ever painted.
+  // This local state instead mirrors "the customer has an active quote
+  // modal": it turns on whenever the store opens the form, and only turns
+  // off when the modal itself says it's done (including after success).
+  const [quoteModalVisible, setQuoteModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (isQuoteFormOpen) setQuoteModalVisible(true);
+  }, [isQuoteFormOpen]);
 
   useEffect(() => {
     initialize(dealerId, dealer);
@@ -52,7 +65,7 @@ export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerP
           <ThreeScene />
         </main>
       </div>
-      {isQuoteFormOpen && <QuoteFormModal />}
+      {quoteModalVisible && <QuoteFormModal onClose={() => setQuoteModalVisible(false)} />}
     </div>
   );
 }
@@ -749,12 +762,23 @@ function MobileBottomBar() {
 // QUOTE FORM MODAL
 // ═══════════════════════════════════════════════════════════════
 
-function QuoteFormModal() {
+export function QuoteFormModal({ onClose }: { onClose: () => void }) {
   const closeQuoteForm = useDesignerStore((s) => s.closeQuoteForm);
   const submitQuote = useDesignerStore((s) => s.submitQuote);
   const pricing = useDesignerStore((s) => s.config?.pricing);
-  const [submitting, setSubmitting] = useState(false);
+  // isSubmitting is owned by the store (it's the thing actually driving the
+  // fetch), so we read it directly instead of keeping a second, duplicate
+  // boolean here that could drift out of sync with it.
+  const submitting = useDesignerStore((s) => s.isSubmitting);
+  const dealerPhone = useDesignerStore((s) => s.dealerSettings?.phone ?? '');
   const [submitted, setSubmitted] = useState(false);
+  // Local, not read from the store's submitError: this component unmounts
+  // when the modal closes (see `quoteModalVisible` in the root component),
+  // so local state naturally clears on reopen. The store's submitError is
+  // not reset on open/close, so reading it directly here would show a
+  // stale failure message from a previous session the moment the modal
+  // opens, before the customer has attempted anything this time.
+  const [failure, setFailure] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [form, setForm] = useState<CustomerInfo>({
@@ -787,22 +811,35 @@ function QuoteFormModal() {
 
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
-    setSubmitting(true);
-    await submitQuote(form);
-    setSubmitting(false);
-    setSubmitted(true);
+    setFailure(null);
+    const result = await submitQuote(form);
+    if (isSuccessfulSubmit(result)) {
+      setSubmitted(true); // success screen ONLY on a real success
+    } else {
+      setFailure(result.error);
+    }
   }, [validate, submitQuote, form]);
+
+  // The single way this modal ever goes away: marks the store's form as
+  // closed AND tells the root component to unmount us. (Using closeQuoteForm
+  // alone isn't enough — see the `quoteModalVisible` comment in the root
+  // component for why a plain isQuoteFormOpen-gated render can't be trusted
+  // to keep this component around long enough to show its success screen.)
+  const dismiss = useCallback(() => {
+    closeQuoteForm();
+    onClose();
+  }, [closeQuoteForm, onClose]);
 
   // Close on Escape
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeQuoteForm(); };
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') dismiss(); };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [closeQuoteForm]);
+  }, [dismiss]);
 
   if (submitted) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeQuoteForm}>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={dismiss}>
         <div className="mx-4 w-full max-w-md rounded-xl bg-white p-8 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
             <svg className="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -811,7 +848,7 @@ function QuoteFormModal() {
           </div>
           <h3 className="mb-2 text-lg font-bold text-gray-900">Quote Submitted!</h3>
           <p className="mb-6 text-sm text-gray-500">A dealer will follow up within 24 hours.</p>
-          <button onClick={closeQuoteForm} className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+          <button onClick={dismiss} className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700">
             Back to Designer
           </button>
         </div>
@@ -820,7 +857,7 @@ function QuoteFormModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={closeQuoteForm}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={dismiss}>
       <div className="mx-4 w-full max-w-lg rounded-xl bg-white shadow-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b px-6 py-4">
           <div>
@@ -831,7 +868,7 @@ function QuoteFormModal() {
               </p>
             )}
           </div>
-          <button onClick={closeQuoteForm} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+          <button onClick={dismiss} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 20 20">
               <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.5" />
             </svg>
@@ -839,8 +876,8 @@ function QuoteFormModal() {
         </div>
         <div className="space-y-4 px-6 py-5">
           <div className="grid grid-cols-2 gap-3">
-            <FormField label="First Name" value={form.firstName} error={errors.firstName} onChange={v => update('firstName', v)} />
-            <FormField label="Last Name" value={form.lastName} error={errors.lastName} onChange={v => update('lastName', v)} />
+            <FormField label="First Name" value={form.firstName} error={errors.firstName} maxLength={40} onChange={v => update('firstName', v)} />
+            <FormField label="Last Name" value={form.lastName} error={errors.lastName} maxLength={40} onChange={v => update('lastName', v)} />
           </div>
           <FormField label="Email" type="email" value={form.email} error={errors.email} onChange={v => update('email', v)} />
           <div className="grid grid-cols-2 gap-3">
@@ -873,6 +910,15 @@ function QuoteFormModal() {
           </div>
         </div>
         <div className="border-t px-6 py-4">
+          {failure && (
+            <div role="alert" className="mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+              <p className="text-sm font-medium text-red-800">Could not submit your request</p>
+              <p className="mt-1 text-sm text-red-700">{failure}</p>
+              <p className="mt-2 text-xs text-red-600">
+                Your design is safe. Call us{dealerPhone ? ` at ${dealerPhone}` : ''} if this keeps happening.
+              </p>
+            </div>
+          )}
           <button
             onClick={handleSubmit}
             disabled={submitting}
@@ -889,8 +935,8 @@ function QuoteFormModal() {
   );
 }
 
-function FormField({ label, value, error, type = 'text', onChange }: {
-  label: string; value: string; error?: string; type?: string;
+function FormField({ label, value, error, type = 'text', maxLength, onChange }: {
+  label: string; value: string; error?: string; type?: string; maxLength?: number;
   onChange: (v: string) => void;
 }) {
   return (
@@ -899,6 +945,7 @@ function FormField({ label, value, error, type = 'text', onChange }: {
       <input
         type={type}
         value={value}
+        maxLength={maxLength}
         onChange={e => onChange(e.target.value)}
         className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 ${
           error
