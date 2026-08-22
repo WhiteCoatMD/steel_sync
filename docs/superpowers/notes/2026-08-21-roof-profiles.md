@@ -158,3 +158,73 @@ config (`roofStyle: 'vertical'`) through `calculatePrice`; roof geometry and
 trim are not inputs to pricing, so no golden values changed for any of the
 three styles. `roofStyleModifiers` in `lib/building/defaultConfig.ts` was not
 touched.
+
+## Fix round 1 — ridge point offset sign bug
+
+Post-review, the coordinator measured `buildRoofProfile` directly on the
+default 24x30x10 building and found `regular`'s x range was `[-12, 36]` —
+48 ft wide on a 24 ft building, extending a full `hw` (half-width, 12 ft)
+past each wall instead of the intended `r` (eave radius, 0.5 ft).
+
+**Root cause:** in `buildRegularRoofProfile`, the ridge point was built as
+`{ x: -hw, y: H + rise, u: 1 }`. Every other point in `pts` uses the
+convention "offset added to `xBase`" (handled in `addSide`), where the curve
+points' offsets are bounded by `r` (`xOffset = r * (Math.cos(theta) - 1)`,
+range `[-r, 0]`). The ridge point should follow the same convention with
+offset `+hw` (so left side: `0 + hw = hw`; right side, mirrored:
+`W - hw = hw` — both sides' ridge vertices land on the same point, `x = hw`).
+Instead it used `-hw`, which for the left side gave `0 + (-hw) = -hw = -12`,
+and for the right side (mirrored) gave `W - (-hw) = W + hw = 36` — exactly
+the reported `[-12, 36]`. The curve points themselves were never wrong; only
+this one ridge-point offset had the wrong sign.
+
+**Fix:** changed `{ x: -hw, ... }` to `{ x: hw, ... }` in
+`lib/building/roof.ts`'s `buildRegularRoofProfile`.
+
+**Verified the fix actually catches the class of bug**, not just this one
+instance: before restoring the fix, the two new bounded/regression tests
+below were run against the reintroduced `-hw` bug and both failed as
+expected (`-12 to be close to -0.5, difference 11.5`; footprint span
+`23` vs. the `< 1` threshold), then passed once the fix was restored.
+
+**Test changes** (`lib/building/__tests__/roof.test.ts`):
+
+- Replaced the old direction-only assertion ("wraps ... outward past the
+  wall face", which only checked `minX < 0` and `maxX > W` — `-12` satisfies
+  that just as well as `-0.5` does, which is why it missed this bug) with
+  two new tests:
+  - `bounds the regular eave wrap by the eave radius, not the half-width` —
+    pins `minX` to `-0.5` and `maxX` to `24.5` (`toBeCloseTo`, 5 decimal
+    places), plus explicit `>=`/`<=` bounds against `radius + tolerance`.
+  - `gives regular nearly the same x-footprint as aframe (differs in
+    profile, not size)` — asserts `|regularWidth - aframeWidth| < 1` ft.
+    This is the single assertion the coordinator specifically called out as
+    the one that would have caught the bug; it fails loudly (`23 not < 1`)
+    against the buggy code.
+- Corrected the wall-capping test. The original task spec asked for an
+  assertion that "regular's eave y >= H, never below it" — that wording is
+  wrong: a wrapped panel legitimately comes down the outside face below the
+  eave line (y dips to `H - r` at the wrap's outer tip, confirmed by the
+  coordinator's own measurement showing `y:[9.5, 14]`). The test file
+  already only checked vertices exactly at the wall face (`x` within `1e-6`
+  of `0` or `W`, i.e. the shoulder point), so it was not actually asserting
+  the overreaching "y >= H everywhere" claim — but the name and comment
+  were rewritten (renamed to `caps the wall top at the wall face for
+  regular`) to make that scoping explicit and prevent a future reader from
+  assuming it means the stronger, incorrect claim.
+
+## Measured x ranges (default 24x30x10 building, overhang/radius = 0.5 ft)
+
+| style    | before fix (x range) | after fix (x range) |
+|----------|-----------------------|----------------------|
+| regular  | `[-12, 36]`           | `[-0.5, 24.5]`       |
+| aframe   | `[-0.5, 24.5]`        | `[-0.5, 24.5]` (unchanged) |
+| vertical | `[-0.5, 24.5]`        | `[-0.5, 24.5]` (unchanged) |
+
+All three styles now share the same outer x footprint (`[-0.5, 24.5]`),
+differing in the profile of the eave (curved wrap vs. flat overhang), not in
+overall building width — as intended.
+
+`npm test` after the fix: 18 test files, 148 tests passed (one more than the
+147 reported before this round, from the new footprint-comparison test),
+pristine. `npx tsc --noEmit`: clean.

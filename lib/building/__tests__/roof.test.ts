@@ -16,6 +16,21 @@ function makeConfig(roofStyle: RoofStyle): BuildingDimensions {
 }
 
 const OVERHANG = 0.5;
+// Mirrors lib/building/roof.ts's REGULAR_EAVE_RADIUS_FT. Duplicated (not
+// imported) so this test pins an independent expectation rather than
+// trivially agreeing with whatever the implementation currently uses.
+const REGULAR_EAVE_RADIUS_FT = 0.5;
+const TOL = 1e-6;
+
+function xRange(positions: number[]): { minX: number; maxX: number } {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (let i = 0; i < positions.length; i += 3) {
+    minX = Math.min(minX, positions[i]);
+    maxX = Math.max(maxX, positions[i]);
+  }
+  return { minX, maxX };
+}
 
 /** Distinct (x,y) points on the "left" half of the profile (x <= W/2), including the ridge. */
 function leftSideXY(positions: number[], halfW: number): Set<string> {
@@ -29,7 +44,14 @@ function leftSideXY(positions: number[], halfW: number): Set<string> {
 }
 
 describe('buildRoofProfile', () => {
-  it('keeps regular eave at or above wall height H at the wall face (no exposed wall stripe)', () => {
+  // NOTE: this deliberately does NOT assert "y >= H everywhere" for regular.
+  // A wrapped panel legitimately curves DOWN the outside face below the eave
+  // line (y dips to H - r out at the wrap's outer tip), and that's correct,
+  // not a bug. What must hold is narrower: at the wall face itself (x exactly
+  // 0 or exactly W, i.e. the shoulder point where the roof and wall meet),
+  // the roof must cap the wall at y >= H so there's no gap showing the wall
+  // above the roof edge. Vertices away from the wall face are exempt.
+  it('caps the wall top at the wall face for regular (no exposed wall stripe)', () => {
     const cfg = makeConfig('regular');
     const profile = buildRoofProfile(cfg, OVERHANG);
     const H = cfg.legHeightFt;
@@ -55,18 +77,34 @@ describe('buildRoofProfile', () => {
     expect(leftPoints.size).toBeGreaterThan(3);
   });
 
-  it('wraps the regular eave outward past the wall face (not a flat overhang)', () => {
+  // Regression test for a real bug: the wrap's horizontal travel was once
+  // bounded by the half-width (hw) instead of the eave radius, producing a
+  // roof 48ft wide on a 24ft building. A direction-only assertion ("beyond
+  // the wall face") does not catch that — -12 is beyond the wall face too.
+  // These assertions pin the actual magnitude.
+  it('bounds the regular eave wrap by the eave radius, not the half-width', () => {
     const cfg = makeConfig('regular');
     const profile = buildRoofProfile(cfg, OVERHANG);
     const W = cfg.widthFt;
-    let minX = Infinity;
-    let maxX = -Infinity;
-    for (let i = 0; i < profile.positions.length; i += 3) {
-      minX = Math.min(minX, profile.positions[i]);
-      maxX = Math.max(maxX, profile.positions[i]);
-    }
-    expect(minX).toBeLessThan(0);
-    expect(maxX).toBeGreaterThan(W);
+    const { minX, maxX } = xRange(profile.positions);
+
+    // Pinned to the actual expected numbers so a future regression of this
+    // exact shape (radius swapped for something larger, e.g. half-width)
+    // fails loudly instead of merely satisfying a directional check.
+    expect(minX).toBeCloseTo(-REGULAR_EAVE_RADIUS_FT, 5);
+    expect(maxX).toBeCloseTo(W + REGULAR_EAVE_RADIUS_FT, 5);
+    expect(minX).toBeGreaterThanOrEqual(-(REGULAR_EAVE_RADIUS_FT + TOL));
+    expect(maxX).toBeLessThanOrEqual(W + REGULAR_EAVE_RADIUS_FT + TOL);
+  });
+
+  it('gives regular nearly the same x-footprint as aframe (differs in profile, not size)', () => {
+    const regular = buildRoofProfile(makeConfig('regular'), OVERHANG);
+    const aframe = buildRoofProfile(makeConfig('aframe'), OVERHANG);
+    const regularSpan = xRange(regular.positions);
+    const aframeSpan = xRange(aframe.positions);
+    const regularWidth = regularSpan.maxX - regularSpan.minX;
+    const aframeWidth = aframeSpan.maxX - aframeSpan.minX;
+    expect(Math.abs(regularWidth - aframeWidth)).toBeLessThan(1);
   });
 
   it('gives aframe and vertical a flat eave overhang past the wall face', () => {

@@ -313,8 +313,14 @@ function buildRegularRoofProfile(
     const arcLen = r * (theta + Math.PI / 2);
     curvePts.push({ x: xOffset, y, u: arcLen / totalLen });
   }
-  // Ridge point continues the same offset convention: hw past the wall face.
-  const pts: Pt[] = [...curvePts, { x: -hw, y: H + rise, u: 1 }];
+  // Ridge point continues the same "offset added to xBase" convention used
+  // by addSide() below: +hw takes the left side (xBase=0) to x=hw, and the
+  // right side (xBase=W, mirrored) to x = W - hw = hw — the two sides' ridge
+  // vertices land on the same point. (A previous version used -hw here,
+  // which put the ridge a full half-width beyond each wall face instead of
+  // at the actual ridge line — the wrap's horizontal travel must be bounded
+  // by the eave radius `r`, not by `hw`.)
+  const pts: Pt[] = [...curvePts, { x: hw, y: H + rise, u: 1 }];
 
   const positions: number[] = [];
   const uvs: number[] = [];
