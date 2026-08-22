@@ -478,8 +478,19 @@ function PanelPanel({ x, y, w, h, zOff, color, panelDir }: {
   const offU = panelDir === 'vertical' ? x * RIBS_PER_FOOT : 0;
   const offV = panelDir === 'horizontal' ? y * RIBS_PER_FOOT : 0;
   const normalMap = usePanelNormal(panelDir, ribsU, ribsV, offU, offV);
+  // Box height is inflated 0.02ft beyond the segment's nominal h so stacked
+  // segments (sill/header/etc.) overlap at their seams instead of leaving a
+  // hairline gap. That inflation must NOT extend above the segment's top —
+  // for the topmost, full-height segment the top edge IS the eave line
+  // (y=wallHeight), and the roof profile's wall-face vertex sits at exactly
+  // that height (see buildRegularRoofProfile's `shoulder` point in
+  // lib/building/roof.ts). Centering the inflated box on y+h/2 pushed the
+  // wall 0.01ft above the eave line, showing as a thin sliver of wall color
+  // above/through the roof edge. Shifting the center down by 0.01ft keeps
+  // the same total overlap (now all below) while making the top land
+  // exactly at y+h, so the roof fully caps the wall with no gap.
   return (
-    <mesh position={[x + w / 2, y + h / 2, zOff / 2]} castShadow receiveShadow>
+    <mesh position={[x + w / 2, y + h / 2 - 0.01, zOff / 2]} castShadow receiveShadow>
       <boxGeometry args={[w + 0.04, h + 0.02, WALL_THICKNESS]} />
       <meshStandardMaterial
         color={color}
