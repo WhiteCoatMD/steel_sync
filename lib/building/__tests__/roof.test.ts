@@ -19,7 +19,12 @@ const OVERHANG = 0.5;
 // Mirrors lib/building/roof.ts's REGULAR_EAVE_RADIUS_FT. Duplicated (not
 // imported) so this test pins an independent expectation rather than
 // trivially agreeing with whatever the implementation currently uses.
-const REGULAR_EAVE_RADIUS_FT = 0.5;
+// Deliberately larger than OVERHANG/ROOF_OVERHANG_FT (0.5ft): the wrap
+// radius is a visual-legibility choice (product decision — Regular must be
+// unmistakably different from Boxed Eave at default zoom), not the same
+// dimensionally-accurate overhang aframe/vertical use. See the comment on
+// REGULAR_EAVE_RADIUS_FT in roof.ts for the full rationale.
+const REGULAR_EAVE_RADIUS_FT = 1.25;
 const TOL = 1e-6;
 
 function xRange(positions: number[]): { minX: number; maxX: number } {
@@ -97,14 +102,25 @@ describe('buildRoofProfile', () => {
     expect(maxX).toBeLessThanOrEqual(W + REGULAR_EAVE_RADIUS_FT + TOL);
   });
 
-  it('gives regular nearly the same x-footprint as aframe (differs in profile, not size)', () => {
+  // Regular's radius (1.25ft) is deliberately larger than aframe/vertical's
+  // overhang (0.5ft) for visual legibility, so their footprints are no
+  // longer expected to be nearly equal (round 1 of this fix asserted
+  // < 1ft difference, which was correct when radius == overhang). The
+  // difference is now pinned to the exact expected amount —
+  // 2 * (radius - overhang), since both sides of the roof widen by
+  // (radius - overhang) — so this still fails loudly if the span is ever
+  // off by a multiple (e.g. the half-width regression from round 1, which
+  // produced a ~23ft difference here), while accepting the intentional,
+  // precisely-sized widening from the larger radius.
+  it('gives regular a wider footprint than aframe by exactly the radius/overhang difference', () => {
     const regular = buildRoofProfile(makeConfig('regular'), OVERHANG);
     const aframe = buildRoofProfile(makeConfig('aframe'), OVERHANG);
     const regularSpan = xRange(regular.positions);
     const aframeSpan = xRange(aframe.positions);
     const regularWidth = regularSpan.maxX - regularSpan.minX;
     const aframeWidth = aframeSpan.maxX - aframeSpan.minX;
-    expect(Math.abs(regularWidth - aframeWidth)).toBeLessThan(1);
+    const expectedDiff = 2 * (REGULAR_EAVE_RADIUS_FT - OVERHANG);
+    expect(regularWidth - aframeWidth).toBeCloseTo(expectedDiff, 5);
   });
 
   it('gives aframe and vertical a flat eave overhang past the wall face', () => {

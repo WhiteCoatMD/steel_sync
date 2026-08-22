@@ -228,3 +228,78 @@ overall building width — as intended.
 `npm test` after the fix: 18 test files, 148 tests passed (one more than the
 147 reported before this round, from the new footprint-comparison test),
 pristine. `npx tsc --noEmit`: clean.
+
+## Fix round 2 — eave radius increased for visual legibility (product decision)
+
+The geometry fix in round 1 was confirmed correct: all three styles measured
+x:[-0.5, 24.5] on the 24ft default building, the wall was capped, and the
+curve had 6 segments. But at normal viewer zoom, Regular and Boxed Eave
+(`aframe`) still looked nearly identical — a 0.5ft (6") wrap radius is
+physically accurate but visually invisible on a 24ft+ building, and the
+reference product's Regular Style has an obviously, deliberately exaggerated
+rounded eave.
+
+**This is a product/legibility decision, not a defect fix.** The owner chose
+legibility over literal accuracy: a configurator exists to help a customer
+tell options apart, and a difference nobody can see does not do that.
+
+**Chosen radius: 1.25 ft (15").** Reasoning:
+- Sits centrally in the requested 1.0-1.5ft band.
+- Large enough relative to a 24-30ft-wide, 10-16ft-tall building that the
+  curve is unmistakable at default zoom, matching the reference product's
+  obviously-rounded look.
+- Segment count (6) was left unchanged — it already produced a smooth-
+  reading arc; only the radius needed to grow to make that arc visible.
+- The vertical drop at the wrap's outer tip is the same 1.25ft as the
+  horizontal travel (still a plain quarter-circle — no need for an
+  elliptical/non-circular curve). Checked this stays "modest": on a 10ft
+  leg height, the tip sits at y=8.75 (12.5% below the eave line), and
+  critically that dip only happens at x<0 or x>W — outside the wall
+  panel's footprint (walls only span x in [0,W]) — so there is no odd
+  overlap with the wall panel. The wall is still capped exactly at H at the
+  wall face (x=0/x=W), unchanged by the radius (the shoulder point's y only
+  depends on H, not r).
+
+**Named-constant separation from `ROOF_OVERHANG_FT` made explicit in code**
+(`lib/building/roof.ts`): `REGULAR_EAVE_RADIUS_FT` now carries a comment
+explaining it is a *deliberately exaggerated* visual-legibility choice,
+distinct from the dimensionally-accurate flat overhang (`ROOF_OVERHANG_FT`,
+0.5ft) used by `aframe`/`vertical`, specifically warning a future reader not
+to "fix" it back down to match that constant.
+
+**Footprint assertion updated deliberately, not deleted/loosened**
+(`lib/building/__tests__/roof.test.ts`): round 1 added a test asserting
+Regular's x-span was within ~1ft of aframe's, which was correct only because
+radius == overhang (both 0.5ft) at the time. With radius=1.25ft and
+overhang=0.5ft, Regular's footprint is now legitimately wider on both sides
+by `(radius - overhang)` each, so the test was rewritten to pin the *exact*
+expected difference rather than loosen the tolerance:
+
+```
+expectedDiff = 2 * (REGULAR_EAVE_RADIUS_FT - OVERHANG) // = 1.5 ft
+expect(regularWidth - aframeWidth).toBeCloseTo(expectedDiff, 5);
+```
+
+Verified this still catches the round-1 half-width regression: temporarily
+reintroduced the `-hw` ridge-offset bug and reran — both the pinned-range
+test and this footprint test failed loudly (`-12` vs. expected `-1.25`;
+footprint difference `23` vs. expected `1.5`), then both passed again once
+the fix was restored. The local `REGULAR_EAVE_RADIUS_FT` test constant was
+also bumped to `1.25` to match, with a comment noting it deliberately
+mirrors (but does not import) the implementation's constant.
+
+## Measured x ranges after round 2 (default 24x30x10 building, overhang=0.5ft, radius=1.25ft)
+
+| style    | x range           | y range (min, max) |
+|----------|-------------------|---------------------|
+| regular  | `[-1.25, 25.25]`  | `[8.75, 14]`        |
+| aframe   | `[-0.5, 24.5]`    | `[10, 14]`          |
+| vertical | `[-0.5, 24.5]`    | `[10, 14]`          |
+
+Regular is now visibly wider and lower at the eave than aframe/vertical —
+the intended, legible distinction — while the wall is still capped at
+y=H=10 exactly at the wall face for all three styles, and ridge height
+(y=14) is identical across all three.
+
+`npm test`: 18 test files, 148 tests passed, pristine. `npx tsc --noEmit`:
+clean.

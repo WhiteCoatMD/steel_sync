@@ -11,11 +11,20 @@ const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 
 // 'regular' style eave wrap: a tessellated quarter-round that carries the
 // panel outward and down over the corner, instead of stopping dead at the
-// wall face. 0.5ft (6") sits in the middle of the realistic 0.5-0.75ft band
-// for a wrapped panel bend radius, and matches the scale of the other
-// eave-related constants already in this file (ROOF_OVERHANG_FT) so it reads
-// as an intentional, coherent dimension rather than a new magic number.
-const REGULAR_EAVE_RADIUS_FT = 0.5;
+// wall face.
+//
+// IMPORTANT — this is a DELIBERATELY EXAGGERATED product/legibility choice,
+// not a dimensionally accurate one. A physically realistic wrap radius
+// (~0.5ft / 6") measures correctly but is visually invisible at normal zoom
+// on a 24ft+ building — Regular and Boxed Eave (aframe) looked nearly
+// identical with it. The configurator's job is to let a customer tell roof
+// styles apart, so 1.25ft (15") was chosen to make the curve unmistakable at
+// default zoom, matching the reference product's obviously-rounded Regular
+// eave. Do NOT "fix" this back down toward ROOF_OVERHANG_FT (0.5ft) — that
+// constant is the flat, dimensionally-accurate overhang used by aframe and
+// vertical; this one is intentionally a different, larger concept (visual
+// legibility of the wrap), not the same measurement done twice.
+const REGULAR_EAVE_RADIUS_FT = 1.25;
 // 6 segments turns the curve into a visible radius rather than a kink —
 // enough to read as "rounded" at building scale without over-tessellating
 // a shape that's just a small corner detail.
