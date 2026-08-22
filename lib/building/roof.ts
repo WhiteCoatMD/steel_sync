@@ -9,6 +9,27 @@ import { ridgeRiseFt, roofSlopeLengthFt, roofSlopeAngle } from './geometry';
 const ROOF_OVERHANG_FT = 0.5;
 const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 
+// 'regular' style eave wrap: a tessellated quarter-round that carries the
+// panel outward and down over the corner, instead of stopping dead at the
+// wall face.
+//
+// IMPORTANT — this is a DELIBERATELY EXAGGERATED product/legibility choice,
+// not a dimensionally accurate one. A physically realistic wrap radius
+// (~0.5ft / 6") measures correctly but is visually invisible at normal zoom
+// on a 24ft+ building — Regular and Boxed Eave (aframe) looked nearly
+// identical with it. The configurator's job is to let a customer tell roof
+// styles apart, so 1.25ft (15") was chosen to make the curve unmistakable at
+// default zoom, matching the reference product's obviously-rounded Regular
+// eave. Do NOT "fix" this back down toward ROOF_OVERHANG_FT (0.5ft) — that
+// constant is the flat, dimensionally-accurate overhang used by aframe and
+// vertical; this one is intentionally a different, larger concept (visual
+// legibility of the wrap), not the same measurement done twice.
+const REGULAR_EAVE_RADIUS_FT = 1.25;
+// 6 segments turns the curve into a visible radius rather than a kink —
+// enough to read as "rounded" at building scale without over-tessellating
+// a shape that's just a small corner detail.
+const REGULAR_EAVE_SEGMENTS = 6;
+
 // ─── Types ─────────────────────────────────────────────────
 
 export interface RoofPlane {
@@ -29,6 +50,12 @@ export interface RoofPanel {
   rotation: [number, number, number];
   width: number;
   length: number;
+}
+
+export interface RoofProfile {
+  positions: number[]; // flat xyz triples
+  uvs: number[];       // flat uv pairs
+  indices: number[];
 }
 
 export interface RoofResult {
@@ -220,4 +247,114 @@ function buildHorizontalRoofPanels(
   }
 
   return panels;
+}
+
+// ─── Roof Surface Profile (BufferGeometry source) ───────────
+//
+// Pure vertex/UV/index generation for the roof surface mesh, extracted out
+// of the React renderer so it's testable without mounting three.js. UV
+// convention: U runs across the slope from eave (U=0) to ridge (U=1); V runs
+// along the building length from front (V=0) to back (V=1). Keeping this
+// convention intact is what keeps the panel-rib normal maps aligned.
+
+export function buildRoofProfile(config: BuildingDimensions, overhangFt: number): RoofProfile {
+  const W = config.widthFt;
+  const L = config.lengthFt;
+  const H = config.legHeightFt;
+  const rise = ridgeRiseFt(config);
+  const hw = W / 2;
+  const zF = -overhangFt;
+  const zB = L + overhangFt;
+
+  if (config.roofStyle === 'regular') {
+    const slopeLen = roofSlopeLengthFt(config);
+    return buildRegularRoofProfile(W, H, hw, rise, slopeLen, zF, zB);
+  }
+  return buildStraightRoofProfile(W, H, hw, rise, zF, zB, overhangFt);
+}
+
+/**
+ * A-frame / Vertical: straight slopes with a flat eave overhang past the
+ * wall face. One quad per side (eave -> ridge); no tessellation needed
+ * since the panel doesn't bend.
+ */
+function buildStraightRoofProfile(
+  W: number, H: number, hw: number, rise: number,
+  zF: number, zB: number, eaveOvh: number,
+): RoofProfile {
+  const positions = [
+    -eaveOvh, H, zF, -eaveOvh, H, zB, hw, H + rise, zB, hw, H + rise, zF,
+    W + eaveOvh, H, zF, W + eaveOvh, H, zB, hw, H + rise, zB, hw, H + rise, zF,
+  ];
+  const uvs = [
+    0, 0, 0, 1, 1, 1, 1, 0,
+    0, 0, 0, 1, 1, 1, 1, 0,
+  ];
+  const indices = [0, 2, 1, 0, 3, 2, 4, 5, 6, 4, 6, 7];
+  return { positions, uvs, indices };
+}
+
+/**
+ * Regular: the panel meets the wall AT wall height H (no exposed wall
+ * stripe), then wraps outward and down around the corner as a tessellated
+ * quarter-round before terminating past the wall face — a real wrapped-panel
+ * eave rather than a flat overhang or a two-segment kink.
+ */
+function buildRegularRoofProfile(
+  W: number, H: number, hw: number, rise: number, slopeLen: number,
+  zF: number, zB: number,
+): RoofProfile {
+  const r = REGULAR_EAVE_RADIUS_FT;
+  const segs = REGULAR_EAVE_SEGMENTS;
+  const curveArc = r * (Math.PI / 2);
+  const totalLen = curveArc + slopeLen;
+
+  // Curve points: theta sweeps from -PI/2 (outer tip, past the wall, below H)
+  // to 0 (shoulder, exactly at the wall face, at H). The circle is centered
+  // at (-r, H) relative to the left wall face (x=0); the right slope is
+  // built by mirroring the same x offsets outward from x=W.
+  type Pt = { x: number; y: number; u: number };
+  const curvePts: Pt[] = [];
+  for (let i = 0; i <= segs; i++) {
+    const theta = -Math.PI / 2 + (i / segs) * (Math.PI / 2);
+    const y = H + r * Math.sin(theta);
+    const xOffset = r * (Math.cos(theta) - 1); // <= 0; 0 at the shoulder (theta=0)
+    const arcLen = r * (theta + Math.PI / 2);
+    curvePts.push({ x: xOffset, y, u: arcLen / totalLen });
+  }
+  // Ridge point continues the same "offset added to xBase" convention used
+  // by addSide() below: +hw takes the left side (xBase=0) to x=hw, and the
+  // right side (xBase=W, mirrored) to x = W - hw = hw — the two sides' ridge
+  // vertices land on the same point. (A previous version used -hw here,
+  // which put the ridge a full half-width beyond each wall face instead of
+  // at the actual ridge line — the wrap's horizontal travel must be bounded
+  // by the eave radius `r`, not by `hw`.)
+  const pts: Pt[] = [...curvePts, { x: hw, y: H + rise, u: 1 }];
+
+  const positions: number[] = [];
+  const uvs: number[] = [];
+  const indices: number[] = [];
+
+  function addSide(xBase: number, mirror: boolean) {
+    const base = positions.length / 3;
+    for (const p of pts) {
+      // Left (mirror=false): actual x = xBase + p.x (p.x already <= 0, outward).
+      // Right (mirror=true): actual x = xBase - p.x (flips outward to +x).
+      const x = mirror ? xBase - p.x : xBase + p.x;
+      positions.push(x, p.y, zF, x, p.y, zB);
+      uvs.push(p.u, 0, p.u, 1);
+    }
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = base + i * 2;
+      const b = a + 1;
+      const c = a + 3;
+      const d = a + 2;
+      indices.push(a, c, b, a, d, c);
+    }
+  }
+
+  addSide(0, false);
+  addSide(W, true);
+
+  return { positions, uvs, indices };
 }
