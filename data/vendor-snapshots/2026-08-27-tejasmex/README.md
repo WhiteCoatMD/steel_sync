@@ -222,13 +222,45 @@ from the first extraction. 292 rows carry a price:
 | additional | 12 | `colored-screws` 3% of base (min 350), `self-install-diy` -15% of subtotal |
 | insulation | 12 | 1.6 / 2.2 |
 
-**Not yet usable.** Each band carries five gauge prices that differ only by a length
-condition held in the raw expression, and the expression text cannot be read out
-(it trips a content filter). The ordering is guessable but guessing a price is the
-one thing this model does not do, so gauge stays unmodelled until measured.
+**Not yet usable, and NOT recoverable from this snapshot.** Verified 2026-08-28:
+within a band, the rows are byte-identical apart from the price.
+
+    12-24 band gauge rows:  p=250..450, every one refs=["width"] nums=[1,0,12,24]
+    vertical wainscot:      p=350..650, every one refs=["width","style","wall"]
+                                        nums=[12,24,26,30,32,60,0]
+    7 rows, 1 distinct signature once price is ignored.
+
+The capture reduced each expression to `keys`/`nums`/`refs`, and for these rows
+that reduction is **lossy** — the discriminating term is simply gone. So
+re-running the same extraction produces the same unusable rows. The mapping can
+only come from (a) a re-capture that walks the expression structure instead of
+flattening it, (b) measurement, or (c) the vendor.
+
+Note also that the earlier guess in this file — that the five gauge prices differ
+by a *length* condition — is contradicted by the data: `refs` names `width`, and
+`nums` carries no length brackets. Do not build on that guess.
+
+One hypothesis worth testing cheaply: the 12-24 band offers exactly five
+"standard" widths (12, 18, 20, 22, 24) and carries exactly five gauge prices
+(250/300/350/400/450), ascending. The 26-30 band has five prices too. If gauge is
+simply keyed per offered width, a five-probe width sweep per band settles it.
 
 **Colours carry no price anywhere** — all 109 colour rows are unpriced, so the
 "29 Gauge Premium Color" upcharge is computed like the walls are.
+
+### Wainscot: only the VERTICAL one is priced
+
+Per the owner (2026-08-28), and confirmed in the data:
+
+- **Horizontal wainscot is appearance only, free.** `option-conditions[871]` —
+  `horizontal-siding` + `steel-30-inch` wainscot — is explicitly **`p: 0`**.
+  The `wainscot` option record is a `color-group`, and colours are unpriced.
+- **Vertical wainscot costs extra**: `vert-wainscot-group` is an
+  `additional-group`, and rows 872-878 price `vertical-siding` at 350-650.
+  (Rows 864-870 repeat the same seven for the green-house variants.)
+
+So wainscot needs no *discovery*, only *disambiguation* — which of the seven
+known prices applies where. That is a much smaller question than the walls were.
 
 ## The Skytrack lift fee — MEASURED 2026-08-28, now ACTIVE
 
