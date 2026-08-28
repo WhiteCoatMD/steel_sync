@@ -303,3 +303,168 @@ y=H=10 exactly at the wall face for all three styles, and ridge height
 
 `npm test`: 18 test files, 148 tests passed, pristine. `npx tsc --noEmit`:
 clean.
+
+## Fix round 3 — real overhang before the curl (owner-reported defect)
+
+The owner zoomed into the deployed eave and reported: *"the ends of the roof
+do not curve out, it just goes down the side of the building with no
+overhang."* Round 2 made the curve big enough to *see*, but never fixed the
+actual shape: `buildRegularRoofProfile`'s curl started **at the wall face**
+(`theta=0` → `x=0, y=H`, the shoulder) and swept straight down to its tip
+(`theta=-PI/2` → `x=-r, y=H-r`). That tip was simultaneously the vertex with
+the minimum `x` (outermost) **and** the minimum `y` (lowest) — i.e. the
+panel's widest point was the bottom of the curl. From any normal viewing
+angle that reads as "the roof flares/hugs down the side of the wall," not
+"the roof projects out, then curls." The `x:[-1.25, 25.25]` measurement from
+round 2 was real but misleading — it only proved *some* geometry existed
+past the wall face, not that it stood proud of the wall as a projecting
+overhang.
+
+**What changed** (`lib/building/roof.ts`, `buildRegularRoofProfile`): the
+profile is now three stages, ridge to outer edge:
+
+1. main slope descends to the eave line **at** the wall face (`x=0`/`x=W`,
+   `y=H`) — unchanged, and this is what caps the wall (see round 3b below).
+2. a new flat overhang stage, reusing `ROOF_OVERHANG_FT` (0.5ft) — the exact
+   same length aframe/vertical already use for their flat overhang. Chose to
+   reuse rather than invent a separate constant: there's no reason regular's
+   flat run should be a different length than aframe's, and one fewer magic
+   number is one fewer thing to keep in sync.
+3. only at the *outer end* of that overhang does the tessellated curl begin
+   (still 6 segments, `REGULAR_EAVE_SEGMENTS` unchanged).
+
+**Radius shrunk from 1.25ft to 1.0ft** (`REGULAR_EAVE_RADIUS_FT`). The round-2
+comment explaining why 1.25 was deliberately exaggerated (vs. the physically
+accurate ~0.5ft) is preserved verbatim in the code, with a new paragraph
+appended explaining the shrink: now that a real 0.5ft overhang stage exists
+and does part of the "this clearly projects past the wall" visual work, the
+curl doesn't have to carry that burden alone, so it was allowed to shrink —
+while staying explicitly *not* returned anywhere near 0.5ft (1.0ft is still
+double the physically-accurate wrap and reads as unmistakably rounded).
+
+**Curl geometry:** circle centered at `(-overhangFt, H - r)`. The curl sweeps
+**135° (3π/4)**, from `theta=90°` (top of the circle — tangent is horizontal
+here, so it continues the flat overhang with no visible kink at the joint)
+through `theta=180°` (the circle's leftmost point — this is the panel's true
+outermost point) to `theta=225°`, where it ends. Stopping the sweep at
+exactly 180° (a plain quarter-round, what round 1/2 effectively did once
+shifted) would put the outermost point and the curl's lowest point back at
+the *same* vertex — reproducing the exact bug. Sweeping 45° past 180° is
+what makes the tip strictly lower **and** strictly more inboard than the
+widest point, matching a real rolled/crimped eave hem. 135°/6 segments = 22.5°
+per segment, chosen so segment 4 of 6 lands exactly on `theta=180°` — this
+gives the pinned `minX` test value a clean closed form (`-(overhang + r)`)
+rather than an approximation of the true circle minimum.
+
+**Wall-color line at the roof/wall junction:** separately, the owner's zoom
+also showed a thin sliver of wall color above the roof edge. This was **not**
+a roof-profile bug — the roof's wall-face ("shoulder") vertex was already
+sitting at exactly `y=H` in both the old and new code. The actual cause was
+in `components/designer/ThreeScene.tsx`'s `PanelPanel`: each wall segment's
+`boxGeometry` is inflated by `0.02ft` in height (`h + 0.02`) and centered on
+`y + h/2`, so it overflows `0.01ft` *above* its nominal top **and** `0.01ft`
+below its nominal bottom. That symmetric inflation exists so stacked segments
+(sill/header/etc.) overlap at their seams instead of leaving hairline gaps —
+but for the topmost, full-height wall segment, the "top" IS the eave line
+(`y=wallHeight`), so the `+0.01` above pushed the wall `0.01ft` past the
+roof's wall-face vertex, showing as a colored sliver above/through the roof
+edge. Fixed by shifting the mesh's center down by `0.01ft`
+(`y + h/2 - 0.01`, box height unchanged) so the same total `0.02ft` of overlap
+margin is preserved but entirely below the segment's top — the topmost
+segment's top now lands exactly at `y=wallHeight`, matching the roof's
+shoulder vertex with no gap. This fix is in the shared wall-rendering code
+path, not per-roof-style, so it applies uniformly to `regular`, `aframe`, and
+`vertical` alike, without touching either straight-profile function.
+
+### New assertions added, confirmed failing against the pre-fix code first
+
+Per the task brief, before restoring the fix I stashed only
+`lib/building/roof.ts` (keeping the new/updated tests) and ran:
+
+```
+npx vitest run lib/building/__tests__/roof.test.ts
+```
+
+against the old (bug-reproducing) implementation. Result: **5 failed, 4
+passed (9)**.
+
+- `bounds the regular eave wrap by the overhang + eave radius, not the
+  half-width` — failed: `expected -1.2499999999999998 to be close to -1.5`
+  (old code has no overhang stage, so its reach was still just the old
+  radius, 1.25, not the new `overhang + radius` = 1.5).
+- `gives regular a wider footprint than aframe by exactly the radius` —
+  failed: `expected 1.5 to be close to 2` (old footprint delta was
+  `2*(1.25-0.5)=1.5`; new expected delta is `2*radius=2*1.0=2`).
+- `has roof geometry above the eave line that projects outside the wall
+  face (a real overhang, not just a downward curl)` — **failed outright**
+  (`expected false to be true`): this is the assertion that most directly
+  encodes the owner's complaint. The old code has no vertex with `y >= H`
+  and `x < 0` simultaneously — the curve only reaches `y=H` exactly at
+  `x=0` (the shoulder itself), never before it.
+- `has a widest point on the left slope that is not the curl's lowest
+  point` — **failed outright** (`expected 8.75 to not be close to 8.75,
+  difference 0`): in the old code the widest vertex and the lowest vertex
+  are the literal same point (`x=-1.25, y=8.75`). This is the assertion
+  that most precisely distinguishes "projects out then curls" from "flares
+  down the wall."
+- `gives regular an overhang above the eave line comparable to aframe's` —
+  failed: `expected 0.5 to be less than 0.15` (old code's overhang-above-eave
+  was `0`, vs. aframe's `0.5`; difference `0.5` blew through the `0.15`
+  tolerance).
+
+After un-stashing the fix and rerunning the same command: **9 passed (9)**.
+
+### Measured x/y ranges — before vs. after this round (default 24x30x10 building)
+
+| style    | x range (before)  | x range (after)   | y range (after)         |
+|----------|-------------------|-------------------|--------------------------|
+| regular  | `[-1.25, 25.25]`  | `[-1.5, 25.5]`    | `[8.293, 14]`            |
+| aframe   | `[-0.5, 24.5]`    | `[-0.5, 24.5]` (unchanged) | `[10, 14]` (unchanged) |
+| vertical | `[-0.5, 24.5]`    | `[-0.5, 24.5]` (unchanged) | `[10, 14]` (unchanged) |
+
+Key regular vertices after the fix (left side, `H=10`, `overhang=0.5`, `r=1.0`):
+shoulder `(0, 10)` → overhang-end `(-0.5, 10)` → widest/outermost
+`(-1.5, 9)` → tip `(-1.207, 8.293)` → ridge `(12, 14)`. The widest point
+(`x=-1.5`) is now strictly above the tip/bottom (`y=9` vs `y=8.293`), and
+strictly outboard of it (`x=-1.5` vs `x=-1.207`) — the roof projects out to
+`-1.5`, then curls down *and back in* to `-1.207`, rather than flaring
+straight down to its outermost point.
+
+### Full verification
+
+```
+npm test
+```
+
+```
+> steel-sync@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/13183/steel_sync
+
+
+ Test Files  18 passed (18)
+      Tests  151 passed (151)
+   Start at  20:12:36
+   Duration  29.34s (transform 5.26s, setup 0ms, import 24.71s, tests 8.38s, environment 31.11s)
+```
+
+18 files / 151 tests passed (148 baseline + 3 net-new assertions: the two
+existing pinned tests were updated in place, not counted as new), zero
+warnings — pristine.
+
+```
+npx tsc --noEmit
+```
+
+No output — clean.
+
+`lib/building/__tests__/pricing.golden.test.ts` (2 tests) passed unchanged
+within the full run above — confirms no price changed. Neither
+`lib/pricing/calculatePrice.ts`, `lib/building/wallFrame.ts`, `lib/db/**`,
+nor `lib/notify/**` were touched. The `'aframe'` `RoofStyle` member name is
+untouched. The UV convention (U across slope eave→ridge, V along length) is
+unchanged — only the vertex positions and the `u` arc-length parameterization
+were reworked; the `V` (front/back) coordinates and the `addSide` mirroring
+logic are untouched.

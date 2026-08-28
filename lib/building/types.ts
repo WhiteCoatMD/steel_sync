@@ -66,6 +66,15 @@ export interface Opening {
   wall: WallId;
   positionFt: number;       // distance from left edge of wall
   color: ColorOption | null; // null = match wall color
+  /**
+   * Manufacturer component key, e.g. 'garage-door-6-gable'.
+   *
+   * Dimensions alone cannot identify a priced component: a 10x10 roll-up is
+   * $1,080 with an outside latch and $1,300 with a chain hoist. When a
+   * manufacturer price table is in use the key is what gets priced, and an
+   * opening without one is reported as unpriceable rather than guessed at.
+   */
+  componentKey?: string;
 }
 
 // ─── Lean-Tos ───────────────────────────────────────────────
@@ -164,6 +173,16 @@ export interface PricingResult {
   total: number;
   currency: 'USD';
   lineItems: PricingLineItem[];
+  /**
+   * Parts of the configuration the manufacturer engine declined to price. When
+   * this is non-empty the total is INCOMPLETE and must not be shown as a quote.
+   * Only ever set by the manufacturer pricing path.
+   */
+  unpriceable?: string[];
+  /** Deposit due today, when the manufacturer table carries a deposit schedule. */
+  depositPercent?: number;
+  depositDue?: number;
+  balanceDue?: number;
 }
 
 // ─── Complete Building Config ───────────────────────────────
@@ -229,6 +248,15 @@ export interface PromotionalDiscount {
 }
 
 export interface DealerPricingRules {
+  /**
+   * Opt in to a captured manufacturer price file, e.g. 'tejasmex'.
+   *
+   * When set and known, the manufacturer table is authoritative and every
+   * per-square-foot field below is ignored — the two models are not
+   * reconcilable. Unset (or unknown) keeps the legacy per-sqft behaviour, which
+   * is what the seeded demo pricing uses.
+   */
+  manufacturerKey?: string;
   basePricePerSqft: number;
   roofStyleModifiers: Record<RoofStyle, number>;  // $/sqft upcharge
   heightModifierPerFt: number;                     // per ft above 8ft base

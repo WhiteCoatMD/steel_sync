@@ -151,3 +151,47 @@ describe('mergePricingRules', () => {
 function withDistance<T extends { delivery: { distanceMiles: number | null } }>(config: T): T {
   return { ...config, delivery: { ...config.delivery, distanceMiles: 75 } };
 }
+
+// ── manufacturerKey ─────────────────────────────────────────
+//
+// mergePricingRules is an explicit allowlist, so a new pricing field is dropped
+// unless it is copied through by hand. For manufacturerKey that failure is
+// silent AND expensive: the dealer reverts to the invented per-sqft rates and
+// quotes a confidently wrong number rather than erroring.
+describe('manufacturerKey survives the merge', () => {
+  it('preserves a manufacturerKey set on the dealer row', () => {
+    const merged = mergePricingRules({ manufacturerKey: 'tejasmex' });
+    expect(merged.manufacturerKey).toBe('tejasmex');
+  });
+
+  it('routes a dealer with a manufacturerKey to the captured table, not the per-sqft rules', () => {
+    const cfg = createDefaultConfig('d');
+    cfg.building = {
+      ...cfg.building,
+      type: 'carport',
+      widthFt: 24,
+      lengthFt: 25,
+      legHeightFt: 9,
+      roofStyle: 'vertical',
+    };
+    cfg.openings = [];
+    cfg.leanTos = [];
+    cfg.options = { ...cfg.options, anchoring: 'concrete' };
+    cfg.certifications = { windSpeedMph: 140, snowLoadPsf: 25, engineered: true };
+
+    const merged = mergePricingRules({ manufacturerKey: 'tejasmex' });
+    expect(calculatePrice(cfg, merged).total).toBe(3760);
+  });
+
+  it('omits the key entirely when absent, keeping the legacy path', () => {
+    expect(mergePricingRules({}).manufacturerKey).toBeUndefined();
+  });
+
+  it('ignores a blank manufacturerKey rather than resolving to no table', () => {
+    expect(mergePricingRules({ manufacturerKey: '   ' }).manufacturerKey).toBeUndefined();
+  });
+
+  it('ignores a non-string manufacturerKey', () => {
+    expect(mergePricingRules({ manufacturerKey: 42 }).manufacturerKey).toBeUndefined();
+  });
+});

@@ -1,0 +1,50 @@
+{
+  "serverVersion": "2.6.113",
+  "vendorServerVersion": "2.6.113",
+  "clientId": "carportview-tejasmex",
+  "surcharges": [
+    {
+      "affectsDeposit": false,
+      "calculation": { "amountChange": 0, "percentChange": 0, "roundTo": 1 },
+      "categories": ["base-price", "structure"],
+      "clientId": "carportview-tejasmex",
+      "isSubtotal": false,
+      "isTaxable": false,
+      "key": "line-item-surcharge",
+      "label": "",
+      "rules": [
+        {
+          "calculation": { "amountChange": 0, "percentChange": -0.1, "roundTo": 1 },
+          "conditions": [{ "maximum": 30, "minimum": 3, "type": "width" }],
+          "id": 0
+        }
+      ],
+      "status": "Active",
+      "supplierKey": "",
+      "supplierSurcharge": "off"
+    }
+  ],
+  "regions": [
+    {
+      "exclusionZone": 0,
+      "label": "Default Region",
+      "regionKey": "default-region",
+      "priceColumn": "price",
+      "states": ["AR", "LA", "MS", "OK", "TX"],
+      "defaultLocation": "TX"
+    }
+  ],
+  "vendorDeposit": {
+    "depositAmount": "10",
+    "depositPriceCalculation": "percent-of-subtotal",
+    "allowDepositDiscount": true
+  },
+  "dealerDeposit": {
+    "key": "Columbia",
+    "depositPrice": [30000, 20000, 3000, 1000],
+    "depositPercent": [21, 20, 18, 12],
+    "note": "dealer deposit overrides vendor.depositAmount; tiered on subtotal. 3760 -> 18%."
+  },
+  "doNotUseStatesForPricing": false,
+  "measurementRounding": "default"
+}

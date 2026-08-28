@@ -1,0 +1,12332 @@
+[
+ {
+  "t": "wall-surface",
+  "k": "front-surface",
+  "ord": 0
+ },
+ {
+  "t": "wraparound-corner",
+  "k": "none",
+  "lbl": "No Wrap",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "wraparound-corner",
+  "k": "standard-carport-wraparound",
+  "lbl": "Standard roofline style",
+  "ord": 4
+ },
+ {
+  "t": "additional",
+  "k": "rebar-anchors",
+  "lbl": "Extra Asphalt Anchors",
+  "ord": 0,
+  "def": 1,
+  "p": 30,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "mobile-home-anchors",
+  "lbl": "Extra Mobile Home Anchors",
+  "ord": 1,
+  "def": 1,
+  "p": 30,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "29-gauge-sheet-metal",
+  "lbl": "29 Gauge Sheet Metal",
+  "ord": 2,
+  "def": 1,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "26-gauge-sheet-metal-roof",
+  "lbl": "26 Gauge Sheet Metal (Roof Only)",
+  "ord": 3,
+  "p": 0,
+  "pc": "percent-of-subtotal",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "26-gauge-sheet-metal",
+  "lbl": "26 Gauge Sheet Metal (Entire Building)",
+  "ord": 4,
+  "p": 0,
+  "pc": "percent-of-subtotal",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "brush-kit-none",
+  "lbl": "No Brush Kit",
+  "ord": 5,
+  "def": 1,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "brush-kit-headers",
+  "lbl": "Brush Kit (Header's Only)",
+  "ord": 6,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "brush-kit",
+  "lbl": "Brush Kit (Header's and Sides)",
+  "ord": 7,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "roll-up-door-motor-6-10w",
+  "lbl": "Electric motor for 6’W-10’W up to 10’H",
+  "ord": 8,
+  "p": 1300,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "roll-up-door-motor-12-14w",
+  "lbl": "Electric motor for 12’W-14’W up to 14’H",
+  "ord": 9,
+  "p": 1600,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "install-over-existing",
+  "lbl": "Install over existing structure",
+  "ord": 10,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "install-on-deck-or-dock",
+  "lbl": "Install on Deck or Dock (Non-Floating)",
+  "ord": 11,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "install-on-wall",
+  "lbl": "Install on Wall (Up to 3')",
+  "ord": 12,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "cut-legs-on-site",
+  "lbl": "Legs Cut On Site",
+  "ord": 13,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "skylift",
+  "lbl": "Skytrack Lift Flat Fee",
+  "ord": 14,
+  "def": 1,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "skylift-none",
+  "lbl": "Customer Provided Lift Required",
+  "ord": 15,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "self-install-diy",
+  "lbl": "Self-Install (DIY Kit)",
+  "ord": 16,
+  "p": -15,
+  "pc": "percent-of-subtotal",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "j-trim-none",
+  "lbl": "None",
+  "ord": 17,
+  "def": 1,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "j-trim-reg-roof",
+  "lbl": "J-trim Sides Only",
+  "ord": 18,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "colored-screws-none",
+  "lbl": "Galvanized Screws (Standard)",
+  "ord": 19,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional",
+  "k": "colored-screws",
+  "lbl": "Colored Screws",
+  "ord": 20,
+  "p": 3,
+  "pc": "percent-of-base",
+  "pps": false,
+  "min": 350
+ },
+ {
+  "t": "additional",
+  "k": "ground-rebar-option",
+  "lbl": "Rebar Only, Non-Certified",
+  "ord": 21,
+  "def": 1,
+  "p": 0,
+  "pc": "amount",
+  "pps": false
+ },
+ {
+  "t": "additional-group",
+  "k": "anchor",
+  "lbl": "Additional Anchors",
+  "ord": 0
+ },
+ {
+  "t": "additional-group",
+  "k": "sheet-metal-upgrade",
+  "lbl": "Sheet Metal Upgrade",
+  "ord": 1
+ },
+ {
+  "t": "additional-group",
+  "k": "sheet-metal-roof",
+  "lbl": "Roof Sheet Metal Ugrade",
+  "ord": 2
+ },
+ {
+  "t": "additional-group",
+  "k": "surcharge-group",
+  "lbl": "Current Surcharges",
+  "ord": 3
+ },
+ {
+  "t": "additional-group",
+  "k": "j-trim",
+  "lbl": "Regular Roof J-trim",
+  "ord": 4
+ },
+ {
+  "t": "additional-group",
+  "k": "color-upgrade",
+  "lbl": "29 Gauge Premium Color",
+  "ord": 5
+ },
+ {
+  "t": "additional-group",
+  "k": "vert-wainscot-group",
+  "lbl": "Vertical Wainscot (not displayed)",
+  "ord": 6
+ },
+ {
+  "t": "additional-group",
+  "k": "colored-screws",
+  "lbl": "Colored Screws",
+  "ord": 7
+ },
+ {
+  "t": "additional-group",
+  "k": "center-brace",
+  "lbl": "Center Braces",
+  "ord": 8
+ },
+ {
+  "t": "additional-group",
+  "k": "ground-options",
+  "lbl": "Anchor Package",
+  "ord": 9
+ },
+ {
+  "t": "additional-group",
+  "k": "ground-rebar-anchor",
+  "lbl": "Ground Anchoring Options",
+  "ord": 10
+ },
+ {
+  "t": "additional-group",
+  "k": "skylift-group",
+  "lbl": "Equipment Fees",
+  "ord": 11
+ },
+ {
+  "t": "additional-group",
+  "k": "brush-kits",
+  "lbl": "Brush Kits",
+  "ord": 12
+ },
+ {
+  "t": "additional-group",
+  "k": "electric-motor",
+  "lbl": "Electric Motor",
+  "ord": 13
+ },
+ {
+  "t": "anchor-package",
+  "k": "asphalt-anchor-pkg",
+  "lbl": "Asphalt Anchors",
+  "ord": 0
+ },
+ {
+  "t": "anchor-package",
+  "k": "mobile-home-anchor-pkg",
+  "lbl": "Mobile Home Anchors",
+  "ord": 1
+ },
+ {
+  "t": "anchor-package",
+  "k": "concrete-anchor-pkg",
+  "lbl": "Concrete Wedges (included)",
+  "ord": 2
+ },
+ {
+  "t": "anchor-package",
+  "k": "ground-rebar-pkg",
+  "lbl": "Ground (Rebar Only Non-Certified)",
+  "ord": 3
+ },
+ {
+  "t": "brace",
+  "k": "none-brace",
+  "lbl": "Brace Dependent on building specifications",
+  "ord": 0
+ },
+ {
+  "t": "brace",
+  "k": "standard-brace",
+  "lbl": "Standard Brace",
+  "ord": 1
+ },
+ {
+  "t": "brace",
+  "k": "corner-brace",
+  "lbl": "Standard Brace",
+  "ord": 2
+ },
+ {
+  "t": "color-group",
+  "k": "roof",
+  "lbl": "Roof",
+  "ord": 0
+ },
+ {
+  "t": "color-group",
+  "k": "roof-interior",
+  "lbl": "Roof Interior",
+  "ord": 1
+ },
+ {
+  "t": "color-group",
+  "k": "trim",
+  "lbl": "Trim",
+  "ord": 2
+ },
+ {
+  "t": "color-group",
+  "k": "endwall-siding",
+  "lbl": "End Wall Siding",
+  "ord": 3
+ },
+ {
+  "t": "color-group",
+  "k": "endwall-interior",
+  "lbl": "Gable End Interior Siding",
+  "ord": 4
+ },
+ {
+  "t": "color-group",
+  "k": "component-color",
+  "lbl": "White",
+  "ord": 5
+ },
+ {
+  "t": "color-group",
+  "k": "component-color-black",
+  "lbl": "Black",
+  "ord": 6
+ },
+ {
+  "t": "color-group",
+  "k": "metal-door",
+  "lbl": "Metal Door",
+  "ord": 7
+ },
+ {
+  "t": "color-group",
+  "k": "garage-door",
+  "lbl": "Garage Doors",
+  "ord": 8
+ },
+ {
+  "t": "color-group",
+  "k": "sidewall-siding",
+  "lbl": "Wall Exterior",
+  "ord": 9
+ },
+ {
+  "t": "color-group",
+  "k": "sidewall-interior",
+  "lbl": "Side Wall Interior",
+  "ord": 10
+ },
+ {
+  "t": "color-group",
+  "k": "wainscot",
+  "lbl": "Wainscot",
+  "ord": 11
+ },
+ {
+  "t": "color-group",
+  "k": "sidewall-siding-greenhouse",
+  "lbl": "Wall Exterior",
+  "ord": 12
+ },
+ {
+  "t": "color-group",
+  "k": "roof-greenhouse",
+  "lbl": "Roof",
+  "ord": 13
+ },
+ {
+  "t": "color-subgroup",
+  "k": "29-gauge-color",
+  "lbl": "29 Gauge Colors",
+  "ord": 0
+ },
+ {
+  "t": "color-subgroup",
+  "k": "26-gauge-color",
+  "lbl": "26 Gauge Colors",
+  "ord": 1
+ },
+ {
+  "t": "color-subgroup",
+  "k": "29-prem-color",
+  "lbl": "Premium Colors (29 Gauge) *Extra cost",
+  "ord": 2
+ },
+ {
+  "t": "color-subgroup",
+  "k": "metal-door",
+  "lbl": "Metal Door Colors",
+  "ord": 3
+ },
+ {
+  "t": "color-subgroup",
+  "k": "garage-door",
+  "lbl": "Garage Door Colors",
+  "ord": 4
+ },
+ {
+  "t": "corner-style",
+  "k": "square",
+  "lbl": "Square (Traditional)",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "corner-style",
+  "k": "45-degree-garage",
+  "lbl": "45º (Garage Door)",
+  "ord": 1
+ },
+ {
+  "t": "corner-style",
+  "k": "45-degree",
+  "lbl": "45º Opening",
+  "ord": 2
+ },
+ {
+  "t": "door-handle",
+  "k": "chrome-knob",
+  "ord": 0
+ },
+ {
+  "t": "door-swing",
+  "k": "hinge-right",
+  "lbl": "Hinges Right",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "eave",
+  "k": "regular-roof-eave",
+  "ord": 0
+ },
+ {
+  "t": "eave",
+  "k": "boxed-eave",
+  "ord": 1
+ },
+ {
+  "t": "eave",
+  "k": "vertical-eave",
+  "ord": 2
+ },
+ {
+  "t": "engineer-certified",
+  "k": "none",
+  "lbl": "None",
+  "ord": 0,
+  "def": 1,
+  "p": 0,
+  "l": [
+   0,
+   200
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ]
+ },
+ {
+  "t": "engineer-certified",
+  "k": "certified-140mph-30-20",
+  "lbl": "Certified 140 MPH - 35 PSF",
+  "ord": 1,
+  "p": 300,
+  "l": [
+   0,
+   21
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "engineer-certified",
+  "k": "certified-140mph-30-25",
+  "lbl": "Certified 140 MPH - 35 PSF",
+  "ord": 2,
+  "p": 350,
+  "l": [
+   22,
+   26
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "engineer-certified",
+  "k": "certified-140mph-30-30",
+  "lbl": "Certified 140 MPH - 35 PSF",
+  "ord": 3,
+  "p": 450,
+  "l": [
+   27,
+   31
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "engineer-certified",
+  "k": "certified-140mph-30-35",
+  "lbl": "Certified 140 MPH - 35 PSF",
+  "ord": 4,
+  "p": 500,
+  "l": [
+   32,
+   36
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "engineer-certified",
+  "k": "certified-140mph-30-40",
+  "lbl": "Certified 140 MPH - 35 PSF",
+  "ord": 5,
+  "p": 600,
+  "l": [
+   37,
+   41
+  ],
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "frame-spacing",
+  "k": "frame-spacing-five-feet",
+  "lbl": "5' OC",
+  "ord": 0
+ },
+ {
+  "t": "frame-spacing",
+  "k": "frame-spacing-four-feet",
+  "lbl": "4' OC",
+  "ord": 1
+ },
+ {
+  "t": "frame-spacing",
+  "k": "frame-spacing-ten-feet",
+  "lbl": "10' OC",
+  "ord": 2
+ },
+ {
+  "t": "gable-siding",
+  "k": "gable-horizontal-siding",
+  "lbl": "Horizontal",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "gable-siding",
+  "k": "gable-vertical-siding",
+  "lbl": "Vertical",
+  "ord": 1
+ },
+ {
+  "t": "gable-siding",
+  "k": "gable-vertical-siding-green-house",
+  "lbl": "Vertical",
+  "ord": 2
+ },
+ {
+  "t": "gauge",
+  "k": "14-gauge-framing",
+  "lbl": "14-Gauge Framing",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "gauge",
+  "k": "12-gauge-framing",
+  "lbl": "12-Gauge Framing",
+  "ord": 1
+ },
+ {
+  "t": "installation-surface",
+  "k": "cement",
+  "lbl": "Cement",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "installation-surface",
+  "k": "ground",
+  "lbl": "Ground",
+  "ord": 1
+ },
+ {
+  "t": "installation-surface",
+  "k": "asphalt",
+  "lbl": "Asphalt",
+  "ord": 2
+ },
+ {
+  "t": "installation-surface",
+  "k": "portable-skid",
+  "lbl": "Portable Skid",
+  "ord": 3
+ },
+ {
+  "t": "insulation",
+  "k": "roof-insulation",
+  "lbl": "Roof",
+  "ord": 0
+ },
+ {
+  "t": "insulation",
+  "k": "left-wall-insulation",
+  "lbl": "Left Sidewall",
+  "ord": 1
+ },
+ {
+  "t": "insulation",
+  "k": "right-wall-insulation",
+  "lbl": "Right Sidewall",
+  "ord": 2
+ },
+ {
+  "t": "insulation",
+  "k": "back-wall-insulation",
+  "lbl": "Back Wall",
+  "ord": 3
+ },
+ {
+  "t": "insulation",
+  "k": "front-wall-insulation",
+  "lbl": "Front Wall",
+  "ord": 4
+ },
+ {
+  "t": "insulation-material",
+  "k": "none-im",
+  "lbl": "No Insulation",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "insulation-material",
+  "k": "double-bubble-im",
+  "lbl": "Double Bubble",
+  "ord": 1
+ },
+ {
+  "t": "insulation-material",
+  "k": "2-in-fiber-glass",
+  "lbl": "2\" Fiber Glass",
+  "ord": 2
+ },
+ {
+  "t": "j-trim",
+  "k": "j-trim-none",
+  "lbl": "None",
+  "ord": 0,
+  "def": 1,
+  "pt": "ends-and-sides"
+ },
+ {
+  "t": "j-trim",
+  "k": "j-trim-ends",
+  "lbl": "Ends Only",
+  "ord": 1,
+  "pt": "standard"
+ },
+ {
+  "t": "j-trim",
+  "k": "j-trim-sides",
+  "lbl": "Sides Only",
+  "ord": 2,
+  "pt": "standard"
+ },
+ {
+  "t": "j-trim",
+  "k": "j-trim-sides-ends",
+  "lbl": "Sides and Ends",
+  "ord": 3,
+  "pt": "standard"
+ },
+ {
+  "t": "lean-type",
+  "k": "none",
+  "lbl": "None",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "lean-type",
+  "k": "lean-only",
+  "lbl": "Lean only",
+  "ord": 1
+ },
+ {
+  "t": "lean-type",
+  "k": "lean-with-storage",
+  "lbl": "Lean with storage",
+  "ord": 2
+ },
+ {
+  "t": "length-combination",
+  "k": "c-41-45",
+  "ord": 0
+ },
+ {
+  "t": "length-combination",
+  "k": "c-42-46",
+  "ord": 1
+ },
+ {
+  "t": "length-combination",
+  "k": "c-46-50",
+  "ord": 2
+ },
+ {
+  "t": "length-combination",
+  "k": "c-47-51",
+  "ord": 3
+ },
+ {
+  "t": "length-combination",
+  "k": "c-51-55",
+  "ord": 4
+ },
+ {
+  "t": "length-combination",
+  "k": "c-52-56",
+  "ord": 5
+ },
+ {
+  "t": "length-combination",
+  "k": "c-56-60",
+  "ord": 6
+ },
+ {
+  "t": "length-combination",
+  "k": "c-57-61",
+  "ord": 7
+ },
+ {
+  "t": "length-combination",
+  "k": "c-61-65",
+  "ord": 8
+ },
+ {
+  "t": "length-combination",
+  "k": "c-62-66",
+  "ord": 9
+ },
+ {
+  "t": "length-combination",
+  "k": "c-66-70",
+  "ord": 10
+ },
+ {
+  "t": "length-combination",
+  "k": "c-67-71",
+  "ord": 11
+ },
+ {
+  "t": "length-combination",
+  "k": "c-71-75",
+  "ord": 12
+ },
+ {
+  "t": "length-combination",
+  "k": "c-72-76",
+  "ord": 13
+ },
+ {
+  "t": "length-combination",
+  "k": "c-76-80",
+  "ord": 14
+ },
+ {
+  "t": "length-combination",
+  "k": "c-77-81",
+  "ord": 15
+ },
+ {
+  "t": "length-combination",
+  "k": "c-81-85",
+  "ord": 16
+ },
+ {
+  "t": "length-combination",
+  "k": "c-82-86",
+  "ord": 17
+ },
+ {
+  "t": "length-combination",
+  "k": "c-86-90",
+  "ord": 18
+ },
+ {
+  "t": "length-combination",
+  "k": "c-87-91",
+  "ord": 19
+ },
+ {
+  "t": "length-combination",
+  "k": "c-91-95",
+  "ord": 20
+ },
+ {
+  "t": "length-combination",
+  "k": "c-92-96",
+  "ord": 21
+ },
+ {
+  "t": "length-combination",
+  "k": "c-96-100",
+  "ord": 22
+ },
+ {
+  "t": "length-combination",
+  "k": "c-97-101",
+  "ord": 23
+ },
+ {
+  "t": "length-combination",
+  "k": "c-101-105",
+  "ord": 24
+ },
+ {
+  "t": "length-combination",
+  "k": "c-102-106",
+  "ord": 25
+ },
+ {
+  "t": "length-combination",
+  "k": "c-106-110",
+  "ord": 26
+ },
+ {
+  "t": "length-combination",
+  "k": "c-107-111",
+  "ord": 27
+ },
+ {
+  "t": "length-combination",
+  "k": "c-111-115",
+  "ord": 28
+ },
+ {
+  "t": "length-combination",
+  "k": "c-112-116",
+  "ord": 29
+ },
+ {
+  "t": "length-combination",
+  "k": "c-116-120",
+  "ord": 30
+ },
+ {
+  "t": "length-combination",
+  "k": "c-117-121",
+  "ord": 31
+ },
+ {
+  "t": "length-combination",
+  "k": "c-121-125",
+  "ord": 32
+ },
+ {
+  "t": "length-combination",
+  "k": "c-122-126",
+  "ord": 33
+ },
+ {
+  "t": "length-combination",
+  "k": "c-126-130",
+  "ord": 34
+ },
+ {
+  "t": "length-combination",
+  "k": "c-127-131",
+  "ord": 35
+ },
+ {
+  "t": "length-combination",
+  "k": "c-131-135",
+  "ord": 36
+ },
+ {
+  "t": "length-combination",
+  "k": "c-132-136",
+  "ord": 37
+ },
+ {
+  "t": "length-combination",
+  "k": "c-136-140",
+  "ord": 38
+ },
+ {
+  "t": "length-combination",
+  "k": "c-137-141",
+  "ord": 39
+ },
+ {
+  "t": "length-combination",
+  "k": "c-141-145",
+  "ord": 40
+ },
+ {
+  "t": "length-combination",
+  "k": "c-142-146",
+  "ord": 41
+ },
+ {
+  "t": "length-combination",
+  "k": "c-146-150",
+  "ord": 42
+ },
+ {
+  "t": "length-combination",
+  "k": "c-147-151",
+  "ord": 43
+ },
+ {
+  "t": "length-combination",
+  "k": "c-151-155",
+  "ord": 44
+ },
+ {
+  "t": "length-combination",
+  "k": "c-152-156",
+  "ord": 45
+ },
+ {
+  "t": "length-combination",
+  "k": "c-156-160",
+  "ord": 46
+ },
+ {
+  "t": "length-combination",
+  "k": "c-157-161",
+  "ord": 47
+ },
+ {
+  "t": "length-combination",
+  "k": "c-161-165",
+  "ord": 48
+ },
+ {
+  "t": "length-combination",
+  "k": "c-162-166",
+  "ord": 49
+ },
+ {
+  "t": "length-combination",
+  "k": "c-166-170",
+  "ord": 50
+ },
+ {
+  "t": "length-combination",
+  "k": "c-167-171",
+  "ord": 51
+ },
+ {
+  "t": "length-combination",
+  "k": "c-171-175",
+  "ord": 52
+ },
+ {
+  "t": "length-combination",
+  "k": "c-172-176",
+  "ord": 53
+ },
+ {
+  "t": "length-combination",
+  "k": "c-176-180",
+  "ord": 54
+ },
+ {
+  "t": "length-combination",
+  "k": "c-177-181",
+  "ord": 55
+ },
+ {
+  "t": "length-combination",
+  "k": "c-181-185",
+  "ord": 56
+ },
+ {
+  "t": "length-combination",
+  "k": "c-182-186",
+  "ord": 57
+ },
+ {
+  "t": "length-combination",
+  "k": "c-186-190",
+  "ord": 58
+ },
+ {
+  "t": "length-combination",
+  "k": "c-187-191",
+  "ord": 59
+ },
+ {
+  "t": "length-combination",
+  "k": "c-191-195",
+  "ord": 60
+ },
+ {
+  "t": "length-combination",
+  "k": "c-192-196",
+  "ord": 61
+ },
+ {
+  "t": "length-combination",
+  "k": "c-196-200",
+  "ord": 62
+ },
+ {
+  "t": "length-combination",
+  "k": "c-197-201",
+  "ord": 63
+ },
+ {
+  "t": "post-spacing",
+  "k": "post-spacing-loafing-sheds",
+  "ord": 0
+ },
+ {
+  "t": "roofing",
+  "k": "regular-roof",
+  "lbl": "Regular Style",
+  "ord": 0
+ },
+ {
+  "t": "roofing",
+  "k": "boxed-eave-roof",
+  "lbl": "Boxed Eave Style",
+  "ord": 1
+ },
+ {
+  "t": "roofing",
+  "k": "vertical-roof",
+  "lbl": "Vertical Style",
+  "ord": 2
+ },
+ {
+  "t": "roofing",
+  "k": "vertical-lean-roof",
+  "lbl": "Vertical Style",
+  "ord": 3
+ },
+ {
+  "t": "roofing",
+  "k": "vertical-roof-green-house",
+  "lbl": "Vertical Roofing",
+  "ord": 4
+ },
+ {
+  "t": "roof-overhang",
+  "k": "six-inches-overhang",
+  "lbl": "6\"",
+  "ord": 0
+ },
+ {
+  "t": "roof-pitch",
+  "k": "one-twelve",
+  "lbl": "1/12 (Non-Certified)",
+  "ord": 0,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "two-twelve",
+  "lbl": "2/12 (Non-Certified)",
+  "ord": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "three-twelve",
+  "lbl": "3/12 (Standard)",
+  "ord": 2,
+  "def": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "four-twelve",
+  "lbl": "4/12 (Non-Certified)",
+  "ord": 3,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "five-twelve",
+  "lbl": "5/12 (Non-Certified)",
+  "ord": 4,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "six-twelve",
+  "lbl": "6/12 (Non-Certified)",
+  "ord": 5,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "seven-twelve",
+  "lbl": "7/12 (Non-Certified)",
+  "ord": 6,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "eight-twelve",
+  "lbl": "8/12 (Non-Certified)",
+  "ord": 7,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-pitch",
+  "k": "lean-two-twelve",
+  "lbl": "2/12 (Standard)",
+  "ord": 8,
+  "def": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "roof-extension",
+  "k": "none-roof-extension",
+  "lbl": "None",
+  "ord": 0,
+  "def": 1,
+  "l": 0
+ },
+ {
+  "t": "roof-extension",
+  "k": "front-3-roof-extension",
+  "lbl": "Front",
+  "ord": 1,
+  "l": 36
+ },
+ {
+  "t": "section",
+  "k": "center-section",
+  "lbl": "Center Section",
+  "ord": 0
+ },
+ {
+  "t": "section",
+  "k": "left-section",
+  "lbl": "Left Lean",
+  "ord": 1
+ },
+ {
+  "t": "section",
+  "k": "right-section",
+  "lbl": "Right Lean",
+  "ord": 2
+ },
+ {
+  "t": "section",
+  "k": "front-section",
+  "lbl": "Front Lean",
+  "ord": 3
+ },
+ {
+  "t": "section",
+  "k": "back-section",
+  "lbl": "Back Lean",
+  "ord": 4
+ },
+ {
+  "t": "siding",
+  "k": "horizontal-siding",
+  "lbl": "Horizontal",
+  "ord": 0,
+  "def": 1
+ },
+ {
+  "t": "siding",
+  "k": "vertical-siding",
+  "lbl": "Vertical",
+  "ord": 1
+ },
+ {
+  "t": "siding",
+  "k": "vertical-siding-green-house",
+  "lbl": "Vertical",
+  "ord": 2
+ },
+ {
+  "t": "component-package",
+  "k": "green-house-package",
+  "ord": 0
+ },
+ {
+  "t": "component-package",
+  "k": "portable-shed-package",
+  "ord": 1
+ },
+ {
+  "t": "storage",
+  "k": "none",
+  "lbl": "None",
+  "ord": 0
+ },
+ {
+  "t": "storage",
+  "k": "front-storage",
+  "lbl": "Front",
+  "ord": 1
+ },
+ {
+  "t": "storage",
+  "k": "back-storage",
+  "lbl": "Back",
+  "ord": 2
+ },
+ {
+  "t": "storage",
+  "k": "left-storage",
+  "lbl": "Left Side",
+  "ord": 3
+ },
+ {
+  "t": "storage",
+  "k": "right-storage",
+  "lbl": "Right Side",
+  "ord": 4
+ },
+ {
+  "t": "style-group",
+  "k": "certified",
+  "lbl": "Certified Buildings",
+  "ord": 0
+ },
+ {
+  "t": "style-group",
+  "k": "non-certified-buildings",
+  "lbl": "Non-Certified Buildings",
+  "ord": 1
+ },
+ {
+  "t": "trim",
+  "k": "standard",
+  "ord": 0,
+  "w": 3.5
+ },
+ {
+  "t": "trim",
+  "k": "fascia-trim",
+  "ord": 1,
+  "w": 3.5
+ },
+ {
+  "t": "trim",
+  "k": "component-trim",
+  "ord": 2,
+  "w": 1.5
+ },
+ {
+  "t": "trim-package",
+  "k": "standard-trim-package",
+  "lbl": "Standard",
+  "ord": 0
+ },
+ {
+  "t": "wainscot",
+  "k": "none",
+  "ord": 0,
+  "def": 1,
+  "pc": "amount"
+ },
+ {
+  "t": "wainscot",
+  "k": "steel-30-inch",
+  "ord": 1,
+  "p": 0,
+  "pc": "amount",
+  "pt": "ends-and-sides",
+  "l": "0-200"
+ },
+ {
+  "t": "wall",
+  "k": "none",
+  "lbl": "Open",
+  "ord": 0
+ },
+ {
+  "t": "wall",
+  "k": "fully-enclosed-wall",
+  "lbl": "Fully Enclosed",
+  "ord": 1
+ },
+ {
+  "t": "wall",
+  "k": "gable-end-wall",
+  "lbl": "Gable End",
+  "ord": 2
+ },
+ {
+  "t": "wall",
+  "k": "gable-end-wall-45",
+  "lbl": "Gable End w/ 45's",
+  "ord": 3
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-1.5",
+  "lbl": "Extended Gable End - 1.5'",
+  "ord": 4
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-1.5-45",
+  "lbl": "Extended Gable End - 1.5' w/ 45's",
+  "ord": 5
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-3",
+  "lbl": "Extended Gable End - 3'",
+  "ord": 6
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-3-45",
+  "lbl": "Extended Gable End - 3' w/ 45's",
+  "ord": 7
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-4",
+  "lbl": "Extended Gable End - 4'",
+  "ord": 8
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-5",
+  "lbl": "Extended Gable End - 5'",
+  "ord": 9
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-6",
+  "lbl": "Extended Gable End - 6'",
+  "ord": 10
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-7",
+  "lbl": "Extended Gable End - 7'",
+  "ord": 11
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-8",
+  "lbl": "Extended Gable End - 8'",
+  "ord": 12
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-9",
+  "lbl": "Extended Gable End - 9'",
+  "ord": 13
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-10",
+  "lbl": "Extended Gable End - 10'",
+  "ord": 14
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-11",
+  "lbl": "Extended Gable End - 11'",
+  "ord": 15
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-12",
+  "lbl": "Extended Gable End - 12'",
+  "ord": 16
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-13",
+  "lbl": "Extended Gable End - 13'",
+  "ord": 17
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-14",
+  "lbl": "Extended Gable End - 14'",
+  "ord": 18
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-15",
+  "lbl": "Extended Gable End - 15'",
+  "ord": 19
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-16",
+  "lbl": "Extended Gable End - 16'",
+  "ord": 20
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-17",
+  "lbl": "Extended Gable End - 17'",
+  "ord": 21
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-18",
+  "lbl": "Extended Gable End - 18'",
+  "ord": 22
+ },
+ {
+  "t": "wall",
+  "k": "extended-gable-end-wall-19",
+  "lbl": "Extended Gable End - 19'",
+  "ord": 23
+ },
+ {
+  "t": "wall",
+  "k": "top-1-5-panel-wall",
+  "lbl": "Top - 1 1/2' Panel",
+  "ord": 24
+ },
+ {
+  "t": "wall",
+  "k": "top-3-panel-wall",
+  "lbl": "Top - 3' Panel",
+  "ord": 25
+ },
+ {
+  "t": "wall",
+  "k": "top-4-panel-wall",
+  "lbl": "Top - 4' Panel",
+  "ord": 26
+ },
+ {
+  "t": "wall",
+  "k": "top-5-panel-wall",
+  "lbl": "Top - 5' Panel",
+  "ord": 27
+ },
+ {
+  "t": "wall",
+  "k": "top-6-panel-wall",
+  "lbl": "Top - 6' Panel",
+  "ord": 28
+ },
+ {
+  "t": "wall",
+  "k": "top-7-panel-wall",
+  "lbl": "Top - 7' Panel",
+  "ord": 29
+ },
+ {
+  "t": "wall",
+  "k": "top-8-panel-wall",
+  "lbl": "Top - 8' Panel",
+  "ord": 30
+ },
+ {
+  "t": "wall",
+  "k": "top-9-panel-wall",
+  "lbl": "Top - 9' Panel",
+  "ord": 31
+ },
+ {
+  "t": "wall",
+  "k": "top-10-panel-wall",
+  "lbl": "Top - 10' Panel",
+  "ord": 32
+ },
+ {
+  "t": "wall",
+  "k": "top-11-panel-wall",
+  "lbl": "Top - 11' Panel",
+  "ord": 33
+ },
+ {
+  "t": "wall",
+  "k": "top-12-panel-wall",
+  "lbl": "Top - 12' Panel",
+  "ord": 34
+ },
+ {
+  "t": "wall",
+  "k": "top-13-panel-wall",
+  "lbl": "Top - 13' Panel",
+  "ord": 35
+ },
+ {
+  "t": "wall",
+  "k": "top-14-panel-wall",
+  "lbl": "Top - 14' Panel",
+  "ord": 36
+ },
+ {
+  "t": "wall",
+  "k": "top-15-panel-wall",
+  "lbl": "Top - 15' Panel",
+  "ord": 37
+ },
+ {
+  "t": "wall",
+  "k": "top-16-panel-wall",
+  "lbl": "Top - 16' Panel",
+  "ord": 38
+ },
+ {
+  "t": "wall",
+  "k": "top-17-panel-wall",
+  "lbl": "Top - 17' Panel",
+  "ord": 39
+ },
+ {
+  "t": "wall",
+  "k": "top-18-panel-wall",
+  "lbl": "Top - 18' Panel",
+  "ord": 40
+ },
+ {
+  "t": "wall",
+  "k": "top-19-panel-wall",
+  "lbl": "Top - 19' Panel",
+  "ord": 41
+ },
+ {
+  "t": "wall",
+  "k": "left-side-enclosed-wall",
+  "lbl": "Left Side Enclosed",
+  "ord": 42
+ },
+ {
+  "t": "wall",
+  "k": "right-side-enclosed-wall",
+  "lbl": "Right Side Enclosed",
+  "ord": 43
+ },
+ {
+  "t": "wall",
+  "k": "left-side-with-gable-wall",
+  "lbl": "Left Side With Gable End",
+  "ord": 44
+ },
+ {
+  "t": "wall",
+  "k": "right-side-with-gable-wall",
+  "lbl": "Right Side With Gable End",
+  "ord": 45
+ },
+ {
+  "t": "wall-frame",
+  "k": "horizontal-frame-channel-gable",
+  "ord": 0,
+  "w": 2.5
+ },
+ {
+  "t": "wall-frame",
+  "k": "horizontal-frame-channel",
+  "ord": 1,
+  "w": 2.5
+ },
+ {
+  "t": "wall-frame",
+  "k": "vertical-frame-channel",
+  "ord": 2,
+  "w": 2.5
+ },
+ {
+  "t": "color",
+  "k": "white-all",
+  "lbl": "White",
+  "ord": 0
+ },
+ {
+  "t": "color",
+  "k": "white",
+  "lbl": "White",
+  "ord": 1
+ },
+ {
+  "t": "color",
+  "k": "black",
+  "lbl": "Black",
+  "ord": 2
+ },
+ {
+  "t": "color",
+  "k": "black-components",
+  "lbl": "Black",
+  "ord": 3
+ },
+ {
+  "t": "color",
+  "k": "burgundy",
+  "lbl": "Burgundy",
+  "ord": 4
+ },
+ {
+  "t": "color",
+  "k": "green",
+  "lbl": "Green",
+  "ord": 5
+ },
+ {
+  "t": "color",
+  "k": "earth-brown",
+  "lbl": "Brown",
+  "ord": 6
+ },
+ {
+  "t": "color",
+  "k": "quaker-gray",
+  "lbl": "Quaker Gray",
+  "ord": 7
+ },
+ {
+  "t": "color",
+  "k": "pewter-gray",
+  "lbl": "Pewter Gray",
+  "ord": 8
+ },
+ {
+  "t": "color",
+  "k": "sandstone",
+  "lbl": "Sandstone",
+  "ord": 9
+ },
+ {
+  "t": "color",
+  "k": "pebble-beige",
+  "lbl": "Pebble Beige",
+  "ord": 10
+ },
+ {
+  "t": "color",
+  "k": "tan",
+  "lbl": "Tan",
+  "ord": 11
+ },
+ {
+  "t": "color",
+  "k": "clay",
+  "lbl": "Clay",
+  "ord": 12
+ },
+ {
+  "t": "color",
+  "k": "slate-blue",
+  "lbl": "Slate Blue",
+  "ord": 13
+ },
+ {
+  "t": "color",
+  "k": "barn-red",
+  "lbl": "Barn Red",
+  "ord": 14
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-29-prem",
+  "lbl": "Burnished Slate",
+  "ord": 15
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-29-prem-walls",
+  "lbl": "Burnished Slate",
+  "ord": 16
+ },
+ {
+  "t": "color",
+  "k": "galvalume",
+  "lbl": "Galvalume",
+  "ord": 17
+ },
+ {
+  "t": "color",
+  "k": "white-26",
+  "lbl": "White",
+  "ord": 18
+ },
+ {
+  "t": "color",
+  "k": "black-26",
+  "lbl": "Black",
+  "ord": 19
+ },
+ {
+  "t": "color",
+  "k": "burgundy-26",
+  "lbl": "Burgundy",
+  "ord": 20
+ },
+ {
+  "t": "color",
+  "k": "green-26",
+  "lbl": "Green",
+  "ord": 21
+ },
+ {
+  "t": "color",
+  "k": "earth-brown-26",
+  "lbl": "Brown",
+  "ord": 22
+ },
+ {
+  "t": "color",
+  "k": "quaker-gray-26",
+  "lbl": "Quaker Gray",
+  "ord": 23
+ },
+ {
+  "t": "color",
+  "k": "pewter-gray-26",
+  "lbl": "Pewter Gray",
+  "ord": 24
+ },
+ {
+  "t": "color",
+  "k": "sandstone-26",
+  "lbl": "Sandstone",
+  "ord": 25
+ },
+ {
+  "t": "color",
+  "k": "pebble-beige-26",
+  "lbl": "Pebble Beige",
+  "ord": 26
+ },
+ {
+  "t": "color",
+  "k": "tan-26",
+  "lbl": "Tan",
+  "ord": 27
+ },
+ {
+  "t": "color",
+  "k": "clay-26",
+  "lbl": "Clay",
+  "ord": 28
+ },
+ {
+  "t": "color",
+  "k": "slate-blue-26",
+  "lbl": "Slate Blue",
+  "ord": 29
+ },
+ {
+  "t": "color",
+  "k": "barn-red-26",
+  "lbl": "Barn Red",
+  "ord": 30
+ },
+ {
+  "t": "color",
+  "k": "crimson-red",
+  "lbl": "Crimson Red",
+  "ord": 31
+ },
+ {
+  "t": "color",
+  "k": "gallery-blue",
+  "lbl": "Gallery Blue",
+  "ord": 32
+ },
+ {
+  "t": "color",
+  "k": "colony-green",
+  "lbl": "Colony Green",
+  "ord": 33
+ },
+ {
+  "t": "color",
+  "k": "crimson-red-walls",
+  "lbl": "Crimson Red",
+  "ord": 34
+ },
+ {
+  "t": "color",
+  "k": "gallery-blue-walls",
+  "lbl": "Gallery Blue",
+  "ord": 35
+ },
+ {
+  "t": "color",
+  "k": "colony-green-walls",
+  "lbl": "Colony Green",
+  "ord": 36
+ },
+ {
+  "t": "color",
+  "k": "crimson-red-26-walls",
+  "lbl": "Crimson Red",
+  "ord": 37
+ },
+ {
+  "t": "color",
+  "k": "gallery-blue-26-walls",
+  "lbl": "Gallery Blue",
+  "ord": 38
+ },
+ {
+  "t": "color",
+  "k": "colony-green-26-walls",
+  "lbl": "Colony Green",
+  "ord": 39
+ },
+ {
+  "t": "color",
+  "k": "polar-white",
+  "lbl": "Polar White",
+  "ord": 40
+ },
+ {
+  "t": "color",
+  "k": "polar-white-entire",
+  "lbl": "Polar White",
+  "ord": 41
+ },
+ {
+  "t": "color",
+  "k": "charcoal-gray",
+  "lbl": "Charcoal Gray",
+  "ord": 42
+ },
+ {
+  "t": "color",
+  "k": "charcoal-gray-entire",
+  "lbl": "Charcoal Gray",
+  "ord": 43
+ },
+ {
+  "t": "color",
+  "k": "ash-gray",
+  "lbl": "Ash Gray",
+  "ord": 44
+ },
+ {
+  "t": "color",
+  "k": "ash-gray-entire",
+  "lbl": "Ash Gray",
+  "ord": 45
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-roof",
+  "lbl": "Burnished Slate",
+  "ord": 46
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-roof-entire",
+  "lbl": "Burnished Slate",
+  "ord": 47
+ },
+ {
+  "t": "color",
+  "k": "light-stone",
+  "lbl": "Light Stone",
+  "ord": 48,
+  "def": 1
+ },
+ {
+  "t": "color",
+  "k": "light-stone-entire",
+  "lbl": "Light Stone",
+  "ord": 49,
+  "def": 1
+ },
+ {
+  "t": "color",
+  "k": "ivory",
+  "lbl": "Ivory",
+  "ord": 50
+ },
+ {
+  "t": "color",
+  "k": "ivory-entire",
+  "lbl": "Ivory",
+  "ord": 51
+ },
+ {
+  "t": "color",
+  "k": "coco-brown",
+  "lbl": "Coco Brown",
+  "ord": 52
+ },
+ {
+  "t": "color",
+  "k": "coco-brown-entire",
+  "lbl": "Coco Brown",
+  "ord": 53
+ },
+ {
+  "t": "color",
+  "k": "hawaiian-blue",
+  "lbl": "Hawaiian Blue",
+  "ord": 54
+ },
+ {
+  "t": "color",
+  "k": "hawaiian-blue-entire",
+  "lbl": "Hawaiian Blue",
+  "ord": 55
+ },
+ {
+  "t": "color",
+  "k": "rustic-red",
+  "lbl": "Rustic Red",
+  "ord": 56
+ },
+ {
+  "t": "color",
+  "k": "rustic-red-entire",
+  "lbl": "Rustic Red",
+  "ord": 57
+ },
+ {
+  "t": "color",
+  "k": "evergreen",
+  "lbl": "Evergreen",
+  "ord": 58
+ },
+ {
+  "t": "color",
+  "k": "evergreen-entire",
+  "lbl": "Evergreen",
+  "ord": 59
+ },
+ {
+  "t": "color",
+  "k": "galvalume-roof-only",
+  "lbl": "Galvalume",
+  "ord": 60
+ },
+ {
+  "t": "color",
+  "k": "galvalume-entire",
+  "lbl": "Galvalume",
+  "ord": 61
+ },
+ {
+  "t": "color",
+  "k": "polar-white-26",
+  "lbl": "Polar White",
+  "ord": 62
+ },
+ {
+  "t": "color",
+  "k": "charcoal-gray-26",
+  "lbl": "Charcoal Gray",
+  "ord": 63
+ },
+ {
+  "t": "color",
+  "k": "ash-gray-26",
+  "lbl": "Ash Gray",
+  "ord": 64
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-roof-26",
+  "lbl": "Burnished Slate",
+  "ord": 65
+ },
+ {
+  "t": "color",
+  "k": "light-stone-26",
+  "lbl": "Light Stone",
+  "ord": 66,
+  "def": 1
+ },
+ {
+  "t": "color",
+  "k": "ivory-26",
+  "lbl": "Ivory",
+  "ord": 67
+ },
+ {
+  "t": "color",
+  "k": "coco-brown-26",
+  "lbl": "Coco Brown",
+  "ord": 68
+ },
+ {
+  "t": "color",
+  "k": "hawaiian-blue-26",
+  "lbl": "Hawaiian Blue",
+  "ord": 69
+ },
+ {
+  "t": "color",
+  "k": "rustic-red-26",
+  "lbl": "Rustic Red",
+  "ord": 70
+ },
+ {
+  "t": "color",
+  "k": "evergreen-26",
+  "lbl": "Evergreen",
+  "ord": 71
+ },
+ {
+  "t": "color",
+  "k": "black-26-roof",
+  "lbl": "Black",
+  "ord": 72
+ },
+ {
+  "t": "color",
+  "k": "black-26-entire",
+  "lbl": "Black",
+  "ord": 73
+ },
+ {
+  "t": "color",
+  "k": "tan-26-roof",
+  "lbl": "Tan",
+  "ord": 74
+ },
+ {
+  "t": "color",
+  "k": "tan-26-entire",
+  "lbl": "Tan",
+  "ord": 75
+ },
+ {
+  "t": "color",
+  "k": "clay-26-roof",
+  "lbl": "Clay",
+  "ord": 76
+ },
+ {
+  "t": "color",
+  "k": "clay-26-entire",
+  "lbl": "Clay",
+  "ord": 77
+ },
+ {
+  "t": "color",
+  "k": "greenhouse-1",
+  "lbl": "Clear Transparent Panel",
+  "ord": 78,
+  "def": 1
+ },
+ {
+  "t": "color",
+  "k": "white-md",
+  "lbl": "White",
+  "ord": 79
+ },
+ {
+  "t": "color",
+  "k": "white-gd",
+  "lbl": "White",
+  "ord": 80
+ },
+ {
+  "t": "color",
+  "k": "barn-red-gd",
+  "lbl": "Barn Red",
+  "ord": 81
+ },
+ {
+  "t": "color",
+  "k": "sandstone-gd",
+  "lbl": "Sandstone",
+  "ord": 82
+ },
+ {
+  "t": "color",
+  "k": "pebble-beige-gd",
+  "lbl": "Pebble Beige",
+  "ord": 83
+ },
+ {
+  "t": "color",
+  "k": "pewter-gray-gd",
+  "lbl": "Pewter Gray",
+  "ord": 84
+ },
+ {
+  "t": "color",
+  "k": "earth-brown-gd",
+  "lbl": "Brown",
+  "ord": 85
+ },
+ {
+  "t": "color",
+  "k": "quaker-gray-gd",
+  "lbl": "Quaker Gray",
+  "ord": 86
+ },
+ {
+  "t": "color",
+  "k": "green-gd",
+  "lbl": "Green",
+  "ord": 87
+ },
+ {
+  "t": "color",
+  "k": "black-gd",
+  "lbl": "Black",
+  "ord": 88
+ },
+ {
+  "t": "color",
+  "k": "crimson-red-gd",
+  "lbl": "Crimson Red",
+  "ord": 89
+ },
+ {
+  "t": "color",
+  "k": "slate-blue-gd",
+  "lbl": "Slate Blue",
+  "ord": 90
+ },
+ {
+  "t": "color",
+  "k": "tan-gd",
+  "lbl": "Tan",
+  "ord": 91
+ },
+ {
+  "t": "color",
+  "k": "clay-gd",
+  "lbl": "Clay",
+  "ord": 92
+ },
+ {
+  "t": "color",
+  "k": "burnished-slate-gd",
+  "lbl": "Burnished Slate",
+  "ord": 93
+ },
+ {
+  "t": "color",
+  "k": "burgundy-gd",
+  "lbl": "Burgundy",
+  "ord": 94
+ },
+ {
+  "t": "color",
+  "k": "copper",
+  "lbl": "Copper",
+  "ord": 95
+ },
+ {
+  "t": "color",
+  "k": "copper-walls",
+  "lbl": "Copper",
+  "ord": 96
+ },
+ {
+  "t": "color",
+  "k": "red-brick",
+  "lbl": "Red Brick",
+  "ord": 97
+ },
+ {
+  "t": "color",
+  "k": "red-brick-walls",
+  "lbl": "Red Brick",
+  "ord": 98
+ },
+ {
+  "t": "color",
+  "k": "light-rock",
+  "lbl": "Light Rock",
+  "ord": 99
+ },
+ {
+  "t": "color",
+  "k": "light-rock-walls",
+  "lbl": "Light Rock",
+  "ord": 100
+ },
+ {
+  "t": "color",
+  "k": "dark-stone",
+  "lbl": "Dark Stone",
+  "ord": 101
+ },
+ {
+  "t": "color",
+  "k": "dark-stone-walls",
+  "lbl": "Dark Stone",
+  "ord": 102
+ },
+ {
+  "t": "color",
+  "k": "camo-green",
+  "lbl": "Camo Green",
+  "ord": 103
+ },
+ {
+  "t": "color",
+  "k": "camo-green-walls",
+  "lbl": "Camo Green",
+  "ord": 104
+ },
+ {
+  "t": "color",
+  "k": "desert-camo",
+  "lbl": "Desert Camo",
+  "ord": 105
+ },
+ {
+  "t": "color",
+  "k": "desert-camo-walls",
+  "lbl": "Desert Camo",
+  "ord": 106
+ },
+ {
+  "t": "color",
+  "k": "stone-wall",
+  "lbl": "Stone Wall",
+  "ord": 107
+ },
+ {
+  "t": "color",
+  "k": "stone-wall-walls",
+  "lbl": "Stone Wall",
+  "ord": 108
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto1",
+  "lbl": "(Heartland) 24 Month Rent to Own Payment* (plus tax)",
+  "ord": 0
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto2",
+  "lbl": "(Heartland) 36 Month Rent to Own Payment* (plus tax)",
+  "ord": 1
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto3",
+  "lbl": "(Heartland) 48 Month Rent to Own Payment* (plus tax)",
+  "ord": 2
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto4",
+  "lbl": "(Heartland) 60 Month Rent to Own Payment* (plus tax and $200 origination fee)",
+  "ord": 3
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto5",
+  "lbl": "(BMG) 24 Month Rent to Own Payment* (plus tax)",
+  "ord": 4
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto6",
+  "lbl": "(BMG) 36 Month Rent to Own Payment* (plus tax)",
+  "ord": 5
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto7",
+  "lbl": "(BMG) 48 Month Rent to Own Payment* (plus tax)",
+  "ord": 6
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto8",
+  "lbl": "(BMG) 60 Month Rent to Own Payment* (plus tax)",
+  "ord": 7
+ },
+ {
+  "t": "rent-to-own",
+  "k": "rto9",
+  "lbl": "(BMG) 72Month Rent to Own Payment* (plus tax)",
+  "ord": 8
+ },
+ {
+  "t": "submit-dialog",
+  "k": "save",
+  "ord": 0
+ },
+ {
+  "t": "submit-dialog",
+  "k": "quote",
+  "ord": 1
+ },
+ {
+  "t": "submit-dialog",
+  "k": "checkout",
+  "ord": 2
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "power-available-yes",
+  "lbl": "Yes",
+  "ord": 0
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "power-available-no",
+  "lbl": "No",
+  "ord": 1
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "jobsite-level-yes",
+  "lbl": "Yes",
+  "ord": 2
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "jobsite-level-no",
+  "lbl": "No",
+  "ord": 3
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "permit-required-yes",
+  "lbl": "Yes",
+  "ord": 4
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "permit-required-no",
+  "lbl": "No",
+  "ord": 5
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "site-ready-yes",
+  "lbl": "Yes",
+  "ord": 6
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "site-ready-no",
+  "lbl": "No",
+  "ord": 7
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "jobsite-ready-yes",
+  "lbl": "Yes",
+  "ord": 8
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "jobsite-ready-no",
+  "lbl": "No",
+  "ord": 9
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "payment-method-cc",
+  "lbl": "Credit Card (2.5% Fee)",
+  "ord": 10
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "payment-method-cash",
+  "lbl": "Check",
+  "ord": 11
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "payment-method-other",
+  "lbl": "Other (Including rent to own options)",
+  "ord": 12
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "rtoTime",
+  "lbl": "Rent to Own Time Frame",
+  "ord": 13
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "notes",
+  "lbl": "Notes, Comments, Questions",
+  "ord": 14
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "save-contact-me-now",
+  "lbl": "I have some questions about this building. Contact me as soon as possible.",
+  "ord": 15
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "save-contact-me-buy",
+  "lbl": "I'm ready to buy. Contact me about next steps.",
+  "ord": 16
+ },
+ {
+  "t": "submit-dialog-field",
+  "k": "save-do-not-contact",
+  "lbl": "I'm simply exploring building options right now.",
+  "ord": 17
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "power-available",
+  "lbl": "Power Available Within 50 ft?",
+  "ord": 0
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "jobsite-level",
+  "lbl": "Installation Site is Level (Required For Installation)",
+  "ord": 1
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "site-ready",
+  "lbl": "Site Ready For Installation",
+  "ord": 2
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "jobsite-ready",
+  "lbl": "Jobsite Ready",
+  "ord": 3
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "permit-required",
+  "lbl": "Permit Required?",
+  "ord": 4
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "notes",
+  "lbl": "Notes",
+  "ord": 5
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "contact-me",
+  "lbl": "Contact Me",
+  "ord": 6
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "payment-method",
+  "lbl": "How do you plan to pay?",
+  "ord": 7
+ },
+ {
+  "t": "submit-dialog-property",
+  "k": "rtoTime",
+  "lbl": "If using rent to own, what is your timeframe?",
+  "ord": 8
+ },
+ {
+  "t": "height",
+  "k": "1-tall",
+  "lbl": "1'",
+  "ord": 0,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "2-tall",
+  "lbl": "2'",
+  "ord": 1,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "3-tall",
+  "lbl": "3'",
+  "ord": 2,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "4-tall",
+  "lbl": "4'",
+  "ord": 3,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "5-tall",
+  "lbl": "5'",
+  "ord": 4,
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "6-tall",
+  "lbl": "6'",
+  "ord": 5,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "7-tall",
+  "lbl": "7'",
+  "ord": 6,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "8-tall",
+  "lbl": "8'",
+  "ord": 7,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "9-tall",
+  "lbl": "9'",
+  "ord": 8,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "10-tall",
+  "lbl": "10'",
+  "ord": 9,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "11-tall",
+  "lbl": "11'",
+  "ord": 10,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "12-tall",
+  "lbl": "12' *",
+  "ord": 11,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "13-tall",
+  "lbl": "13'",
+  "ord": 12,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "14-tall",
+  "lbl": "14'",
+  "ord": 13,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "15-tall",
+  "lbl": "15'",
+  "ord": 14,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "16-tall",
+  "lbl": "16'",
+  "ord": 15,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "17-tall",
+  "lbl": "17'",
+  "ord": 16,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "18-tall",
+  "lbl": "18'",
+  "ord": 17,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "19-tall",
+  "lbl": "19'",
+  "ord": 18,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "20-tall",
+  "lbl": "20'",
+  "ord": 19,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "8-6-tall",
+  "lbl": "6'x8'",
+  "ord": 20,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "9-7-tall",
+  "lbl": "7'x9'",
+  "ord": 21,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "10-8-tall",
+  "lbl": "8'x10'",
+  "ord": 22,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "11-9-tall",
+  "lbl": "9'x11'",
+  "ord": 23,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "12-10-tall",
+  "lbl": "10'x12'",
+  "ord": 24,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "13-11-tall",
+  "lbl": "11'x13'",
+  "ord": 25,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "14-12-tall",
+  "lbl": "12'x14'",
+  "ord": 26,
+  "w": [
+   0,
+   13
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "9-6-tall",
+  "lbl": "6'x9'",
+  "ord": 27,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "10-7-tall",
+  "lbl": "7'x10'",
+  "ord": 28,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "11-8-tall",
+  "lbl": "8'x11'",
+  "ord": 29,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "12-9-tall",
+  "lbl": "9'x12'",
+  "ord": 30,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "13-10-tall",
+  "lbl": "10'x13'",
+  "ord": 31,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "14-11-tall",
+  "lbl": "11'x14'",
+  "ord": 32,
+  "w": [
+   14,
+   19
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "10-6-tall",
+  "lbl": "6'x10'",
+  "ord": 33,
+  "w": [
+   20,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "11-7-tall",
+  "lbl": "7'x11'",
+  "ord": 34,
+  "w": [
+   20,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "12-8-tall",
+  "lbl": "8'x12'",
+  "ord": 35,
+  "w": [
+   20,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "13-9-tall",
+  "lbl": "9'x13'",
+  "ord": 36,
+  "w": [
+   20,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "height",
+  "k": "14-10-tall",
+  "lbl": "10'x14'",
+  "ord": 37,
+  "w": [
+   20,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "leg",
+  "k": "standard-legs",
+  "lbl": "Single Legs",
+  "ord": 0,
+  "def": 1,
+  "w": [
+   0,
+   30
+  ]
+ },
+ {
+  "t": "leg",
+  "k": "double-legs",
+  "lbl": "Double Legs",
+  "ord": 1,
+  "w": [
+   0,
+   60
+  ]
+ },
+ {
+  "t": "leg",
+  "k": "deluxe-legs",
+  "lbl": "Ladder Legs",
+  "ord": 2,
+  "w": [
+   0,
+   60
+  ]
+ },
+ {
+  "t": "loafing-shed-section",
+  "k": "loafing-shed-storage",
+  "lbl": "Tack Room",
+  "ord": 0
+ },
+ {
+  "t": "payment-method",
+  "k": "credit-card",
+  "lbl": "Credit Card (2.5% Fee) *taken at a later point",
+  "ord": 0
+ },
+ {
+  "t": "payment-method",
+  "k": "check-cc",
+  "lbl": "Check",
+  "ord": 1
+ },
+ {
+  "t": "payment-method",
+  "k": "rent-to-own-heartland",
+  "lbl": "Heartland Capital (HCI)",
+  "ord": 2
+ },
+ {
+  "t": "payment-method",
+  "k": "rent-to-own-servicepad",
+  "lbl": "BMG (ServicePad)",
+  "ord": 3
+ },
+ {
+  "t": "roof-hat-channels",
+  "k": "roof-hat-channel",
+  "ord": 0
+ },
+ {
+  "t": "length",
+  "k": "8-deep",
+  "lbl": "8'",
+  "ord": 0,
+  "l": 8,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "10-deep",
+  "lbl": "10'",
+  "ord": 1,
+  "l": 10,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "11-deep",
+  "lbl": "11'",
+  "ord": 2,
+  "l": 11,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "12-deep",
+  "lbl": "12'",
+  "ord": 3,
+  "l": 12,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "13-deep",
+  "lbl": "13'",
+  "ord": 4,
+  "l": 13,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "14-deep",
+  "lbl": "14'",
+  "ord": 5,
+  "l": 14,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "15-deep",
+  "lbl": "15'",
+  "ord": 6,
+  "l": 15,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "16-deep",
+  "lbl": "16'",
+  "ord": 7,
+  "l": 16,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "17-deep",
+  "lbl": "17'",
+  "ord": 8,
+  "l": 17,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "18-deep",
+  "lbl": "18'",
+  "ord": 9,
+  "l": 18,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "19-deep",
+  "lbl": "19'",
+  "ord": 10,
+  "l": 19,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "20-deep",
+  "lbl": "20'",
+  "ord": 11,
+  "l": 20,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "21-deep",
+  "lbl": "21'",
+  "ord": 12,
+  "l": 21,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "22-deep",
+  "lbl": "22'",
+  "ord": 13,
+  "l": 22,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "23-deep",
+  "lbl": "23'",
+  "ord": 14,
+  "l": 23,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "24-deep",
+  "lbl": "24'",
+  "ord": 15,
+  "l": 24,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "25-deep",
+  "lbl": "25'",
+  "ord": 16,
+  "l": 25,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "26-deep",
+  "lbl": "26'",
+  "ord": 17,
+  "l": 26,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "27-deep",
+  "lbl": "27'",
+  "ord": 18,
+  "l": 27,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "28-deep",
+  "lbl": "28'",
+  "ord": 19,
+  "l": 28,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "29-deep",
+  "lbl": "29'",
+  "ord": 20,
+  "l": 29,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "30-deep",
+  "lbl": "30'",
+  "ord": 21,
+  "l": 30,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "31-deep",
+  "lbl": "31'",
+  "ord": 22,
+  "l": 31,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "32-deep",
+  "lbl": "32'",
+  "ord": 23,
+  "l": 32,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "33-deep",
+  "lbl": "33'",
+  "ord": 24,
+  "l": 33,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "34-deep",
+  "lbl": "34'",
+  "ord": 25,
+  "l": 34,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "35-deep",
+  "lbl": "35'",
+  "ord": 26,
+  "l": 35,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "36-custom-non-vert",
+  "lbl": "36'",
+  "ord": 27,
+  "l": 36,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "37-custom-non-vert",
+  "lbl": "37'",
+  "ord": 28,
+  "l": 37,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "38-custom-non-vert",
+  "lbl": "38'",
+  "ord": 29,
+  "l": 38,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "39-custom-non-vert",
+  "lbl": "39'",
+  "ord": 30,
+  "l": 39,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "40-custom-non-vert",
+  "lbl": "40'",
+  "ord": 31,
+  "l": 40,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "41-custom-non-vert",
+  "lbl": "41'",
+  "ord": 32,
+  "l": 41,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "42-custom-non-vert",
+  "lbl": "42'",
+  "ord": 33,
+  "l": 42,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "43-custom-non-vert",
+  "lbl": "43'",
+  "ord": 34,
+  "l": 43,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "44-custom-non-vert",
+  "lbl": "44'",
+  "ord": 35,
+  "l": 44,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "45-custom-non-vert",
+  "lbl": "45'",
+  "ord": 36,
+  "l": 45,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "46-custom-non-vert",
+  "lbl": "46'",
+  "ord": 37,
+  "l": 46,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "47-custom-non-vert",
+  "lbl": "47'",
+  "ord": 38,
+  "l": 47,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "48-custom-non-vert",
+  "lbl": "48'",
+  "ord": 39,
+  "l": 48,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "49-custom-non-vert",
+  "lbl": "49'",
+  "ord": 40,
+  "l": 49,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "50-custom-non-vert",
+  "lbl": "50'",
+  "ord": 41,
+  "l": 50,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "51-custom-non-vert",
+  "lbl": "51'",
+  "ord": 42,
+  "l": 51,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "52-custom-non-vert",
+  "lbl": "52'",
+  "ord": 43,
+  "l": 52,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "53-custom-non-vert",
+  "lbl": "53'",
+  "ord": 44,
+  "l": 53,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "54-custom-non-vert",
+  "lbl": "54'",
+  "ord": 45,
+  "l": 54,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "55-custom-non-vert",
+  "lbl": "55'",
+  "ord": 46,
+  "l": 55,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "56-custom-non-vert",
+  "lbl": "56'",
+  "ord": 47,
+  "l": 56,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "57-custom-non-vert",
+  "lbl": "57'",
+  "ord": 48,
+  "l": 57,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "58-custom-non-vert",
+  "lbl": "58'",
+  "ord": 49,
+  "l": 58,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "59-custom-non-vert",
+  "lbl": "59'",
+  "ord": 50,
+  "l": 59,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "60-custom-non-vert",
+  "lbl": "60'",
+  "ord": 51,
+  "l": 60,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "61-custom-non-vert",
+  "lbl": "61'",
+  "ord": 52,
+  "l": 61,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "62-custom-non-vert",
+  "lbl": "62'",
+  "ord": 53,
+  "l": 62,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "63-custom-non-vert",
+  "lbl": "63'",
+  "ord": 54,
+  "l": 63,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "64-custom-non-vert",
+  "lbl": "64'",
+  "ord": 55,
+  "l": 64,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "65-custom-non-vert",
+  "lbl": "65'",
+  "ord": 56,
+  "l": 65,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "66-custom-non-vert",
+  "lbl": "66'",
+  "ord": 57,
+  "l": 66,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "67-custom-non-vert",
+  "lbl": "67'",
+  "ord": 58,
+  "l": 67,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "68-custom-non-vert",
+  "lbl": "68'",
+  "ord": 59,
+  "l": 68,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "69-custom-non-vert",
+  "lbl": "69'",
+  "ord": 60,
+  "l": 69,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "70-custom-non-vert",
+  "lbl": "70'",
+  "ord": 61,
+  "l": 70,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "71-custom-non-vert",
+  "lbl": "71'",
+  "ord": 62,
+  "l": 71,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "72-custom-non-vert",
+  "lbl": "72'",
+  "ord": 63,
+  "l": 72,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "73-custom-non-vert",
+  "lbl": "73'",
+  "ord": 64,
+  "l": 73,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "74-custom-non-vert",
+  "lbl": "74'",
+  "ord": 65,
+  "l": 74,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "75-custom-non-vert",
+  "lbl": "75'",
+  "ord": 66,
+  "l": 75,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "76-custom-non-vert",
+  "lbl": "76'",
+  "ord": 67,
+  "l": 76,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "77-custom-non-vert",
+  "lbl": "77'",
+  "ord": 68,
+  "l": 77,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "78-custom-non-vert",
+  "lbl": "78'",
+  "ord": 69,
+  "l": 78,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "79-custom-non-vert",
+  "lbl": "79'",
+  "ord": 70,
+  "l": 79,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "80-custom-non-vert",
+  "lbl": "80'",
+  "ord": 71,
+  "l": 80,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "81-custom-non-vert",
+  "lbl": "81'",
+  "ord": 72,
+  "l": 81,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "82-custom-non-vert",
+  "lbl": "82'",
+  "ord": 73,
+  "l": 82,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "83-custom-non-vert",
+  "lbl": "83'",
+  "ord": 74,
+  "l": 83,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "84-custom-non-vert",
+  "lbl": "84'",
+  "ord": 75,
+  "l": 84,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "85-custom-non-vert",
+  "lbl": "85'",
+  "ord": 76,
+  "l": 85,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "86-custom-non-vert",
+  "lbl": "86'",
+  "ord": 77,
+  "l": 86,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "87-custom-non-vert",
+  "lbl": "87'",
+  "ord": 78,
+  "l": 87,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "88-custom-non-vert",
+  "lbl": "88'",
+  "ord": 79,
+  "l": 88,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "89-custom-non-vert",
+  "lbl": "89'",
+  "ord": 80,
+  "l": 89,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "90-custom-non-vert",
+  "lbl": "90'",
+  "ord": 81,
+  "l": 90,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "91-custom-non-vert",
+  "lbl": "91'",
+  "ord": 82,
+  "l": 91,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "92-custom-non-vert",
+  "lbl": "92'",
+  "ord": 83,
+  "l": 92,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "93-custom-non-vert",
+  "lbl": "93'",
+  "ord": 84,
+  "l": 93,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "94-custom-non-vert",
+  "lbl": "94'",
+  "ord": 85,
+  "l": 94,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "95-custom-non-vert",
+  "lbl": "95'",
+  "ord": 86,
+  "l": 95,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "96-custom-non-vert",
+  "lbl": "96'",
+  "ord": 87,
+  "l": 96,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "97-custom-non-vert",
+  "lbl": "97'",
+  "ord": 88,
+  "l": 97,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "98-custom-non-vert",
+  "lbl": "98'",
+  "ord": 89,
+  "l": 98,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "99-custom-non-vert",
+  "lbl": "99'",
+  "ord": 90,
+  "l": 99,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "100-custom-non-vert",
+  "lbl": "100'",
+  "ord": 91,
+  "l": 100,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "101-custom-non-vert",
+  "lbl": "101'",
+  "ord": 92,
+  "l": 101,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "102-custom-non-vert",
+  "lbl": "102'",
+  "ord": 93,
+  "l": 102,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "103-custom-non-vert",
+  "lbl": "103'",
+  "ord": 94,
+  "l": 103,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "104-custom-non-vert",
+  "lbl": "104'",
+  "ord": 95,
+  "l": 104,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "105-custom-non-vert",
+  "lbl": "105'",
+  "ord": 96,
+  "l": 105,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "106-custom-non-vert",
+  "lbl": "106'",
+  "ord": 97,
+  "l": 106,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "107-custom-non-vert",
+  "lbl": "107'",
+  "ord": 98,
+  "l": 107,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "108-custom-non-vert",
+  "lbl": "108'",
+  "ord": 99,
+  "l": 108,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "109-custom-non-vert",
+  "lbl": "109'",
+  "ord": 100,
+  "l": 109,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "110-custom-non-vert",
+  "lbl": "110'",
+  "ord": 101,
+  "l": 110,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "111-custom-non-vert",
+  "lbl": "111'",
+  "ord": 102,
+  "l": 111,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "112-custom-non-vert",
+  "lbl": "112'",
+  "ord": 103,
+  "l": 112,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "113-custom-non-vert",
+  "lbl": "113'",
+  "ord": 104,
+  "l": 113,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "114-custom-non-vert",
+  "lbl": "114'",
+  "ord": 105,
+  "l": 114,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "115-custom-non-vert",
+  "lbl": "115'",
+  "ord": 106,
+  "l": 115,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "116-custom-non-vert",
+  "lbl": "116'",
+  "ord": 107,
+  "l": 116,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "117-custom-non-vert",
+  "lbl": "117'",
+  "ord": 108,
+  "l": 117,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "118-custom-non-vert",
+  "lbl": "118'",
+  "ord": 109,
+  "l": 118,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "119-custom-non-vert",
+  "lbl": "119'",
+  "ord": 110,
+  "l": 119,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "120-custom-non-vert",
+  "lbl": "120'",
+  "ord": 111,
+  "l": 120,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "121-custom-non-vert",
+  "lbl": "121'",
+  "ord": 112,
+  "l": 121,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "122-custom-non-vert",
+  "lbl": "122'",
+  "ord": 113,
+  "l": 122,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "123-custom-non-vert",
+  "lbl": "123'",
+  "ord": 114,
+  "l": 123,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "124-custom-non-vert",
+  "lbl": "124'",
+  "ord": 115,
+  "l": 124,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "125-custom-non-vert",
+  "lbl": "125'",
+  "ord": 116,
+  "l": 125,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "126-custom-non-vert",
+  "lbl": "126'",
+  "ord": 117,
+  "l": 126,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "127-custom-non-vert",
+  "lbl": "127'",
+  "ord": 118,
+  "l": 127,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "128-custom-non-vert",
+  "lbl": "128'",
+  "ord": 119,
+  "l": 128,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "129-custom-non-vert",
+  "lbl": "129'",
+  "ord": 120,
+  "l": 129,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "130-custom-non-vert",
+  "lbl": "130'",
+  "ord": 121,
+  "l": 130,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "131-custom-non-vert",
+  "lbl": "131'",
+  "ord": 122,
+  "l": 131,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "132-custom-non-vert",
+  "lbl": "132'",
+  "ord": 123,
+  "l": 132,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "133-custom-non-vert",
+  "lbl": "133'",
+  "ord": 124,
+  "l": 133,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "134-custom-non-vert",
+  "lbl": "134'",
+  "ord": 125,
+  "l": 134,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "135-custom-non-vert",
+  "lbl": "135'",
+  "ord": 126,
+  "l": 135,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "136-custom-non-vert",
+  "lbl": "136'",
+  "ord": 127,
+  "l": 136,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "137-custom-non-vert",
+  "lbl": "137'",
+  "ord": 128,
+  "l": 137,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "138-custom-non-vert",
+  "lbl": "138'",
+  "ord": 129,
+  "l": 138,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "139-custom-non-vert",
+  "lbl": "139'",
+  "ord": 130,
+  "l": 139,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "140-custom-non-vert",
+  "lbl": "140'",
+  "ord": 131,
+  "l": 140,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "141-custom-non-vert",
+  "lbl": "141'",
+  "ord": 132,
+  "l": 141,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "142-custom-non-vert",
+  "lbl": "142'",
+  "ord": 133,
+  "l": 142,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "143-custom-non-vert",
+  "lbl": "143'",
+  "ord": 134,
+  "l": 143,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "144-custom-non-vert",
+  "lbl": "144'",
+  "ord": 135,
+  "l": 144,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "145-custom-non-vert",
+  "lbl": "145'",
+  "ord": 136,
+  "l": 145,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "146-custom-non-vert",
+  "lbl": "146'",
+  "ord": 137,
+  "l": 146,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "147-custom-non-vert",
+  "lbl": "147'",
+  "ord": 138,
+  "l": 147,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "148-custom-non-vert",
+  "lbl": "148'",
+  "ord": 139,
+  "l": 148,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "149-custom-non-vert",
+  "lbl": "149'",
+  "ord": 140,
+  "l": 149,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "150-custom-non-vert",
+  "lbl": "150'",
+  "ord": 141,
+  "l": 150,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "151-custom-non-vert",
+  "lbl": "151'",
+  "ord": 142,
+  "l": 151,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "152-custom-non-vert",
+  "lbl": "152'",
+  "ord": 143,
+  "l": 152,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "153-custom-non-vert",
+  "lbl": "153'",
+  "ord": 144,
+  "l": 153,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "154-custom-non-vert",
+  "lbl": "154'",
+  "ord": 145,
+  "l": 154,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "155-custom-non-vert",
+  "lbl": "155'",
+  "ord": 146,
+  "l": 155,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "156-custom-non-vert",
+  "lbl": "156'",
+  "ord": 147,
+  "l": 156,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "157-custom-non-vert",
+  "lbl": "157'",
+  "ord": 148,
+  "l": 157,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "158-custom-non-vert",
+  "lbl": "158'",
+  "ord": 149,
+  "l": 158,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "159-custom-non-vert",
+  "lbl": "159'",
+  "ord": 150,
+  "l": 159,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "160-custom-non-vert",
+  "lbl": "160'",
+  "ord": 151,
+  "l": 160,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "161-custom-non-vert",
+  "lbl": "161'",
+  "ord": 152,
+  "l": 161,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "162-custom-non-vert",
+  "lbl": "162'",
+  "ord": 153,
+  "l": 162,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "163-custom-non-vert",
+  "lbl": "163'",
+  "ord": 154,
+  "l": 163,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "164-custom-non-vert",
+  "lbl": "164'",
+  "ord": 155,
+  "l": 164,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "165-custom-non-vert",
+  "lbl": "165'",
+  "ord": 156,
+  "l": 165,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "166-custom-non-vert",
+  "lbl": "166'",
+  "ord": 157,
+  "l": 166,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "167-custom-non-vert",
+  "lbl": "167'",
+  "ord": 158,
+  "l": 167,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "168-custom-non-vert",
+  "lbl": "168'",
+  "ord": 159,
+  "l": 168,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "169-custom-non-vert",
+  "lbl": "169'",
+  "ord": 160,
+  "l": 169,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "170-custom-non-vert",
+  "lbl": "170'",
+  "ord": 161,
+  "l": 170,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "171-custom-non-vert",
+  "lbl": "171'",
+  "ord": 162,
+  "l": 171,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "172-custom-non-vert",
+  "lbl": "172'",
+  "ord": 163,
+  "l": 172,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "173-custom-non-vert",
+  "lbl": "173'",
+  "ord": 164,
+  "l": 173,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "174-custom-non-vert",
+  "lbl": "174'",
+  "ord": 165,
+  "l": 174,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "175-custom-non-vert",
+  "lbl": "175'",
+  "ord": 166,
+  "l": 175,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "176-custom-non-vert",
+  "lbl": "176'",
+  "ord": 167,
+  "l": 176,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "177-custom-non-vert",
+  "lbl": "177'",
+  "ord": 168,
+  "l": 177,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "178-custom-non-vert",
+  "lbl": "178'",
+  "ord": 169,
+  "l": 178,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "179-custom-non-vert",
+  "lbl": "179'",
+  "ord": 170,
+  "l": 179,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "180-custom-non-vert",
+  "lbl": "180'",
+  "ord": 171,
+  "l": 180,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "181-custom-non-vert",
+  "lbl": "181'",
+  "ord": 172,
+  "l": 181,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "182-custom-non-vert",
+  "lbl": "182'",
+  "ord": 173,
+  "l": 182,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "183-custom-non-vert",
+  "lbl": "183'",
+  "ord": 174,
+  "l": 183,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "184-custom-non-vert",
+  "lbl": "184'",
+  "ord": 175,
+  "l": 184,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "185-custom-non-vert",
+  "lbl": "185'",
+  "ord": 176,
+  "l": 185,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "186-custom-non-vert",
+  "lbl": "186'",
+  "ord": 177,
+  "l": 186,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "187-custom-non-vert",
+  "lbl": "187'",
+  "ord": 178,
+  "l": 187,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "188-custom-non-vert",
+  "lbl": "188'",
+  "ord": 179,
+  "l": 188,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "189-custom-non-vert",
+  "lbl": "189'",
+  "ord": 180,
+  "l": 189,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "190-custom-non-vert",
+  "lbl": "190'",
+  "ord": 181,
+  "l": 190,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "191-custom-non-vert",
+  "lbl": "191'",
+  "ord": 182,
+  "l": 191,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "192-custom-non-vert",
+  "lbl": "192'",
+  "ord": 183,
+  "l": 192,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "193-custom-non-vert",
+  "lbl": "193'",
+  "ord": 184,
+  "l": 193,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "194-custom-non-vert",
+  "lbl": "194'",
+  "ord": 185,
+  "l": 194,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "195-custom-non-vert",
+  "lbl": "195'",
+  "ord": 186,
+  "l": 195,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "196-custom-non-vert",
+  "lbl": "196'",
+  "ord": 187,
+  "l": 196,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "197-custom-non-vert",
+  "lbl": "197'",
+  "ord": 188,
+  "l": 197,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "198-custom-non-vert",
+  "lbl": "198'",
+  "ord": 189,
+  "l": 198,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "199-custom-non-vert",
+  "lbl": "199'",
+  "ord": 190,
+  "l": 199,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "200-custom-non-vert",
+  "lbl": "200'",
+  "ord": 191,
+  "l": 200,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "regular",
+   "boxed-eave",
+   "boxed-eave-lean-roof"
+  ],
+  "cs": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "36-deep",
+  "lbl": "36'",
+  "ord": 192,
+  "l": 36,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "37-deep",
+  "lbl": "37'",
+  "ord": 193,
+  "l": 37,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "38-deep",
+  "lbl": "38'",
+  "ord": 194,
+  "l": 38,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "39-deep",
+  "lbl": "39'",
+  "ord": 195,
+  "l": 39,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "40-deep",
+  "lbl": "40'",
+  "ord": 196,
+  "l": 40,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "41-deep",
+  "lbl": "41'",
+  "ord": 197,
+  "l": 41,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "42-deep",
+  "lbl": "42'",
+  "ord": 198,
+  "l": 42,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "43-deep",
+  "lbl": "43'",
+  "ord": 199,
+  "l": 43,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "44-deep",
+  "lbl": "44'",
+  "ord": 200,
+  "l": 44,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "45-deep",
+  "lbl": "45'",
+  "ord": 201,
+  "l": 45,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "46-deep",
+  "lbl": "46'",
+  "ord": 202,
+  "l": 46,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "47-deep",
+  "lbl": "47'",
+  "ord": 203,
+  "l": 47,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "48-deep",
+  "lbl": "48'",
+  "ord": 204,
+  "l": 48,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "49-deep",
+  "lbl": "49'",
+  "ord": 205,
+  "l": 49,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "50-deep",
+  "lbl": "50'",
+  "ord": 206,
+  "l": 50,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "51-deep",
+  "lbl": "51'",
+  "ord": 207,
+  "l": 51,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "52-deep",
+  "lbl": "52'",
+  "ord": 208,
+  "l": 52,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "53-deep",
+  "lbl": "53'",
+  "ord": 209,
+  "l": 53,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "54-deep",
+  "lbl": "54'",
+  "ord": 210,
+  "l": 54,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "55-deep",
+  "lbl": "55'",
+  "ord": 211,
+  "l": 55,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "56-deep",
+  "lbl": "56'",
+  "ord": 212,
+  "l": 56,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "57-deep",
+  "lbl": "57'",
+  "ord": 213,
+  "l": 57,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "58-deep",
+  "lbl": "58'",
+  "ord": 214,
+  "l": 58,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "59-deep",
+  "lbl": "59'",
+  "ord": 215,
+  "l": 59,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "60-deep",
+  "lbl": "60'",
+  "ord": 216,
+  "l": 60,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "61-deep",
+  "lbl": "61'",
+  "ord": 217,
+  "l": 61,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "62-deep",
+  "lbl": "62'",
+  "ord": 218,
+  "l": 62,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "63-deep",
+  "lbl": "63'",
+  "ord": 219,
+  "l": 63,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "64-deep",
+  "lbl": "64'",
+  "ord": 220,
+  "l": 64,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "65-deep",
+  "lbl": "65'",
+  "ord": 221,
+  "l": 65,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "66-deep",
+  "lbl": "66'",
+  "ord": 222,
+  "l": 66,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "67-deep",
+  "lbl": "67'",
+  "ord": 223,
+  "l": 67,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "68-deep",
+  "lbl": "68'",
+  "ord": 224,
+  "l": 68,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "69-deep",
+  "lbl": "69'",
+  "ord": 225,
+  "l": 69,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "70-deep",
+  "lbl": "70'",
+  "ord": 226,
+  "l": 70,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "71-deep",
+  "lbl": "71'",
+  "ord": 227,
+  "l": 71,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "72-deep",
+  "lbl": "72'",
+  "ord": 228,
+  "l": 72,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "73-deep",
+  "lbl": "73'",
+  "ord": 229,
+  "l": 73,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "74-deep",
+  "lbl": "74'",
+  "ord": 230,
+  "l": 74,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "75-deep",
+  "lbl": "75'",
+  "ord": 231,
+  "l": 75,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "76-deep",
+  "lbl": "76'",
+  "ord": 232,
+  "l": 76,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "77-deep",
+  "lbl": "77'",
+  "ord": 233,
+  "l": 77,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "78-deep",
+  "lbl": "78'",
+  "ord": 234,
+  "l": 78,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "79-deep",
+  "lbl": "79'",
+  "ord": 235,
+  "l": 79,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "80-deep",
+  "lbl": "80'",
+  "ord": 236,
+  "l": 80,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "81-deep",
+  "lbl": "81'",
+  "ord": 237,
+  "l": 81,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "82-deep",
+  "lbl": "82'",
+  "ord": 238,
+  "l": 82,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "83-deep",
+  "lbl": "83'",
+  "ord": 239,
+  "l": 83,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "84-deep",
+  "lbl": "84'",
+  "ord": 240,
+  "l": 84,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "85-deep",
+  "lbl": "85'",
+  "ord": 241,
+  "l": 85,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "86-deep",
+  "lbl": "86'",
+  "ord": 242,
+  "l": 86,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "87-deep",
+  "lbl": "87'",
+  "ord": 243,
+  "l": 87,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "88-deep",
+  "lbl": "88'",
+  "ord": 244,
+  "l": 88,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "89-deep",
+  "lbl": "89'",
+  "ord": 245,
+  "l": 89,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "90-deep",
+  "lbl": "90'",
+  "ord": 246,
+  "l": 90,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "91-deep",
+  "lbl": "91'",
+  "ord": 247,
+  "l": 91,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "92-deep",
+  "lbl": "92'",
+  "ord": 248,
+  "l": 92,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "93-deep",
+  "lbl": "93'",
+  "ord": 249,
+  "l": 93,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "94-deep",
+  "lbl": "94'",
+  "ord": 250,
+  "l": 94,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "95-deep",
+  "lbl": "95'",
+  "ord": 251,
+  "l": 95,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "96-deep",
+  "lbl": "96'",
+  "ord": 252,
+  "l": 96,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "97-deep",
+  "lbl": "97'",
+  "ord": 253,
+  "l": 97,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "98-deep",
+  "lbl": "98'",
+  "ord": 254,
+  "l": 98,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "99-deep",
+  "lbl": "99'",
+  "ord": 255,
+  "l": 99,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "100-deep",
+  "lbl": "100'",
+  "ord": 256,
+  "l": 100,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "101-deep",
+  "lbl": "101'",
+  "ord": 257,
+  "l": 101,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "102-deep",
+  "lbl": "102'",
+  "ord": 258,
+  "l": 102,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "103-deep",
+  "lbl": "103'",
+  "ord": 259,
+  "l": 103,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "104-deep",
+  "lbl": "104'",
+  "ord": 260,
+  "l": 104,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "105-deep",
+  "lbl": "105'",
+  "ord": 261,
+  "l": 105,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "106-deep",
+  "lbl": "106'",
+  "ord": 262,
+  "l": 106,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "107-deep",
+  "lbl": "107'",
+  "ord": 263,
+  "l": 107,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "108-deep",
+  "lbl": "108'",
+  "ord": 264,
+  "l": 108,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "109-deep",
+  "lbl": "109'",
+  "ord": 265,
+  "l": 109,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "110-deep",
+  "lbl": "110'",
+  "ord": 266,
+  "l": 110,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "111-deep",
+  "lbl": "111'",
+  "ord": 267,
+  "l": 111,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "112-deep",
+  "lbl": "112'",
+  "ord": 268,
+  "l": 112,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "113-deep",
+  "lbl": "113'",
+  "ord": 269,
+  "l": 113,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "114-deep",
+  "lbl": "114'",
+  "ord": 270,
+  "l": 114,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "115-deep",
+  "lbl": "115'",
+  "ord": 271,
+  "l": 115,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "116-deep",
+  "lbl": "116'",
+  "ord": 272,
+  "l": 116,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "117-deep",
+  "lbl": "117'",
+  "ord": 273,
+  "l": 117,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "118-deep",
+  "lbl": "118'",
+  "ord": 274,
+  "l": 118,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "119-deep",
+  "lbl": "119'",
+  "ord": 275,
+  "l": 119,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "120-deep",
+  "lbl": "120'",
+  "ord": 276,
+  "l": 120,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "121-deep",
+  "lbl": "121'",
+  "ord": 277,
+  "l": 121,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "122-deep",
+  "lbl": "122'",
+  "ord": 278,
+  "l": 122,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "123-deep",
+  "lbl": "123'",
+  "ord": 279,
+  "l": 123,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "124-deep",
+  "lbl": "124'",
+  "ord": 280,
+  "l": 124,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "125-deep",
+  "lbl": "125'",
+  "ord": 281,
+  "l": 125,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "126-deep",
+  "lbl": "126'",
+  "ord": 282,
+  "l": 126,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "127-deep",
+  "lbl": "127'",
+  "ord": 283,
+  "l": 127,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "128-deep",
+  "lbl": "128'",
+  "ord": 284,
+  "l": 128,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "129-deep",
+  "lbl": "129'",
+  "ord": 285,
+  "l": 129,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "130-deep",
+  "lbl": "130'",
+  "ord": 286,
+  "l": 130,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "131-deep",
+  "lbl": "131'",
+  "ord": 287,
+  "l": 131,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "132-deep",
+  "lbl": "132'",
+  "ord": 288,
+  "l": 132,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "133-deep",
+  "lbl": "133'",
+  "ord": 289,
+  "l": 133,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "134-deep",
+  "lbl": "134'",
+  "ord": 290,
+  "l": 134,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "135-deep",
+  "lbl": "135'",
+  "ord": 291,
+  "l": 135,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "136-deep",
+  "lbl": "136'",
+  "ord": 292,
+  "l": 136,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "137-deep",
+  "lbl": "137'",
+  "ord": 293,
+  "l": 137,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "138-deep",
+  "lbl": "138'",
+  "ord": 294,
+  "l": 138,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "139-deep",
+  "lbl": "139'",
+  "ord": 295,
+  "l": 139,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "140-deep",
+  "lbl": "140'",
+  "ord": 296,
+  "l": 140,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "141-deep",
+  "lbl": "141'",
+  "ord": 297,
+  "l": 141,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "142-deep",
+  "lbl": "142'",
+  "ord": 298,
+  "l": 142,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "143-deep",
+  "lbl": "143'",
+  "ord": 299,
+  "l": 143,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "144-deep",
+  "lbl": "144'",
+  "ord": 300,
+  "l": 144,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "145-deep",
+  "lbl": "145'",
+  "ord": 301,
+  "l": 145,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "146-deep",
+  "lbl": "146'",
+  "ord": 302,
+  "l": 146,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "147-deep",
+  "lbl": "147'",
+  "ord": 303,
+  "l": 147,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "148-deep",
+  "lbl": "148'",
+  "ord": 304,
+  "l": 148,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "149-deep",
+  "lbl": "149'",
+  "ord": 305,
+  "l": 149,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "150-deep",
+  "lbl": "150'",
+  "ord": 306,
+  "l": 150,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "151-deep",
+  "lbl": "151'",
+  "ord": 307,
+  "l": 151,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "152-deep",
+  "lbl": "152'",
+  "ord": 308,
+  "l": 152,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "153-deep",
+  "lbl": "153'",
+  "ord": 309,
+  "l": 153,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "154-deep",
+  "lbl": "154'",
+  "ord": 310,
+  "l": 154,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "155-deep",
+  "lbl": "155'",
+  "ord": 311,
+  "l": 155,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "156-deep",
+  "lbl": "156'",
+  "ord": 312,
+  "l": 156,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "157-deep",
+  "lbl": "157'",
+  "ord": 313,
+  "l": 157,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "158-deep",
+  "lbl": "158'",
+  "ord": 314,
+  "l": 158,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "159-deep",
+  "lbl": "159'",
+  "ord": 315,
+  "l": 159,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "160-deep",
+  "lbl": "160'",
+  "ord": 316,
+  "l": 160,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "161-deep",
+  "lbl": "161'",
+  "ord": 317,
+  "l": 161,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "162-deep",
+  "lbl": "162'",
+  "ord": 318,
+  "l": 162,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "163-deep",
+  "lbl": "163'",
+  "ord": 319,
+  "l": 163,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "164-deep",
+  "lbl": "164'",
+  "ord": 320,
+  "l": 164,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "165-deep",
+  "lbl": "165'",
+  "ord": 321,
+  "l": 165,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "166-deep",
+  "lbl": "166'",
+  "ord": 322,
+  "l": 166,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "167-deep",
+  "lbl": "167'",
+  "ord": 323,
+  "l": 167,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "168-deep",
+  "lbl": "168'",
+  "ord": 324,
+  "l": 168,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "169-deep",
+  "lbl": "169'",
+  "ord": 325,
+  "l": 169,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "170-deep",
+  "lbl": "170'",
+  "ord": 326,
+  "l": 170,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "171-deep",
+  "lbl": "171'",
+  "ord": 327,
+  "l": 171,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "172-deep",
+  "lbl": "172'",
+  "ord": 328,
+  "l": 172,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "173-deep",
+  "lbl": "173'",
+  "ord": 329,
+  "l": 173,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "174-deep",
+  "lbl": "174'",
+  "ord": 330,
+  "l": 174,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "175-deep",
+  "lbl": "175'",
+  "ord": 331,
+  "l": 175,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "176-deep",
+  "lbl": "176'",
+  "ord": 332,
+  "l": 176,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "177-deep",
+  "lbl": "177'",
+  "ord": 333,
+  "l": 177,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "178-deep",
+  "lbl": "178'",
+  "ord": 334,
+  "l": 178,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "179-deep",
+  "lbl": "179'",
+  "ord": 335,
+  "l": 179,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "180-deep",
+  "lbl": "180'",
+  "ord": 336,
+  "l": 180,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "181-deep",
+  "lbl": "181'",
+  "ord": 337,
+  "l": 181,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "182-deep",
+  "lbl": "182'",
+  "ord": 338,
+  "l": 182,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "183-deep",
+  "lbl": "183'",
+  "ord": 339,
+  "l": 183,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "184-deep",
+  "lbl": "184'",
+  "ord": 340,
+  "l": 184,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "185-deep",
+  "lbl": "185'",
+  "ord": 341,
+  "l": 185,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "186-deep",
+  "lbl": "186'",
+  "ord": 342,
+  "l": 186,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "187-deep",
+  "lbl": "187'",
+  "ord": 343,
+  "l": 187,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "188-deep",
+  "lbl": "188'",
+  "ord": 344,
+  "l": 188,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "189-deep",
+  "lbl": "189'",
+  "ord": 345,
+  "l": 189,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "190-deep",
+  "lbl": "190'",
+  "ord": 346,
+  "l": 190,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "191-deep",
+  "lbl": "191'",
+  "ord": 347,
+  "l": 191,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "192-deep",
+  "lbl": "192'",
+  "ord": 348,
+  "l": 192,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "193-deep",
+  "lbl": "193'",
+  "ord": 349,
+  "l": 193,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "194-deep",
+  "lbl": "194'",
+  "ord": 350,
+  "l": 194,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "195-deep",
+  "lbl": "195'",
+  "ord": 351,
+  "l": 195,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "196-deep",
+  "lbl": "196'",
+  "ord": 352,
+  "l": 196,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "197-deep",
+  "lbl": "197'",
+  "ord": 353,
+  "l": 197,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "198-deep",
+  "lbl": "198'",
+  "ord": 354,
+  "l": 198,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "199-deep",
+  "lbl": "199'",
+  "ord": 355,
+  "l": 199,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "200-deep",
+  "lbl": "200'",
+  "ord": 356,
+  "l": 200,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide",
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "vertical-lean-roof"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "5-deep-storage",
+  "lbl": "5'",
+  "ord": 357,
+  "l": 5,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "10-deep-storage",
+  "lbl": "10'",
+  "ord": 358,
+  "l": 10,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "15-deep-storage",
+  "lbl": "15'",
+  "ord": 359,
+  "l": 15,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "20-deep-storage",
+  "lbl": "20'",
+  "ord": 360,
+  "l": 20,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "25-deep-storage",
+  "lbl": "25'",
+  "ord": 361,
+  "l": 25,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "30-deep-storage",
+  "lbl": "30'",
+  "ord": 362,
+  "l": 30,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "35-deep-storage",
+  "lbl": "35'",
+  "ord": 363,
+  "l": 35,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "40-deep-storage",
+  "lbl": "40'",
+  "ord": 364,
+  "l": 40,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "45-deep-storage",
+  "lbl": "45'",
+  "ord": 365,
+  "l": 45,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "50-deep-storage",
+  "lbl": "50'",
+  "ord": 366,
+  "l": 50,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "55-deep-storage",
+  "lbl": "55'",
+  "ord": 367,
+  "l": 55,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "60-deep-storage",
+  "lbl": "60'",
+  "ord": 368,
+  "l": 60,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "65-deep-storage",
+  "lbl": "65'",
+  "ord": 369,
+  "l": 65,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "70-deep-storage",
+  "lbl": "70'",
+  "ord": 370,
+  "l": 70,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "75-deep-storage",
+  "lbl": "75'",
+  "ord": 371,
+  "l": 75,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "80-deep-storage",
+  "lbl": "80'",
+  "ord": 372,
+  "l": 80,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "85-deep-storage",
+  "lbl": "85'",
+  "ord": 373,
+  "l": 85,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "90-deep-storage",
+  "lbl": "90'",
+  "ord": 374,
+  "l": 90,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "95-deep-storage",
+  "lbl": "95'",
+  "ord": 375,
+  "l": 95,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "100-deep-storage",
+  "lbl": "100'",
+  "ord": 376,
+  "l": 100,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "105-deep-storage",
+  "lbl": "105'",
+  "ord": 377,
+  "l": 105,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "110-deep-storage",
+  "lbl": "110'",
+  "ord": 378,
+  "l": 110,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "115-deep-storage",
+  "lbl": "115'",
+  "ord": 379,
+  "l": 115,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "120-deep-storage",
+  "lbl": "120'",
+  "ord": 380,
+  "l": 120,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "125-deep-storage",
+  "lbl": "125'",
+  "ord": 381,
+  "l": 125,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "130-deep-storage",
+  "lbl": "130'",
+  "ord": 382,
+  "l": 130,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "135-deep-storage",
+  "lbl": "135'",
+  "ord": 383,
+  "l": 135,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "140-deep-storage",
+  "lbl": "140'",
+  "ord": 384,
+  "l": 140,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "145-deep-storage",
+  "lbl": "145'",
+  "ord": 385,
+  "l": 145,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "150-deep-storage",
+  "lbl": "150'",
+  "ord": 386,
+  "l": 150,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "155-deep-storage",
+  "lbl": "155'",
+  "ord": 387,
+  "l": 155,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "160-deep-storage",
+  "lbl": "160'",
+  "ord": 388,
+  "l": 160,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "165-deep-storage",
+  "lbl": "165'",
+  "ord": 389,
+  "l": 165,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "170-deep-storage",
+  "lbl": "170'",
+  "ord": 390,
+  "l": 170,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "175-deep-storage",
+  "lbl": "175'",
+  "ord": 391,
+  "l": 175,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "180-deep-storage",
+  "lbl": "180'",
+  "ord": 392,
+  "l": 180,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "185-deep-storage",
+  "lbl": "185'",
+  "ord": 393,
+  "l": 185,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "190-deep-storage",
+  "lbl": "190'",
+  "ord": 394,
+  "l": 190,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "195-deep-storage",
+  "lbl": "195'",
+  "ord": 395,
+  "l": 195,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "200-deep-storage",
+  "lbl": "200'",
+  "ord": 396,
+  "l": 200,
+  "wt": [
+   "12-24-wide",
+   "26-30-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "10-deep-storage-10",
+  "lbl": "10'",
+  "ord": 397,
+  "l": 10,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "20-deep-storage-10",
+  "lbl": "20'",
+  "ord": 398,
+  "l": 20,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "30-deep-storage-10",
+  "lbl": "30'",
+  "ord": 399,
+  "l": 30,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "40-deep-storage-10",
+  "lbl": "40'",
+  "ord": 400,
+  "l": 40,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "50-deep-storage-10",
+  "lbl": "50'",
+  "ord": 401,
+  "l": 50,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "60-deep-storage-10",
+  "lbl": "60'",
+  "ord": 402,
+  "l": 60,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "70-deep-storage-10",
+  "lbl": "70'",
+  "ord": 403,
+  "l": 70,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "80-deep-storage-10",
+  "lbl": "80'",
+  "ord": 404,
+  "l": 80,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "90-deep-storage-10",
+  "lbl": "90'",
+  "ord": 405,
+  "l": 90,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "100-deep-storage-10",
+  "lbl": "100'",
+  "ord": 406,
+  "l": 100,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "110-deep-storage-10",
+  "lbl": "110'",
+  "ord": 407,
+  "l": 110,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "120-deep-storage-10",
+  "lbl": "120'",
+  "ord": 408,
+  "l": 120,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "130-deep-storage-10",
+  "lbl": "130'",
+  "ord": 409,
+  "l": 130,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "140-deep-storage-10",
+  "lbl": "140'",
+  "ord": 410,
+  "l": 140,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "150-deep-storage-10",
+  "lbl": "150'",
+  "ord": 411,
+  "l": 150,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "160-deep-storage-10",
+  "lbl": "160'",
+  "ord": 412,
+  "l": 160,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "170-deep-storage-10",
+  "lbl": "170'",
+  "ord": 413,
+  "l": 170,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "180-deep-storage-10",
+  "lbl": "180'",
+  "ord": 414,
+  "l": 180,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "190-deep-storage-10",
+  "lbl": "190'",
+  "ord": 415,
+  "l": 190,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "length",
+  "k": "200-deep-storage-10",
+  "lbl": "200'",
+  "ord": 416,
+  "l": 200,
+  "wt": [
+   "32-60-wide"
+  ],
+  "rt": [
+   "vertical",
+   "regular",
+   "boxed-eave"
+  ],
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "1-wide",
+  "lbl": "1'",
+  "ord": 0,
+  "w": 1,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "2-wide",
+  "lbl": "2'",
+  "ord": 1,
+  "w": 2,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "3-wide",
+  "lbl": "3'",
+  "ord": 2,
+  "w": 3,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "4-wide",
+  "lbl": "4'",
+  "ord": 3,
+  "w": 4,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "5-wide",
+  "lbl": "5'",
+  "ord": 4,
+  "w": 5,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "6-wide",
+  "lbl": "6'",
+  "ord": 5,
+  "w": 6,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "7-wide",
+  "lbl": "7'",
+  "ord": 6,
+  "w": 7,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "8-wide",
+  "lbl": "8'",
+  "ord": 7,
+  "w": 8,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "9-wide",
+  "lbl": "9'",
+  "ord": 8,
+  "w": 9,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "9.5-wide",
+  "lbl": "9.5'",
+  "ord": 9,
+  "w": 9.5,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "10-wide",
+  "lbl": "10'",
+  "ord": 10,
+  "w": 10,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "11-wide",
+  "lbl": "11'",
+  "ord": 11,
+  "w": 11,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "12-wide",
+  "lbl": "12'",
+  "ord": 12,
+  "w": 12
+ },
+ {
+  "t": "width",
+  "k": "13-wide",
+  "lbl": "13'",
+  "ord": 13,
+  "w": 13,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "14-wide",
+  "lbl": "14'",
+  "ord": 14,
+  "w": 14,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "15-wide",
+  "lbl": "15'",
+  "ord": 15,
+  "w": 15,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "16-wide",
+  "lbl": "16'",
+  "ord": 16,
+  "w": 16,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "17-wide",
+  "lbl": "17'",
+  "ord": 17,
+  "w": 17,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "18-wide",
+  "lbl": "18'",
+  "ord": 18,
+  "w": 18,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "19-wide",
+  "lbl": "19'",
+  "ord": 19,
+  "w": 19,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "20-wide",
+  "lbl": "20'",
+  "ord": 20,
+  "w": 20,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "21-wide",
+  "lbl": "21'",
+  "ord": 21,
+  "w": 21,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "22-wide",
+  "lbl": "22'",
+  "ord": 22,
+  "w": 22,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "23-wide",
+  "lbl": "23'",
+  "ord": 23,
+  "w": 23,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "24-wide",
+  "lbl": "24'",
+  "ord": 24,
+  "w": 24,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "25-wide",
+  "lbl": "25'",
+  "ord": 25,
+  "w": 25,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "26-wide",
+  "lbl": "26'",
+  "ord": 26,
+  "w": 26,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "27-wide",
+  "lbl": "27'",
+  "ord": 27,
+  "w": 27,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "28-wide",
+  "lbl": "28'",
+  "ord": 28,
+  "w": 28,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "29-wide",
+  "lbl": "29'",
+  "ord": 29,
+  "w": 29,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "30-wide",
+  "lbl": "30'",
+  "ord": 30,
+  "w": 30,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "31-wide",
+  "lbl": "31'",
+  "ord": 31,
+  "w": 31,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "32-wide",
+  "lbl": "32'",
+  "ord": 32,
+  "w": 32,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "33-wide",
+  "lbl": "33'",
+  "ord": 33,
+  "w": 33,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "34-wide",
+  "lbl": "34'",
+  "ord": 34,
+  "w": 34,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "35-wide",
+  "lbl": "35'",
+  "ord": 35,
+  "w": 35,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "36-wide",
+  "lbl": "36'",
+  "ord": 36,
+  "w": 36,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "37-wide",
+  "lbl": "37'",
+  "ord": 37,
+  "w": 37,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "38-wide",
+  "lbl": "38'",
+  "ord": 38,
+  "w": 38,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "39-wide",
+  "lbl": "39'",
+  "ord": 39,
+  "w": 39,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "40-wide",
+  "lbl": "40'",
+  "ord": 40,
+  "w": 40,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "41-wide",
+  "lbl": "41'",
+  "ord": 41,
+  "w": 41,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "42-wide",
+  "lbl": "42'",
+  "ord": 42,
+  "w": 42,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "43-wide",
+  "lbl": "43'",
+  "ord": 43,
+  "w": 43,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "44-wide",
+  "lbl": "44'",
+  "ord": 44,
+  "w": 44,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "45-wide",
+  "lbl": "45'",
+  "ord": 45,
+  "w": 45,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "46-wide",
+  "lbl": "46'",
+  "ord": 46,
+  "w": 46,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "47-wide",
+  "lbl": "47'",
+  "ord": 47,
+  "w": 47,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "48-wide",
+  "lbl": "48'",
+  "ord": 48,
+  "w": 48,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "49-wide",
+  "lbl": "49'",
+  "ord": 49,
+  "w": 49,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "50-wide",
+  "lbl": "50'",
+  "ord": 50,
+  "w": 50,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "51-wide",
+  "lbl": "51'",
+  "ord": 51,
+  "w": 51,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "52-wide",
+  "lbl": "52'",
+  "ord": 52,
+  "w": 52,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "53-wide",
+  "lbl": "53'",
+  "ord": 53,
+  "w": 53,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "54-wide",
+  "lbl": "54'",
+  "ord": 54,
+  "w": 54,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "55-wide",
+  "lbl": "55'",
+  "ord": 55,
+  "w": 55,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "56-wide",
+  "lbl": "56'",
+  "ord": 56,
+  "w": 56,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "57-wide",
+  "lbl": "57'",
+  "ord": 57,
+  "w": 57,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "58-wide",
+  "lbl": "58'",
+  "ord": 58,
+  "w": 58,
+  "hasExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "59-wide",
+  "lbl": "59'",
+  "ord": 59,
+  "w": 59,
+  "hasExpr": 1,
+  "hasSizeExpr": 1
+ },
+ {
+  "t": "width",
+  "k": "60-wide",
+  "lbl": "60'",
+  "ord": 60,
+  "w": 60,
+  "hasExpr": 1
+ },
+ {
+  "t": "additional-information",
+  "k": "estimate-end-text",
+  "ord": 0
+ },
+ {
+  "t": "additional-information",
+  "k": "save-email-end-text",
+  "ord": 1
+ },
+ {
+  "t": "additional-information",
+  "k": "estimate-intro-text",
+  "ord": 2
+ },
+ {
+  "t": "additional-information",
+  "k": "purchase-agreement",
+  "ord": 3
+ },
+ {
+  "t": "style",
+  "k": "metal-carport",
+  "lbl": "Standard Carport",
+  "ord": 0
+ },
+ {
+  "t": "style",
+  "k": "triple-wide",
+  "lbl": "Triple Wide (26' to 30' Wide)",
+  "ord": 1
+ },
+ {
+  "t": "style",
+  "k": "commercial",
+  "lbl": "Commercial (32' to 60' Wide)",
+  "ord": 2
+ },
+ {
+  "t": "style",
+  "k": "metal-rv-carport",
+  "lbl": "Double Leg RV Cover",
+  "ord": 3
+ },
+ {
+  "t": "style",
+  "k": "metal-garage",
+  "lbl": "Garage",
+  "ord": 4
+ },
+ {
+  "t": "style",
+  "k": "combo-garage",
+  "lbl": "Combo Garage",
+  "ord": 5
+ },
+ {
+  "t": "style",
+  "k": "metal-endcombo",
+  "lbl": "End Combo",
+  "ord": 6
+ },
+ {
+  "t": "style",
+  "k": "side-combo",
+  "lbl": "Side Combo",
+  "ord": 7
+ },
+ {
+  "t": "style",
+  "k": "metal-barn",
+  "lbl": "Horse Barn",
+  "ord": 8
+ },
+ {
+  "t": "style",
+  "k": "metal-straight-line-barn",
+  "lbl": "Strait Line Barn",
+  "ord": 9
+ },
+ {
+  "t": "style",
+  "k": "metal-single-slope-carport",
+  "lbl": "Single Slope",
+  "ord": 10
+ },
+ {
+  "t": "style",
+  "k": "loafing-shed",
+  "lbl": "Loafing Shed",
+  "ord": 11
+ },
+ {
+  "t": "style",
+  "k": "green-house",
+  "lbl": "Green House",
+  "ord": 12
+ },
+ {
+  "t": "style",
+  "k": "portable-shed",
+  "lbl": "Portables",
+  "ord": 13
+ },
+ {
+  "t": "component-family",
+  "k": "loft-door",
+  "lbl": "Loft Door"
+ },
+ {
+  "t": "component-family",
+  "k": "farmhouse-dormer",
+  "lbl": "Farmhouse Dormer"
+ },
+ {
+  "t": "component-family",
+  "k": "window",
+  "lbl": "Window"
+ },
+ {
+  "t": "component-family",
+  "k": "vent",
+  "lbl": "Vent"
+ },
+ {
+  "t": "component-family",
+  "k": "cupolas",
+  "lbl": "Cupolas"
+ },
+ {
+  "t": "component-family",
+  "k": "porch-roof",
+  "lbl": "Porch Roof"
+ },
+ {
+  "t": "component-family",
+  "k": "door",
+  "lbl": "Door"
+ },
+ {
+  "t": "component-family",
+  "k": "electrical",
+  "lbl": "Electrical"
+ },
+ {
+  "t": "component-family",
+  "k": "garage-door",
+  "lbl": "Garage Door"
+ },
+ {
+  "t": "component-family",
+  "k": "dormer",
+  "lbl": "Dormer"
+ },
+ {
+  "t": "component-family",
+  "k": "frameout",
+  "lbl": "Frameout"
+ },
+ {
+  "t": "component-family",
+  "k": "rollup-door",
+  "lbl": "Rollup Door"
+ },
+ {
+  "t": "component-family",
+  "k": "tack-room",
+  "lbl": "Tack Room"
+ },
+ {
+  "t": "component-family",
+  "k": "shelves",
+  "lbl": "Shelves"
+ },
+ {
+  "t": "component-family",
+  "k": "wall-accent",
+  "lbl": "Wall Accent"
+ },
+ {
+  "t": "component-family",
+  "k": "workbench",
+  "lbl": "Workbench"
+ },
+ {
+  "t": "component-family",
+  "k": "nesting-box",
+  "lbl": "Nesting Box"
+ },
+ {
+  "t": "component-family",
+  "k": "transom",
+  "lbl": "Transom"
+ },
+ {
+  "t": "component-family",
+  "k": "emblem",
+  "lbl": "Emblem"
+ },
+ {
+  "t": "component-family",
+  "k": "double-door",
+  "lbl": "Double Door"
+ },
+ {
+  "t": "component-family",
+  "k": "chicken-door",
+  "lbl": "Chicken Door"
+ },
+ {
+  "t": "component-family",
+  "k": "a-frame-dormer",
+  "lbl": "A Frame Dormer"
+ },
+ {
+  "t": "component-family",
+  "k": "reverse-gable-dormer",
+  "lbl": "Reverse Gable Dormer"
+ },
+ {
+  "t": "component-family",
+  "k": "single-door",
+  "lbl": "Single Door"
+ },
+ {
+  "t": "trusses",
+  "k": "none",
+  "lbl": "Standard",
+  "ord": 0,
+  "w": [
+   0,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ]
+ },
+ {
+  "t": "trusses",
+  "k": "center-brace-truss",
+  "lbl": "Center Brace",
+  "ord": 1,
+  "w": [
+   0,
+   24
+  ],
+  "wt": [
+   "12-24-wide"
+  ]
+ },
+ {
+  "t": "trusses",
+  "k": "triple-wide-truss",
+  "lbl": "Triple Wide Truss",
+  "ord": 2,
+  "w": [
+   25,
+   30
+  ],
+  "wt": [
+   "26-30-wide"
+  ]
+ },
+ {
+  "t": "trusses",
+  "k": "ladder-truss",
+  "lbl": "Ladder Truss",
+  "ord": 3,
+  "w": [
+   31,
+   60
+  ],
+  "wt": [
+   "32-60-wide"
+  ]
+ },
+ {
+  "t": "wall-footprint",
+  "k": "no-storage-wall-footprint",
+  "ord": 0,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "front-storage-wall-footprint",
+  "ord": 1,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "back-storage-wall-footprint",
+  "ord": 2,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "right-storage-wall-footprint",
+  "ord": 3,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "left-storage-wall-footprint",
+  "ord": 4,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "loafing-shed-storage-footprint",
+  "ord": 5
+ },
+ {
+  "t": "wall-footprint",
+  "k": "loafing-shed-wall-footprint",
+  "ord": 6,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "left-lean-wraparound-footprint_front-none_back-standard-frame-spacing-fix",
+  "ord": 7,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "left-lean-wraparound-footprint_front-standard_back-none-frame-spacing-fix",
+  "ord": 8,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "left-lean-wraparound-footprint_front-standard_back-standard-frame-spacing-fix",
+  "ord": 9,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "right-lean-wraparound-footprint_front-none_back-standard-frame-spacing-fix",
+  "ord": 10,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "right-lean-wraparound-footprint_front-standard_back-none-frame-spacing-fix",
+  "ord": 11,
+  "hasExpr": 1
+ },
+ {
+  "t": "wall-footprint",
+  "k": "right-lean-wraparound-footprint_front-standard_back-standard-frame-spacing-fix",
+  "ord": 12,
+  "hasExpr": 1
+ },
+ {
+  "t": "component",
+  "k": "garage-door-1-gable",
+  "lbl": "6x6 Roll Up Door (Outside Latch)",
+  "ord": 0,
+  "p": 670,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "portable-rollup-door-6-6-gable",
+  "lbl": "6' Roll Up (Outside Latch)",
+  "ord": 1,
+  "p": 675,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "garage-door-2-gable",
+  "lbl": "6x7 Roll Up Door (Outside Latch)",
+  "ord": 2,
+  "p": 680,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "portable-rollup-door-8-6-gable",
+  "lbl": "8' Roll Up (Outside Latch)",
+  "ord": 3,
+  "p": 780,
+  "w": 96
+ },
+ {
+  "t": "component",
+  "k": "garage-door-3-gable",
+  "lbl": "8x8 Roll Up Door (Outside Latch)",
+  "ord": 4,
+  "p": 855,
+  "w": 96
+ },
+ {
+  "t": "component",
+  "k": "garage-door-4-gable",
+  "lbl": "9x8 Roll Up Door (Outside Latch)",
+  "ord": 5,
+  "p": 875,
+  "w": 108
+ },
+ {
+  "t": "component",
+  "k": "garage-door-5-gable",
+  "lbl": "10x8 Roll Up Door (Outside Latch)",
+  "ord": 6,
+  "p": 940,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-6-gable",
+  "lbl": "10x10 Roll Up Door (Outside Latch)",
+  "ord": 7,
+  "p": 1080,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-7-gable",
+  "lbl": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 8,
+  "p": 1300,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-10-gable",
+  "lbl": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 9,
+  "p": 1650,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-8-gable",
+  "lbl": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 10,
+  "p": 1750,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-11-gable",
+  "lbl": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 11,
+  "p": 2600,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-12-gable",
+  "lbl": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 12,
+  "p": 2750,
+  "w": 168
+ },
+ {
+  "t": "component",
+  "k": "garage-door-9-gable",
+  "lbl": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 13,
+  "p": 2900,
+  "w": 168
+ },
+ {
+  "t": "component",
+  "k": "garage-door-1-side",
+  "lbl": "6x6 Roll Up Door (Outside Latch)",
+  "ord": 14,
+  "p": 670,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "portable-rollup-door-6-6-side",
+  "lbl": "6' Roll Up (Outside Latch)",
+  "ord": 15,
+  "p": 675,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "garage-door-2-side",
+  "lbl": "6x7 Roll Up Door (Outside Latch)",
+  "ord": 16,
+  "p": 680,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "portable-rollup-door-8-6-side",
+  "lbl": "8' Roll Up (Outside Latch)",
+  "ord": 17,
+  "p": 780,
+  "w": 96
+ },
+ {
+  "t": "component",
+  "k": "garage-door-3-side",
+  "lbl": "8x8 Roll Up Door (Outside Latch)",
+  "ord": 18,
+  "p": 855,
+  "w": 96
+ },
+ {
+  "t": "component",
+  "k": "garage-door-4-side",
+  "lbl": "9x8 Roll Up Door (Outside Latch)",
+  "ord": 19,
+  "p": 875,
+  "w": 108
+ },
+ {
+  "t": "component",
+  "k": "garage-door-5-side",
+  "lbl": "10x8 Roll Up Door (Outside Latch)",
+  "ord": 20,
+  "p": 940,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-6-side",
+  "lbl": "10x10 Roll Up Door (Outside Latch)",
+  "ord": 21,
+  "p": 1080,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-7-side",
+  "lbl": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 22,
+  "p": 1300,
+  "w": 120
+ },
+ {
+  "t": "component",
+  "k": "garage-door-10-side",
+  "lbl": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 23,
+  "p": 1650,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-8-side",
+  "lbl": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 24,
+  "p": 1750,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-11-side",
+  "lbl": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 25,
+  "p": 2600,
+  "w": 144
+ },
+ {
+  "t": "component",
+  "k": "garage-door-12-side",
+  "lbl": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 26,
+  "p": 2750,
+  "w": 168
+ },
+ {
+  "t": "component",
+  "k": "garage-door-9-side",
+  "lbl": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
+  "ord": 27,
+  "p": 2900,
+  "w": 168
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-res",
+  "lbl": "36\"x80\" UT White 6 Panel (Out-Swing)",
+  "ord": 28,
+  "def": 1,
+  "p": 450,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-res-black",
+  "lbl": "36\"x80\" UT Black 6 Panel (Out-Swing)",
+  "ord": 29,
+  "def": 1,
+  "p": 500,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-9-lite",
+  "lbl": "36\"x80” UT White 9-Lite (Out-Swing)",
+  "ord": 30,
+  "p": 550,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-9-lite-black",
+  "lbl": "36\"x80” UT Black 9-Lite (Out-Swing)",
+  "ord": 31,
+  "p": 600,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-premium",
+  "lbl": "36\"x80\" PR White 6 Panel (In-Swing)",
+  "ord": 32,
+  "p": 900,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-6-lite-premium",
+  "lbl": "36\"x80\" PR White Six-Lite (In-Swing)",
+  "ord": 33,
+  "p": 1100,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-9-lite-premium",
+  "lbl": "36\"x80\" PR White 9-Lite (In-Swing)",
+  "ord": 34,
+  "p": 1300,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-36-80-black",
+  "lbl": "36\"x80\" PR Black w/Glass (In-Swing)",
+  "ord": 35,
+  "def": 1,
+  "p": 1500,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "double-door-72-80",
+  "lbl": "72\"x80\" PR White DBL Door (In-Swing)",
+  "ord": 36,
+  "p": 2100,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "double-door-72-80-9-lite",
+  "lbl": "72\"x80\" PR White DBL Door 9-lite (In-Swing)",
+  "ord": 37,
+  "p": 2200,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-72-80-black",
+  "lbl": "72\"x80\" PR Black DBL Door w/Glass (In-Swing)",
+  "ord": 38,
+  "def": 1,
+  "p": 2500,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "walk-in-door-gable",
+  "lbl": "Frameout Walk-in Door",
+  "ord": 0,
+  "def": 1,
+  "p": 150,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "double-door",
+  "lbl": "Frame Double Door",
+  "ord": 1,
+  "p": 250,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "frameout-window-gable",
+  "lbl": "Frameout 30”x30” Window",
+  "ord": 2,
+  "p": 100,
+  "w": 30
+ },
+ {
+  "t": "component",
+  "k": "custom-window-frameout",
+  "lbl": "Frameout Custom Window",
+  "ord": 3
+ },
+ {
+  "t": "component",
+  "k": "custom-garage-door-gableend",
+  "lbl": "Frameout Garage Door",
+  "ord": 4
+ },
+ {
+  "t": "component",
+  "k": "custom-garage-door-13",
+  "lbl": "Frameout Garage Door (Up to 13' wide)",
+  "ord": 5,
+  "w": 72
+ },
+ {
+  "t": "component",
+  "k": "custom-garage-door-19",
+  "lbl": "Frameout Garage Door (14' to 19' Wide)",
+  "ord": 6,
+  "w": 180
+ },
+ {
+  "t": "component",
+  "k": "custom-garage-door-30",
+  "lbl": "Frameout Garage Door (20' to 30' Wide)",
+  "ord": 7,
+  "w": 300
+ },
+ {
+  "t": "component",
+  "k": "vent-12-12",
+  "lbl": "12\" x 12\" Vent",
+  "ord": 0,
+  "p": 115
+ },
+ {
+  "t": "component",
+  "k": "vent-12-18",
+  "lbl": "12\" x 18\" Vent",
+  "ord": 1,
+  "p": 135
+ },
+ {
+  "t": "component",
+  "k": "window-1",
+  "lbl": "30\" x 30\" Window",
+  "ord": 0,
+  "def": 1,
+  "p": 225,
+  "w": 30
+ },
+ {
+  "t": "component",
+  "k": "window-30-30-black",
+  "lbl": "30\" x 30\" Window Black",
+  "ord": 1,
+  "def": 1,
+  "p": 250,
+  "w": 30
+ },
+ {
+  "t": "component",
+  "k": "window-30-36",
+  "lbl": "30\" x 36\" Window White",
+  "ord": 2,
+  "def": 1,
+  "p": 260,
+  "w": 30
+ },
+ {
+  "t": "component",
+  "k": "window-30-36-black",
+  "lbl": "30\" x 36\" Window Black",
+  "ord": 3,
+  "def": 1,
+  "p": 290,
+  "w": 30
+ },
+ {
+  "t": "component",
+  "k": "window-2",
+  "lbl": "24\" x 36\" White Insulated Window",
+  "ord": 4,
+  "p": 545,
+  "w": 24
+ },
+ {
+  "t": "component",
+  "k": "window-3",
+  "lbl": "36\" x 36\" White Insulated Window",
+  "ord": 5,
+  "p": 595,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "window-4",
+  "lbl": "36\" x 48\" White Insulated Window",
+  "ord": 6,
+  "p": 695,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "window-5",
+  "lbl": "36\" x 60\" White Insulated Window",
+  "ord": 7,
+  "p": 725,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "window-6",
+  "lbl": "24\" x 36\" Black Insulated Window",
+  "ord": 8,
+  "p": 595,
+  "w": 24
+ },
+ {
+  "t": "component",
+  "k": "window-7",
+  "lbl": "36\" x 36\" Black Insulated Window",
+  "ord": 9,
+  "p": 650,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "window-8",
+  "lbl": "36\" x 48\" Black Insulated Window",
+  "ord": 10,
+  "p": 695,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "window-9",
+  "lbl": "36\" x 60\" Black Insulated Window",
+  "ord": 11,
+  "p": 775,
+  "w": 36
+ },
+ {
+  "t": "component",
+  "k": "faux-window-36-36",
+  "lbl": "Faux Window (36W x 36H)",
+  "ord": 12,
+  "p": 75,
+  "w": 36
+ },
+ {
+  "t": "system-order-calculation",
+  "k": "line-item-surcharge",
+  "lbl": "",
+  "ord": 0
+ },
+ {
+  "t": "gap-panel",
+  "k": "custom-size-top-panel",
+  "lbl": "Gap Panel",
+  "ord": 0
+ },
+ {
+  "t": "gap-panel",
+  "k": "custom-size-gable-panel",
+  "lbl": "Gable Gap Panel",
+  "ord": 1
+ },
+ {
+  "t": "position",
+  "k": "front",
+  "ord": 6
+ },
+ {
+  "t": "position",
+  "k": "back",
+  "ord": 7
+ },
+ {
+  "t": "position",
+  "k": "left",
+  "ord": 8
+ },
+ {
+  "t": "position",
+  "k": "right",
+  "ord": 9
+ },
+ {
+  "t": "position",
+  "k": "inner-front",
+  "ord": 10
+ },
+ {
+  "t": "position",
+  "k": "inner-left",
+  "ord": 11
+ },
+ {
+  "t": "position",
+  "k": "inner-right",
+  "ord": 12
+ },
+ {
+  "t": "section-side",
+  "k": "front-side",
+  "ord": 0
+ },
+ {
+  "t": "section-side",
+  "k": "back-side",
+  "ord": 1
+ },
+ {
+  "t": "section-side",
+  "k": "left-side",
+  "ord": 2
+ },
+ {
+  "t": "section-side",
+  "k": "right-side",
+  "ord": 3
+ }
+]

@@ -50,7 +50,15 @@
       "Bash(vercel link:*)",
       "Bash(vercel deploy:*)",
       "Bash(vercel project:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(netstat -ano)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/designer)",
+      "Bash(curl -s -o /dev/null -w \"designer:%{http_code}\\\\n\" http://localhost:3001/designer)",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "Bash(SP=\"C:/Users/13183/AppData/Local/Temp/claude/C--Users-13183-steel-sync/3d976124-9b8c-4df0-b6f3-20113f06eb5b/scratchpad\"; mkdir -p \"$SP/shots\"; mv designer-default.png roof-regular.png roof-aframe.png leanto-left.png \"$SP/shots/\" 2>/dev/null; rm -rf .playwright-mcp; ls \"$SP/shots\"; git status --short)",
+      "Bash(SP=\"C:/Users/13183/AppData/Local/Temp/claude/C--Users-13183-steel-sync/3d976124-9b8c-4df0-b6f3-20113f06eb5b/scratchpad/shots\"; mv tejas-*.png \"$SP/\" 2>/dev/null; rm -rf .playwright-mcp; ls \"$SP\"; echo \"--- repo ---\"; git status --short)",
+      "mcp__plugin_playwright_playwright__browser_close"
     ]
   }
 }

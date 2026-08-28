@@ -1,0 +1,301 @@
+#!/usr/bin/env node
+/**
+ * Compile the RAW TejasMex vendor snapshot into the pricing table the engine reads.
+ *
+ * Raw in : data/vendor-snapshots/<date>-tejasmex/
+ * Table out: lib/pricing/data/tejasmex.json
+ *
+ * This is deliberately a separate, re-runnable step (dealer-pricing-notes.md §5.3):
+ * the raw capture is never edited, so a parsing bug here is fixed by re-running this,
+ * not by re-scraping.
+ *
+ * A mis-parsed bracket is a SILENT money bug, so this script refuses to emit a table
+ * when two rows claim the same lookup key with different prices.
+ */
+const fs = require('fs');
+const path = require('path');
+
+const SNAP = path.join(__dirname, '..', 'data', 'vendor-snapshots', '2026-08-27-tejasmex');
+const OUT = path.join(__dirname, '..', 'lib', 'pricing', 'data', 'tejasmex.json');
+
+const read = f => JSON.parse(fs.readFileSync(path.join(SNAP, f), 'utf8'));
+const conditions = read('conditions.raw.json');
+const options = read('options.raw.json');
+const config = read('pricing-config.raw.json');
+
+const problems = [];
+const note = m => problems.push(m);
+
+// ── roof styles ─────────────────────────────────────────────
+// Our RoofStyle union -> the vendor's roofing option key.
+const STYLE_TO_VENDOR = { regular: 'regular-roof', aframe: 'boxed-eave-roof', vertical: 'vertical-roof' };
+const VENDOR_STYLES = Object.values(STYLE_TO_VENDOR);
+
+// ── base price: width band x ROOF length bracket x roof style ──
+const basePrice = [];
+{
+  const seen = new Map();
+  for (const r of conditions) {
+    if (r.ct !== 'base-price' || typeof r.p !== 'number' || !r.w || !r.len) continue;
+    const styles = r.keys.filter(k => VENDOR_STYLES.includes(k));
+    if (!styles.length) continue;               // lean / loafing variants
+    // Portable sheds price in THREE dimensions -- their label carries a height
+    // ("6x8x6" vs "6x8x7") and two rows otherwise share a width/length bracket.
+    // Carports are 2D ("24x26"). Fold height into the key so neither is dropped.
+    const m3 = /^(\d+)x(\d+)x(\d+)$/.exec(String(r.lbl || ''));
+    const heightFt = m3 ? Number(m3[3]) : null;
+    // Classify by the LABEL, not by the presence of a 'portable-shed' key. A row
+    // routinely applies to BOTH products ("regular-roof,portable-shed"), and
+    // treating the key as exclusive silently deleted every 12ft-wide standard row
+    // - 12x21, 12x26, 12x31 - so a 12x25 carport lost its base price entirely and
+    // quoted the bare leg-height line. What actually distinguishes the two is
+    // dimensionality: portable sheds price in 3D ("6x8x6"), carports in 2D ("12x26").
+    const product = heightFt != null ? 'portable-shed' : 'standard';
+    for (const style of styles) {
+      const key = `${product}|${style}|${r.w[0]}-${r.w[1]}|${r.len[0]}-${r.len[1]}|${heightFt ?? '-'}`;
+      if (seen.has(key) && seen.get(key) !== r.p) {
+        note(`base-price conflict ${key}: ${seen.get(key)} vs ${r.p}`);
+        continue;
+      }
+      if (seen.has(key)) continue;
+      seen.set(key, r.p);
+      basePrice.push({ product, style, width: r.w, roofLength: r.len, ...(heightFt != null ? { heightFt } : {}), price: r.p, label: r.lbl });
+    }
+  }
+}
+
+// ── leg height: width band x length bracket x height x leg type ──
+const legHeight = [];
+{
+  const seen = new Map();
+  for (const r of conditions) {
+    if (r.ct !== 'multi-length-variable-price' || typeof r.p !== 'number' || !r.len) continue;
+    const tall = r.keys.find(k => /^\d+-tall$/.test(k));          // single-section only
+    const band = r.keys.find(k => /^\d+-\d+-wide$/.test(k));
+    const legType = r.keys.find(k => /-legs$/.test(k));
+    if (!tall || !band || !legType) continue;
+    const heightFt = Number(tall.match(/^(\d+)-tall$/)[1]);
+    const [, wMin, wMax] = band.match(/^(\d+)-(\d+)-wide$/).map(Number);
+    const key = `${legType}|${wMin}-${wMax}|${r.len[0]}-${r.len[1]}|${heightFt}`;
+    if (seen.has(key) && seen.get(key) !== r.p) { note(`legHeight conflict ${key}: ${seen.get(key)} vs ${r.p}`); continue; }
+    if (seen.has(key)) continue;
+    seen.set(key, r.p);
+    legHeight.push({ legType, width: [wMin, wMax], length: r.len, heightFt, price: r.p });
+  }
+}
+
+// ── anchor packages: package x length bracket ──
+const anchorPackages = [];
+{
+  const seen = new Map();
+  for (const r of conditions) {
+    if (typeof r.p !== 'number' || !r.len) continue;
+    const pkg = r.keys.find(k => /-anchor-pkg$|-rebar-pkg$/.test(k));
+    if (!pkg) continue;
+    const key = `${pkg}|${r.len[0]}-${r.len[1]}`;
+    if (seen.has(key) && seen.get(key) !== r.p) { note(`anchor conflict ${key}`); continue; }
+    if (seen.has(key)) continue;
+    seen.set(key, r.p);
+    anchorPackages.push({ pkg, length: r.len, price: r.p });
+  }
+}
+
+// ── flat-priced option records ──
+const pick = (type, extra = () => ({})) => options
+  .filter(o => o.t === type && typeof o.p === 'number')
+  .map(o => ({ key: o.k, label: o.lbl, price: o.p, ...extra(o) }));
+
+// Certification is NOT a flat per-tier price. The six options share one display
+// label and are selected by the BUILDING length bracket carried on each record
+// ([0,21]->300, [22,26]->350, [27,31]->450, [32,36]->500, [37,41]->600), gated by
+// widthTags. widthTags covers only 12-30ft, which is why the certification line
+// disappears entirely on a 40ft-wide build. Measured against the live app at
+// lengths 20/25/30/35/40 -> 270/315/405/450/540 charged.
+const certifications = pick('engineer-certified', o => ({
+  ...(Array.isArray(o.l) ? { length: o.l } : {}),
+  ...(Array.isArray(o.wt) ? { widthTags: o.wt } : {}),
+}));
+const components = pick('component');
+const additionalOptions = pick('additional', o => ({
+  calc: o.pc || 'amount',
+  ...(typeof o.min === 'number' ? { minimumPrice: o.min } : {}),
+}));
+
+// ── Enclosed walls (MEASURED, not derived) ─────────────────
+//
+// Wall prices are computed client-side by the vendor's app and appear NOWHERE
+// in the 5.35MB payload - values like 662, 763 and 2545 were read off the live
+// estimate and cannot be found in any table. So this half of the model is a
+// measurement, captured by scripts/probe-tejasmex.js into walls-measured.json.
+//
+// Structure established by probing:
+//   side wall (spans the LENGTH) = f(width BAND, length BRACKET, height)
+//       widths 18/20/24 all price identically at a given length+height, so only
+//       the band matters; brackets are [0,20],[21,25],[26,30]... (21/22/23/25
+//       all charge the same).
+//   end wall (spans the WIDTH)   = f(exact width, height)
+//       constant across length, but distinct per width (1155/1305/1606/2094/2545).
+//
+// Every captured row satisfies total = base + cert + leg + 2*side + 2*end exactly.
+const measured = JSON.parse(fs.readFileSync(path.join(SNAP, 'walls-measured.json'), 'utf8'));
+
+const LENGTH_BRACKETS = [[0,20],[21,25],[26,30],[31,35],[36,40],[41,45],[46,50],[51,55],[56,60]];
+const bracketFor = l => LENGTH_BRACKETS.find(b => l >= b[0] && l <= b[1]);
+const bandFor = w => (w <= 24 ? [12, 24] : w <= 30 ? [26, 30] : [32, 60]);
+
+const sideWalls = [];
+const endWalls = [];
+{
+  const seenSide = new Map(), seenEnd = new Map();
+  for (const r of measured) {
+    const br = bracketFor(r.l);
+    if (!br) continue;
+    const band = bandFor(r.w);
+    const sk = `${band[0]}-${band[1]}|${br[0]}-${br[1]}|${r.h}`;
+    if (seenSide.has(sk)) {
+      if (seenSide.get(sk) !== r.side) note(`side wall conflict ${sk}: ${seenSide.get(sk)} vs ${r.side}`);
+    } else {
+      seenSide.set(sk, r.side);
+      sideWalls.push({ widthBand: band, length: br, heightFt: r.h, price: r.side });
+    }
+    const ek = `${r.w}|${r.h}`;
+    if (seenEnd.has(ek)) {
+      if (seenEnd.get(ek) !== r.end) note(`end wall conflict ${ek}: ${seenEnd.get(ek)} vs ${r.end}`);
+    } else {
+      seenEnd.set(ek, r.end);
+      endWalls.push({ widthFt: r.w, heightFt: r.h, price: r.end });
+    }
+  }
+}
+
+// ── Measured leg-height overrides ──────────────────────────
+//
+// The derived legHeight ladder is CORRECT wherever it has a row: at 24x25 it
+// gives 536/842/920 at 12/13/14ft and the live app charges exactly that on an
+// open build. An earlier cap of 11ft was a mistake - it came from comparing
+// against a height-12 sweep that had silently drifted onto DOUBLE legs (861 =
+// the double ladder, not a standard-leg price). See scripts/classify-measured-legs.cjs.
+//
+// So overrides only fill genuine holes: past the [36,40] bracket the ladder has
+// no row at all. Each carries the leg type it was measured under, so a
+// double-leg measurement can never be quoted for a standard-leg build.
+const legRows = legHeight;
+const legMeasured = [];
+{
+  const inB = (n, b) => n >= b[0] && n <= b[1];
+  const spanOf = b => b[1] - b[0];
+  // Mirror the engine's own lookup: narrowest matching bracket wins. The ladder
+  // carries catch-all [0,999] rows, so a length past [36,40] still MATCHES - it
+  // just matches the wrong row. Emit an override whenever the ladder is absent
+  // OR disagrees with what the app actually charged.
+  const derivedCharged = (legType, w, l, h) => {
+    const c = legRows.filter(r => r.legType === legType && r.heightFt === h && inB(w, r.width) && inB(l, r.length));
+    if (!c.length) return null;
+    c.sort((a, b) => spanOf(a.length) - spanOf(b.length));
+    return Math.round(c[0].price * 0.9);
+  };
+  const seen = new Map();
+  for (const r of measured) {
+    const legPrice = r.leg == null ? 0 : r.leg;
+    const legType = r.legType || 'standard-legs';
+    const br = bracketFor(r.l);
+    if (!br) continue;
+    const band = bandFor(r.w);
+    if (derivedCharged(legType, r.w, r.l, r.h) === legPrice) continue; // ladder already right
+    const k = `${legType}|${band[0]}-${band[1]}|${br[0]}-${br[1]}|${r.h}`;
+    if (seen.has(k)) {
+      if (seen.get(k) !== legPrice) note(`leg measured conflict ${k}: ${seen.get(k)} vs ${legPrice}`);
+      continue;
+    }
+    seen.set(k, legPrice);
+    legMeasured.push({ legType, widthBand: band, length: br, heightFt: r.h, price: legPrice });
+  }
+}
+
+// ── Measured base / certification overrides ────────────────
+//
+// The derived tables stop at a 41ft length bracket. Past that the vendor prices
+// the building as a COMBINATION of lengths (its debug output exposes an "Is
+// combining multiple lengths" flag) - a separate mechanism this repo has not
+// modelled - and base price, certification and leg height all run out together.
+//
+// These overrides are keyed on the EXACT width and length measured, deliberately
+// generalising nothing. Trying to key them by width band or by the wall length
+// bracket both produced conflicts, which is how we learned that base price keys
+// on the exact width bracket (18->2375, 20->2636, 24->3158 all sit inside the
+// same 12-24 band) and that certification uses its own length brackets
+// ([0,21] vs [22,26]) that do not line up with the wall brackets.
+const baseMeasured = [];
+const certMeasured = [];
+{
+  const seenB = new Map(), seenC = new Map();
+  for (const r of measured) {
+    const k = `${r.w}|${r.l}`;
+    if (r.base != null) {
+      if (!seenB.has(k)) { seenB.set(k, r.base); baseMeasured.push({ widthFt: r.w, lengthFt: r.l, style: 'vertical-roof', price: r.base }); }
+      else if (seenB.get(k) !== r.base) note(`base measured conflict ${k}: ${seenB.get(k)} vs ${r.base}`);
+    }
+    if (r.cert != null) {
+      if (!seenC.has(k)) { seenC.set(k, r.cert); certMeasured.push({ widthFt: r.w, lengthFt: r.l, price: r.cert }); }
+      else if (seenC.get(k) !== r.cert) note(`cert measured conflict ${k}: ${seenC.get(k)} vs ${r.cert}`);
+    }
+  }
+}
+
+// ── surcharges + deposit ──
+const surcharges = config.surcharges;
+const depositTiers = config.dealerDeposit.depositPrice
+  .map((minSubtotal, i) => ({ minSubtotal, percent: config.dealerDeposit.depositPercent[i] }))
+  .sort((a, b) => b.minSubtotal - a.minSubtotal);
+
+const table = {
+  manufacturer: 'tejasmex',
+  dealer: config.dealerDeposit.key,
+  capturedAt: '2026-08-27',
+  sourceVersion: config.serverVersion,
+  styleToVendor: STYLE_TO_VENDOR,
+  // The reference product always ships a 6" roof overhang per end, and the base
+  // price bracket keys on ROOF length, not building length. A 25' building is a
+  // 26' roof and prices as "24x26". Confirmed against the vendor's own debug
+  // output: actualLength 25 -> actualRoofLength 26 -> baseSizeLabel "24x26".
+  standardRoofOverhangFt: 0.5,
+  basePrice,
+  legHeight,
+  anchorPackages,
+  certifications,
+  components,
+  additionalOptions,
+  surcharges,
+  deposit: { tiers: depositTiers },
+  // MEASURED, and already CHARGED amounts: walls are not touched by the
+  // line-item surcharge (578 and 1606 appear verbatim in the live estimate),
+  // so the engine must not apply it again.
+  sideWalls,
+  endWalls,
+  legMeasured,
+  baseMeasured,
+  certMeasured,
+};
+
+console.log('base price rows :', basePrice.length);
+console.log('leg height rows :', legHeight.length);
+console.log('anchor rows     :', anchorPackages.length);
+console.log('certifications  :', certifications.length);
+console.log('components      :', components.length);
+console.log('additional opts :', additionalOptions.length);
+console.log('deposit tiers   :', depositTiers.map(t => `>=${t.minSubtotal}:${t.percent}%`).join(' '));
+console.log('side wall rows  :', sideWalls.length);
+console.log('end wall rows   :', endWalls.length);
+console.log('leg overrides   :', legMeasured.length);
+console.log('base overrides  :', baseMeasured.length);
+console.log('cert overrides  :', certMeasured.length);
+
+if (problems.length) {
+  console.error('\nCONFLICTS (' + problems.length + ') — refusing to write:');
+  problems.slice(0, 20).forEach(p => console.error('  ' + p));
+  process.exit(1);
+}
+
+fs.mkdirSync(path.dirname(OUT), { recursive: true });
+fs.writeFileSync(OUT, JSON.stringify(table, null, 1));
+console.log('\nwrote', path.relative(process.cwd(), OUT), '(' + fs.statSync(OUT).size + ' bytes)');
