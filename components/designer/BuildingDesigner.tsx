@@ -9,6 +9,7 @@ import { wallFrame } from '@/lib/building/wallFrame';
 import { availableSizes, defaultOpeningSize } from '@/lib/building/openingSizes';
 import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
+import { formatQuoteTotal, isQuoteIncomplete, incompleteReasons } from '@/lib/pricing/quoteDisplay';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
@@ -107,7 +108,7 @@ function Header() {
           <>
             <span className="text-gray-500">|</span>
             <span className="text-sm text-gray-300">
-              Estimate: <span className="font-semibold text-white">${pricing.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+              Estimate: <span className="font-semibold text-white">{formatQuoteTotal(pricing)}</span>
             </span>
           </>
         )}
@@ -745,10 +746,21 @@ function PriceSummary() {
           </div>
           <div className="!mt-2 flex justify-between text-base font-bold">
             <span className="text-gray-900">Total</span>
-            <span className="text-blue-700">
-              ${pricing.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-            </span>
+            <span className="text-blue-700">{formatQuoteTotal(pricing)}</span>
           </div>
+          {/* The line items above are real; they are just not the whole build.
+              Showing their sum as a Total would understate it every time. */}
+          {isQuoteIncomplete(pricing) && (
+            <div className="!mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+              <p className="text-xs font-medium text-amber-900">
+                We can&rsquo;t price this online yet
+              </p>
+              <p className="mt-1 text-[11px] leading-snug text-amber-800">
+                The prices above leave out {incompleteReasons(pricing).join(', ')}. Request a
+                quote and we&rsquo;ll send you the full price.
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <p className="text-xs text-gray-400">Configure your building to see pricing.</p>
@@ -780,7 +792,7 @@ function MobileBottomBar() {
       <div>
         <p className="text-[10px] text-gray-500">Estimated Total</p>
         <p className="text-base font-bold text-gray-900">
-          {pricing ? `$${pricing.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '---'}
+          {pricing ? formatQuoteTotal(pricing) : '---'}
         </p>
       </div>
       <button
@@ -899,7 +911,9 @@ export function QuoteFormModal({ onClose }: { onClose: () => void }) {
             <h3 className="text-lg font-bold text-gray-900">Get Your Free Quote</h3>
             {pricing && (
               <p className="text-sm text-gray-500">
-                Estimated total: <span className="font-semibold text-blue-600">${pricing.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                {isQuoteIncomplete(pricing)
+                  ? 'We’ll price this one by hand and get back to you.'
+                  : <>Estimated total: <span className="font-semibold text-blue-600">{formatQuoteTotal(pricing)}</span></>}
               </p>
             )}
           </div>
