@@ -18,6 +18,18 @@
  * 4. await P.grid(24, [20,25,30], 9)     // probe a width x lengths grid at a height
  * 5. copy(JSON.stringify(P.results))     // pull the measurements out
  *
+ * DRIVING THIS FROM AN AUTOMATION TOOL
+ * ------------------------------------
+ * A CDP Runtime.evaluate call typically times out around 45s, and a single probe
+ * can exceed that once the app degrades. Do NOT await a whole sweep in one call:
+ * kick it off unawaited, let it accumulate into P.results, and poll.
+ *
+ *   P.sweepDone = false;
+ *   (async () => { for (const c of cfgs) await P.probe(...c); P.sweepDone = true; })();
+ *
+ * A timed-out call does not cancel the work - the loop keeps running in the page.
+ * Persist P.results to localStorage every probe so a reload never loses them.
+ *
  * THE ONE TRICK THAT MAKES THIS PRACTICAL
  * ---------------------------------------
  * Every configuration change triggers a 3D rebuild that blocks the main thread
@@ -108,6 +120,52 @@ const P = (window.P = {
         return { set: p.onOptionSelected, selected: p.selectedOptionKey, keys };
       }
       f = f.return;
+    }
+    return null;
+  },
+
+  /*
+   * Find a control by one of the OPTION KEYS it offers, rather than by its
+   * visible label. Prefer this to listControl(): the Style-tab labels drift
+   * ("Single Legs" is the label for `standard-legs`), so label matching returned
+   * NOT FOUND for both the roof and leg controls on 2026-08-28, while the keys
+   * are the same identifiers the pricing data uses.
+   *
+   * NOTE this must be called while the control's own tab is open - a collapsed
+   * panel is unmounted and cannot be found. The handler it returns keeps working
+   * afterwards, which is what lets us sit on the Estimate tab while probing.
+   */
+  controlByKey(key) {
+    for (const el of document.querySelectorAll('div,button,span,li,input')) {
+      const fibKey = Object.keys(el).find(k => k.startsWith('__reactFiber$'));
+      if (!fibKey) continue;
+      let f = el[fibKey];
+      for (let i = 0; i < 6 && f; i++) {
+        const p = f.memoizedProps;
+        if (p && typeof p === 'object') {
+          const handler = p.onOptionSelected || p.onChange;
+          const list = p.groupedOptions ? p.groupedOptions.flatMap(g => g.options) : p.optionsList;
+          if (handler && Array.isArray(list) && list.some(o => o.key === key)) {
+            return { set: handler, selected: p.selectedOptionKey, keys: list.map(o => o.key) };
+          }
+        }
+        f = f.return;
+      }
+    }
+    return null;
+  },
+
+  /*
+   * Ground truth for what the app actually has selected. A control's
+   * `selectedOptionKey` is captured when the handle is grabbed and goes stale
+   * immediately, which is how the leg-type drift below went unnoticed for a
+   * whole sweep. The store never lies.
+   */
+  sel(type) {
+    const selection = P.store.getState().options.present.selection || [];
+    for (const path of selection) {
+      const hit = path.find(s => s.type === type);
+      if (hit) return hit.key;
     }
     return null;
   },

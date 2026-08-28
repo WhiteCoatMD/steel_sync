@@ -357,7 +357,41 @@ export function quoteFromTable(
   }
   if (leanToCount > 0) unpriceable.push('lean-to sections are not yet priced');
 
-  const subtotal = lines.reduce((sum, l) => sum + l.amount, 0);
+  // ── Service fees ────────────────────────────────────────────
+  // Billed in their own group after the subtotal, at face value, and outside the
+  // deposit base. Measured live: at 30x25x13 the vendor charged 18% of the 6208
+  // subtotal (1117.44) and not of the 8608 total, then took the fee in the balance.
+  for (const fee of table.serviceFees ?? []) {
+    const applies = fee.bands.some(
+      b => widthFt >= b.minWidthFt && legHeightFt >= b.minLegHeightFt,
+    );
+    if (!applies) continue;
+
+    // The trigger was only ever measured on the leg types listed, and the rule's
+    // own expression reads `leg`. Guessing either way is a real money error, so
+    // an unmeasured leg type in fee range is refused rather than priced.
+    if (!fee.measuredLegTypes.includes(legType)) {
+      unpriceable.push(
+        `${fee.label} trigger is unmeasured for ${legType} at ${widthFt}x${lengthFt}x${legHeightFt}ft`,
+      );
+      continue;
+    }
+
+    lines.push({
+      label: fee.label,
+      category: 'service-fee',
+      listAmount: fee.price,
+      amount: fee.price,
+    });
+  }
+
+  const subtotal = lines
+    .filter(l => l.category !== 'service-fee')
+    .reduce((sum, l) => sum + l.amount, 0);
+  const serviceFees = lines
+    .filter(l => l.category === 'service-fee')
+    .reduce((sum, l) => sum + l.amount, 0);
+  const total = subtotal + serviceFees;
 
   const tier = table.deposit.tiers.find(t => subtotal >= t.minSubtotal);
   const depositPercent = tier ? tier.percent : 0;
@@ -366,9 +400,11 @@ export function quoteFromTable(
   return {
     lines,
     subtotal: round2(subtotal),
+    serviceFees: round2(serviceFees),
+    total: round2(total),
     depositPercent,
     depositDue,
-    balanceDue: round2(subtotal - depositDue),
+    balanceDue: round2(total - depositDue),
     currency: 'USD',
     ...(unpriceable.length ? { unpriceable } : {}),
   };

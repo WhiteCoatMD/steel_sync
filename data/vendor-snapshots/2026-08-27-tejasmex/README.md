@@ -230,22 +230,51 @@ one thing this model does not do, so gauge stays unmodelled until measured.
 **Colours carry no price anywhere** — all 109 colour rows are unpriced, so the
 "29 Gauge Premium Color" upcharge is computed like the walls are.
 
-## The Skytrack lift fee
+## The Skytrack lift fee — MEASURED 2026-08-28, now ACTIVE
 
 A real vendor rule — `conditions[2945]`, a flat 2400 gated on height, width and leg
 type with thresholds at 13 and 15 — billed in its own "Service Fees" category after
-the subtotal, and inside the deposit base.
+the subtotal. It is now modelled as `table.serviceFees` and applied by the engine.
 
-It is encoded but **INACTIVE**, because the trigger is not pinned down:
+**The trigger is width-dependent, exactly as the 13/15 pair suggested.** Measured
+live on open, standard-leg, vertical builds at length 25:
 
-- the owner reports it applies from 14ft legs up;
-- but an open 24x25x14 on standard legs, measured live, charged nothing extra
-  (3158 + 315 + 920 = 4393, no fee line, no Equipment Fees group in the UI);
-- the same fee DID appear at 40ft wide.
+| width | 12ft | 13ft | 14ft | 15ft |
+|---|---|---|---|---|
+| 24 | no | no | no | **FEE** |
+| 26 | no | **FEE** | | |
+| 28 | | **FEE** | | |
+| 30 | | **FEE** | | |
+| 40 | | **FEE** | | |
 
-Those reconcile if the threshold is width-dependent (13ft wide builds, 15ft narrow
-ones), which the 13/15 pair in the rule suggests. Setting `minLegHeightFt` /
-`minWidthFt` in the compiler is all that is needed once measured.
+So: **width ≥ 26 trips at 13ft; width ≤ 24 trips at 15ft.** That reconciles both
+earlier observations — the owner's "14ft up" report and the clean 24x25x14 — because
+a *narrow* build genuinely does not trip until 15ft, while the 40ft-wide one trips
+at 13.
+
+The engine reproduces all six measured totals exactly. Because only `standard-legs`
+was measured and the rule's own `refs` name `leg`, fee-range geometry on any other
+leg type is reported `unpriceable` rather than guessed either way.
+
+### Correction: the fee is NOT in the deposit base
+
+An earlier note in this file said it was. It is not. At 30x25x13 the vendor charged
+18% of the **6208 subtotal** (1117.44), not of the 8608 total, and took the fee in
+the balance (7490.56). Same at 40x25x13: 1799.64 = 18% of the 9998 subtotal. So:
+
+    deposit = pct x subtotal (excluding fees)
+    balance = total - deposit (including fees)
+
+### A second bug this uncovered
+
+`conditions[2945]` is *shaped* like a leg-height row — same condition type, a
+`-tall` key, a `-legs` key and a width band — so the compiler was emitting it into
+the ladder as "12ft standard legs, width 12-24, length [0,999] = 2400". That
+`[0,999]` bracket was the only one covering lengths past 40ft, so it silently won
+the lookup and quoted a **$2,160 leg height** (2400 less the 10% width surcharge) on
+a 24x45x12 build whose true leg price is ~$1,044 — with no `unpriceable` flag. The
+compiler now excludes it by `gi`, and those builds correctly report that the ladder
+has no row instead.
 
 ## A trap worth knowing: leg-type drift
 
@@ -269,7 +298,10 @@ The engine reports each of these as `unpriceable` rather than guessing:
 - **Leg heights above 14ft** — the ladder has no row past 14.
 - **Gauge, wainscot, insulation, corner style, colours** — present in the data but
   not resolvable without either the raw expressions or measurement.
-- **The Skytrack fee trigger** (above).
+- **The Skytrack fee on non-standard leg types** — the trigger is measured for
+  `standard-legs` only; `double-legs` / `deluxe-legs` in fee range are refused.
+- **Leg heights past the ladder at long lengths** — e.g. 24x45x12: the ladder's
+  width 12-24 band stops at length 40. (Previously masked by the fee row; see above.)
 - **Lean-tos, storage and tack rooms.**
 - Enclosed measurements are all **vertical roof**.
 
