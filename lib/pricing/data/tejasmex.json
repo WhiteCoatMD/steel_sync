@@ -7010,19 +7010,6 @@
    ],
    "length": [
     0,
-    999
-   ],
-   "heightFt": 12,
-   "price": 2400
-  },
-  {
-   "legType": "standard-legs",
-   "width": [
-    12,
-    24
-   ],
-   "length": [
-    0,
     20
    ],
    "heightFt": 5,
@@ -10796,6 +10783,28 @@
    "status": "Active",
    "supplierKey": "",
    "supplierSurcharge": "off"
+  }
+ ],
+ "serviceFees": [
+  {
+   "key": "skytrack-lift",
+   "label": "Skytrack Lift Flat Fee",
+   "price": 2400,
+   "measuredLegTypes": [
+    "standard-legs"
+   ],
+   "bands": [
+    {
+     "minWidthFt": 26,
+     "minLegHeightFt": 13
+    },
+    {
+     "minWidthFt": 0,
+     "minLegHeightFt": 15
+    }
+   ],
+   "surcharged": false,
+   "affectsDeposit": false
   }
  ],
  "deposit": {

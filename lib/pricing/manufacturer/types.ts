@@ -113,6 +113,7 @@ export interface ManufacturerTable {
   components: PricedOption[];
   additionalOptions: AdditionalOption[];
   surcharges: Surcharge[];
+  serviceFees: ServiceFeeRow[];
   deposit: { tiers: Array<{ minSubtotal: number; percent: number }> };
   sideWalls: SideWallRow[];
   endWalls: EndWallRow[];
@@ -140,7 +141,23 @@ export interface ManufacturerTable {
  *   component     670 ->  670   NOT surcharged (6x6 roll-up, full list)
  *   wall          578 ->  578   NOT surcharged (appears verbatim in the table)
  */
-export type PriceCategory = 'base-price' | 'structure' | 'component' | 'wall';
+export type PriceCategory = 'base-price' | 'structure' | 'component' | 'wall' | 'service-fee';
+
+/**
+ * A flat fee billed in its own group AFTER the subtotal — the vendor shows these
+ * under "Service Fees", outside the line-item subtotal and outside the deposit
+ * base. Applies when ANY band matches.
+ */
+export interface ServiceFeeRow {
+  key: string;
+  label: string;
+  price: number;
+  /** Leg types the trigger was actually measured on. Others are refused. */
+  measuredLegTypes: string[];
+  bands: Array<{ minWidthFt: number; minLegHeightFt: number }>;
+  surcharged: boolean;
+  affectsDeposit: boolean;
+}
 
 export interface QuoteLine {
   label: string;
@@ -154,7 +171,12 @@ export interface QuoteLine {
 
 export interface ManufacturerQuote {
   lines: QuoteLine[];
+  /** Sum of the priced lines, EXCLUDING service fees. Drives the deposit. */
   subtotal: number;
+  /** Service fees billed after the subtotal. */
+  serviceFees: number;
+  /** What the customer pays: subtotal + serviceFees. */
+  total: number;
   depositPercent: number;
   depositDue: number;
   balanceDue: number;

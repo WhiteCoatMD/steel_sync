@@ -18,6 +18,28 @@
  * 4. await P.grid(24, [20,25,30], 9)     // probe a width x lengths grid at a height
  * 5. copy(JSON.stringify(P.results))     // pull the measurements out
  *
+ * DRIVING THIS FROM AN AUTOMATION TOOL
+ * ------------------------------------
+ * A CDP Runtime.evaluate call typically times out around 45s, and a single probe
+ * can exceed that once the app degrades. Do NOT await a whole sweep in one call:
+ * kick it off unawaited, let it accumulate into P.results, and poll.
+ *
+ *   P.sweepDone = false;
+ *   (async () => { for (const c of cfgs) await P.probe(...c); P.sweepDone = true; })();
+ *
+ * A timed-out call does not cancel the work - the loop keeps running in the page.
+ * Persist P.results to localStorage every probe so a reload never loses them.
+ *
+ * GUARD AGAINST TWO SWEEPS AT ONCE. Because a timed-out call leaves its loop
+ * running, starting another one gives you two loops setting the width in
+ * parallel. That corrupts both. Gate every sweep on a P.busy flag:
+ *
+ *   if (P.busy) throw new Error('a sweep is already running');
+ *
+ * THE TAB STRIP is: Style, Size, Sides & Ends, Materials, Doors & Windows,
+ * Colors, Estimate. "Materials" is easy to miss and holds siding, framing
+ * gauge, sheet metal, screws and insulation.
+ *
  * THE ONE TRICK THAT MAKES THIS PRACTICAL
  * ---------------------------------------
  * Every configuration change triggers a 3D rebuild that blocks the main thread
@@ -112,6 +134,52 @@ const P = (window.P = {
     return null;
   },
 
+  /*
+   * Find a control by one of the OPTION KEYS it offers, rather than by its
+   * visible label. Prefer this to listControl(): the Style-tab labels drift
+   * ("Single Legs" is the label for `standard-legs`), so label matching returned
+   * NOT FOUND for both the roof and leg controls on 2026-08-28, while the keys
+   * are the same identifiers the pricing data uses.
+   *
+   * NOTE this must be called while the control's own tab is open - a collapsed
+   * panel is unmounted and cannot be found. The handler it returns keeps working
+   * afterwards, which is what lets us sit on the Estimate tab while probing.
+   */
+  controlByKey(key) {
+    for (const el of document.querySelectorAll('div,button,span,li,input')) {
+      const fibKey = Object.keys(el).find(k => k.startsWith('__reactFiber$'));
+      if (!fibKey) continue;
+      let f = el[fibKey];
+      for (let i = 0; i < 6 && f; i++) {
+        const p = f.memoizedProps;
+        if (p && typeof p === 'object') {
+          const handler = p.onOptionSelected || p.onChange;
+          const list = p.groupedOptions ? p.groupedOptions.flatMap(g => g.options) : p.optionsList;
+          if (handler && Array.isArray(list) && list.some(o => o.key === key)) {
+            return { set: handler, selected: p.selectedOptionKey, keys: list.map(o => o.key) };
+          }
+        }
+        f = f.return;
+      }
+    }
+    return null;
+  },
+
+  /*
+   * Ground truth for what the app actually has selected. A control's
+   * `selectedOptionKey` is captured when the handle is grabbed and goes stale
+   * immediately, which is how the leg-type drift below went unnoticed for a
+   * whole sweep. The store never lies.
+   */
+  sel(type) {
+    const selection = P.store.getState().options.present.selection || [];
+    for (const path of selection) {
+      const hit = path.find(s => s.type === type);
+      if (hit) return hit.key;
+    }
+    return null;
+  },
+
   /** Option lists (roofing, legs, walls): grab by one of their visible labels. */
   listControl(labelText) {
     const el = [...document.querySelectorAll('div,button,span,li')]
@@ -157,6 +225,51 @@ const P = (window.P = {
    *  - both can lag together by one step, so also require the Base Price label
    *    to name the width and length we just asked for.
    */
+  /*
+   * THE THROUGHPUT FIX (2026-08-28).
+   *
+   * readFor() below waits on the DOM estimate panel, which is the slow, fragile
+   * half of this harness: it needs a React re-render, parses smart quotes out of
+   * innerText, and silently desyncs once the panel stops re-rendering. That is
+   * where "~4s degrading to ~35s per probe" came from.
+   *
+   * settle() instead polls the store's own getTotalPrice() until it stops
+   * moving. No re-render required, nothing to parse, and it cannot desync -
+   * the number IS the number the app would bill. Measured on an ENCLOSED 24ft
+   * build, the case the notes recorded at ~27s: 2.9-4.0s per config change,
+   * consistently, with no degradation across a run.
+   *
+   * Use settle() for anything that only needs a total or a price DELTA (an
+   * option's cost is just total-with minus total-without). Fall back to
+   * readFor() only when you genuinely need the itemised breakdown.
+   */
+  async settle(stableFor = 3, everyMs = 50, timeoutMs = 90000) {
+    const t0 = performance.now();
+    let last = null, runs = 0;
+    while (performance.now() - t0 < timeoutMs) {
+      const v = window.getTotalPrice();
+      if (v === last) {
+        if (++runs >= stableFor) return { ms: Math.round(performance.now() - t0), total: v };
+      } else { last = v; runs = 1; }
+      await P.sleep(everyMs);
+    }
+    return { ms: Math.round(performance.now() - t0), total: window.getTotalPrice(), timedOut: true };
+  },
+
+  /*
+   * Wait for the app to actually be usable. A fixed sleep is not enough - a
+   * reload was measured taking 14s to expose getTotalPrice, and probing a
+   * half-booted page returns a blank body and no store.
+   */
+  async waitReady(timeoutMs = 45000) {
+    const t0 = Date.now();
+    while (Date.now() - t0 < timeoutMs) {
+      if (typeof window.getTotalPrice === 'function' && document.body.innerText.length > 200) return true;
+      await P.sleep(500);
+    }
+    return false;
+  },
+
   async readFor(w, l) {
     const norm = s => s.replace(/[‘’']/g, "'");
     for (let i = 0; i < 18; i++) {

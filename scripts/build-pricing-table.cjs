@@ -64,11 +64,21 @@ const basePrice = [];
   }
 }
 
+// The Skytrack lift fee (conditions[2945]) is NOT a leg-height price, but it is
+// shaped like one: `multi-length-variable-price`, carrying a `-tall` key, a
+// `-legs` key and a width band. Left alone it compiles into the ladder as
+// "12ft standard legs, width 12-24, length [0,999] = 2400" and — because that
+// bracket is the only one covering lengths past 40ft — silently wins the lookup
+// for a 24x45x12 build, quoting a $2,160 leg height against a true ~$1,044.
+// It is excluded here and modelled as a service fee below.
+const SKYTRACK_FEE_GI = 2945;
+
 // ── leg height: width band x length bracket x height x leg type ──
 const legHeight = [];
 {
   const seen = new Map();
   for (const r of conditions) {
+    if (r.gi === SKYTRACK_FEE_GI) continue;                       // a fee, not a leg price
     if (r.ct !== 'multi-length-variable-price' || typeof r.p !== 'number' || !r.len) continue;
     const tall = r.keys.find(k => /^\d+-tall$/.test(k));          // single-section only
     const band = r.keys.find(k => /^\d+-\d+-wide$/.test(k));
@@ -242,6 +252,41 @@ const certMeasured = [];
   }
 }
 
+// ── service fees ──
+// Billed in their own group AFTER the subtotal. Not surcharged (the live estimate
+// shows 2400 verbatim at 30-wide, where the -10% width surcharge applies), and
+// NOT in the deposit base: at 30x25x13 the vendor charged 18% of the 6208
+// subtotal (1117.44), not of the 8608 total, then billed the fee in the balance.
+//
+// Thresholds MEASURED live 2026-08-28 on open, standard-leg, vertical builds at
+// length 25 — the pair of them are the 13/15 in the rule's own expression:
+//
+//   width | 12ft | 13ft | 14ft | 15ft
+//   24    |  no  |  no  |  no  | FEE
+//   26    |  no  | FEE  |      |
+//   28    |      | FEE  |      |
+//   30    |      | FEE  |      |
+//   40    |      | FEE  |      |
+//
+// Only `standard-legs` was measured, and the rule's own `refs` name `leg`, so
+// the engine refuses fee-range geometry on any other leg type rather than
+// guessing a 2400 line either way.
+const serviceFees = [
+  {
+    key: 'skytrack-lift',
+    label: 'Skytrack Lift Flat Fee',
+    price: 2400,
+    measuredLegTypes: ['standard-legs'],
+    // Fee applies if ANY band matches.
+    bands: [
+      { minWidthFt: 26, minLegHeightFt: 13 },
+      { minWidthFt: 0, minLegHeightFt: 15 },
+    ],
+    surcharged: false,
+    affectsDeposit: false,
+  },
+];
+
 // ── surcharges + deposit ──
 const surcharges = config.surcharges;
 const depositTiers = config.dealerDeposit.depositPrice
@@ -266,6 +311,7 @@ const table = {
   components,
   additionalOptions,
   surcharges,
+  serviceFees,
   deposit: { tiers: depositTiers },
   // MEASURED, and already CHARGED amounts: walls are not touched by the
   // line-item surcharge (578 and 1606 appear verbatim in the live estimate),
@@ -284,6 +330,7 @@ console.log('certifications  :', certifications.length);
 console.log('components      :', components.length);
 console.log('additional opts :', additionalOptions.length);
 console.log('deposit tiers   :', depositTiers.map(t => `>=${t.minSubtotal}:${t.percent}%`).join(' '));
+console.log('service fees    :', serviceFees.length);
 console.log('side wall rows  :', sideWalls.length);
 console.log('end wall rows   :', endWalls.length);
 console.log('leg overrides   :', legMeasured.length);

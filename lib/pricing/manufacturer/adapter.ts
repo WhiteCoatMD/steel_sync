@@ -117,14 +117,18 @@ export function toPricingResult(
     certificationUpcharge,
     subtotal: quote.subtotal,
     deliveryFee: 0,
-    installationFee: 0,
+    // Vendor "Service Fees" (the Skytrack lift charge) are billed after the
+    // subtotal and outside the deposit base, which is exactly how the app-wide
+    // shape treats installationFee: subtotal + fees = pre-tax total. The fee
+    // also stays individually labelled in lineItems.
+    installationFee: quote.serviceFees,
     dealerMarkup: 0,
     discount: 0,
     // Tax is deliberately not quoted — it depends on the customer's zip and the
     // reference product defers it to the final quote. See notes §3.
     taxRate: 0,
     tax: 0,
-    total: quote.subtotal,
+    total: quote.total,
     currency: 'USD',
     lineItems,
     depositPercent: quote.depositPercent,

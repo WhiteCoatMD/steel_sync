@@ -157,7 +157,7 @@ export function quoteFromTable(
   table: ManufacturerTable,
 ): ManufacturerQuote {
   const {
-    widthFt,
+    widthFt: requestedWidthFt,
     lengthFt,
     legHeightFt,
     roofStyle,
@@ -169,6 +169,17 @@ export function quoteFromTable(
     siding = 'vertical',
     leanToCount = 0,
   } = input;
+
+  // The product is BUILT in 2ft width increments, so an odd width is quoted at
+  // the next one up: a 21ft building is priced as a 22ft (owner, 2026-08-28).
+  //
+  // Most of this already fell out of the vendor's own bands - 27 lands in [26,30]
+  // and prices as 28, 29 as 30 - but width 25 fell in the hole BETWEEN the
+  // [12,24] and [26,30] bands and had no base row, no certification tier and no
+  // leg-height row. It still returned a non-zero total (4104) alongside the
+  // unpriceable flags, which is the worst possible shape for a money bug.
+  // Normalising here fixes it once for every lookup: base, legs, cert and walls.
+  const widthFt = requestedWidthFt % 2 === 0 ? requestedWidthFt : requestedWidthFt + 1;
 
   const lines: QuoteLine[] = [];
   const unpriceable: string[] = [];
@@ -357,7 +368,41 @@ export function quoteFromTable(
   }
   if (leanToCount > 0) unpriceable.push('lean-to sections are not yet priced');
 
-  const subtotal = lines.reduce((sum, l) => sum + l.amount, 0);
+  // ── Service fees ────────────────────────────────────────────
+  // Billed in their own group after the subtotal, at face value, and outside the
+  // deposit base. Measured live: at 30x25x13 the vendor charged 18% of the 6208
+  // subtotal (1117.44) and not of the 8608 total, then took the fee in the balance.
+  for (const fee of table.serviceFees ?? []) {
+    const applies = fee.bands.some(
+      b => widthFt >= b.minWidthFt && legHeightFt >= b.minLegHeightFt,
+    );
+    if (!applies) continue;
+
+    // The trigger was only ever measured on the leg types listed, and the rule's
+    // own expression reads `leg`. Guessing either way is a real money error, so
+    // an unmeasured leg type in fee range is refused rather than priced.
+    if (!fee.measuredLegTypes.includes(legType)) {
+      unpriceable.push(
+        `${fee.label} trigger is unmeasured for ${legType} at ${widthFt}x${lengthFt}x${legHeightFt}ft`,
+      );
+      continue;
+    }
+
+    lines.push({
+      label: fee.label,
+      category: 'service-fee',
+      listAmount: fee.price,
+      amount: fee.price,
+    });
+  }
+
+  const subtotal = lines
+    .filter(l => l.category !== 'service-fee')
+    .reduce((sum, l) => sum + l.amount, 0);
+  const serviceFees = lines
+    .filter(l => l.category === 'service-fee')
+    .reduce((sum, l) => sum + l.amount, 0);
+  const total = subtotal + serviceFees;
 
   const tier = table.deposit.tiers.find(t => subtotal >= t.minSubtotal);
   const depositPercent = tier ? tier.percent : 0;
@@ -366,9 +411,11 @@ export function quoteFromTable(
   return {
     lines,
     subtotal: round2(subtotal),
+    serviceFees: round2(serviceFees),
+    total: round2(total),
     depositPercent,
     depositDue,
-    balanceDue: round2(subtotal - depositDue),
+    balanceDue: round2(total - depositDue),
     currency: 'USD',
     ...(unpriceable.length ? { unpriceable } : {}),
   };
