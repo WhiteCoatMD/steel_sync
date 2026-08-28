@@ -31,6 +31,7 @@ missing.
 | `pricing-config.raw.json` | — | surcharge rules, region, deposit schedule |
 | `option-conditions.raw.json` | 1188 | per-option applicability + price overrides (see below) |
 | `walls-measured.json` | 62 | enclosed walls, MEASURED from the live app |
+| `lengths-measured.json` | 41 | every length 20-60 on an open 24x9 build, MEASURED |
 
 Abbreviations: `p` price · `lbl` label · `len`/`w` inclusive `[min,max]` brackets · `keys`
 hyphenated vendor identifiers parsed from the applicability expression · `refs` fields the
@@ -348,20 +349,41 @@ certification tier, no leg-height row — and it still returned a non-zero total
 money bug. The engine now normalises width up to the next even foot before every
 lookup, so 25 quotes as 26 and nothing in 12-30 is unpriceable.
 
-**Length is described the same way, in 5ft increments — but this is NOT yet
-implemented, because the vendor's own data does not clearly agree.** The two
-disagree by exactly one certification step:
+**Length does NOT round to 5ft — SETTLED by measurement 2026-08-28.** All 41
+lengths from 20 to 60 were probed (`lengths-measured.json`). The app prices
+**every foot**. The apparent 5ft steps are three components stepping at different
+places, because base keys on **roof** length while certification and legs key on
+**building** length:
 
-- base price keys on **roof** length, so a 21ft building is a 22ft roof, lands in
-  bracket `[22,26]`, and prices like a 25;
-- certification keys on **building** length, so 21 lands in `[0,21]` and charges
-  270 where a 25 charges 315.
+| L | base | cert | leg | total | |
+|---|---|---|---|---|---|
+| 20 | 2636 | 270 | 222 | 3128 | |
+| 21 | 3158 | 270 | 287 | **3715** | base steps — roof 22 enters `[22,26]` |
+| 22 | 3158 | 315 | 287 | **3760** | cert steps — building 22 enters `[22,26]` |
+| 26 | 3941 | 315 | 353 | 4609 | |
 
-Net: 24x21 quotes 3715, 24x25 quotes 3760. Only lengths 20/25/30/35/40 were ever
-measured live, so which one the vendor actually bills for a 21ft build is
-**unverified**. One probe settles it. Until then the engine keeps the vendor's
-own bracket rather than guessing, and the behaviour is pinned in
-`__tests__/increments.test.ts` as an observation.
+So a 21ft build genuinely bills **3715**, not the 3760 a 5ft-rounding rule
+predicts. The engine was right all along and needed no change: **21 of the 22
+lengths from 20 to 41 already matched the app exactly, line for line**, on base,
+certification and leg height.
+
+### What the sweep DID find: 41-60 was entirely unpriceable
+
+The base table's roof bracket ends at `[37,41]` and the leg ladder at `[36,40]`,
+yet the app sells to 60ft. All 20 lengths were measured and fed through the same
+override paths as the wall capture; the compiler reports **no conflicts**, which
+independently confirms these open-build numbers agree with the enclosed capture
+wherever the two overlap. Brackets past 40 turn out to be:
+
+    base + cert (roof / building):  [42,46] [47,51] [52,56] [57,61]
+    leg (building):                 [41,45] [46,50] [51,55] [56,60]
+
+**24ft wide is now priced across the whole 20-60 range.** Remaining gap: 41-60 at
+every OTHER width, because base/cert overrides key on exact width and only 24 was
+measured. Since the brackets above are width-independent, a width needs only
+**8 probes** to cover 41-60 (one per distinct value-region: 41, 42-45, 46, 47-50,
+51, 52-55, 56, 57-60), not 20 — but the compiler would need to emit
+bracket-keyed overrides rather than exact-length ones to exploit that.
 
 ## A trap worth knowing: leg-type drift
 
