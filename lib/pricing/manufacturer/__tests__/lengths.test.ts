@@ -106,8 +106,8 @@ describe('the whole offered width x length grid is priced', () => {
     }
   });
 
-  it('still refuses a measured length at an unmeasured leg height', () => {
-    // Lengths 41-60 were captured at 9ft legs only.
-    expect(calculatePrice(carport(24, 44, 12), RULES).unpriceable?.length).toBeGreaterThan(0);
+  it('still refuses a leg height above the measured ladder', () => {
+    // Heights 5-14 are covered everywhere now; the ladder has no row past 14.
+    expect(calculatePrice(carport(24, 44, 15), RULES).unpriceable?.length).toBeGreaterThan(0);
   });
 });

@@ -148,8 +148,14 @@ describe('the fee condition never leaks into the leg-height ladder', () => {
     }
   });
 
-  it('reports an unreachable ladder row instead of falling back on the fee', () => {
+  it('quotes the measured leg price there, never the fee amount', () => {
+    // 24x45x12 is the exact build the leaked row used to poison: it quoted a
+    // $2,160 leg height (2400 less the 10% width surcharge). The height has
+    // since been measured, so the right assertion is no longer "refuses" but
+    // "charges the real number".
     const p = calculatePrice(carport(24, 45, 12), RULES);
-    expect(p.unpriceable ?? []).toContain('no leg height price for 12ft standard-legs at 24x45');
+    expect(p.unpriceable).toBeUndefined();
+    expect(p.heightUpcharge).toBe(953);
+    expect(p.heightUpcharge).not.toBe(2160);
   });
 });

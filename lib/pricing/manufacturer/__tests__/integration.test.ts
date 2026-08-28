@@ -157,10 +157,11 @@ describe('it refuses to quote what it cannot price', () => {
     expect(p.unpriceable?.length).toBeGreaterThan(0);
   });
 
-  it('flags a measured length at an unmeasured leg height', () => {
-    // Lengths 41-60 were measured at 9ft legs only.
+  it('flags a leg height above the measured ladder', () => {
+    // Heights 5-14 are now covered across the whole 12-30 x 20-60 grid. The
+    // ladder still has no row past 14, so that is where the refusal sits.
     const cfg = referenceCarport();
-    cfg.building = { ...cfg.building, lengthFt: 44, legHeightFt: 12 };
+    cfg.building = { ...cfg.building, lengthFt: 44, legHeightFt: 15 };
     const p = calculatePrice(cfg, TEJASMEX_RULES);
     expect(p.unpriceable?.length).toBeGreaterThan(0);
   });

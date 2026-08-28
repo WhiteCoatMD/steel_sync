@@ -171,7 +171,46 @@ const lengthsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'lengths-meas
 //     12-24 and 784/862/933/1004 for 26-30, with no variation inside a band.
 const widthsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'widths-measured.json'), 'utf8'));
 
-const allMeasured = [...measured, ...lengthsMeasured, ...widthsMeasured];
+// Leg height past length 40 at the heights the sweeps above did not reach,
+// measured 2026-08-28: band [12,24] at 11-14ft (7-10 already came from the wall
+// capture) and band [26,30] at 7/8/10-14ft (only 9 was known).
+//
+// These rows carry ONLY a leg price - no base/cert - because that is all they
+// were probed for. The override builders below read whichever fields are
+// present, so a leg-only row contributes a leg override and nothing else.
+//
+// Independent confirmation of the Skytrack rule fell out of this capture: on the
+// eight width-30 rows at 13ft and 14ft, the estimate total exceeded
+// base+cert+leg by EXACTLY 2400 every time, and by nothing anywhere else. That
+// is the same width>=26 / height>=13 trigger measured separately earlier.
+const legsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'legs-measured.json'), 'utf8'));
+
+// The vendor's own ladder prices 5ft and 6ft legs at 0 for band [12,24] - they
+// are included in the base price (confirmed by the owner 2026-08-28, and the app
+// renders no leg line at all at those heights). Band [26,30] carries no 5/6ft
+// rows anywhere, at any length, so a 30ft-wide build with 6ft legs was
+// unpriceable outright. These fill that in at 0. 5ft is included alongside 6ft
+// because a shorter leg cannot cost more than one that is already free.
+// Band [12,24] needs the same treatment past length 40: its h=6 row already
+// spans [0,60], but h=5 stops at [36,40], which left every 12-24ft build with
+// 5ft legs unpriceable from 41ft long up.
+const FREE_LEG_HEIGHTS = [5, 6];
+const freeLegRows = [];
+for (const h of FREE_LEG_HEIGHTS) {
+  for (const w of [24, 30]) {
+    for (const l of [20, 25, 30, 35, 40, 41, 46, 51, 56]) {
+      freeLegRows.push({ w, h, l, legType: 'standard-legs', leg: 0 });
+    }
+  }
+}
+
+const allMeasured = [
+  ...measured,
+  ...lengthsMeasured,
+  ...widthsMeasured,
+  ...legsMeasured,
+  ...freeLegRows,
+];
 
 const LENGTH_BRACKETS = [[0,20],[21,25],[26,30],[31,35],[36,40],[41,45],[46,50],[51,55],[56,60]];
 const bracketFor = l => LENGTH_BRACKETS.find(b => l >= b[0] && l <= b[1]);

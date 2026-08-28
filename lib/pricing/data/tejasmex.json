@@ -11856,6 +11856,838 @@
    ],
    "heightFt": 9,
    "price": 1004
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 11,
+   "price": 1045
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 11,
+   "price": 1175
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 12,
+   "price": 953
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 12,
+   "price": 1071
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 12,
+   "price": 1214
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 12,
+   "price": 1357
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 13,
+   "price": 1625
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 13,
+   "price": 1683
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 13,
+   "price": 1879
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 13,
+   "price": 2075
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 14,
+   "price": 1769
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 14,
+   "price": 1840
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 14,
+   "price": 2056
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 14,
+   "price": 2272
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 7,
+   "price": 262
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 7,
+   "price": 288
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 7,
+   "price": 307
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 7,
+   "price": 326
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 8,
+   "price": 522
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 8,
+   "price": 574
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 8,
+   "price": 614
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 8,
+   "price": 653
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 10,
+   "price": 1044
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 10,
+   "price": 1148
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 10,
+   "price": 1240
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 10,
+   "price": 1332
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 11,
+   "price": 1306
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 11,
+   "price": 1436
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 11,
+   "price": 1553
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 11,
+   "price": 1670
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 12,
+   "price": 1566
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 12,
+   "price": 1723
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 12,
+   "price": 1867
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 12,
+   "price": 2011
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 13,
+   "price": 2545
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 13,
+   "price": 2794
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 13,
+   "price": 2995
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 13,
+   "price": 3197
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 14,
+   "price": 2806
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 14,
+   "price": 3080
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 14,
+   "price": 3302
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 14,
+   "price": 3524
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 6,
+   "price": 0
   }
  ],
  "baseMeasured": [

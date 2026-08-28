@@ -33,6 +33,7 @@ missing.
 | `walls-measured.json` | 62 | enclosed walls, MEASURED from the live app |
 | `lengths-measured.json` | 41 | every length 20-60 on an open 24x9 build, MEASURED |
 | `widths-measured.json` | 28 | lengths 41/46/51/56 at each remaining width band, MEASURED |
+| `legs-measured.json` | 44 | leg height past length 40 at the remaining heights, MEASURED |
 
 Abbreviations: `p` price · `lbl` label · `len`/`w` inclusive `[min,max]` brackets · `keys`
 hyphenated vendor identifiers parsed from the applicability expression · `refs` fields the
@@ -404,9 +405,35 @@ surcharge, and an exact-match override still wins where one exists.
 **Result: 69/69 measured points reproduce exactly, and there is no unpriceable
 combination in widths 12-30 x lengths 20-60 at 9ft legs (779 of 779).**
 
+### Leg heights past length 40
+
+A third sweep (`legs-measured.json`, 44 probes) filled the remaining heights:
+band `[12,24]` at 11-14ft (7-10ft already came from the wall capture) and band
+`[26,30]` at 7/8/10-14ft (only 9ft was known). Leg price is constant inside each
+of `[41,45] [46,50] [51,55] [56,60]`, so four lengths per height is complete.
+
+**5ft and 6ft legs are included in the base price** (owner, 2026-08-28). The app
+renders no leg line at all, and the vendor's own ladder prices them at 0 for band
+`[12,24]`. Band `[26,30]` carried no 5/6ft rows at *any* length, so a 30ft-wide
+build with 6ft legs was unpriceable outright — the compiler now fills those in at
+0. (5ft rides along with 6ft: a shorter leg cannot cost more than one already
+free.) Band `[12,24]` needed the same past 40, where its h=5 rows stop at
+`[36,40]` while h=6 already spanned `[0,60]`.
+
+**The full offered envelope is now priced: 7790 of 7790 combinations** —
+widths 12-30 x lengths 20-60 x leg heights 5-14, zero unpriceable.
+
+### The leg sweep independently re-confirmed the Skytrack fee
+
+Reading the estimate total alongside the itemised lines, eight rows failed a
+`base + cert + leg == total` check. Every one was off by **exactly 2400**, and
+every one was width 30 at 13ft or 14ft legs — with no discrepancy anywhere else
+in 44 rows. That is the same `width >= 26 / height >= 13` trigger measured in a
+separate campaign, arrived at from completely different data.
+
 Still refused, correctly: above 30ft wide (no certification tier, no measured
-base band), past 60ft long, and lengths 41-60 at leg heights other than 9ft —
-that range was captured at 9ft only.
+base band), past 60ft long, and leg heights above 14ft (the ladder has no row,
+and 15ft+ also trips the fee on narrow builds).
 
 ## A trap worth knowing: leg-type drift
 
