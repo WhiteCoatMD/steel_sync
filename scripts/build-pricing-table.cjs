@@ -149,6 +149,17 @@ const additionalOptions = pick('additional', o => ({
 // Every captured row satisfies total = base + cert + leg + 2*side + 2*end exactly.
 const measured = JSON.parse(fs.readFileSync(path.join(SNAP, 'walls-measured.json'), 'utf8'));
 
+// Every length from 20 to 60 on an open 24x9 standard-leg vertical build,
+// measured 2026-08-28. The derived tables already reproduced 20-40 exactly, line
+// for line; 41-60 were entirely unpriceable (the base table's roof bracket ends
+// at [37,41] and the leg ladder at [36,40]) even though the app offers them.
+//
+// These feed the same override paths as the wall capture. They carry no wall
+// prices, which is fine: base, certification and leg height do not depend on
+// walls, and the override builders below only read w/l/h/base/cert/leg.
+const lengthsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'lengths-measured.json'), 'utf8'));
+const allMeasured = [...measured, ...lengthsMeasured];
+
 const LENGTH_BRACKETS = [[0,20],[21,25],[26,30],[31,35],[36,40],[41,45],[46,50],[51,55],[56,60]];
 const bracketFor = l => LENGTH_BRACKETS.find(b => l >= b[0] && l <= b[1]);
 const bandFor = w => (w <= 24 ? [12, 24] : w <= 30 ? [26, 30] : [32, 60]);
@@ -205,7 +216,7 @@ const legMeasured = [];
     return Math.round(c[0].price * 0.9);
   };
   const seen = new Map();
-  for (const r of measured) {
+  for (const r of allMeasured) {
     const legPrice = r.leg == null ? 0 : r.leg;
     const legType = r.legType || 'standard-legs';
     const br = bracketFor(r.l);
@@ -239,7 +250,7 @@ const baseMeasured = [];
 const certMeasured = [];
 {
   const seenB = new Map(), seenC = new Map();
-  for (const r of measured) {
+  for (const r of allMeasured) {
     const k = `${r.w}|${r.l}`;
     if (r.base != null) {
       if (!seenB.has(k)) { seenB.set(k, r.base); baseMeasured.push({ widthFt: r.w, lengthFt: r.l, style: 'vertical-roof', price: r.base }); }
