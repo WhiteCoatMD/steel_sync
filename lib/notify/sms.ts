@@ -16,8 +16,12 @@ const TELNYX_MESSAGES_URL = 'https://api.telnyx.com/v2/messages';
 export function buildSmsBody(lead: Lead): string {
   const b = lead.config.building;
   const c = lead.customer;
+  // Flag an incomplete total. It is always LOW (the unpriceable parts are simply
+  // missing), so an unmarked figure invites quoting a number too small. The
+  // reasons go in the email; this stays GSM-7 safe.
+  const incomplete = lead.pricing.unpriceable?.length ? ' INCOMPLETE-see email.' : '';
   return `New lead: ${c.firstName} ${c.lastName} - ${b.widthFt}x${b.lengthFt} ${b.type}, ` +
-         `$${lead.pricing.total.toLocaleString()}. ${c.phone}`;
+         `$${lead.pricing.total.toLocaleString()}.${incomplete} ${c.phone}`;
 }
 
 export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<NotifyResult> {

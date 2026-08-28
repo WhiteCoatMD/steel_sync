@@ -43,6 +43,17 @@ dealers
 
 **Only sales tax varies per dealer** — and see §3, it is not quoted at all.
 
+> **CORRECTED 2026-08-27 by the actual capture.** Two things vary that this section says do not:
+> 1. A **vendor-level line-item surcharge** of −10% applies to base price, leg height,
+>    certification and anchor package, but ONLY for widths 3–30, and NOT to components or walls.
+>    The extracted tables are LIST prices; the quoted number is list minus this surcharge.
+> 2. The **deposit schedule is per dealer** and tiered on subtotal (Columbia: ≥30k 21%, ≥20k 20%,
+>    ≥3k 18%, ≥1k 12%).
+>
+> The core claim still holds — pricing is per manufacturer and adding a dealer needs no price
+> entry — but a dealer record carries a deposit schedule, and the manufacturer carries surcharge
+> rules. See `data/vendor-snapshots/2026-08-27-tejasmex/README.md`.
+
 **Consequence:** adding a dealer of a known manufacturer requires entering **no prices** — just
 contact details and a designer URL. That is precisely the original ask ("add other dealers'
 pricing just by entering it"). The costly unit of work is adding a *manufacturer*, once.
@@ -110,6 +121,14 @@ cost"), and the deposit split.
 
 **Risk:** pricing extracted this way is coupled to their app's internals; a redesign breaks
 re-extraction. Asking for a price list removes the dependency entirely.
+
+> **DONE 2026-08-27.** TejasMex confirmed they have no price sheet, so extraction became the
+> plan rather than the fallback. Step 1 worked: pricing is client-side, so the entire 5.35 MB
+> vendor price file was resident in memory. The Redux store is reachable through the React fiber
+> tree (it is not a global); no grid probing was needed. Captured under
+> `data/vendor-snapshots/2026-08-27-tejasmex/`, compiled by `scripts/build-pricing-table.cjs`,
+> priced by `lib/pricing/manufacturer/`, with the parity harness of §4 in
+> `lib/pricing/manufacturer/__tests__/parity.test.ts`.
 
 ## 6. PDF price-sheet upload
 

@@ -1,0 +1,87 @@
+{
+  "_comment": [
+    "Prices READ OFF the live TejasMex configurator (design.tejasmex.com/?dealer=Columbia)",
+    "on 2026-08-27 via scripts/probe-tejasmex.js. These are the vendor's own itemised",
+    "estimate values, not anything this repo computed. They are the acceptance oracle:",
+    "if lib/pricing disagrees with a number here, lib/pricing is wrong.",
+    "All amounts are CHARGED (post-surcharge) dollars, as displayed."
+  ],
+  "fixedConfig": {
+    "style": "Standard Carport",
+    "roofing": "vertical-roof unless stated",
+    "surface": "cement unless stated",
+    "legs": "standard-legs unless stated",
+    "gauge": "14-gauge-framing",
+    "frameSpacing": "5ft OC",
+    "roofPitch": "3/12",
+    "roofOverhang": "6in per end",
+    "engineerCertified": "on"
+  },
+
+  "openCarport": [
+    { "w": 24, "l": 21, "h": 9, "base": 3158, "cert": 270, "leg": 287, "total": 3715 },
+    { "w": 24, "l": 22, "h": 9, "base": 3158, "cert": 315, "leg": 287, "total": 3760 },
+    { "w": 24, "l": 25, "h": 9, "base": 3158, "cert": 315, "leg": 287, "total": 3760 },
+    { "w": 24, "l": 26, "h": 9, "base": 3941, "cert": 315, "leg": 353, "total": 4609 }
+  ],
+
+  "roofStyle": [
+    { "w": 24, "l": 25, "h": 9, "roofing": "regular-roof", "total": 3173 },
+    { "w": 24, "l": 25, "h": 9, "roofing": "boxed-eave-roof", "total": 3408 },
+    { "w": 24, "l": 25, "h": 9, "roofing": "vertical-roof", "total": 3760 }
+  ],
+
+  "surface": [
+    { "w": 24, "l": 25, "h": 9, "surface": "cement", "anchor": 0, "total": 3760 },
+    { "w": 24, "l": 25, "h": 9, "surface": "asphalt", "anchor": 162, "total": 3922 },
+    { "w": 24, "l": 25, "h": 9, "surface": "ground", "anchor": 162, "total": 3922 }
+  ],
+
+  "components": [
+    {
+      "note": "A 6x6 roll-up (garage-door-1-gable, list 670) added exactly 670 to an enclosed 24x25x9 (8128 -> 8798). Components are NOT surcharged.",
+      "delta": 670
+    }
+  ],
+
+  "fullyEnclosed": {
+    "_comment": [
+      "Totals are exactly base + cert + leg + 2*side + 2*end, so walls are plain",
+      "additive line items. Side walls span the LENGTH, end walls span the WIDTH.",
+      "Side wall price varies with BOTH length and width; end wall varies with width",
+      "(constant across length at a given width)."
+    ],
+    "rows": [
+      { "w": 24, "l": 20, "h": 9, "base": 2636, "cert": 270, "leg": 222, "side": 492, "end": 1606, "total": 7324 },
+      { "w": 24, "l": 25, "h": 9, "base": 3158, "cert": 315, "leg": 287, "side": 578, "end": 1606, "total": 8128 },
+      { "w": 24, "l": 30, "h": 9, "base": 3941, "cert": 405, "leg": 353, "side": 662, "end": 1606, "total": 9235 },
+      { "w": 24, "l": 35, "h": 9, "base": 4594, "cert": 450, "leg": 411, "side": 763, "end": 1606, "total": 10193 },
+      { "w": 24, "l": 40, "h": 9, "base": 5246, "cert": 540, "leg": 470, "side": 832, "end": 1606, "total": 11132 },
+      { "w": 30, "l": 25, "h": 9, "base": 4496, "leg": 725, "side": 653, "end": 2545, "total": 11617,
+        "caveat": "legs read 725 because the leg type had drifted to double-legs; base/side/end are still valid" }
+    ]
+  },
+
+  "wideBuilding": [
+    {
+      "w": 40, "l": 25, "h": 9,
+      "base": 9998, "leg": 805, "cert": null,
+      "serviceFee": { "label": "Skytrack Lift Flat Fee", "amount": 2400, "category": "Service Fees" },
+      "subtotal": 10803, "total": 13203,
+      "notes": [
+        "No certification line at all: engineer-certified widthTags cover 12-30 only.",
+        "Base 9998 is FULL LIST - the -10% surcharge rule is capped at width 30.",
+        "A mandatory Skytrack Lift Flat Fee is added AFTER subtotal in its own",
+        "'Service Fees' category, which the engine does not yet model.",
+        "Legs 805 is the double-legs ladder, auto-selected at this width."
+      ]
+    }
+  ],
+
+  "notModelled": [
+    "Enclosed wall prices: side/end values above are measured, but the underlying rule is not decoded and 662/763/2545 appear NOWHERE in the 5.35MB vendor payload - they are computed client-side.",
+    "Service Fees category (Skytrack lift) and its width trigger.",
+    "Widths over 30ft: leg-height bands cover 12-24 and 26-30 only.",
+    "Lean-tos, colours/premium colour tiers, gauge/brace/truss/frame-spacing/roof-pitch deltas, storage and tack rooms."
+  ]
+}

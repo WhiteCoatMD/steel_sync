@@ -66,6 +66,17 @@ export async function sendLeadEmail(dealer: DealerSettings, lead: Lead): Promise
       `Lean-tos:  ${lead.config.leanTos.length}`,
       ``,
       `Estimate:  $${lead.pricing.total.toLocaleString()}`,
+      // An incomplete total is worse than no total: it looks like a firm price
+      // and is always LOW, because the unpriceable parts were left out. Say so
+      // in the body rather than letting a dealer quote it as-is.
+      ...(lead.pricing.unpriceable?.length
+        ? [
+            ``,
+            `*** INCOMPLETE - DO NOT SEND AS A QUOTE ***`,
+            `The estimate above omits:`,
+            ...lead.pricing.unpriceable.map(u => `  - ${u}`),
+          ]
+        : []),
     ].filter(Boolean).join('\n'),
   });
 

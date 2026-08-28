@@ -1,0 +1,11961 @@
+{
+ "manufacturer": "tejasmex",
+ "dealer": "Columbia",
+ "capturedAt": "2026-08-27",
+ "sourceVersion": "2.6.113",
+ "styleToVendor": {
+  "regular": "regular-roof",
+  "aframe": "boxed-eave-roof",
+  "vertical": "vertical-roof"
+ },
+ "standardRoofOverhangFt": 0.5,
+ "basePrice": [
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1421,
+   "label": "12x21"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 1552,
+   "label": "12x26"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 1987,
+   "label": "12x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 2277,
+   "label": "12x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 2857,
+   "label": "12x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1552,
+   "label": "18x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 1842,
+   "label": "18x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2132,
+   "label": "18x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 2422,
+   "label": "18x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 3147,
+   "label": "18x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1842,
+   "label": "20x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2132,
+   "label": "20x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2712,
+   "label": "20x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3147,
+   "label": "20x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 3872,
+   "label": "20x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2132,
+   "label": "22x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2567,
+   "label": "22x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3002,
+   "label": "22x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3582,
+   "label": "22x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4452,
+   "label": "22x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2277,
+   "label": "24x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2857,
+   "label": "24x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3437,
+   "label": "24x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3872,
+   "label": "24x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4742,
+   "label": "24x41"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1523,
+   "label": "12x21"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 1813,
+   "label": "12x26"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2248,
+   "label": "12x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 2538,
+   "label": "12x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 3118,
+   "label": "12x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1668,
+   "label": "18x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 1958,
+   "label": "18x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2393,
+   "label": "18x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 2973,
+   "label": "18x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 3408,
+   "label": "18x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1958,
+   "label": "20x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2248,
+   "label": "20x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2828,
+   "label": "20x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3263,
+   "label": "20x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4133,
+   "label": "20x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2248,
+   "label": "22x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2828,
+   "label": "22x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3263,
+   "label": "22x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3843,
+   "label": "22x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4713,
+   "label": "22x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2538,
+   "label": "24x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 3118,
+   "label": "24x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3698,
+   "label": "24x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 4423,
+   "label": "24x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 5293,
+   "label": "24x41"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 1914,
+   "label": "12x21"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 1987,
+   "label": "12x26"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 2929,
+   "label": "12x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3364,
+   "label": "12x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    0,
+    12
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 3872,
+   "label": "12x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2059,
+   "label": "18x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2639,
+   "label": "18x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3219,
+   "label": "18x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 3654,
+   "label": "18x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    13,
+    18
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4234,
+   "label": "18x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2349,
+   "label": "20x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 2929,
+   "label": "20x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 3364,
+   "label": "20x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 4089,
+   "label": "20x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    19,
+    20
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 4669,
+   "label": "20x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2784,
+   "label": "22x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 3509,
+   "label": "22x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 4089,
+   "label": "22x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 4814,
+   "label": "22x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    21,
+    22
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 5539,
+   "label": "22x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 2929,
+   "label": "24x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 3509,
+   "label": "24x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 4379,
+   "label": "24x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 5104,
+   "label": "24x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    23,
+    24
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 5829,
+   "label": "24x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3183,
+   "label": "26x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 3980,
+   "label": "26x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 4778,
+   "label": "26x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 5575,
+   "label": "26x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 6228,
+   "label": "26x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3328,
+   "label": "28x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4125,
+   "label": "28x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5068,
+   "label": "28x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 5793,
+   "label": "28x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 6518,
+   "label": "28x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3473,
+   "label": "30x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4343,
+   "label": "30x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5213,
+   "label": "30x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 6010,
+   "label": "30x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 6808,
+   "label": "30x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3328,
+   "label": "26x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4125,
+   "label": "26x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5068,
+   "label": "26x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 5865,
+   "label": "26x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 6518,
+   "label": "26x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3473,
+   "label": "28x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4343,
+   "label": "28x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5213,
+   "label": "28x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 6010,
+   "label": "28x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 6808,
+   "label": "28x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3618,
+   "label": "30x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4415,
+   "label": "30x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5503,
+   "label": "30x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 6300,
+   "label": "30x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 7098,
+   "label": "30x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3763,
+   "label": "26x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4560,
+   "label": "26x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5648,
+   "label": "26x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 6590,
+   "label": "26x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    25,
+    26
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 7678,
+   "label": "26x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 3908,
+   "label": "28x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4850,
+   "label": "28x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 5938,
+   "label": "28x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 6880,
+   "label": "28x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    27,
+    28
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 7968,
+   "label": "28x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 4053,
+   "label": "30x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 4995,
+   "label": "30x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 6083,
+   "label": "30x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 7098,
+   "label": "30x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    29,
+    30
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 8258,
+   "label": "30x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 6808,
+   "label": "32x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8113,
+   "label": "32x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9418,
+   "label": "32x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 10723,
+   "label": "32x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12028,
+   "label": "32x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7243,
+   "label": "34x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8548,
+   "label": "34x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9853,
+   "label": "34x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11158,
+   "label": "34x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12463,
+   "label": "34x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7678,
+   "label": "36x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8983,
+   "label": "36x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10288,
+   "label": "36x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11593,
+   "label": "36x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12898,
+   "label": "36x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8113,
+   "label": "38x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9418,
+   "label": "38x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10723,
+   "label": "38x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12028,
+   "label": "38x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13333,
+   "label": "38x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8693,
+   "label": "40x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9998,
+   "label": "40x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11303,
+   "label": "40x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12608,
+   "label": "40x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13913,
+   "label": "40x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9273,
+   "label": "42x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 10578,
+   "label": "42x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11883,
+   "label": "42x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13188,
+   "label": "42x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 14493,
+   "label": "42x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9853,
+   "label": "44x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11158,
+   "label": "44x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 12463,
+   "label": "44x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13768,
+   "label": "44x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15073,
+   "label": "44x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 10433,
+   "label": "46x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11738,
+   "label": "46x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13043,
+   "label": "46x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14348,
+   "label": "46x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15653,
+   "label": "46x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11013,
+   "label": "48x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 12318,
+   "label": "48x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13623,
+   "label": "48x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14928,
+   "label": "48x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16233,
+   "label": "48x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11738,
+   "label": "50x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13043,
+   "label": "50x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 14348,
+   "label": "50x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 15653,
+   "label": "50x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16958,
+   "label": "50x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 12463,
+   "label": "52x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13768,
+   "label": "52x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15073,
+   "label": "52x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 16378,
+   "label": "52x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 17683,
+   "label": "52x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13188,
+   "label": "54x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 14493,
+   "label": "54x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15798,
+   "label": "54x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17103,
+   "label": "54x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 18408,
+   "label": "54x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13913,
+   "label": "56x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15218,
+   "label": "56x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 16523,
+   "label": "56x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17828,
+   "label": "56x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19133,
+   "label": "56x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 14638,
+   "label": "58x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15943,
+   "label": "58x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17248,
+   "label": "58x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 18553,
+   "label": "58x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19858,
+   "label": "58x41"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 15363,
+   "label": "60x21"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 16668,
+   "label": "60x26"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17973,
+   "label": "60x31"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 19278,
+   "label": "60x36"
+  },
+  {
+   "product": "standard",
+   "style": "vertical-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 20583,
+   "label": "60x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 6808,
+   "label": "32x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8113,
+   "label": "32x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9418,
+   "label": "32x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 10723,
+   "label": "32x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12028,
+   "label": "32x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7243,
+   "label": "34x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8548,
+   "label": "34x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9853,
+   "label": "34x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11158,
+   "label": "34x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12463,
+   "label": "34x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7678,
+   "label": "36x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8983,
+   "label": "36x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10288,
+   "label": "36x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11593,
+   "label": "36x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12898,
+   "label": "36x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8113,
+   "label": "38x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9418,
+   "label": "38x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10723,
+   "label": "38x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12028,
+   "label": "38x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13333,
+   "label": "38x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8693,
+   "label": "40x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9998,
+   "label": "40x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11303,
+   "label": "40x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12608,
+   "label": "40x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13913,
+   "label": "40x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9273,
+   "label": "42x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 10578,
+   "label": "42x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11883,
+   "label": "42x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13188,
+   "label": "42x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 14493,
+   "label": "42x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9853,
+   "label": "44x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11158,
+   "label": "44x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 12463,
+   "label": "44x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13768,
+   "label": "44x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15073,
+   "label": "44x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 10433,
+   "label": "46x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11738,
+   "label": "46x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13043,
+   "label": "46x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14348,
+   "label": "46x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15653,
+   "label": "46x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11013,
+   "label": "48x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 12318,
+   "label": "48x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13623,
+   "label": "48x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14928,
+   "label": "48x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16233,
+   "label": "48x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11738,
+   "label": "50x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13043,
+   "label": "50x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 14348,
+   "label": "50x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 15653,
+   "label": "50x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16958,
+   "label": "50x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 12463,
+   "label": "52x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13768,
+   "label": "52x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15073,
+   "label": "52x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 16378,
+   "label": "52x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 17683,
+   "label": "52x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13188,
+   "label": "54x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 14493,
+   "label": "54x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15798,
+   "label": "54x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17103,
+   "label": "54x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 18408,
+   "label": "54x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13913,
+   "label": "56x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15218,
+   "label": "56x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 16523,
+   "label": "56x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17828,
+   "label": "56x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19133,
+   "label": "56x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 14638,
+   "label": "58x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15943,
+   "label": "58x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17248,
+   "label": "58x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 18553,
+   "label": "58x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19858,
+   "label": "58x41"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 15363,
+   "label": "60x21"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 16668,
+   "label": "60x26"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17973,
+   "label": "60x31"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 19278,
+   "label": "60x36"
+  },
+  {
+   "product": "standard",
+   "style": "boxed-eave-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 20583,
+   "label": "60x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 6808,
+   "label": "32x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8113,
+   "label": "32x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9418,
+   "label": "32x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 10723,
+   "label": "32x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    31,
+    32
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12028,
+   "label": "32x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7243,
+   "label": "34x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8548,
+   "label": "34x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 9853,
+   "label": "34x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11158,
+   "label": "34x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    33,
+    34
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12463,
+   "label": "34x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 7678,
+   "label": "36x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 8983,
+   "label": "36x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10288,
+   "label": "36x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 11593,
+   "label": "36x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    35,
+    36
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 12898,
+   "label": "36x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8113,
+   "label": "38x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9418,
+   "label": "38x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 10723,
+   "label": "38x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12028,
+   "label": "38x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    37,
+    38
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13333,
+   "label": "38x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 8693,
+   "label": "40x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 9998,
+   "label": "40x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11303,
+   "label": "40x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 12608,
+   "label": "40x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    39,
+    40
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 13913,
+   "label": "40x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9273,
+   "label": "42x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 10578,
+   "label": "42x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 11883,
+   "label": "42x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13188,
+   "label": "42x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    41,
+    42
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 14493,
+   "label": "42x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 9853,
+   "label": "44x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11158,
+   "label": "44x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 12463,
+   "label": "44x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 13768,
+   "label": "44x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    43,
+    44
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15073,
+   "label": "44x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 10433,
+   "label": "46x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 11738,
+   "label": "46x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13043,
+   "label": "46x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14348,
+   "label": "46x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    45,
+    46
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 15653,
+   "label": "46x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11013,
+   "label": "48x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 12318,
+   "label": "48x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 13623,
+   "label": "48x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 14928,
+   "label": "48x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    47,
+    48
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16233,
+   "label": "48x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 11738,
+   "label": "50x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13043,
+   "label": "50x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 14348,
+   "label": "50x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 15653,
+   "label": "50x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    49,
+    50
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 16958,
+   "label": "50x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 12463,
+   "label": "52x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 13768,
+   "label": "52x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15073,
+   "label": "52x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 16378,
+   "label": "52x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    51,
+    52
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 17683,
+   "label": "52x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13188,
+   "label": "54x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 14493,
+   "label": "54x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 15798,
+   "label": "54x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17103,
+   "label": "54x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    53,
+    54
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 18408,
+   "label": "54x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 13913,
+   "label": "56x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15218,
+   "label": "56x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 16523,
+   "label": "56x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 17828,
+   "label": "56x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    55,
+    56
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19133,
+   "label": "56x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 14638,
+   "label": "58x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 15943,
+   "label": "58x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17248,
+   "label": "58x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 18553,
+   "label": "58x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    57,
+    58
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 19858,
+   "label": "58x41"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    0,
+    21
+   ],
+   "price": 15363,
+   "label": "60x21"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    22,
+    26
+   ],
+   "price": 16668,
+   "label": "60x26"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    27,
+    31
+   ],
+   "price": 17973,
+   "label": "60x31"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    32,
+    36
+   ],
+   "price": 19278,
+   "label": "60x36"
+  },
+  {
+   "product": "standard",
+   "style": "regular-roof",
+   "width": [
+    59,
+    60
+   ],
+   "roofLength": [
+    37,
+    41
+   ],
+   "price": 20583,
+   "label": "60x41"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 3500,
+   "label": "6x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 3700,
+   "label": "6x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4000,
+   "label": "6x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 3700,
+   "label": "6x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4000,
+   "label": "6x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4400,
+   "label": "6x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 3900,
+   "label": "6x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4300,
+   "label": "6x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4800,
+   "label": "6x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 4100,
+   "label": "6x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 4600,
+   "label": "6x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5200,
+   "label": "6x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 4300,
+   "label": "6x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 4900,
+   "label": "6x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5600,
+   "label": "6x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 4500,
+   "label": "6x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 5200,
+   "label": "6x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 6000,
+   "label": "6x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 3600,
+   "label": "6x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 3800,
+   "label": "6x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4100,
+   "label": "6x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 3800,
+   "label": "6x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4100,
+   "label": "6x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4500,
+   "label": "6x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4000,
+   "label": "6x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4400,
+   "label": "6x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4900,
+   "label": "6x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 4200,
+   "label": "6x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 4700,
+   "label": "6x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5300,
+   "label": "6x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 4400,
+   "label": "6x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 5000,
+   "label": "6x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 5700,
+   "label": "6x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 4600,
+   "label": "6x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 5300,
+   "label": "6x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    6,
+    6
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 6100,
+   "label": "6x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 3700,
+   "label": "8x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 3900,
+   "label": "8x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4200,
+   "label": "8x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 3900,
+   "label": "8x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4200,
+   "label": "8x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4600,
+   "label": "8x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4100,
+   "label": "8x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4500,
+   "label": "8x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 5000,
+   "label": "8x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 4300,
+   "label": "8x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 4800,
+   "label": "8x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5400,
+   "label": "8x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 4500,
+   "label": "8x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5100,
+   "label": "8x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5800,
+   "label": "8x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 4700,
+   "label": "8x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 5400,
+   "label": "8x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 6200,
+   "label": "8x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 3900,
+   "label": "8x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4100,
+   "label": "8x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4400,
+   "label": "8x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4100,
+   "label": "8x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4400,
+   "label": "8x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4800,
+   "label": "8x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4300,
+   "label": "8x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4700,
+   "label": "8x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 5200,
+   "label": "8x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 4500,
+   "label": "8x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5000,
+   "label": "8x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5600,
+   "label": "8x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 4700,
+   "label": "8x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 5300,
+   "label": "8x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 6000,
+   "label": "8x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 4900,
+   "label": "8x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 5600,
+   "label": "8x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    8,
+    8
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 6400,
+   "label": "8x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 3900,
+   "label": "10x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4100,
+   "label": "10x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4400,
+   "label": "10x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4100,
+   "label": "10x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4400,
+   "label": "10x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4800,
+   "label": "10x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4300,
+   "label": "10x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4700,
+   "label": "10x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 5200,
+   "label": "10x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 4500,
+   "label": "10x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5000,
+   "label": "10x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5600,
+   "label": "10x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 4700,
+   "label": "10x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5300,
+   "label": "10x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 6000,
+   "label": "10x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 4900,
+   "label": "10x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 5600,
+   "label": "10x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 6400,
+   "label": "10x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4120,
+   "label": "10x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4320,
+   "label": "10x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4620,
+   "label": "10x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4320,
+   "label": "10x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4620,
+   "label": "10x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 5020,
+   "label": "10x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4520,
+   "label": "10x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 4920,
+   "label": "10x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 5420,
+   "label": "10x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 4720,
+   "label": "10x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5220,
+   "label": "10x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5820,
+   "label": "10x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 4920,
+   "label": "10x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 5520,
+   "label": "10x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 6220,
+   "label": "10x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 5120,
+   "label": "10x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 5820,
+   "label": "10x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    10,
+    10
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 6620,
+   "label": "10x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4440,
+   "label": "12x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4640,
+   "label": "12x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 6,
+   "price": 4940,
+   "label": "12x8x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4640,
+   "label": "12x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 4940,
+   "label": "12x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 6,
+   "price": 5340,
+   "label": "12x12x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 4840,
+   "label": "12x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 5340,
+   "label": "12x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 6,
+   "price": 5740,
+   "label": "12x16x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5040,
+   "label": "12x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 5540,
+   "label": "12x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 6,
+   "price": 6140,
+   "label": "12x20x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5240,
+   "label": "12x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 5840,
+   "label": "12x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 6,
+   "price": 6540,
+   "label": "12x24x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 5440,
+   "label": "12x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 6140,
+   "label": "12x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 6,
+   "price": 6940,
+   "label": "12x30x6"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4620,
+   "label": "12x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 4820,
+   "label": "12x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    8,
+    8
+   ],
+   "heightFt": 7,
+   "price": 5120,
+   "label": "12x8x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 4820,
+   "label": "12x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 5120,
+   "label": "12x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    12,
+    12
+   ],
+   "heightFt": 7,
+   "price": 5520,
+   "label": "12x12x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 5020,
+   "label": "12x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 5420,
+   "label": "12x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    16,
+    16
+   ],
+   "heightFt": 7,
+   "price": 5920,
+   "label": "12x16x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5320,
+   "label": "12x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 5720,
+   "label": "12x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    20,
+    20
+   ],
+   "heightFt": 7,
+   "price": 6320,
+   "label": "12x20x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 5420,
+   "label": "12x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 6020,
+   "label": "12x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    24,
+    24
+   ],
+   "heightFt": 7,
+   "price": 6720,
+   "label": "12x24x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "regular-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 5620,
+   "label": "12x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "boxed-eave-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 6320,
+   "label": "12x30x7"
+  },
+  {
+   "product": "portable-shed",
+   "style": "vertical-roof",
+   "width": [
+    12,
+    12
+   ],
+   "roofLength": [
+    30,
+    30
+   ],
+   "heightFt": 7,
+   "price": 7120,
+   "label": "12x30x7"
+  }
+ ],
+ "legHeight": [
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    999
+   ],
+   "heightFt": 12,
+   "price": 2400
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 5,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    60
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    60
+   ],
+   "heightFt": 7,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 0
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 100
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 120
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 140
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 160
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 180
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 160
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 180
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 200
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 220
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 240
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 247
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 319
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 392
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 457
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 522
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 319
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 421
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 522
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 609
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 696
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 392
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 508
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 653
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 761
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 870
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 464
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 595
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 754
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 885
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 1044
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 13,
+   "price": 870
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 13,
+   "price": 935
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 13,
+   "price": 1153
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 13,
+   "price": 1334
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 13,
+   "price": 1566
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 14,
+   "price": 943
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 14,
+   "price": 1022
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 14,
+   "price": 1262
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 14,
+   "price": 1610
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 14,
+   "price": 1755
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 754
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 957
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 1073
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 1334
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 1537
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 13,
+   "price": 914
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 13,
+   "price": 1117
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 13,
+   "price": 1269
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 13,
+   "price": 1523
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 13,
+   "price": 1726
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 14,
+   "price": 1044
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 14,
+   "price": 1276
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 14,
+   "price": 1450
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 14,
+   "price": 1740
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 14,
+   "price": 1972
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 15,
+   "price": 1175
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 15,
+   "price": 1436
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 15,
+   "price": 1631
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 15,
+   "price": 1958
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 15,
+   "price": 2219
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 16,
+   "price": 1305
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 16,
+   "price": 1595
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 16,
+   "price": 1813
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 16,
+   "price": 2175
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 16,
+   "price": 2465
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 131
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 160
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 181
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 218
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 247
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 261
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 319
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 363
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 435
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 493
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 392
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 479
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 558
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 653
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 740
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 522
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 638
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 740
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 870
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 986
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 653
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 798
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 928
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 1088
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 1233
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 783
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 957
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 1117
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 1305
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 1479
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 13,
+   "price": 1276
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 13,
+   "price": 1552
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 13,
+   "price": 1776
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 13,
+   "price": 2103
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 13,
+   "price": 2378
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 14,
+   "price": 1407
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 14,
+   "price": 1711
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 14,
+   "price": 1958
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 14,
+   "price": 2320
+  },
+  {
+   "legType": "standard-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 14,
+   "price": 2625
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 1305
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 1595
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 1885
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 2175
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 2465
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 13,
+   "price": 1379
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 13,
+   "price": 1686
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 13,
+   "price": 1916
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 13,
+   "price": 2299
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 13,
+   "price": 2606
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 14,
+   "price": 1576
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 14,
+   "price": 1927
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 14,
+   "price": 2190
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 14,
+   "price": 2627
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 14,
+   "price": 2978
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 15,
+   "price": 1773
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 15,
+   "price": 2168
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 15,
+   "price": 2463
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 15,
+   "price": 2956
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 15,
+   "price": 3350
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 16,
+   "price": 1971
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 16,
+   "price": 2408
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 16,
+   "price": 2737
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 16,
+   "price": 3284
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 16,
+   "price": 3722
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 326
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 355
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 399
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 471
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 529
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 718
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 805
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 870
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 979
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 1066
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 798
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 928
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 1015
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 1160
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 1298
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 863
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 1015
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 1160
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 1305
+  },
+  {
+   "legType": "double-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 1450
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 5,
+   "price": 236
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 5,
+   "price": 504
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 5,
+   "price": 1144
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 5,
+   "price": 359
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 5,
+   "price": 642
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 366
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 635
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 1223
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 577
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 859
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 496
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 766
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 1302
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 795
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 1076
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 626
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 897
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 1381
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 1013
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 1293
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 756
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 1028
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 1460
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 1231
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 1510
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 886
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 1159
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 1539
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 1449
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 1727
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 1016
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 1290
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 1618
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 1667
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 1944
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 1146
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 1421
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 1697
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 1885
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 2161
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 13,
+   "price": 1276
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 13,
+   "price": 1552
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 13,
+   "price": 1776
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 13,
+   "price": 2103
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 13,
+   "price": 2378
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 14,
+   "price": 1407
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 14,
+   "price": 1711
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 14,
+   "price": 1958
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 14,
+   "price": 2320
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 14,
+   "price": 2625
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 15,
+   "price": 1688
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 15,
+   "price": 2053
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 15,
+   "price": 2349
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 15,
+   "price": 2784
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 15,
+   "price": 3149
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 16,
+   "price": 2025
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 16,
+   "price": 2464
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 16,
+   "price": 2819
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 16,
+   "price": 3341
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 16,
+   "price": 3779
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 17,
+   "price": 2430
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 17,
+   "price": 2957
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 17,
+   "price": 3383
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 17,
+   "price": 4009
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 17,
+   "price": 4535
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 18,
+   "price": 2917
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 18,
+   "price": 3548
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 18,
+   "price": 4059
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 18,
+   "price": 4811
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 18,
+   "price": 5442
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 19,
+   "price": 3683
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 19,
+   "price": 4604
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 19,
+   "price": 5525
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 19,
+   "price": 6445
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 19,
+   "price": 7366
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 20,
+   "price": 3901
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 20,
+   "price": 4879
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 20,
+   "price": 5858
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 20,
+   "price": 6837
+  },
+  {
+   "legType": "deluxe-legs",
+   "width": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 20,
+   "price": 7801
+  }
+ ],
+ "anchorPackages": [
+  {
+   "pkg": "mobile-home-anchor-pkg",
+   "length": [
+    20,
+    25
+   ],
+   "price": 180
+  },
+  {
+   "pkg": "mobile-home-anchor-pkg",
+   "length": [
+    26,
+    40
+   ],
+   "price": 240
+  },
+  {
+   "pkg": "mobile-home-anchor-pkg",
+   "length": [
+    41,
+    50
+   ],
+   "price": 300
+  },
+  {
+   "pkg": "mobile-home-anchor-pkg",
+   "length": [
+    51,
+    60
+   ],
+   "price": 420
+  },
+  {
+   "pkg": "asphalt-anchor-pkg",
+   "length": [
+    20,
+    25
+   ],
+   "price": 180
+  },
+  {
+   "pkg": "asphalt-anchor-pkg",
+   "length": [
+    26,
+    40
+   ],
+   "price": 240
+  },
+  {
+   "pkg": "asphalt-anchor-pkg",
+   "length": [
+    41,
+    50
+   ],
+   "price": 300
+  },
+  {
+   "pkg": "asphalt-anchor-pkg",
+   "length": [
+    51,
+    60
+   ],
+   "price": 420
+  },
+  {
+   "pkg": "concrete-anchor-pkg",
+   "length": [
+    20,
+    25
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "concrete-anchor-pkg",
+   "length": [
+    26,
+    40
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "concrete-anchor-pkg",
+   "length": [
+    41,
+    50
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "concrete-anchor-pkg",
+   "length": [
+    51,
+    60
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "ground-rebar-pkg",
+   "length": [
+    20,
+    25
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "ground-rebar-pkg",
+   "length": [
+    26,
+    40
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "ground-rebar-pkg",
+   "length": [
+    41,
+    50
+   ],
+   "price": 0
+  },
+  {
+   "pkg": "ground-rebar-pkg",
+   "length": [
+    51,
+    60
+   ],
+   "price": 0
+  }
+ ],
+ "certifications": [
+  {
+   "key": "none",
+   "label": "None",
+   "price": 0,
+   "length": [
+    0,
+    200
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide",
+    "32-60-wide"
+   ]
+  },
+  {
+   "key": "certified-140mph-30-20",
+   "label": "Certified 140 MPH - 35 PSF",
+   "price": 300,
+   "length": [
+    0,
+    21
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide"
+   ]
+  },
+  {
+   "key": "certified-140mph-30-25",
+   "label": "Certified 140 MPH - 35 PSF",
+   "price": 350,
+   "length": [
+    22,
+    26
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide"
+   ]
+  },
+  {
+   "key": "certified-140mph-30-30",
+   "label": "Certified 140 MPH - 35 PSF",
+   "price": 450,
+   "length": [
+    27,
+    31
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide"
+   ]
+  },
+  {
+   "key": "certified-140mph-30-35",
+   "label": "Certified 140 MPH - 35 PSF",
+   "price": 500,
+   "length": [
+    32,
+    36
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide"
+   ]
+  },
+  {
+   "key": "certified-140mph-30-40",
+   "label": "Certified 140 MPH - 35 PSF",
+   "price": 600,
+   "length": [
+    37,
+    41
+   ],
+   "widthTags": [
+    "12-24-wide",
+    "26-30-wide"
+   ]
+  }
+ ],
+ "components": [
+  {
+   "key": "garage-door-1-gable",
+   "label": "6x6 Roll Up Door (Outside Latch)",
+   "price": 670
+  },
+  {
+   "key": "portable-rollup-door-6-6-gable",
+   "label": "6' Roll Up (Outside Latch)",
+   "price": 675
+  },
+  {
+   "key": "garage-door-2-gable",
+   "label": "6x7 Roll Up Door (Outside Latch)",
+   "price": 680
+  },
+  {
+   "key": "portable-rollup-door-8-6-gable",
+   "label": "8' Roll Up (Outside Latch)",
+   "price": 780
+  },
+  {
+   "key": "garage-door-3-gable",
+   "label": "8x8 Roll Up Door (Outside Latch)",
+   "price": 855
+  },
+  {
+   "key": "garage-door-4-gable",
+   "label": "9x8 Roll Up Door (Outside Latch)",
+   "price": 875
+  },
+  {
+   "key": "garage-door-5-gable",
+   "label": "10x8 Roll Up Door (Outside Latch)",
+   "price": 940
+  },
+  {
+   "key": "garage-door-6-gable",
+   "label": "10x10 Roll Up Door (Outside Latch)",
+   "price": 1080
+  },
+  {
+   "key": "garage-door-7-gable",
+   "label": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1300
+  },
+  {
+   "key": "garage-door-10-gable",
+   "label": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1650
+  },
+  {
+   "key": "garage-door-8-gable",
+   "label": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1750
+  },
+  {
+   "key": "garage-door-11-gable",
+   "label": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2600
+  },
+  {
+   "key": "garage-door-12-gable",
+   "label": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2750
+  },
+  {
+   "key": "garage-door-9-gable",
+   "label": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2900
+  },
+  {
+   "key": "garage-door-1-side",
+   "label": "6x6 Roll Up Door (Outside Latch)",
+   "price": 670
+  },
+  {
+   "key": "portable-rollup-door-6-6-side",
+   "label": "6' Roll Up (Outside Latch)",
+   "price": 675
+  },
+  {
+   "key": "garage-door-2-side",
+   "label": "6x7 Roll Up Door (Outside Latch)",
+   "price": 680
+  },
+  {
+   "key": "portable-rollup-door-8-6-side",
+   "label": "8' Roll Up (Outside Latch)",
+   "price": 780
+  },
+  {
+   "key": "garage-door-3-side",
+   "label": "8x8 Roll Up Door (Outside Latch)",
+   "price": 855
+  },
+  {
+   "key": "garage-door-4-side",
+   "label": "9x8 Roll Up Door (Outside Latch)",
+   "price": 875
+  },
+  {
+   "key": "garage-door-5-side",
+   "label": "10x8 Roll Up Door (Outside Latch)",
+   "price": 940
+  },
+  {
+   "key": "garage-door-6-side",
+   "label": "10x10 Roll Up Door (Outside Latch)",
+   "price": 1080
+  },
+  {
+   "key": "garage-door-7-side",
+   "label": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1300
+  },
+  {
+   "key": "garage-door-10-side",
+   "label": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1650
+  },
+  {
+   "key": "garage-door-8-side",
+   "label": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 1750
+  },
+  {
+   "key": "garage-door-11-side",
+   "label": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2600
+  },
+  {
+   "key": "garage-door-12-side",
+   "label": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2750
+  },
+  {
+   "key": "garage-door-9-side",
+   "label": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
+   "price": 2900
+  },
+  {
+   "key": "walk-in-door-36-80-res",
+   "label": "36\"x80\" UT White 6 Panel (Out-Swing)",
+   "price": 450
+  },
+  {
+   "key": "walk-in-door-36-80-res-black",
+   "label": "36\"x80\" UT Black 6 Panel (Out-Swing)",
+   "price": 500
+  },
+  {
+   "key": "walk-in-door-36-80-9-lite",
+   "label": "36\"x80” UT White 9-Lite (Out-Swing)",
+   "price": 550
+  },
+  {
+   "key": "walk-in-door-36-80-9-lite-black",
+   "label": "36\"x80” UT Black 9-Lite (Out-Swing)",
+   "price": 600
+  },
+  {
+   "key": "walk-in-door-36-80-premium",
+   "label": "36\"x80\" PR White 6 Panel (In-Swing)",
+   "price": 900
+  },
+  {
+   "key": "walk-in-door-36-80-6-lite-premium",
+   "label": "36\"x80\" PR White Six-Lite (In-Swing)",
+   "price": 1100
+  },
+  {
+   "key": "walk-in-door-36-80-9-lite-premium",
+   "label": "36\"x80\" PR White 9-Lite (In-Swing)",
+   "price": 1300
+  },
+  {
+   "key": "walk-in-door-36-80-black",
+   "label": "36\"x80\" PR Black w/Glass (In-Swing)",
+   "price": 1500
+  },
+  {
+   "key": "double-door-72-80",
+   "label": "72\"x80\" PR White DBL Door (In-Swing)",
+   "price": 2100
+  },
+  {
+   "key": "double-door-72-80-9-lite",
+   "label": "72\"x80\" PR White DBL Door 9-lite (In-Swing)",
+   "price": 2200
+  },
+  {
+   "key": "walk-in-door-72-80-black",
+   "label": "72\"x80\" PR Black DBL Door w/Glass (In-Swing)",
+   "price": 2500
+  },
+  {
+   "key": "walk-in-door-gable",
+   "label": "Frameout Walk-in Door",
+   "price": 150
+  },
+  {
+   "key": "double-door",
+   "label": "Frame Double Door",
+   "price": 250
+  },
+  {
+   "key": "frameout-window-gable",
+   "label": "Frameout 30”x30” Window",
+   "price": 100
+  },
+  {
+   "key": "vent-12-12",
+   "label": "12\" x 12\" Vent",
+   "price": 115
+  },
+  {
+   "key": "vent-12-18",
+   "label": "12\" x 18\" Vent",
+   "price": 135
+  },
+  {
+   "key": "window-1",
+   "label": "30\" x 30\" Window",
+   "price": 225
+  },
+  {
+   "key": "window-30-30-black",
+   "label": "30\" x 30\" Window Black",
+   "price": 250
+  },
+  {
+   "key": "window-30-36",
+   "label": "30\" x 36\" Window White",
+   "price": 260
+  },
+  {
+   "key": "window-30-36-black",
+   "label": "30\" x 36\" Window Black",
+   "price": 290
+  },
+  {
+   "key": "window-2",
+   "label": "24\" x 36\" White Insulated Window",
+   "price": 545
+  },
+  {
+   "key": "window-3",
+   "label": "36\" x 36\" White Insulated Window",
+   "price": 595
+  },
+  {
+   "key": "window-4",
+   "label": "36\" x 48\" White Insulated Window",
+   "price": 695
+  },
+  {
+   "key": "window-5",
+   "label": "36\" x 60\" White Insulated Window",
+   "price": 725
+  },
+  {
+   "key": "window-6",
+   "label": "24\" x 36\" Black Insulated Window",
+   "price": 595
+  },
+  {
+   "key": "window-7",
+   "label": "36\" x 36\" Black Insulated Window",
+   "price": 650
+  },
+  {
+   "key": "window-8",
+   "label": "36\" x 48\" Black Insulated Window",
+   "price": 695
+  },
+  {
+   "key": "window-9",
+   "label": "36\" x 60\" Black Insulated Window",
+   "price": 775
+  },
+  {
+   "key": "faux-window-36-36",
+   "label": "Faux Window (36W x 36H)",
+   "price": 75
+  }
+ ],
+ "additionalOptions": [
+  {
+   "key": "rebar-anchors",
+   "label": "Extra Asphalt Anchors",
+   "price": 30,
+   "calc": "amount"
+  },
+  {
+   "key": "mobile-home-anchors",
+   "label": "Extra Mobile Home Anchors",
+   "price": 30,
+   "calc": "amount"
+  },
+  {
+   "key": "29-gauge-sheet-metal",
+   "label": "29 Gauge Sheet Metal",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "26-gauge-sheet-metal-roof",
+   "label": "26 Gauge Sheet Metal (Roof Only)",
+   "price": 0,
+   "calc": "percent-of-subtotal"
+  },
+  {
+   "key": "26-gauge-sheet-metal",
+   "label": "26 Gauge Sheet Metal (Entire Building)",
+   "price": 0,
+   "calc": "percent-of-subtotal"
+  },
+  {
+   "key": "brush-kit-none",
+   "label": "No Brush Kit",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "brush-kit-headers",
+   "label": "Brush Kit (Header's Only)",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "brush-kit",
+   "label": "Brush Kit (Header's and Sides)",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "roll-up-door-motor-6-10w",
+   "label": "Electric motor for 6’W-10’W up to 10’H",
+   "price": 1300,
+   "calc": "amount"
+  },
+  {
+   "key": "roll-up-door-motor-12-14w",
+   "label": "Electric motor for 12’W-14’W up to 14’H",
+   "price": 1600,
+   "calc": "amount"
+  },
+  {
+   "key": "self-install-diy",
+   "label": "Self-Install (DIY Kit)",
+   "price": -15,
+   "calc": "percent-of-subtotal"
+  },
+  {
+   "key": "j-trim-none",
+   "label": "None",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "j-trim-reg-roof",
+   "label": "J-trim Sides Only",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "colored-screws-none",
+   "label": "Galvanized Screws (Standard)",
+   "price": 0,
+   "calc": "amount"
+  },
+  {
+   "key": "colored-screws",
+   "label": "Colored Screws",
+   "price": 3,
+   "calc": "percent-of-base",
+   "minimumPrice": 350
+  },
+  {
+   "key": "ground-rebar-option",
+   "label": "Rebar Only, Non-Certified",
+   "price": 0,
+   "calc": "amount"
+  }
+ ],
+ "surcharges": [
+  {
+   "affectsDeposit": false,
+   "calculation": {
+    "amountChange": 0,
+    "percentChange": 0,
+    "roundTo": 1
+   },
+   "categories": [
+    "base-price",
+    "structure"
+   ],
+   "clientId": "carportview-tejasmex",
+   "isSubtotal": false,
+   "isTaxable": false,
+   "key": "line-item-surcharge",
+   "label": "",
+   "rules": [
+    {
+     "calculation": {
+      "amountChange": 0,
+      "percentChange": -0.1,
+      "roundTo": 1
+     },
+     "conditions": [
+      {
+       "maximum": 30,
+       "minimum": 3,
+       "type": "width"
+      }
+     ],
+     "id": 0
+    }
+   ],
+   "status": "Active",
+   "supplierKey": "",
+   "supplierSurcharge": "off"
+  }
+ ],
+ "deposit": {
+  "tiers": [
+   {
+    "minSubtotal": 30000,
+    "percent": 21
+   },
+   {
+    "minSubtotal": 20000,
+    "percent": 20
+   },
+   {
+    "minSubtotal": 3000,
+    "percent": 18
+   },
+   {
+    "minSubtotal": 1000,
+    "percent": 12
+   }
+  ]
+ },
+ "sideWalls": [
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 578
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 382
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 447
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 518
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 600
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 682
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 6,
+   "price": 829
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 6,
+   "price": 895
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 6,
+   "price": 966
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 6,
+   "price": 1037
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 421
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 500
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 578
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 656
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 734
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 7,
+   "price": 921
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 7,
+   "price": 999
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 7,
+   "price": 1077
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 7,
+   "price": 1156
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 466
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 542
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 626
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 692
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 767
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 8,
+   "price": 1008
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 8,
+   "price": 1084
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 8,
+   "price": 1168
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 8,
+   "price": 1253
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 492
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 662
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 763
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 532
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 623
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 715
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 825
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 936
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 10,
+   "price": 1155
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 10,
+   "price": 1246
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 10,
+   "price": 1337
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 10,
+   "price": 1429
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 669
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 783
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 910
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 1031
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 1155
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 11,
+   "price": 1452
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 11,
+   "price": 1566
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 715
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 799
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 946
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 1096
+  },
+  {
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 1223
+  },
+  {
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 653
+  },
+  {
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 490
+  },
+  {
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 614
+  },
+  {
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 727
+  },
+  {
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 829
+  }
+ ],
+ "endWalls": [
+  {
+   "widthFt": 18,
+   "heightFt": 9,
+   "price": 1155
+  },
+  {
+   "widthFt": 20,
+   "heightFt": 9,
+   "price": 1305
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 6,
+   "price": 1351
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 7,
+   "price": 1442
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 8,
+   "price": 1520
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 9,
+   "price": 1606
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 10,
+   "price": 1755
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 11,
+   "price": 1977
+  },
+  {
+   "widthFt": 24,
+   "heightFt": 12,
+   "price": 2154
+  },
+  {
+   "widthFt": 26,
+   "heightFt": 9,
+   "price": 2094
+  },
+  {
+   "widthFt": 30,
+   "heightFt": 8,
+   "price": 2441
+  }
+ ],
+ "legMeasured": [
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 7,
+   "price": 198
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 7,
+   "price": 216
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 7,
+   "price": 234
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 7,
+   "price": 252
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 8,
+   "price": 306
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 8,
+   "price": 324
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 8,
+   "price": 342
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 8,
+   "price": 360
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 10,
+   "price": 666
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 10,
+   "price": 758
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 10,
+   "price": 849
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 10,
+   "price": 940
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 11,
+   "price": 810
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 11,
+   "price": 914
+  }
+ ],
+ "baseMeasured": [
+  {
+   "widthFt": 18,
+   "lengthFt": 25,
+   "style": "vertical-roof",
+   "price": 2375
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 25,
+   "style": "vertical-roof",
+   "price": 2636
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 20,
+   "style": "vertical-roof",
+   "price": 2636
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 25,
+   "style": "vertical-roof",
+   "price": 3158
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 30,
+   "style": "vertical-roof",
+   "price": 3941
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 35,
+   "style": "vertical-roof",
+   "price": 4594
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 40,
+   "style": "vertical-roof",
+   "price": 5246
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 45,
+   "style": "vertical-roof",
+   "price": 5794
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 50,
+   "style": "vertical-roof",
+   "price": 6316
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 55,
+   "style": "vertical-roof",
+   "price": 7099
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 60,
+   "style": "vertical-roof",
+   "price": 7882
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 21,
+   "style": "vertical-roof",
+   "price": 3158
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 22,
+   "style": "vertical-roof",
+   "price": 3158
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 23,
+   "style": "vertical-roof",
+   "price": 3158
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 25,
+   "style": "vertical-roof",
+   "price": 4104
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 20,
+   "style": "vertical-roof",
+   "price": 3648
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 25,
+   "style": "vertical-roof",
+   "price": 4496
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 30,
+   "style": "vertical-roof",
+   "price": 5475
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 35,
+   "style": "vertical-roof",
+   "price": 6388
+  }
+ ],
+ "certMeasured": [
+  {
+   "widthFt": 18,
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 20,
+   "price": 270
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 30,
+   "price": 405
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 35,
+   "price": 450
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 40,
+   "price": 540
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 45,
+   "price": 585
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 50,
+   "price": 630
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 55,
+   "price": 720
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 60,
+   "price": 810
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 21,
+   "price": 270
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 22,
+   "price": 315
+  },
+  {
+   "widthFt": 24,
+   "lengthFt": 23,
+   "price": 315
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 20,
+   "price": 270
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 30,
+   "price": 405
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 35,
+   "price": 450
+  }
+ ]
+}

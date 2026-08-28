@@ -6,6 +6,8 @@ import type {
   PricingResult,
 } from '../building/types';
 import { DEFAULT_PRICING_RULES } from '../building/defaultConfig';
+import { getManufacturerTable } from './manufacturer';
+import { priceWithManufacturer } from './manufacturer/adapter';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -21,11 +23,28 @@ function clampPositive(n: number): number {
 
 // ─── Main Pricing Function ──────────────────────────────────
 
+/**
+ * Price a building.
+ *
+ * When the dealer's rules name a manufacturer we have a real captured price file
+ * for, that table is authoritative and the per-square-foot rules below are not
+ * consulted at all. The two models are not reconcilable: the manufacturer prices
+ * from a size-bracket lookup keyed on ROOF length with flat option line items and
+ * a conditional line-item surcharge, whereas DealerPricingRules multiplies rates
+ * by square footage. Mixing them would produce a number that matches neither.
+ *
+ * The legacy path remains for dealers with no captured manufacturer file, and for
+ * the seeded demo pricing.
+ */
 export function calculatePrice(
   config: BuildingConfig,
   dealerRules?: DealerPricingRules | null,
 ): PricingResult {
   const rules = dealerRules ?? DEFAULT_PRICING_RULES;
+
+  const table = getManufacturerTable(rules.manufacturerKey);
+  if (table) return priceWithManufacturer(config, table);
+
   const { building, openings, leanTos, options, certifications, delivery } = config;
   const lineItems: PricingLineItem[] = [];
 

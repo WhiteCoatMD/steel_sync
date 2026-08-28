@@ -169,3 +169,38 @@ describe('sendLeadSms', () => {
     expect(thrown!.message).not.toContain('super-secret-key');
   });
 });
+
+// An incomplete total is always LOW -- the unpriceable parts are simply left
+// out -- so the SMS must say so, and must still fit one GSM-7 segment.
+describe('buildSmsBody with an incomplete total', () => {
+  const incompleteLead = {
+    ...lead,
+    pricing: { total: 3760, unpriceable: ['enclosed walls are not yet priced'] } as any,
+  };
+  const incompleteLongLead = {
+    ...longLead,
+    pricing: { total: 189599, unpriceable: ['a', 'b', 'c'] } as any,
+  };
+
+  it('marks the total as incomplete', () => {
+    expect(buildSmsBody(incompleteLead as any)).toContain('INCOMPLETE');
+  });
+
+  it('does not mark a complete total', () => {
+    expect(buildSmsBody(lead as any)).not.toContain('INCOMPLETE');
+  });
+
+  it('stays within GSM-7', () => {
+    expect(nonGsm7Chars(buildSmsBody(incompleteLead as any))).toEqual([]);
+    expect(nonGsm7Chars(buildSmsBody(incompleteLongLead as any))).toEqual([]);
+  });
+
+  it('still fits a single segment, even for a long name', () => {
+    expect(septetLength(buildSmsBody(incompleteLongLead as any)))
+      .toBeLessThanOrEqual(SINGLE_SEGMENT_SEPTETS);
+  });
+
+  it('does not leak the reasons into the SMS (they go in the email)', () => {
+    expect(buildSmsBody(incompleteLead as any)).not.toContain('enclosed walls');
+  });
+});

@@ -38,9 +38,20 @@ async function main() {
   const website = (argWebsite ?? process.env.DEALER_WEBSITE ?? '').trim();
 
   const sql = neon(process.env.DATABASE_URL!);
-  // PLACEHOLDER PRICING. These are invented $/sqft figures, NOT TejasMex prices.
-  // Replace before any quote is presented to a customer as a real price.
-  const rules = { ...DEFAULT_PRICING_RULES, _placeholder: true };
+
+  // `manufacturerKey` points the dealer at a captured manufacturer price file
+  // (lib/pricing/data/). When it resolves, calculatePrice ignores every per-sqft
+  // field in DEFAULT_PRICING_RULES and quotes from the real table instead, so
+  // adding a dealer of a known manufacturer needs no price entry at all.
+  //
+  // Set MANUFACTURER_KEY='' to seed a dealer with no captured price file. That
+  // falls back to the per-sqft rules, which are INVENTED figures and not any
+  // real manufacturer's prices — hence the _placeholder marker, kept so demo
+  // data can never be mistaken for real pricing.
+  const manufacturerKey = (process.env.MANUFACTURER_KEY ?? 'tejasmex').trim();
+  const rules = manufacturerKey
+    ? { ...DEFAULT_PRICING_RULES, manufacturerKey }
+    : { ...DEFAULT_PRICING_RULES, _placeholder: true };
   await sql`
     INSERT INTO dealers (id, name, phone, email, website, pricing_rules, show_pricing)
     VALUES (${id}, ${name}, ${phone}, ${email}, ${website},

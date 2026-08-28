@@ -138,6 +138,18 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
     merged._placeholder = d._placeholder as boolean;
   }
 
+  // manufacturerKey selects a captured manufacturer price file, and when it
+  // resolves calculatePrice ignores every per-sqft field built above.
+  //
+  // This merge is an explicit allowlist, so the key MUST be copied through
+  // deliberately. Dropping it does not error — it silently reverts the dealer to
+  // the invented per-sqft rates and quotes a confidently wrong number, which is
+  // the exact failure mode this file exists to prevent. A blank or non-string
+  // value is ignored so it falls back rather than resolving to no table.
+  if (typeof d.manufacturerKey === 'string' && d.manufacturerKey.trim() !== '') {
+    merged.manufacturerKey = d.manufacturerKey.trim();
+  }
+
   return merged;
 }
 
