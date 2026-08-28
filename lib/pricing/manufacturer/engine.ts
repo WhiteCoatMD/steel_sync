@@ -157,7 +157,7 @@ export function quoteFromTable(
   table: ManufacturerTable,
 ): ManufacturerQuote {
   const {
-    widthFt,
+    widthFt: requestedWidthFt,
     lengthFt,
     legHeightFt,
     roofStyle,
@@ -169,6 +169,17 @@ export function quoteFromTable(
     siding = 'vertical',
     leanToCount = 0,
   } = input;
+
+  // The product is BUILT in 2ft width increments, so an odd width is quoted at
+  // the next one up: a 21ft building is priced as a 22ft (owner, 2026-08-28).
+  //
+  // Most of this already fell out of the vendor's own bands - 27 lands in [26,30]
+  // and prices as 28, 29 as 30 - but width 25 fell in the hole BETWEEN the
+  // [12,24] and [26,30] bands and had no base row, no certification tier and no
+  // leg-height row. It still returned a non-zero total (4104) alongside the
+  // unpriceable flags, which is the worst possible shape for a money bug.
+  // Normalising here fixes it once for every lookup: base, legs, cert and walls.
+  const widthFt = requestedWidthFt % 2 === 0 ? requestedWidthFt : requestedWidthFt + 1;
 
   const lines: QuoteLine[] = [];
   const unpriceable: string[] = [];

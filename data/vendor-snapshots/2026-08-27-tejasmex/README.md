@@ -262,6 +262,35 @@ Per the owner (2026-08-28), and confirmed in the data:
 So wainscot needs no *discovery*, only *disambiguation* — which of the seven
 known prices applies where. That is a much smaller question than the walls were.
 
+**But it CANNOT be measured through this dealer's designer.** Confirmed live
+2026-08-28: there is no wainscot control on any tab (Style, Size, Sides & Ends,
+Materials, Doors & Windows, Colors, Estimate), enclosed or open, on vertical
+siding, and on barn/garage building types. The live option record says why:
+
+```json
+{"type":"wainscot","key":"steel-30-inch","price":0,
+ "priceType":"ends-and-sides","wainscotType":"steel-36-inch",
+ "tags":"[\"12-24-wide\",\"26-30-wide\",\"32-60-wide\"]"}
+```
+
+…and its group is `vert-wainscot-group`, labelled **"Vertical Wainscot (not
+displayed)"**. The base record carries `price: 0` (the real money is in the
+seven `optionConditions` rows), and the group is deliberately hidden, so the
+configurator never offers it and no probe can price it.
+
+Two useful facts did come out of the live record:
+
+- `priceType: "ends-and-sides"` — wainscot is charged per end **and** per side,
+  the same shape as the enclosed walls. So the seven prices are very likely a
+  per-wall rate, not a whole-building total.
+- `tags` spans all three width bands, so the seven rows cover 12-60ft, not just
+  the 12-24 band. The tempting "7 prices = 7 widths at 2ft steps across 12-24"
+  coincidence is therefore probably wrong — do not build on it.
+
+**Only the vendor can settle this one.** The question is now precise: "for
+30-inch steel wainscot on vertical siding, which of 350/400/450/500/550/600/650
+applies, and is it per wall or per building?"
+
 ## The Skytrack lift fee — MEASURED 2026-08-28, now ACTIVE
 
 A real vendor rule — `conditions[2945]`, a flat 2400 gated on height, width and leg
@@ -307,6 +336,32 @@ the lookup and quoted a **$2,160 leg height** (2400 less the 10% width surcharge
 a 24x45x12 build whose true leg price is ~$1,044 — with no `unpriceable` flag. The
 compiler now excludes it by `gi`, and those builds correctly report that the ladder
 has no row instead.
+
+## Size increments (owner, 2026-08-28)
+
+**Width is built in 2ft increments; an odd width is priced at the next one up** —
+a 21ft building prices as a 22ft. Mostly this already fell out of the vendor's
+own width bands (27 lands in `[26,30]` and prices as 28, 29 as 30), but **width
+25 fell in the hole between `[12,24]` and `[26,30]`**: no base row, no
+certification tier, no leg-height row — and it still returned a non-zero total
+(4104) alongside the unpriceable flags, which is the worst possible shape for a
+money bug. The engine now normalises width up to the next even foot before every
+lookup, so 25 quotes as 26 and nothing in 12-30 is unpriceable.
+
+**Length is described the same way, in 5ft increments — but this is NOT yet
+implemented, because the vendor's own data does not clearly agree.** The two
+disagree by exactly one certification step:
+
+- base price keys on **roof** length, so a 21ft building is a 22ft roof, lands in
+  bracket `[22,26]`, and prices like a 25;
+- certification keys on **building** length, so 21 lands in `[0,21]` and charges
+  270 where a 25 charges 315.
+
+Net: 24x21 quotes 3715, 24x25 quotes 3760. Only lengths 20/25/30/35/40 were ever
+measured live, so which one the vendor actually bills for a 21ft build is
+**unverified**. One probe settles it. Until then the engine keeps the vendor's
+own bracket rather than guessing, and the behaviour is pinned in
+`__tests__/increments.test.ts` as an observation.
 
 ## A trap worth knowing: leg-type drift
 

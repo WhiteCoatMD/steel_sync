@@ -30,6 +30,16 @@
  * A timed-out call does not cancel the work - the loop keeps running in the page.
  * Persist P.results to localStorage every probe so a reload never loses them.
  *
+ * GUARD AGAINST TWO SWEEPS AT ONCE. Because a timed-out call leaves its loop
+ * running, starting another one gives you two loops setting the width in
+ * parallel. That corrupts both. Gate every sweep on a P.busy flag:
+ *
+ *   if (P.busy) throw new Error('a sweep is already running');
+ *
+ * THE TAB STRIP is: Style, Size, Sides & Ends, Materials, Doors & Windows,
+ * Colors, Estimate. "Materials" is easy to miss and holds siding, framing
+ * gauge, sheet metal, screws and insulation.
+ *
  * THE ONE TRICK THAT MAKES THIS PRACTICAL
  * ---------------------------------------
  * Every configuration change triggers a 3D rebuild that blocks the main thread
@@ -215,6 +225,51 @@ const P = (window.P = {
    *  - both can lag together by one step, so also require the Base Price label
    *    to name the width and length we just asked for.
    */
+  /*
+   * THE THROUGHPUT FIX (2026-08-28).
+   *
+   * readFor() below waits on the DOM estimate panel, which is the slow, fragile
+   * half of this harness: it needs a React re-render, parses smart quotes out of
+   * innerText, and silently desyncs once the panel stops re-rendering. That is
+   * where "~4s degrading to ~35s per probe" came from.
+   *
+   * settle() instead polls the store's own getTotalPrice() until it stops
+   * moving. No re-render required, nothing to parse, and it cannot desync -
+   * the number IS the number the app would bill. Measured on an ENCLOSED 24ft
+   * build, the case the notes recorded at ~27s: 2.9-4.0s per config change,
+   * consistently, with no degradation across a run.
+   *
+   * Use settle() for anything that only needs a total or a price DELTA (an
+   * option's cost is just total-with minus total-without). Fall back to
+   * readFor() only when you genuinely need the itemised breakdown.
+   */
+  async settle(stableFor = 3, everyMs = 50, timeoutMs = 90000) {
+    const t0 = performance.now();
+    let last = null, runs = 0;
+    while (performance.now() - t0 < timeoutMs) {
+      const v = window.getTotalPrice();
+      if (v === last) {
+        if (++runs >= stableFor) return { ms: Math.round(performance.now() - t0), total: v };
+      } else { last = v; runs = 1; }
+      await P.sleep(everyMs);
+    }
+    return { ms: Math.round(performance.now() - t0), total: window.getTotalPrice(), timedOut: true };
+  },
+
+  /*
+   * Wait for the app to actually be usable. A fixed sleep is not enough - a
+   * reload was measured taking 14s to expose getTotalPrice, and probing a
+   * half-booted page returns a blank body and no store.
+   */
+  async waitReady(timeoutMs = 45000) {
+    const t0 = Date.now();
+    while (Date.now() - t0 < timeoutMs) {
+      if (typeof window.getTotalPrice === 'function' && document.body.innerText.length > 200) return true;
+      await P.sleep(500);
+    }
+    return false;
+  },
+
   async readFor(w, l) {
     const norm = s => s.replace(/[‘’']/g, "'");
     for (let i = 0; i < 18; i++) {
