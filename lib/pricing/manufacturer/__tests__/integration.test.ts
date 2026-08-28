@@ -140,16 +140,32 @@ describe('it refuses to quote what it cannot price', () => {
   // 44ft is past the last derived bracket (41ft) and was never measured, so base
   // price, certification and leg height all run out together and the quote is
   // refused rather than extrapolated. 45ft, which WAS measured, still prices.
-  it('flags a length past the derived tables that was never measured', () => {
+  it('flags a length past the derived tables at an UNMEASURED width', () => {
+    // 24ft wide is now measured across 20-60, so the refusal has moved: the
+    // boundary is the width, not the length. 20ft wide past 41 has no base row
+    // and no certification tier.
     const cfg = referenceCarport();
-    cfg.building = { ...cfg.building, lengthFt: 44 };
+    cfg.building = { ...cfg.building, widthFt: 20, lengthFt: 44 };
+    const p = calculatePrice(cfg, TEJASMEX_RULES);
+    expect(p.unpriceable?.length).toBeGreaterThan(0);
+  });
+
+  it('flags a length past the whole measured envelope', () => {
+    const cfg = referenceCarport();
+    cfg.building = { ...cfg.building, lengthFt: 61 };
+    const p = calculatePrice(cfg, TEJASMEX_RULES);
+    expect(p.unpriceable?.length).toBeGreaterThan(0);
+  });
+
+  it('flags a measured length at an unmeasured leg height', () => {
+    // Lengths 41-60 were measured at 9ft legs only.
+    const cfg = referenceCarport();
+    cfg.building = { ...cfg.building, lengthFt: 44, legHeightFt: 12 };
     const p = calculatePrice(cfg, TEJASMEX_RULES);
     expect(p.unpriceable?.length).toBeGreaterThan(0);
   });
 
   it('prices a 45ft build from the measured overrides', () => {
-    // 45ft was measured at 10ft legs but not at 9ft, so this uses 10ft. The 9ft
-    // case is correctly refused - the coverage is exactly what was measured.
     const cfg = referenceCarport();
     cfg.building = { ...cfg.building, lengthFt: 45, legHeightFt: 10 };
     const p = calculatePrice(cfg, TEJASMEX_RULES);
