@@ -178,7 +178,7 @@ export interface ServiceFeeRow {
   price: number;
   /** Leg types the trigger was actually measured on. Others are refused. */
   measuredLegTypes: string[];
-  bands: Array<{ minWidthFt: number; minLegHeightFt: number }>;
+  bands: Array<{ minWidthFt: number; minLegHeightFt: number; enclosedOnly?: boolean }>;
   surcharged: boolean;
   affectsDeposit: boolean;
 }

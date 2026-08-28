@@ -34,6 +34,7 @@ missing.
 | `lengths-measured.json` | 41 | every length 20-60 on an open 24x9 build, MEASURED |
 | `widths-measured.json` | 28 | lengths 41/46/51/56 at each remaining width band, MEASURED |
 | `legs-measured.json` | 44 | leg height past length 40 at the remaining heights, MEASURED |
+| `walls2-measured.json` | 100 | the enclosed wall grid, MEASURED |
 
 Abbreviations: `p` price · `lbl` label · `len`/`w` inclusive `[min,max]` brackets · `keys`
 hyphenated vendor identifiers parsed from the applicability expression · `refs` fields the
@@ -477,3 +478,39 @@ couple of dozen changes, and eventually the estimate panel stops re-rendering wh
 set. Reload every ~10-15 probes, and cross-check the panel's own size label against
 the size you asked for. Results are written to `localStorage.__probeG` every few
 probes so a reload never loses them.
+
+## The second wall capture (2026-08-28) — enclosed builds
+
+The first capture left 59 of 70 end-wall values and 69 of 126 side-wall values
+missing, so enclosed buildings priced at only **7.7%**. A 100-probe sweep closed
+it, and settled the SHAPE of both tables with zero contradictions across all 100
+new rows plus the original 62:
+
+- **End walls key on the BASE-PRICE width band, not the exact width.** Widths 14,
+  16 and 18 charge identically at every height (959 / 1044 / 1084 / 1220 / 1377 /
+  1514), while 12, 20 and 22 each differ — exactly the `[13,18]`, `[0,12]`,
+  `[19,20]`, `[21,22]` bands. One measurement therefore covers its whole band,
+  and the compiler expands it across the band into exact-width rows.
+- **Side walls key on the coarse `[12,24]` / `[26,30]` band.** Measured directly:
+  26x45x9 and 28x45x9 both charge 1188.
+
+**Enclosed builds now price at 100%** — 2870 of 2870 across widths 12-30 x
+lengths 20-60 x leg heights 6-12. All 100 measured rows reproduce exactly.
+
+### Enclosing a WIDE building drops the Skytrack trigger by a foot
+
+Nine of the 100 rows exceeded `base + cert + leg + 2*side + 2*end` by exactly
+2400 — every one at width >= 26 and **height 12**, a height that charges nothing
+on an OPEN build of the same size (26x25x12 open was measured at 5280, no fee
+line). Confirmed directly afterwards: enclosed 26x25x11 no fee, enclosed
+26x25x12 fee.
+
+The narrow branch does **not** shift: enclosed 24x25 charges no fee at 12, 13 or
+14, same as open. So the rule is now:
+
+    width >= 26 and enclosed  -> from 12ft
+    width >= 26               -> from 13ft
+    any width                 -> from 15ft
+
+Still refused, correctly: enclosed above 12ft legs (walls were measured to 12),
+and enclosed above 30ft wide (no band captured).

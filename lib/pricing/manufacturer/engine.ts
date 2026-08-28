@@ -391,7 +391,10 @@ export function quoteFromTable(
   // subtotal (1117.44) and not of the 8608 total, then took the fee in the balance.
   for (const fee of table.serviceFees ?? []) {
     const applies = fee.bands.some(
-      b => widthFt >= b.minWidthFt && legHeightFt >= b.minLegHeightFt,
+      b =>
+        widthFt >= b.minWidthFt &&
+        legHeightFt >= b.minLegHeightFt &&
+        (!b.enclosedOnly || enclosed),
     );
     if (!applies) continue;
 

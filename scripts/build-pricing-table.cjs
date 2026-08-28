@@ -227,11 +227,31 @@ const LENGTH_BRACKETS = [[0,20],[21,25],[26,30],[31,35],[36,40],[41,45],[46,50],
 const bracketFor = l => LENGTH_BRACKETS.find(b => l >= b[0] && l <= b[1]);
 const bandFor = w => (w <= 24 ? [12, 24] : w <= 30 ? [26, 30] : [32, 60]);
 
+// A second wall capture (2026-08-28, 100 probes) filling the grid the first one
+// barely touched: 59 of 70 end-wall values and 69 of 126 side-wall values were
+// missing, which is why enclosed builds priced at only 7.7%.
+//
+// It settled the shape of both tables, with zero contradictions across all 100
+// rows plus the 62 from the first capture:
+//
+//   END walls key on the BASE-PRICE width band, not the exact width. 14, 16 and
+//     18 all charge 959/1044/1084/1220/1377/1514 - identical at every height -
+//     while 12, 20 and 22 each differ. Those are exactly the [13,18] / [0,12] /
+//     [19,20] / [21,22] bands. So one measurement covers its whole band, and
+//     the rows below are expanded across it.
+//   SIDE walls key on the coarse [12,24] / [26,30] band, confirmed directly:
+//     26x45x9 and 28x45x9 both charge 1188.
+const walls2 = JSON.parse(fs.readFileSync(path.join(SNAP, 'walls2-measured.json'), 'utf8'));
+
+// The base-price width bands, which end walls turn out to share.
+const END_WALL_BANDS = [[0, 12], [13, 18], [19, 20], [21, 22], [23, 24], [25, 26], [27, 28], [29, 30]];
+const endBandFor = w => END_WALL_BANDS.find(b => w >= b[0] && w <= b[1]);
+
 const sideWalls = [];
 const endWalls = [];
 {
   const seenSide = new Map(), seenEnd = new Map();
-  for (const r of measured) {
+  for (const r of [...measured, ...walls2]) {
     const br = bracketFor(r.l);
     if (!br) continue;
     const band = bandFor(r.w);
@@ -242,12 +262,22 @@ const endWalls = [];
       seenSide.set(sk, r.side);
       sideWalls.push({ widthBand: band, length: br, heightFt: r.h, price: r.side });
     }
-    const ek = `${r.w}|${r.h}`;
-    if (seenEnd.has(ek)) {
-      if (seenEnd.get(ek) !== r.end) note(`end wall conflict ${ek}: ${seenEnd.get(ek)} vs ${r.end}`);
-    } else {
-      seenEnd.set(ek, r.end);
-      endWalls.push({ widthFt: r.w, heightFt: r.h, price: r.end });
+    // End walls are band-wide, so one measurement answers for every width in
+    // its band. Expanded to exact-width rows here so the engine's lookup stays
+    // a simple equality, and so a conflict between two widths in the same band
+    // would still be caught by the check below.
+    const eb = endBandFor(r.w);
+    if (!eb) continue;
+    for (let w = eb[0]; w <= eb[1]; w++) {
+      const ek = `${w}|${r.h}`;
+      if (seenEnd.has(ek)) {
+        if (seenEnd.get(ek) !== r.end) {
+          note(`end wall conflict ${ek} (band ${eb[0]}-${eb[1]}, from measured w=${r.w}): ${seenEnd.get(ek)} vs ${r.end}`);
+        }
+      } else {
+        seenEnd.set(ek, r.end);
+        endWalls.push({ widthFt: w, heightFt: r.h, price: r.end });
+      }
     }
   }
 }
@@ -401,8 +431,20 @@ const serviceFees = [
     label: 'Skytrack Lift Flat Fee',
     price: 2400,
     measuredLegTypes: ['standard-legs'],
-    // Fee applies if ANY band matches.
+    // Fee applies if ANY band matches. A band carrying `enclosedOnly` is tested
+    // only against enclosed builds.
+    //
+    // ENCLOSING A WIDE BUILD DROPS THE TRIGGER BY A FOOT. Measured 2026-08-28
+    // during the wall capture: nine of 100 enclosed rows exceeded
+    // base+cert+leg+2*side+2*end by exactly 2400, every one at width >= 26 and
+    // height 12 - a height that charges nothing on an OPEN build of the same
+    // size (26x25x12 open was measured at 5280, no fee line). Confirmed
+    // directly afterwards: enclosed 26x25x11 no fee, enclosed 26x25x12 fee.
+    //
+    // The narrow branch does NOT shift: enclosed 24x25 charges no fee at 12, 13
+    // or 14, same as open.
     bands: [
+      { minWidthFt: 26, minLegHeightFt: 12, enclosedOnly: true },
       { minWidthFt: 26, minLegHeightFt: 13 },
       { minWidthFt: 0, minLegHeightFt: 15 },
     ],

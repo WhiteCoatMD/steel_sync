@@ -87,11 +87,22 @@ describe('outside the measured envelope it refuses rather than interpolating', (
   });
 
   it('refuses a width whose end wall was never measured', () => {
+    // Widths 12-30 are now measured at heights 6-12, so the refusal has moved
+    // out past 30 where no band was captured. (22ft, the old case here, prices
+    // fine now — see __tests__/walls2.test.ts.)
     const q = quoteFromTable(
-      { widthFt: 22, lengthFt: 25, legHeightFt: 6, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
+      { widthFt: 32, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
       table,
     );
     expect(q.unpriceable?.some(u => /end-wall/.test(u))).toBe(true);
+  });
+
+  it('refuses an enclosed height past the measured 12ft ceiling', () => {
+    const q = quoteFromTable(
+      { widthFt: 24, lengthFt: 25, legHeightFt: 13, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
+      table,
+    );
+    expect(q.unpriceable?.some(u => /wall/.test(u))).toBe(true);
   });
 
   // Read off the live app on an open 24x25: 12ft charges 536, 13ft 842, 14ft 920.
