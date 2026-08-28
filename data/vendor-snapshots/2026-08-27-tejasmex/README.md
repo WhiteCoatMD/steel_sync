@@ -514,3 +514,62 @@ The narrow branch does **not** shift: enclosed 24x25 charges no fee at 12, 13 or
 
 Still refused, correctly: enclosed above 12ft legs (walls were measured to 12),
 and enclosed above 30ft wide (no band captured).
+
+## Lean-tos: blocked on a MODELLING mismatch, not on missing prices
+
+Investigated 2026-08-28. The prices are largely there; the problem is that our
+model describes a product the vendor does not sell.
+
+### What the vendor sells
+
+A lean is a property of the **style**, not something you add. On a Standard
+Carport there is no lean control on any tab — Style, Size, Sides & Ends,
+Materials, Doors & Windows, or Colors. The `left-section` / `right-section`
+slots exist in the store but sit at `lean-type: none` and cannot be changed.
+
+Choosing **Horse Barn** sets `left-section > lean-only` and `right-section >
+lean-only`, and the Size tab then grows a second and third set of width / length
+/ leg-height controls ("Left Section: 12'x30'x9'"). Lean width offers 5-12ft.
+
+### How a lean prices — the composition rule
+
+Measured on a Horse Barn 20x30x12 with 12x30x9 leans. A lean prices as its own
+little building, every line prefixed with the section:
+
+    Base Price: 20'x30'                       3028
+    Engineer Certified                         405
+    Leg Height: 12'                            966
+    Left Side / Right Side: Fully Enclosed     620 each
+    Front End / Back End: Gable End            225 each
+    Left Lean Base Price: 12'x30'             1971
+    Left Lean Engineer Certified               405
+    Left Lean Leg Height: 9'                   176
+    Left Lean Left Side: Fully Enclosed        450
+    Left Lean Front End / Back End             607 each
+    Left Lean Connection Fee Side to Side      196     <- a new line type
+    ...same again for Right Lean
+
+So: `lean = base + cert + legHeight + walls + connection fee`, each from tables
+of its own. **The lean base price is NOT the raw lean table.** At `[0,12]` x
+`[27,31]` the three lean styles list 1987 / 2313 / 2893, which surcharge to
+1788 / 2082 / 2604 — none of them 1971. That mapping still needs measuring.
+
+### Why this is not just a measurement job
+
+`LeanTo` in `lib/building/types.ts` lets a customer attach a lean to **any**
+building, on **any** wall, at an arbitrary width/length/height, open or
+enclosed. The vendor has no such product. Pricing our model would mean quoting a
+configuration that cannot be ordered.
+
+The two honest ways forward, and it is a PRODUCT decision, not a pricing one:
+
+1. **Re-model leans as vendor styles.** A "Horse Barn" becomes a building type
+   with center + left/right lean sections, each independently sized. Matches
+   what can actually be bought, and the composition rule above is already known,
+   so the remaining work is measuring the lean base / leg / wall / connection
+   tables — comparable to one of the campaigns already done.
+2. **Leave leans unpriced.** The engine already reports them, and since
+   2026-08-28 the customer-facing UI says "Custom quote" and routes the lead to
+   a human instead of showing a number that omits them.
+
+Until that decision is made, option 2 is what ships, and it is safe.
