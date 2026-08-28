@@ -98,13 +98,16 @@ describe('it refuses to quote what it cannot price', () => {
   });
 
   it('flags an opening with no manufacturer component key', () => {
+    // Every size the designer OFFERS now resolves, so the refusal has moved to
+    // sizes with no product behind them: the catalogue has no framed 8x8
+    // opening, only the walk-in sized frame-out. See __tests__/openings.test.ts.
     const cfg = referenceCarport();
     cfg.openings = [
       {
         id: 'o1',
-        type: 'window',
-        widthFt: 3,
-        heightFt: 3,
+        type: 'frameout',
+        widthFt: 8,
+        heightFt: 8,
         wall: 'front',
         positionFt: 5,
         color: null,

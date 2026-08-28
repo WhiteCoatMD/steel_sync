@@ -42,6 +42,12 @@ export interface PricedOption {
   key: string;
   label: string;
   price: number;
+  /** The vendor's own display order. Lower wins when a size maps to two products. */
+  order?: number;
+  /** The vendor pre-selects this one. Beats `order`. */
+  isDefault?: boolean;
+  /** Component width in INCHES — how walk-in and window labels are dimensioned. */
+  widthIn?: number;
 }
 
 /**

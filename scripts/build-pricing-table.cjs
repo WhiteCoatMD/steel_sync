@@ -125,7 +125,18 @@ const certifications = pick('engineer-certified', o => ({
   ...(Array.isArray(o.l) ? { length: o.l } : {}),
   ...(Array.isArray(o.wt) ? { widthTags: o.wt } : {}),
 }));
-const components = pick('component');
+// `ord` and `def` are how the vendor's own UI orders and pre-selects a
+// component. They are the tie-breakers for a size that maps to more than one
+// product - a plain "10x10 Roll Up Door" is the outside-latch one (ord 7), not
+// the chain-hoist upgrade (ord 8) - so they are carried through and asserted in
+// the opening-mapping tests rather than the choice being made by hand.
+// `w` is the component's width in INCHES, which is also how the walk-in and
+// window labels are dimensioned.
+const components = pick('component', o => ({
+  ...(typeof o.ord === 'number' ? { order: o.ord } : {}),
+  ...(o.def ? { isDefault: true } : {}),
+  ...(typeof o.w === 'number' ? { widthIn: o.w } : {}),
+}));
 const additionalOptions = pick('additional', o => ({
   calc: o.pc || 'amount',
   ...(typeof o.min === 'number' ? { minimumPrice: o.min } : {}),

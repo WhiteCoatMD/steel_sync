@@ -10364,287 +10364,408 @@
   {
    "key": "garage-door-1-gable",
    "label": "6x6 Roll Up Door (Outside Latch)",
-   "price": 670
+   "price": 670,
+   "order": 0,
+   "widthIn": 72
   },
   {
    "key": "portable-rollup-door-6-6-gable",
    "label": "6' Roll Up (Outside Latch)",
-   "price": 675
+   "price": 675,
+   "order": 1,
+   "widthIn": 72
   },
   {
    "key": "garage-door-2-gable",
    "label": "6x7 Roll Up Door (Outside Latch)",
-   "price": 680
+   "price": 680,
+   "order": 2,
+   "widthIn": 72
   },
   {
    "key": "portable-rollup-door-8-6-gable",
    "label": "8' Roll Up (Outside Latch)",
-   "price": 780
+   "price": 780,
+   "order": 3,
+   "widthIn": 96
   },
   {
    "key": "garage-door-3-gable",
    "label": "8x8 Roll Up Door (Outside Latch)",
-   "price": 855
+   "price": 855,
+   "order": 4,
+   "widthIn": 96
   },
   {
    "key": "garage-door-4-gable",
    "label": "9x8 Roll Up Door (Outside Latch)",
-   "price": 875
+   "price": 875,
+   "order": 5,
+   "widthIn": 108
   },
   {
    "key": "garage-door-5-gable",
    "label": "10x8 Roll Up Door (Outside Latch)",
-   "price": 940
+   "price": 940,
+   "order": 6,
+   "widthIn": 120
   },
   {
    "key": "garage-door-6-gable",
    "label": "10x10 Roll Up Door (Outside Latch)",
-   "price": 1080
+   "price": 1080,
+   "order": 7,
+   "widthIn": 120
   },
   {
    "key": "garage-door-7-gable",
    "label": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1300
+   "price": 1300,
+   "order": 8,
+   "widthIn": 120
   },
   {
    "key": "garage-door-10-gable",
    "label": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1650
+   "price": 1650,
+   "order": 9,
+   "widthIn": 144
   },
   {
    "key": "garage-door-8-gable",
    "label": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1750
+   "price": 1750,
+   "order": 10,
+   "widthIn": 144
   },
   {
    "key": "garage-door-11-gable",
    "label": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2600
+   "price": 2600,
+   "order": 11,
+   "widthIn": 144
   },
   {
    "key": "garage-door-12-gable",
    "label": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2750
+   "price": 2750,
+   "order": 12,
+   "widthIn": 168
   },
   {
    "key": "garage-door-9-gable",
    "label": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2900
+   "price": 2900,
+   "order": 13,
+   "widthIn": 168
   },
   {
    "key": "garage-door-1-side",
    "label": "6x6 Roll Up Door (Outside Latch)",
-   "price": 670
+   "price": 670,
+   "order": 14,
+   "widthIn": 72
   },
   {
    "key": "portable-rollup-door-6-6-side",
    "label": "6' Roll Up (Outside Latch)",
-   "price": 675
+   "price": 675,
+   "order": 15,
+   "widthIn": 72
   },
   {
    "key": "garage-door-2-side",
    "label": "6x7 Roll Up Door (Outside Latch)",
-   "price": 680
+   "price": 680,
+   "order": 16,
+   "widthIn": 72
   },
   {
    "key": "portable-rollup-door-8-6-side",
    "label": "8' Roll Up (Outside Latch)",
-   "price": 780
+   "price": 780,
+   "order": 17,
+   "widthIn": 96
   },
   {
    "key": "garage-door-3-side",
    "label": "8x8 Roll Up Door (Outside Latch)",
-   "price": 855
+   "price": 855,
+   "order": 18,
+   "widthIn": 96
   },
   {
    "key": "garage-door-4-side",
    "label": "9x8 Roll Up Door (Outside Latch)",
-   "price": 875
+   "price": 875,
+   "order": 19,
+   "widthIn": 108
   },
   {
    "key": "garage-door-5-side",
    "label": "10x8 Roll Up Door (Outside Latch)",
-   "price": 940
+   "price": 940,
+   "order": 20,
+   "widthIn": 120
   },
   {
    "key": "garage-door-6-side",
    "label": "10x10 Roll Up Door (Outside Latch)",
-   "price": 1080
+   "price": 1080,
+   "order": 21,
+   "widthIn": 120
   },
   {
    "key": "garage-door-7-side",
    "label": "10x10 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1300
+   "price": 1300,
+   "order": 22,
+   "widthIn": 120
   },
   {
    "key": "garage-door-10-side",
    "label": "12x10 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1650
+   "price": 1650,
+   "order": 23,
+   "widthIn": 144
   },
   {
    "key": "garage-door-8-side",
    "label": "12x12 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 1750
+   "price": 1750,
+   "order": 24,
+   "widthIn": 144
   },
   {
    "key": "garage-door-11-side",
    "label": "12x14 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2600
+   "price": 2600,
+   "order": 25,
+   "widthIn": 144
   },
   {
    "key": "garage-door-12-side",
    "label": "14x12 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2750
+   "price": 2750,
+   "order": 26,
+   "widthIn": 168
   },
   {
    "key": "garage-door-9-side",
    "label": "14x14 Roll Up Door (Chain Hoist - Inside Latch)",
-   "price": 2900
+   "price": 2900,
+   "order": 27,
+   "widthIn": 168
   },
   {
    "key": "walk-in-door-36-80-res",
    "label": "36\"x80\" UT White 6 Panel (Out-Swing)",
-   "price": 450
+   "price": 450,
+   "order": 28,
+   "isDefault": true,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-res-black",
    "label": "36\"x80\" UT Black 6 Panel (Out-Swing)",
-   "price": 500
+   "price": 500,
+   "order": 29,
+   "isDefault": true,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-9-lite",
    "label": "36\"x80” UT White 9-Lite (Out-Swing)",
-   "price": 550
+   "price": 550,
+   "order": 30,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-9-lite-black",
    "label": "36\"x80” UT Black 9-Lite (Out-Swing)",
-   "price": 600
+   "price": 600,
+   "order": 31,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-premium",
    "label": "36\"x80\" PR White 6 Panel (In-Swing)",
-   "price": 900
+   "price": 900,
+   "order": 32,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-6-lite-premium",
    "label": "36\"x80\" PR White Six-Lite (In-Swing)",
-   "price": 1100
+   "price": 1100,
+   "order": 33,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-9-lite-premium",
    "label": "36\"x80\" PR White 9-Lite (In-Swing)",
-   "price": 1300
+   "price": 1300,
+   "order": 34,
+   "widthIn": 36
   },
   {
    "key": "walk-in-door-36-80-black",
    "label": "36\"x80\" PR Black w/Glass (In-Swing)",
-   "price": 1500
+   "price": 1500,
+   "order": 35,
+   "isDefault": true,
+   "widthIn": 36
   },
   {
    "key": "double-door-72-80",
    "label": "72\"x80\" PR White DBL Door (In-Swing)",
-   "price": 2100
+   "price": 2100,
+   "order": 36,
+   "widthIn": 72
   },
   {
    "key": "double-door-72-80-9-lite",
    "label": "72\"x80\" PR White DBL Door 9-lite (In-Swing)",
-   "price": 2200
+   "price": 2200,
+   "order": 37,
+   "widthIn": 72
   },
   {
    "key": "walk-in-door-72-80-black",
    "label": "72\"x80\" PR Black DBL Door w/Glass (In-Swing)",
-   "price": 2500
+   "price": 2500,
+   "order": 38,
+   "isDefault": true,
+   "widthIn": 72
   },
   {
    "key": "walk-in-door-gable",
    "label": "Frameout Walk-in Door",
-   "price": 150
+   "price": 150,
+   "order": 0,
+   "isDefault": true,
+   "widthIn": 36
   },
   {
    "key": "double-door",
    "label": "Frame Double Door",
-   "price": 250
+   "price": 250,
+   "order": 1,
+   "widthIn": 72
   },
   {
    "key": "frameout-window-gable",
    "label": "Frameout 30”x30” Window",
-   "price": 100
+   "price": 100,
+   "order": 2,
+   "widthIn": 30
   },
   {
    "key": "vent-12-12",
    "label": "12\" x 12\" Vent",
-   "price": 115
+   "price": 115,
+   "order": 0
   },
   {
    "key": "vent-12-18",
    "label": "12\" x 18\" Vent",
-   "price": 135
+   "price": 135,
+   "order": 1
   },
   {
    "key": "window-1",
    "label": "30\" x 30\" Window",
-   "price": 225
+   "price": 225,
+   "order": 0,
+   "isDefault": true,
+   "widthIn": 30
   },
   {
    "key": "window-30-30-black",
    "label": "30\" x 30\" Window Black",
-   "price": 250
+   "price": 250,
+   "order": 1,
+   "isDefault": true,
+   "widthIn": 30
   },
   {
    "key": "window-30-36",
    "label": "30\" x 36\" Window White",
-   "price": 260
+   "price": 260,
+   "order": 2,
+   "isDefault": true,
+   "widthIn": 30
   },
   {
    "key": "window-30-36-black",
    "label": "30\" x 36\" Window Black",
-   "price": 290
+   "price": 290,
+   "order": 3,
+   "isDefault": true,
+   "widthIn": 30
   },
   {
    "key": "window-2",
    "label": "24\" x 36\" White Insulated Window",
-   "price": 545
+   "price": 545,
+   "order": 4,
+   "widthIn": 24
   },
   {
    "key": "window-3",
    "label": "36\" x 36\" White Insulated Window",
-   "price": 595
+   "price": 595,
+   "order": 5,
+   "widthIn": 36
   },
   {
    "key": "window-4",
    "label": "36\" x 48\" White Insulated Window",
-   "price": 695
+   "price": 695,
+   "order": 6,
+   "widthIn": 36
   },
   {
    "key": "window-5",
    "label": "36\" x 60\" White Insulated Window",
-   "price": 725
+   "price": 725,
+   "order": 7,
+   "widthIn": 36
   },
   {
    "key": "window-6",
    "label": "24\" x 36\" Black Insulated Window",
-   "price": 595
+   "price": 595,
+   "order": 8,
+   "widthIn": 24
   },
   {
    "key": "window-7",
    "label": "36\" x 36\" Black Insulated Window",
-   "price": 650
+   "price": 650,
+   "order": 9,
+   "widthIn": 36
   },
   {
    "key": "window-8",
    "label": "36\" x 48\" Black Insulated Window",
-   "price": 695
+   "price": 695,
+   "order": 10,
+   "widthIn": 36
   },
   {
    "key": "window-9",
    "label": "36\" x 60\" Black Insulated Window",
-   "price": 775
+   "price": 775,
+   "order": 11,
+   "widthIn": 36
   },
   {
    "key": "faux-window-36-36",
    "label": "Faux Window (36W x 36H)",
-   "price": 75
+   "price": 75,
+   "order": 12,
+   "widthIn": 36
   }
  ],
  "additionalOptions": [

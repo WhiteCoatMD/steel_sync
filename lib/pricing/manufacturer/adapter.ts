@@ -17,20 +17,70 @@ const OPEN_BUILDING_TYPES = new Set(['carport', 'rv-cover']);
  * ambiguous (two 10x10 roll-ups at different prices) the opening is left
  * unresolved so the engine can report it.
  */
+/**
+ * Every opening size the designer can actually produce, mapped to the vendor
+ * component it is.
+ *
+ * The size dropdown is generated from `openingPrices`, so this list is closed
+ * and short — an explicit table beats parsing labels, because the labels are
+ * inconsistent (roll-ups are in FEET, "10x10 Roll Up Door"; walk-ins and windows
+ * are in INCHES, `36"x80"`, some with curly quotes) and a mis-parse here is a
+ * money bug rather than a rendering bug.
+ *
+ * Where a size maps to two products the vendor's own `isDefault` / `order`
+ * decides, and `__tests__/openings.test.ts` asserts that it still does:
+ *   - 10x10 roll-up  -> outside latch (order 7), not the chain-hoist upgrade (8)
+ *   - 3x7 walk-in    -> the 36"x80" 6-panel the vendor pre-selects (isDefault)
+ *
+ * Roll-up doors exist as `-gable` and `-side` pairs at identical prices; the
+ * wall decides which, front/back being the gable ends.
+ */
+const OPENING_COMPONENTS: Record<string, string | null> = {
+  // walk-in: 3x7ft is the 36"x80" door
+  'walkin_3x7': 'walk-in-door-36-80-res',
+
+  // roll-up doors, keyed without the -gable/-side suffix
+  'rollup_8x8': 'garage-door-3',
+  'rollup_9x8': 'garage-door-4',
+  'rollup_10x10': 'garage-door-6',
+  'rollup_12x12': 'garage-door-8',
+
+  // windows: 3ft is 36 inches exactly
+  'window_3x3': 'window-3', //  36" x 36"
+  'window_3x4': 'window-4', //  36" x 48"
+
+  // frame-outs: only the walk-in sized one exists as a product. There is no
+  // component anywhere in the catalogue for a framed 8x8 or 10x10 opening, so
+  // those stay null and are reported rather than guessed at.
+  'frameout_3x7': 'walk-in-door-gable',
+  'frameout_8x8': null,
+  'frameout_10x10': null,
+};
+
+/** Front and back are the gable ends; left and right are the sides. */
+const GABLE_WALLS = new Set(['front', 'back']);
+
 export function componentKeyFor(
-  opening: { type: string; widthFt: number; heightFt: number; componentKey?: string },
+  opening: {
+    type: string;
+    widthFt: number;
+    heightFt: number;
+    wall?: string;
+    componentKey?: string;
+  },
   table: ManufacturerTable,
 ): string | null {
   if (opening.componentKey) return opening.componentKey;
 
-  const wantRollup = opening.type === 'rollup';
-  if (!wantRollup) return null; // walk-ins/windows are sized in inches; require an explicit key
+  const base = OPENING_COMPONENTS[`${opening.type}_${opening.widthFt}x${opening.heightFt}`];
+  if (!base) return null;
 
-  const dims = `${opening.widthFt}x${opening.heightFt} `;
-  const matches = table.components.filter(
-    c => c.label.startsWith(dims) && c.key.endsWith('-gable'),
-  );
-  return matches.length === 1 ? matches[0].key : null;
+  const has = (key: string) => table.components.some(c => c.key === key);
+
+  // Roll-ups ship as a -gable/-side pair; everything else is a single record.
+  if (has(base)) return base;
+  const suffixed = `${base}-${GABLE_WALLS.has(opening.wall ?? 'front') ? 'gable' : 'side'}`;
+  return has(suffixed) ? suffixed : null;
 }
 
 export function toQuoteInput(
