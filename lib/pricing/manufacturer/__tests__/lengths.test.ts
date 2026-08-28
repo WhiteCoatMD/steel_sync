@@ -83,11 +83,13 @@ describe('the three components step at different lengths', () => {
   });
 });
 
-describe('24ft wide is now priced across the whole offered range', () => {
-  it('has no unpriceable length from 20 to 60 at 9ft legs', () => {
-    const broken: number[] = [];
-    for (let l = 20; l <= 60; l++) {
-      if (calculatePrice(carport(24, l, 9), RULES).unpriceable) broken.push(l);
+describe('the whole offered width x length grid is priced', () => {
+  it('has no unpriceable combination in widths 12-30 x lengths 20-60 at 9ft legs', () => {
+    const broken: string[] = [];
+    for (let w = 12; w <= 30; w++) {
+      for (let l = 20; l <= 60; l++) {
+        if (calculatePrice(carport(w, l, 9), RULES).unpriceable) broken.push(`${w}x${l}`);
+      }
     }
     expect(broken).toEqual([]);
   });
@@ -96,11 +98,16 @@ describe('24ft wide is now priced across the whole offered range', () => {
     expect(calculatePrice(carport(24, 61, 9), RULES).unpriceable?.length).toBeGreaterThan(0);
   });
 
-  it('still refuses 41+ at widths that were never measured there', () => {
-    // Only 24ft wide was measured past 40. This is a KNOWN remaining gap: the
-    // engine reports it rather than guessing.
-    for (const w of [18, 20, 26, 30]) {
+  it('still refuses above 30ft wide past the derived tables', () => {
+    // The band overrides cover 12-30 only, and above 30 the vendor offers no
+    // certification at all. The engine must report rather than invent a line.
+    for (const w of [32, 40, 60]) {
       expect(calculatePrice(carport(w, 44, 9), RULES).unpriceable?.length).toBeGreaterThan(0);
     }
+  });
+
+  it('still refuses a measured length at an unmeasured leg height', () => {
+    // Lengths 41-60 were captured at 9ft legs only.
+    expect(calculatePrice(carport(24, 44, 12), RULES).unpriceable?.length).toBeGreaterThan(0);
   });
 });

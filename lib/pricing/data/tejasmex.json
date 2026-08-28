@@ -11804,6 +11804,58 @@
    ],
    "heightFt": 9,
    "price": 706
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 9,
+   "price": 784
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 9,
+   "price": 862
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 9,
+   "price": 933
+  },
+  {
+   "legType": "standard-legs",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 9,
+   "price": 1004
   }
  ],
  "baseMeasured": [
@@ -12094,6 +12146,174 @@
    "lengthFt": 59,
    "style": "vertical-roof",
    "price": 7882
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 3511
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 3577
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 4424
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 4228
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 4750
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 5794
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 4750
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 5664
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 6055
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 5664
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 6316
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 6838
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 7360
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 7491
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 8208
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 9187
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 10166
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 7882
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 8730
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 9709
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 10688
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 41,
+   "style": "vertical-roof",
+   "price": 8143
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 46,
+   "style": "vertical-roof",
+   "price": 8991
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 51,
+   "style": "vertical-roof",
+   "price": 9970
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 56,
+   "style": "vertical-roof",
+   "price": 10949
   }
  ],
  "certMeasured": [
@@ -12335,6 +12555,698 @@
   {
    "widthFt": 24,
    "lengthFt": 59,
+   "price": 810
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 12,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 18,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 20,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 22,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 26,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 28,
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "widthFt": 30,
+   "lengthFt": 56,
+   "price": 720
+  }
+ ],
+ "baseMeasuredBands": [
+  {
+   "widthBand": [
+    23,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 5794
+  },
+  {
+   "widthBand": [
+    23,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 6316
+  },
+  {
+   "widthBand": [
+    23,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 7099
+  },
+  {
+   "widthBand": [
+    23,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 7882
+  },
+  {
+   "widthBand": [
+    0,
+    12
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 3511
+  },
+  {
+   "widthBand": [
+    0,
+    12
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 3577
+  },
+  {
+   "widthBand": [
+    0,
+    12
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 4424
+  },
+  {
+   "widthBand": [
+    0,
+    12
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthBand": [
+    13,
+    18
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 4228
+  },
+  {
+   "widthBand": [
+    13,
+    18
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 4750
+  },
+  {
+   "widthBand": [
+    13,
+    18
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthBand": [
+    13,
+    18
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 5794
+  },
+  {
+   "widthBand": [
+    19,
+    20
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 4750
+  },
+  {
+   "widthBand": [
+    19,
+    20
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 5272
+  },
+  {
+   "widthBand": [
+    19,
+    20
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 5664
+  },
+  {
+   "widthBand": [
+    19,
+    20
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 6055
+  },
+  {
+   "widthBand": [
+    21,
+    22
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 5664
+  },
+  {
+   "widthBand": [
+    21,
+    22
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 6316
+  },
+  {
+   "widthBand": [
+    21,
+    22
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 6838
+  },
+  {
+   "widthBand": [
+    21,
+    22
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 7360
+  },
+  {
+   "widthBand": [
+    25,
+    26
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 7491
+  },
+  {
+   "widthBand": [
+    25,
+    26
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 8208
+  },
+  {
+   "widthBand": [
+    25,
+    26
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 9187
+  },
+  {
+   "widthBand": [
+    25,
+    26
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 10166
+  },
+  {
+   "widthBand": [
+    27,
+    28
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 7882
+  },
+  {
+   "widthBand": [
+    27,
+    28
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 8730
+  },
+  {
+   "widthBand": [
+    27,
+    28
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 9709
+  },
+  {
+   "widthBand": [
+    27,
+    28
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 10688
+  },
+  {
+   "widthBand": [
+    29,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "style": "vertical-roof",
+   "price": 8143
+  },
+  {
+   "widthBand": [
+    29,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "style": "vertical-roof",
+   "price": 8991
+  },
+  {
+   "widthBand": [
+    29,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "style": "vertical-roof",
+   "price": 9970
+  },
+  {
+   "widthBand": [
+    29,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "style": "vertical-roof",
+   "price": 10949
+  }
+ ],
+ "certMeasuredLengths": [
+  {
+   "lengthFt": 20,
+   "price": 270
+  },
+  {
+   "lengthFt": 21,
+   "price": 270
+  },
+  {
+   "lengthFt": 22,
+   "price": 315
+  },
+  {
+   "lengthFt": 23,
+   "price": 315
+  },
+  {
+   "lengthFt": 24,
+   "price": 315
+  },
+  {
+   "lengthFt": 25,
+   "price": 315
+  },
+  {
+   "lengthFt": 26,
+   "price": 315
+  },
+  {
+   "lengthFt": 27,
+   "price": 405
+  },
+  {
+   "lengthFt": 28,
+   "price": 405
+  },
+  {
+   "lengthFt": 29,
+   "price": 405
+  },
+  {
+   "lengthFt": 30,
+   "price": 405
+  },
+  {
+   "lengthFt": 31,
+   "price": 405
+  },
+  {
+   "lengthFt": 32,
+   "price": 450
+  },
+  {
+   "lengthFt": 33,
+   "price": 450
+  },
+  {
+   "lengthFt": 34,
+   "price": 450
+  },
+  {
+   "lengthFt": 35,
+   "price": 450
+  },
+  {
+   "lengthFt": 36,
+   "price": 450
+  },
+  {
+   "lengthFt": 37,
+   "price": 540
+  },
+  {
+   "lengthFt": 38,
+   "price": 540
+  },
+  {
+   "lengthFt": 39,
+   "price": 540
+  },
+  {
+   "lengthFt": 40,
+   "price": 540
+  },
+  {
+   "lengthFt": 41,
+   "price": 540
+  },
+  {
+   "lengthFt": 42,
+   "price": 585
+  },
+  {
+   "lengthFt": 43,
+   "price": 585
+  },
+  {
+   "lengthFt": 44,
+   "price": 585
+  },
+  {
+   "lengthFt": 45,
+   "price": 585
+  },
+  {
+   "lengthFt": 46,
+   "price": 585
+  },
+  {
+   "lengthFt": 47,
+   "price": 630
+  },
+  {
+   "lengthFt": 48,
+   "price": 630
+  },
+  {
+   "lengthFt": 49,
+   "price": 630
+  },
+  {
+   "lengthFt": 50,
+   "price": 630
+  },
+  {
+   "lengthFt": 51,
+   "price": 630
+  },
+  {
+   "lengthFt": 52,
+   "price": 720
+  },
+  {
+   "lengthFt": 53,
+   "price": 720
+  },
+  {
+   "lengthFt": 54,
+   "price": 720
+  },
+  {
+   "lengthFt": 55,
+   "price": 720
+  },
+  {
+   "lengthFt": 56,
+   "price": 720
+  },
+  {
+   "lengthFt": 57,
+   "price": 810
+  },
+  {
+   "lengthFt": 58,
+   "price": 810
+  },
+  {
+   "lengthFt": 59,
+   "price": 810
+  },
+  {
+   "lengthFt": 60,
    "price": 810
   }
  ]

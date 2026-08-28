@@ -217,14 +217,23 @@ export function quoteFromTable(
     r => r.widthFt === widthFt && r.lengthFt === lengthFt && r.style === vendorStyle,
   );
 
+  // Falls back to the band-keyed measurements only where an exact one is absent.
+  const baseBandRow = table.baseMeasuredBands?.find(
+    r =>
+      r.style === vendorStyle &&
+      inBracket(widthFt, r.widthBand) &&
+      inBracket(lengthFt, r.length),
+  );
+
   if (baseRow) {
     push(`Base Price: ${widthFt}'x${lengthFt}'`, 'base-price', baseRow.price, baseRow.label);
-  } else if (baseMeasuredRow) {
+  } else if (baseMeasuredRow || baseBandRow) {
+    const price = (baseMeasuredRow ?? baseBandRow)!.price;
     lines.push({
       label: `Base Price: ${widthFt}'x${lengthFt}'`,
       category: 'base-price',
-      listAmount: baseMeasuredRow.price,
-      amount: baseMeasuredRow.price,
+      listAmount: price,
+      amount: price,
     });
   } else {
     unpriceable.push(
@@ -237,15 +246,23 @@ export function quoteFromTable(
     const certMeasuredRow = table.certMeasured?.find(
       r => r.widthFt === widthFt && r.lengthFt === lengthFt,
     );
+    // Certification does not vary by width anywhere in 12-30 (verified at seven
+    // widths x four lengths), so a length-only measurement is a sound fallback —
+    // but only inside the width range the tiers are actually offered for, which
+    // is what pickCertification's widthTags encode. Above 30ft wide the vendor
+    // charges nothing, so this must not invent a line there.
+    const certByLength =
+      widthFt <= 30 ? table.certMeasuredLengths?.find(r => r.lengthFt === lengthFt) : undefined;
     const cert = pickCertification(table, widthFt, lengthFt);
     if (cert) {
       push(`Engineer Certified: ${cert.label}`, 'structure', cert.price);
-    } else if (certMeasuredRow) {
+    } else if (certMeasuredRow || certByLength) {
+      const price = (certMeasuredRow ?? certByLength)!.price;
       lines.push({
         label: 'Engineer Certified: Certified 140 MPH - 35 PSF',
         category: 'structure',
-        listAmount: certMeasuredRow.price,
-        amount: certMeasuredRow.price,
+        listAmount: price,
+        amount: price,
       });
     } else {
       // Not an error in the vendor's model — above 30ft wide, or beyond the

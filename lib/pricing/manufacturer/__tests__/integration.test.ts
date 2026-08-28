@@ -140,12 +140,12 @@ describe('it refuses to quote what it cannot price', () => {
   // 44ft is past the last derived bracket (41ft) and was never measured, so base
   // price, certification and leg height all run out together and the quote is
   // refused rather than extrapolated. 45ft, which WAS measured, still prices.
-  it('flags a length past the derived tables at an UNMEASURED width', () => {
-    // 24ft wide is now measured across 20-60, so the refusal has moved: the
-    // boundary is the width, not the length. 20ft wide past 41 has no base row
-    // and no certification tier.
+  it('flags a length past the derived tables above the measured width range', () => {
+    // Widths 12-30 are now measured across lengths 20-60. The refusal has moved
+    // out to widths above 30, where the vendor does not offer certification and
+    // no base band was measured.
     const cfg = referenceCarport();
-    cfg.building = { ...cfg.building, widthFt: 20, lengthFt: 44 };
+    cfg.building = { ...cfg.building, widthFt: 40, lengthFt: 44 };
     const p = calculatePrice(cfg, TEJASMEX_RULES);
     expect(p.unpriceable?.length).toBeGreaterThan(0);
   });

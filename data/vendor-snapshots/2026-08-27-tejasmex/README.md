@@ -32,6 +32,7 @@ missing.
 | `option-conditions.raw.json` | 1188 | per-option applicability + price overrides (see below) |
 | `walls-measured.json` | 62 | enclosed walls, MEASURED from the live app |
 | `lengths-measured.json` | 41 | every length 20-60 on an open 24x9 build, MEASURED |
+| `widths-measured.json` | 28 | lengths 41/46/51/56 at each remaining width band, MEASURED |
 
 Abbreviations: `p` price · `lbl` label · `len`/`w` inclusive `[min,max]` brackets · `keys`
 hyphenated vendor identifiers parsed from the applicability expression · `refs` fields the
@@ -378,12 +379,34 @@ wherever the two overlap. Brackets past 40 turn out to be:
     base + cert (roof / building):  [42,46] [47,51] [52,56] [57,61]
     leg (building):                 [41,45] [46,50] [51,55] [56,60]
 
-**24ft wide is now priced across the whole 20-60 range.** Remaining gap: 41-60 at
-every OTHER width, because base/cert overrides key on exact width and only 24 was
-measured. Since the brackets above are width-independent, a width needs only
-**8 probes** to cover 41-60 (one per distinct value-region: 41, 42-45, 46, 47-50,
-51, 52-55, 56, 57-60), not 20 — but the compiler would need to emit
-bracket-keyed overrides rather than exact-length ones to exploit that.
+### The whole 12-30 x 20-60 grid is now priced
+
+A second sweep took lengths 41/46/51/56 at each remaining base-price width band
+(`widths-measured.json`, 28 probes covering widths 12, 18, 20, 22, 26, 28, 30 —
+24 came from the length sweep). Four lengths per width is enough because base
+price is constant inside each of `[41,45] [46,50] [51,55] [56,60]`, which the
+foot-by-foot 24ft sweep had already established.
+
+Two structural facts fell out, and they are what let 28 probes cover 779
+combinations:
+
+- **Certification is WIDTH-INDEPENDENT.** 540/585/630/720 at lengths 41/46/51/56
+  for all seven widths, matching the 24ft sweep exactly. So the override keys on
+  building length alone — but only up to 30ft wide, because above that the vendor
+  offers no certification at all.
+- **Leg height follows the `[12,24]` / `[26,30]` bands.** 509/574/640/706 for
+  widths 12-24 and 784/862/933/1004 for 26-30, with no variation inside a band.
+
+The compiler emits these as `baseMeasuredBands` (width band x length bracket) and
+`certMeasuredLengths` (length only). Both are CHARGED amounts and bypass the
+surcharge, and an exact-match override still wins where one exists.
+
+**Result: 69/69 measured points reproduce exactly, and there is no unpriceable
+combination in widths 12-30 x lengths 20-60 at 9ft legs (779 of 779).**
+
+Still refused, correctly: above 30ft wide (no certification tier, no measured
+base band), past 60ft long, and lengths 41-60 at leg heights other than 9ft —
+that range was captured at 9ft only.
 
 ## A trap worth knowing: leg-type drift
 

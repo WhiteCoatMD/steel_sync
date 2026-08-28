@@ -126,6 +126,24 @@ export interface ManufacturerTable {
   baseMeasured: Array<{ widthFt: number; lengthFt: number; style: string; price: number }>;
   /** Measured certification prices at exact sizes past the last derived tier. */
   certMeasured: Array<{ widthFt: number; lengthFt: number; price: number }>;
+
+  /**
+   * Band-keyed measured overrides for lengths past 40, where the derived tables
+   * have no rows at all. Generalised only along the axes the vendor itself uses:
+   * base price by (base-price width band x building-length bracket), and
+   * certification by building length alone — certification does not vary by
+   * width anywhere in 12-30, verified at seven widths x four lengths.
+   *
+   * Both are CHARGED amounts, so they bypass the surcharge like every other
+   * measured value. Exact-match overrides above take precedence.
+   */
+  baseMeasuredBands?: Array<{
+    widthBand: [number, number];
+    length: [number, number];
+    style: string;
+    price: number;
+  }>;
+  certMeasuredLengths?: Array<{ lengthFt: number; price: number }>;
 }
 
 /**

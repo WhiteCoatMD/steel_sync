@@ -158,7 +158,20 @@ const measured = JSON.parse(fs.readFileSync(path.join(SNAP, 'walls-measured.json
 // prices, which is fine: base, certification and leg height do not depend on
 // walls, and the override builders below only read w/l/h/base/cert/leg.
 const lengthsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'lengths-measured.json'), 'utf8'));
-const allMeasured = [...measured, ...lengthsMeasured];
+
+// Lengths 41/46/51/56 at every remaining base-price WIDTH BAND, measured
+// 2026-08-28 (widths 12, 18, 20, 22, 26, 28, 30 - 24 came from the sweep above).
+// Four lengths is enough because base price is constant inside [41,45], [46,50],
+// [51,55] and [56,60], which the full 24ft sweep established foot by foot.
+//
+// Two structural facts fell out and both are used below:
+//   - certification is WIDTH-INDEPENDENT: 540/585/630/720 at lengths 41/46/51/56
+//     for every one of the seven widths, matching the 24ft sweep exactly;
+//   - leg height follows the [12,24] / [26,30] bands: 509/574/640/706 for widths
+//     12-24 and 784/862/933/1004 for 26-30, with no variation inside a band.
+const widthsMeasured = JSON.parse(fs.readFileSync(path.join(SNAP, 'widths-measured.json'), 'utf8'));
+
+const allMeasured = [...measured, ...lengthsMeasured, ...widthsMeasured];
 
 const LENGTH_BRACKETS = [[0,20],[21,25],[26,30],[31,35],[36,40],[41,45],[46,50],[51,55],[56,60]];
 const bracketFor = l => LENGTH_BRACKETS.find(b => l >= b[0] && l <= b[1]);
@@ -263,6 +276,56 @@ const certMeasured = [];
   }
 }
 
+// ── Band-keyed base / certification overrides (lengths past 40) ────
+//
+// The exact-width/exact-length overrides above only answer for a size that was
+// literally probed. Past length 40 the derived tables have no rows at all, so
+// every width x length in 41-60 would otherwise be unpriceable. These two tables
+// generalise the measurements along the axes the vendor actually uses, and no
+// further:
+//
+//   base  -> (base-price WIDTH BAND) x (building-length bracket)
+//   cert  -> (building length) only, because certification does not vary by
+//            width anywhere in 12-30 - verified at seven widths x four lengths
+//
+// Both are CHARGED amounts, so like every other measured override they bypass
+// the -10% surcharge.
+const BASE_WIDTH_BANDS = [[0, 12], [13, 18], [19, 20], [21, 22], [23, 24], [25, 26], [27, 28], [29, 30]];
+const PAST_40_BRACKETS = [[41, 45], [46, 50], [51, 55], [56, 60]];
+
+const baseMeasuredBands = [];
+{
+  const seen = new Map();
+  for (const r of allMeasured) {
+    if (r.base == null || r.l < 41) continue;
+    const band = BASE_WIDTH_BANDS.find(b => r.w >= b[0] && r.w <= b[1]);
+    const br = PAST_40_BRACKETS.find(b => r.l >= b[0] && r.l <= b[1]);
+    if (!band || !br) continue;
+    const k = `${band[0]}-${band[1]}|${br[0]}-${br[1]}`;
+    if (seen.has(k)) {
+      if (seen.get(k) !== r.base) note(`base band conflict ${k} (from ${r.w}x${r.l}): ${seen.get(k)} vs ${r.base}`);
+      continue;
+    }
+    seen.set(k, r.base);
+    baseMeasuredBands.push({ widthBand: band, length: br, style: 'vertical-roof', price: r.base });
+  }
+}
+
+const certMeasuredLengths = [];
+{
+  const seen = new Map();
+  for (const r of allMeasured) {
+    if (r.cert == null) continue;
+    if (seen.has(r.l)) {
+      if (seen.get(r.l) !== r.cert) note(`cert length conflict at ${r.l} (from width ${r.w}): ${seen.get(r.l)} vs ${r.cert}`);
+      continue;
+    }
+    seen.set(r.l, r.cert);
+    certMeasuredLengths.push({ lengthFt: r.l, price: r.cert });
+  }
+  certMeasuredLengths.sort((a, b) => a.lengthFt - b.lengthFt);
+}
+
 // ── service fees ──
 // Billed in their own group AFTER the subtotal. Not surcharged (the live estimate
 // shows 2400 verbatim at 30-wide, where the -10% width surcharge applies), and
@@ -332,6 +395,8 @@ const table = {
   legMeasured,
   baseMeasured,
   certMeasured,
+  baseMeasuredBands,
+  certMeasuredLengths,
 };
 
 console.log('base price rows :', basePrice.length);
@@ -347,6 +412,8 @@ console.log('end wall rows   :', endWalls.length);
 console.log('leg overrides   :', legMeasured.length);
 console.log('base overrides  :', baseMeasured.length);
 console.log('cert overrides  :', certMeasured.length);
+console.log('base bands      :', baseMeasuredBands.length);
+console.log('cert lengths    :', certMeasuredLengths.length);
 
 if (problems.length) {
   console.error('\nCONFLICTS (' + problems.length + ') — refusing to write:');
