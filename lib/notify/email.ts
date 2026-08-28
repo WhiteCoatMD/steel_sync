@@ -63,7 +63,15 @@ export async function sendLeadEmail(dealer: DealerSettings, lead: Lead): Promise
       `Building:  ${b.widthFt}' x ${b.lengthFt}' x ${b.legHeightFt}' ${b.type}`,
       `Roof:      ${b.roofStyle} ${b.roofPitch}`,
       `Openings:  ${lead.config.openings.length}`,
-      `Lean-tos:  ${lead.config.leanTos.length}`,
+      // Lean-tos are deliberately never priced (the manufacturer sells them as
+      // their own building styles), so the dealer has to quote them by hand -
+      // give them the dimensions rather than a bare count.
+      ...(lead.config.leanTos.length
+        ? lead.config.leanTos.map(
+            (lt, i) =>
+              `Lean-to ${i + 1}: ${lt.wall} wall, ${lt.widthFt}' out x ${lt.lengthFt}' long x ${lt.heightFt}' tall, ${lt.walls}`,
+          )
+        : [`Lean-tos:  none`]),
       ``,
       `Estimate:  $${lead.pricing.total.toLocaleString()}`,
       // An incomplete total is worse than no total: it looks like a firm price

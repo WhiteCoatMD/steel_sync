@@ -47,6 +47,16 @@ export interface ManufacturerQuoteInput {
    * style key. Only vertical has been measured.
    */
   siding?: 'vertical' | 'horizontal';
+  /**
+   * Lean-to sections on the build. Deliberately NOT priced — see the snapshot
+   * README: the manufacturer sells leans as distinct building STYLES (Horse
+   * Barn and friends), not as something you bolt onto a carport, so there is no
+   * orderable configuration matching an arbitrary lean on an arbitrary wall.
+   * Carrying the dimensions rather than a bare count lets the refusal name what
+   * a human has to price.
+   */
+  leanTos?: Array<{ wall?: string; widthFt?: number; lengthFt?: number; heightFt?: number }>;
+  /** Deprecated shorthand for `leanTos.length`, kept for callers that only counted. */
   leanToCount?: number;
 }
 
@@ -167,7 +177,8 @@ export function quoteFromTable(
     componentKeys = [],
     enclosed = false,
     siding = 'vertical',
-    leanToCount = 0,
+    leanTos = [],
+    leanToCount = leanTos.length,
   } = input;
 
   // The product is BUILT in 2ft width increments, so an odd width is quoted at
@@ -383,7 +394,25 @@ export function quoteFromTable(
       }
     }
   }
-  if (leanToCount > 0) unpriceable.push('lean-to sections are not yet priced');
+  // Lean-tos are a deliberate, documented refusal rather than a missing table.
+  // The vendor prices a lean as its own little building (base + certification +
+  // leg height + walls + a "Connection Fee Side to Side"), but only inside a
+  // style that HAS leans. An arbitrary lean on an arbitrary wall is not
+  // orderable, so quoting one would be quoting a fiction.
+  if (leanTos.length) {
+    for (const lt of leanTos) {
+      const size =
+        lt.widthFt != null && lt.lengthFt != null
+          ? ` (${lt.widthFt}ft out x ${lt.lengthFt}ft long${lt.heightFt != null ? ` x ${lt.heightFt}ft tall` : ''})`
+          : '';
+      unpriceable.push(
+        `lean-to on the ${lt.wall ?? 'unspecified'} wall${size} needs a custom quote - ` +
+          'the manufacturer sells leans as their own building styles',
+      );
+    }
+  } else if (leanToCount > 0) {
+    unpriceable.push(`${leanToCount} lean-to section(s) need a custom quote`);
+  }
 
   // ── Service fees ────────────────────────────────────────────
   // Billed in their own group after the subtotal, at face value, and outside the

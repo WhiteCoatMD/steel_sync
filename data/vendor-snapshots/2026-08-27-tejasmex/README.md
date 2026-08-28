@@ -572,4 +572,23 @@ The two honest ways forward, and it is a PRODUCT decision, not a pricing one:
    2026-08-28 the customer-facing UI says "Custom quote" and routes the lead to
    a human instead of showing a number that omits them.
 
-Until that decision is made, option 2 is what ships, and it is safe.
+### DECIDED 2026-08-28: option 2 — leans stay unpriced
+
+Chosen by the owner. This is now a deliberate product position, not a gap
+waiting on a table, and the code says so:
+
+- the engine emits one line per lean naming the wall and the dimensions
+  (`lean-to on the left wall (5ft out x 25ft long x 7ft tall) needs a custom
+  quote - the manufacturer sells leans as their own building styles`) rather
+  than the old "not yet priced", which implied a table was pending;
+- the dealer email lists each lean's wall, size and open/enclosed state, so it
+  can be quoted by hand — it used to send only a count;
+- the customer sees "Custom quote" and reaches a person.
+
+Why this matters more than it looks: a lean contributes **nothing** to the
+total, so a bare 24x25x9 carport and the same carport with a full lean-to both
+compute to $3,760. Before the display gating landed, those were indistinguishable
+to the customer. `__tests__/leanTos.test.ts` pins exactly that.
+
+Option 1 stays open. The composition rule above is the expensive half of it and
+is already measured.

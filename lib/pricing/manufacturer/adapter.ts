@@ -121,7 +121,13 @@ export function toQuoteInput(
       // measured envelope the engine reports it rather than quoting the (much
       // lower) open-carport price.
       enclosed: !OPEN_BUILDING_TYPES.has(b.type),
-      leanToCount: config.leanTos?.length ?? 0,
+      // Dimensions, not just a count: the refusal names what a human must price.
+      leanTos: (config.leanTos ?? []).map(lt => ({
+        wall: lt.wall,
+        widthFt: lt.widthFt,
+        lengthFt: lt.lengthFt,
+        heightFt: lt.heightFt,
+      })),
     },
     unresolvedOpenings,
   };
