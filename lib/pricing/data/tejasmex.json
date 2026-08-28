@@ -11,7 +11,7 @@
  "standardRoofOverhangFt": 0.5,
  "basePrice": [
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "regular-roof",
    "width": [
     0,
@@ -25,7 +25,7 @@
    "label": "12x21"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "regular-roof",
    "width": [
     0,
@@ -39,7 +39,7 @@
    "label": "12x26"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "regular-roof",
    "width": [
     0,
@@ -361,7 +361,7 @@
    "label": "24x41"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "boxed-eave-roof",
    "width": [
     0,
@@ -375,7 +375,7 @@
    "label": "12x21"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "boxed-eave-roof",
    "width": [
     0,
@@ -389,7 +389,7 @@
    "label": "12x26"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "boxed-eave-roof",
    "width": [
     0,
@@ -711,7 +711,7 @@
    "label": "24x41"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "vertical-roof",
    "width": [
     0,
@@ -725,7 +725,7 @@
    "label": "12x21"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "vertical-roof",
    "width": [
     0,
@@ -739,7 +739,7 @@
    "label": "12x26"
   },
   {
-   "product": "portable-shed",
+   "product": "standard",
    "style": "vertical-roof",
    "width": [
     0,

@@ -44,7 +44,13 @@ const basePrice = [];
     // Carports are 2D ("24x26"). Fold height into the key so neither is dropped.
     const m3 = /^(\d+)x(\d+)x(\d+)$/.exec(String(r.lbl || ''));
     const heightFt = m3 ? Number(m3[3]) : null;
-    const product = r.keys.includes('portable-shed') ? 'portable-shed' : 'standard';
+    // Classify by the LABEL, not by the presence of a 'portable-shed' key. A row
+    // routinely applies to BOTH products ("regular-roof,portable-shed"), and
+    // treating the key as exclusive silently deleted every 12ft-wide standard row
+    // - 12x21, 12x26, 12x31 - so a 12x25 carport lost its base price entirely and
+    // quoted the bare leg-height line. What actually distinguishes the two is
+    // dimensionality: portable sheds price in 3D ("6x8x6"), carports in 2D ("12x26").
+    const product = heightFt != null ? 'portable-shed' : 'standard';
     for (const style of styles) {
       const key = `${product}|${style}|${r.w[0]}-${r.w[1]}|${r.len[0]}-${r.len[1]}|${heightFt ?? '-'}`;
       if (seen.has(key) && seen.get(key) !== r.p) {
