@@ -12,8 +12,16 @@ const GRAPH = 'https://graph.facebook.com/v21.0/me/messages';
 /** Messenger hard-limits a message; splitting beats silent truncation. */
 const MAX_CHARS = 1900;
 
-export function autoReplyEnabled(): boolean {
-  return (process.env.FACEBOOK_AUTO_REPLY ?? '').trim().toLowerCase() === 'on';
+/**
+ * The GLOBAL kill switch. Per-dealer `auto_reply` decides who is allowed to
+ * answer; this can silence every dealer at once without touching the database.
+ *
+ * Defaults to ON so that adding a dealer is enough to set them up — the
+ * per-dealer flag is the one that starts false. Set FACEBOOK_AUTO_REPLY=off to
+ * mute the whole platform.
+ */
+export function repliesGloballyEnabled(): boolean {
+  return (process.env.FACEBOOK_AUTO_REPLY ?? '').trim().toLowerCase() !== 'off';
 }
 
 /**
@@ -45,22 +53,36 @@ export interface SendResult {
   reason?: string;
 }
 
+export interface SendContext {
+  /** This dealer's own page token, already decrypted. */
+  pageToken: string | null;
+  /** This dealer's own switch. A new dealer starts false. */
+  dealerAutoReply: boolean;
+  dealerId: string;
+}
+
 export async function sendFacebookReply(
   recipientId: string,
   text: string,
+  ctx: SendContext,
 ): Promise<SendResult> {
-  if (!autoReplyEnabled()) {
-    // The whole reply is logged so the dealer can judge what it WOULD have
-    // said before switching it on.
+  // Two gates, deliberately. The per-dealer flag is what a dealer flips when
+  // they are ready to speak; the global one mutes everybody at once.
+  if (!ctx.dealerAutoReply || !repliesGloballyEnabled()) {
+    const why = !ctx.dealerAutoReply ? 'dealer auto-reply off' : 'platform muted';
+    // The whole reply is logged so the dealer can judge what it WOULD have said
+    // before switching it on.
     console.log(
-      `[facebook] AUTO-REPLY OFF — would have sent to ${recipientId}:\n${text}`,
+      `[facebook] NOT SENT (${why}) — would have sent to ${recipientId} for ${ctx.dealerId}:\n${text}`,
     );
-    return { sent: false, reason: 'auto-reply disabled' };
+    return { sent: false, reason: why };
   }
 
-  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+  const token = ctx.pageToken;
   if (!token) {
-    console.error('[facebook] FACEBOOK_PAGE_ACCESS_TOKEN is not set — cannot reply');
+    // Either no page is connected, or the stored token failed to decrypt. Both
+    // mean "cannot reply" — never "reply as somebody else".
+    console.error(`[facebook] no usable page token for ${ctx.dealerId} — cannot reply`);
     return { sent: false, reason: 'no page access token' };
   }
 

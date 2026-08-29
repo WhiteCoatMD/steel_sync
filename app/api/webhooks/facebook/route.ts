@@ -4,24 +4,25 @@ import {
   verifySubscription,
   extractMessages,
 } from '@/lib/inbound/facebookVerify';
-import { sendFacebookReply, autoReplyEnabled } from '@/lib/inbound/facebookSend';
+import { sendFacebookReply } from '@/lib/inbound/facebookSend';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
-import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
+import { dealerForPage } from '@/lib/db/messaging';
 
 /**
- * Facebook Messenger webhook.
+ * Facebook Messenger webhook — multi-dealer.
  *
  * GET  — the one-time subscription handshake Meta performs when you save the
  *        callback URL.
  * POST — inbound messages.
  *
- * REPLIES ARE OFF UNLESS FACEBOOK_AUTO_REPLY=on. Everything is parsed, priced
- * and logged either way, so real traffic can be reviewed before the bot is
- * allowed to speak in the dealer's name.
+ * The dealer is resolved from the PAGE id Meta puts on every event, not from an
+ * env var. That is what lets a new dealer be messaging-ready the moment their
+ * page is connected, rather than needing a deploy each time.
+ *
+ * A dealer only speaks once THEIR OWN `auto_reply` is on. Until then every
+ * message is still parsed, priced, saved and logged — including the exact text
+ * that would have been sent.
  */
-
-/** Which dealer this page belongs to. Single-tenant until a second page exists. */
-const dealerIdForPage = () => process.env.FACEBOOK_DEALER_ID || DEFAULT_DEALER_ID;
 
 export async function GET(req: NextRequest) {
   const challenge = verifySubscription(new URL(req.url).searchParams);
@@ -68,14 +69,18 @@ export async function POST(req: NextRequest) {
   if (!messages.length) return NextResponse.json({ ok: true });
 
   try {
-    const dealer = await getDealer(dealerIdForPage());
-    if (!dealer) {
-      console.error(`[facebook] unknown dealer "${dealerIdForPage()}" — cannot answer`);
-      return NextResponse.json({ ok: true });
-    }
-
     for (const msg of messages) {
-      const result = await handleInboundMessage(dealer, {
+      // Whose page is this? No match means nobody has connected it, and
+      // answering with some other dealer's pricing would be worse than silence.
+      const target = await dealerForPage(msg.pageId);
+      if (!target) {
+        console.warn(
+          `[facebook] page ${msg.pageId} is not connected to any dealer — ignoring`,
+        );
+        continue;
+      }
+
+      const result = await handleInboundMessage(target.dealer, {
         channel: 'facebook',
         // Page-scoped and stable per user per page, so it keys the conversation
         // without storing anything identifying.
@@ -84,11 +89,14 @@ export async function POST(req: NextRequest) {
       });
 
       console.log(
-        `[facebook] ${msg.senderId} -> ${result.kind}` +
-          (autoReplyEnabled() ? '' : ' (auto-reply off)'),
+        `[facebook] ${target.dealer.id} <- ${msg.senderId}: ${result.kind}`,
       );
 
-      await sendFacebookReply(msg.senderId, result.reply);
+      await sendFacebookReply(msg.senderId, result.reply, {
+        pageToken: target.pageToken,
+        dealerAutoReply: target.autoReply,
+        dealerId: target.dealer.id,
+      });
     }
   } catch (err) {
     // Never surface detail, and never fail the webhook: Meta retries a non-200,

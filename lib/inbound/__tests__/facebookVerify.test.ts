@@ -6,7 +6,7 @@ import {
   extractMessages,
   getAppSecret,
 } from '../facebookVerify';
-import { splitForMessenger, autoReplyEnabled } from '../facebookSend';
+import { splitForMessenger, repliesGloballyEnabled } from '../facebookSend';
 
 /**
  * The webhook URL is public and protected only by being hard to guess. Without
@@ -211,22 +211,25 @@ describe('splitting a long reply for Messenger', () => {
   });
 });
 
-describe('replies are off unless deliberately enabled', () => {
+describe('the global mute switch', () => {
   afterEach(() => { delete process.env.FACEBOOK_AUTO_REPLY; });
 
-  it('is off when unset — the safe default', () => {
-    expect(autoReplyEnabled()).toBe(false);
+  it('defaults to ENABLED, because per-dealer auto_reply is the real gate', () => {
+    // A new dealer starts with auto_reply=false, so nothing speaks until the
+    // dealer is switched on. Making this default off too would mean every
+    // dealer needs a deploy before they can ever answer.
+    expect(repliesGloballyEnabled()).toBe(true);
   });
 
-  it.each(['off', 'false', '0', 'yes', 'true', 'ON '])('is off for %s', v => {
-    // Only the exact opt-in counts; anything else must not start talking to
-    // customers by accident.
+  it('mutes the whole platform for exactly "off"', () => {
+    process.env.FACEBOOK_AUTO_REPLY = 'off';
+    expect(repliesGloballyEnabled()).toBe(false);
+    process.env.FACEBOOK_AUTO_REPLY = ' OFF ';
+    expect(repliesGloballyEnabled()).toBe(false);
+  });
+
+  it.each(['on', 'true', 'yes', '1', ''])('stays enabled for %s', v => {
     process.env.FACEBOOK_AUTO_REPLY = v;
-    expect(autoReplyEnabled()).toBe(v.trim().toLowerCase() === 'on');
-  });
-
-  it('is on only for "on"', () => {
-    process.env.FACEBOOK_AUTO_REPLY = 'on';
-    expect(autoReplyEnabled()).toBe(true);
+    expect(repliesGloballyEnabled()).toBe(true);
   });
 });

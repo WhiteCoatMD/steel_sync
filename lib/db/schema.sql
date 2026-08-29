@@ -62,3 +62,21 @@ CREATE INDEX IF NOT EXISTS conversations_dealer_updated_idx
 -- edit any field without a migration, and so a dealer with nothing set still
 -- renders — lib/site/siteContent.ts fills every gap from the dealer's own name.
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS site JSONB NOT NULL DEFAULT '{}'::jsonb;
+
+-- Per-dealer messaging setup.
+--
+-- The webhook used a single FACEBOOK_DEALER_ID env var, which hard-wires the
+-- whole platform to one dealer. Meta delivers the PAGE id on every event, so
+-- the dealer can be resolved from the payload instead — which is what lets a
+-- new dealer be messaging-ready the moment they are created.
+--
+-- facebook_page_token is a CREDENTIAL. It is stored encrypted (see
+-- lib/admin/secretBox.ts. The column holds ciphertext, never a usable token.
+-- UNIQUE on page id so two dealers cannot claim the same page and race for
+-- whose pricing answers a customer.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS facebook_page_id TEXT;
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS facebook_page_token TEXT;
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS auto_reply BOOLEAN NOT NULL DEFAULT false;
+
+CREATE UNIQUE INDEX IF NOT EXISTS dealers_facebook_page_idx
+  ON dealers (facebook_page_id) WHERE facebook_page_id IS NOT NULL;
