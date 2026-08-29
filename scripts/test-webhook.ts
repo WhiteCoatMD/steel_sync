@@ -1,4 +1,5 @@
 import { createHmac } from 'node:crypto';
+import { getSql } from '../lib/db';
 
 /**
  * Send a correctly-signed, realistic Messenger webhook to our own endpoint.
@@ -22,9 +23,30 @@ import { createHmac } from 'node:crypto';
 const TARGET =
   process.env.WEBHOOK_URL || 'https://steel-sync.vercel.app/api/webhooks/facebook';
 
+/**
+ * The page id, without making the caller pass it every time.
+ *
+ * Prefers PAGE_ID, then whichever dealer already has a page connected. Setting
+ * an environment variable inline is bash syntax that does not work in
+ * PowerShell, so the fewer values a command needs, the fewer ways it breaks.
+ */
+async function resolvePageId(): Promise<string | null> {
+  const fromEnv = (process.env.PAGE_ID ?? '').trim();
+  if (fromEnv) return fromEnv;
+  try {
+    const rows = (await getSql()`
+      SELECT facebook_page_id FROM dealers
+       WHERE facebook_page_id IS NOT NULL AND active = true LIMIT 1
+    `) as any[];
+    return rows.length ? String(rows[0].facebook_page_id) : null;
+  } catch {
+    return null;
+  }
+}
+
 async function main() {
   const secret = process.env.FACEBOOK_APP_SECRET;
-  const pageId = process.env.PAGE_ID;
+  const pageId = await resolvePageId();
   const text = process.argv.slice(2).join(' ').trim();
 
   if (!secret) {
