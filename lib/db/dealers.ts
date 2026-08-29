@@ -165,7 +165,7 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
  * Facebook webhook and the website form both looked it up, got null, and gave
  * up silently without ever replying.
  */
-export const DEFAULT_DEALER_ID = (process.env.DEFAULT_DEALER_ID ?? 'tejasmex')
+export const DEFAULT_DEALER_ID = (process.env.DEFAULT_DEALER_ID ?? 'dunrite')
   .trim()
   .toLowerCase();
 
