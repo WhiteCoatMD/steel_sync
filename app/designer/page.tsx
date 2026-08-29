@@ -1,8 +1,7 @@
 import BuildingDesignerLoader from '@/components/designer/BuildingDesignerLoader';
-import { getDealer } from '@/lib/db/dealers';
+import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
 
 /** Spec §3.3: an unknown slug falls back to the default dealer, never to none. */
-const DEFAULT_DEALER_ID = 'tejasmex';
 
 export default async function DesignerPage({
   searchParams,

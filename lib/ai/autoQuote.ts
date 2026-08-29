@@ -5,6 +5,7 @@ import type {
   BuildingType,
 } from '../building/types';
 import { createDefaultConfig } from '../building/defaultConfig';
+import { DEFAULT_DEALER_ID } from '../db/dealers';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
 import { clarifyingQuestions, isAutoQuotable, sanitizeBuilding } from './quoteReadiness';
@@ -68,7 +69,7 @@ export interface AutoQuoteOptions {
 }
 
 /** Folds an AI parse into a real BuildingConfig the engine can price. */
-export function configFromAI(ai: AutoQuoteInput, dealerId = 'dealer_columbia'): BuildingConfig {
+export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEALER_ID): BuildingConfig {
   const c = createDefaultConfig(dealerId);
 
   // sanitizeBuilding keeps an omitted field from blanking a good default.

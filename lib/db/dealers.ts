@@ -157,6 +157,18 @@ export function mergePricingRules(dbValue: unknown): DealerPricingRules & { _pla
  * Per-dealer colour palettes and building-type restrictions are a dealer-admin
  * feature and are not stored yet; every dealer gets the standard set.
  */
+/**
+ * The dealer used when a request does not name one.
+ *
+ * MUST be a row that actually exists. This was `dealer_columbia` — a fixture id
+ * from the tests — in three production paths, and there is no such row: the
+ * Facebook webhook and the website form both looked it up, got null, and gave
+ * up silently without ever replying.
+ */
+export const DEFAULT_DEALER_ID = (process.env.DEFAULT_DEALER_ID ?? 'tejasmex')
+  .trim()
+  .toLowerCase();
+
 export async function getDealer(id: string): Promise<DealerSettings | null> {
   const sql = getSql();
   const rows = await sql`

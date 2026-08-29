@@ -6,7 +6,7 @@ import {
 } from '@/lib/inbound/facebookVerify';
 import { sendFacebookReply, autoReplyEnabled } from '@/lib/inbound/facebookSend';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
-import { getDealer } from '@/lib/db/dealers';
+import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
 
 /**
  * Facebook Messenger webhook.
@@ -21,7 +21,7 @@ import { getDealer } from '@/lib/db/dealers';
  */
 
 /** Which dealer this page belongs to. Single-tenant until a second page exists. */
-const dealerIdForPage = () => process.env.FACEBOOK_DEALER_ID || 'dealer_columbia';
+const dealerIdForPage = () => process.env.FACEBOOK_DEALER_ID || DEFAULT_DEALER_ID;
 
 export async function GET(req: NextRequest) {
   const challenge = verifySubscription(new URL(req.url).searchParams);

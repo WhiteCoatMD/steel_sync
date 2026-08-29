@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const getDealer = vi.fn();
-vi.mock('@/lib/db/dealers', () => ({ getDealer }));
+// DEFAULT_DEALER_ID moved into this module so the designer, the website form
+// and the Facebook webhook all fall back to the SAME dealer. The tests assert
+// against 'tejasmex', so the mock pins that value rather than reading the env.
+vi.mock('@/lib/db/dealers', () => ({ getDealer, DEFAULT_DEALER_ID: 'tejasmex' }));
 
 // The loader pulls in next/dynamic and the three.js designer; the page's own
 // behaviour is entirely in which props it hands over, so a stub is enough.

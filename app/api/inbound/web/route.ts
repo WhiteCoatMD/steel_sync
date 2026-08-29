@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
-import { getDealer } from '@/lib/db/dealers';
+import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
 import { PROMPT_MAX_LENGTH } from '@/lib/ai/parseRequest';
 
 /**
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const dealerId = typeof body?.dealerId === 'string' ? body.dealerId : 'dealer_columbia';
+  const dealerId = typeof body?.dealerId === 'string' ? body.dealerId : DEFAULT_DEALER_ID;
 
   /**
    * Identifies the browser across turns so a follow-up answer lands in the same
