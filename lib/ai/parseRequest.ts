@@ -47,7 +47,8 @@ export const SYSTEM_PROMPT = `You are a metal building configurator assistant. P
     "widthFt": number (12-60),
     "lengthFt": number (20-100),
     "legHeightFt": number (6-16),
-    "roofStyle": "regular" | "aframe" | "vertical"
+    "roofStyle": "regular" | "aframe" | "vertical",
+    "engineered": boolean (ONLY true if they ask for it - see below)
   },
   "openings": [
     {
@@ -76,6 +77,11 @@ Rules:
 - "open" or "carport" = carport type
 - Default wall is "front" for roll-up doors, distribute windows evenly on side walls
 - Space openings sensibly (don't overlap, center single doors on walls)
+- Set "engineered": true ONLY when the customer asks for an engineer-certified
+  or stamped building - "certified", "engineered", "engineer stamped", "wind
+  rated", "needs to pass permit/inspection", "for a permit". A standard quote
+  is NOT certified, so omit the field otherwise. Never set it because a
+  building merely sounds large or official.
 - If no roof style mentioned, put "vertical" in the building as a placeholder
   but do NOT list roofStyle in "stated" - it changes the price by hundreds of
   dollars, so it is asked rather than assumed

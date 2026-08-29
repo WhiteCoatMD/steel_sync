@@ -103,7 +103,16 @@ const DEFAULT_OPTIONS: BuildingOptions = {
 
 const DEFAULT_CERTIFICATIONS: Certifications = {
   windSpeedMph: 140,
+  // The manufacturer prices certification from its own table, so this figure is
+  // descriptive here rather than a price input. Left at 20 because the LEGACY
+  // per-psf path does charge on it, and moving it would silently reprice any
+  // dealer without a captured manufacturer file.
   snowLoadPsf: 20,
+  // NOT certified by default (owner, 2026-08-29). The vendor's own designer
+  // ships it ON -- a 24x30x10 there quotes $4,816 against our $4,411, the $405
+  // difference being exactly the cert line -- but Dunrite's standard quote does
+  // not include it. It is added only when the customer asks for it, which
+  // `engineered` in the parse carries through.
   engineered: false,
 };
 

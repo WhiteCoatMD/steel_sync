@@ -110,6 +110,14 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
     c.building.lengthFt = normalizeLengthFt(c.building.lengthFt);
   }
 
+  // Engineer certification is OFF on a standard quote and added only when the
+  // customer asks (owner, 2026-08-29). It lives under `certifications`, which
+  // is where the manufacturer adapter reads it -- setting it on `building`
+  // alone parses fine and silently changes no price.
+  if ((sanitizeBuilding(ai.building) as Record<string, unknown>).engineered === true) {
+    c.certifications = { ...c.certifications, engineered: true };
+  }
+
   // Lean-tos are never inferred from a message: the manufacturer sells them as
   // their own building styles, so one would only make the quote unpriceable.
   c.leanTos = [];
