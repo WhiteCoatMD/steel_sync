@@ -8,6 +8,7 @@ import { createDefaultConfig } from '../building/defaultConfig';
 import { DEFAULT_DEALER_ID } from '../db/dealers';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
+import { normalizeLengthFt, normalizeWidthFt } from '../pricing/dimensions';
 import { clarifyingQuestions, isAutoQuotable, sanitizeBuilding } from './quoteReadiness';
 
 /**
@@ -80,6 +81,18 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
 
   // sanitizeBuilding keeps an omitted field from blanking a good default.
   c.building = { ...c.building, ...sanitizeBuilding(ai.building) } as typeof c.building;
+
+  // Snap to a size that is actually built, using the SAME rules the engine
+  // prices with. Doing it here as well is what keeps the reply honest: the
+  // customer is told the 20ft carport they are being quoted, not the 18ft one
+  // they asked for. A description that disagrees with the price is how someone
+  // ends up expecting a building we never sold them.
+  if (typeof c.building.widthFt === 'number') {
+    c.building.widthFt = normalizeWidthFt(c.building.widthFt);
+  }
+  if (typeof c.building.lengthFt === 'number') {
+    c.building.lengthFt = normalizeLengthFt(c.building.lengthFt);
+  }
 
   // Lean-tos are never inferred from a message: the manufacturer sells them as
   // their own building styles, so one would only make the quote unpriceable.

@@ -80,6 +80,13 @@ Rules:
 - If no colors mentioned, omit the colors field
 - Return ONLY the JSON object, no explanation
 
+Report the customer's OWN numbers. The ranges above describe what we are able
+to price; they are NOT limits to squeeze an answer into. If someone asks for an
+18ft length, return 18 — do not round it to 20, and do not clamp it into range.
+Something we cannot price is caught downstream and handed to a person, which is
+correct. Quietly substituting a size the customer never asked for is not: they
+would get a confident price for a different building.
+
 ALSO return a "stated" array listing ONLY the fields the customer actually told
 you. This drives whether we can quote automatically or have to ask them first,
 so it must reflect what they WROTE, not what you inferred.
@@ -96,6 +103,11 @@ Include a field name only if the customer's own words determine it:
   need, not a dimension.
 When the customer is answering a follow-up question, treat their answer as
 stated — the conversation so far is given to you as one message.
+A field the customer stated stays in "stated" even when the value cannot be
+priced. "18 foot long" states lengthFt. Whether we sell that length is a
+separate question, decided later — do not answer it by pretending they never
+said it, which would make us ask "how long?" of someone who just told us.
+
 When in doubt, leave the field OUT of "stated". Asking one extra question costs
 far less than sending a confident wrong price.`;
 

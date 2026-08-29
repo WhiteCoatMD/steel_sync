@@ -20,6 +20,7 @@ import type {
   PriceCategory,
   QuoteLine,
 } from './types';
+import { normalizeLengthFt, normalizeWidthFt } from '../dimensions';
 
 export interface ManufacturerQuoteInput {
   widthFt: number;
@@ -168,7 +169,7 @@ export function quoteFromTable(
 ): ManufacturerQuote {
   const {
     widthFt: requestedWidthFt,
-    lengthFt,
+    lengthFt: requestedLengthFt,
     legHeightFt,
     roofStyle,
     surface,
@@ -190,7 +191,14 @@ export function quoteFromTable(
   // leg-height row. It still returned a non-zero total (4104) alongside the
   // unpriceable flags, which is the worst possible shape for a money bug.
   // Normalising here fixes it once for every lookup: base, legs, cert and walls.
-  const widthFt = requestedWidthFt % 2 === 0 ? requestedWidthFt : requestedWidthFt + 1;
+  const widthFt = normalizeWidthFt(requestedWidthFt);
+
+  // 20ft is the shortest building made, so a shorter request is priced as a 20
+  // rather than refused (owner, 2026-08-29). Without this a "12x18 carport" -
+  // someone asking for the smallest carport we sell - found no base row and came
+  // back unpriceable, sending a ready-to-buy customer to a human for no reason.
+  // The reply describes the 20 it priced, never the 18 they typed.
+  const lengthFt = normalizeLengthFt(requestedLengthFt);
 
   const lines: QuoteLine[] = [];
   const unpriceable: string[] = [];

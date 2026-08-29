@@ -80,6 +80,28 @@ describe('a fully stated, priceable request gets a number', () => {
     expect(out.message).not.toMatch(/rent-to-own/i);
   });
 
+  it('quotes a too-short building at the 20ft minimum, and says so', () => {
+    // A real customer asked for a 12x18x7 carport. 20ft is the shortest we
+    // build, so it prices as a 20 -- and the reply has to DESCRIBE the 20, or
+    // they are expecting a building we never sold them.
+    const short = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 12, lengthFt: 18, legHeightFt: 7 }),
+      RULES,
+    );
+    if (short.kind !== 'quote') throw new Error(`expected a quote, got ${short.kind}`);
+    expect(short.config.building.lengthFt).toBe(20);
+    expect(short.message).toContain("12' x 20' x 7'");
+    expect(short.message).not.toContain("18'");
+
+    // And it costs exactly what asking for a 20 outright costs.
+    const exact = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 12, lengthFt: 20, legHeightFt: 7 }),
+      RULES,
+    );
+    if (exact.kind !== 'quote') throw new Error('expected a quote');
+    expect(short.pricing.total).toBe(exact.pricing.total);
+  });
+
   it('appends a sign-off when given one', () => {
     const withSignOff = decideAutoQuote(
       ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
