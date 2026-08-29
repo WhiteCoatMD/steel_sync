@@ -66,6 +66,12 @@ export interface AutoQuoteOptions {
   dealerId?: string;
   /** Appended to a quote reply, e.g. "Reply here or call (318) 249-8172." */
   signOff?: string;
+  /**
+   * Mention rent-to-own on a quote. We hold no RTO pricing, so this only ever
+   * says the option EXISTS and that a person will explain it — it must never
+   * imply a monthly figure we cannot stand behind.
+   */
+  offersRto?: boolean;
 }
 
 /** Folds an AI parse into a real BuildingConfig the engine can price. */
@@ -150,9 +156,17 @@ export function decideAutoQuote(
   const b = config.building;
   const deposit =
     pricing.depositDue != null && pricing.depositPercent != null
-      ? `\n${money(pricing.depositDue)} due today (${pricing.depositPercent}%), ` +
-        `${money(pricing.balanceDue ?? 0)} on delivery.`
+      ? `\n${money(pricing.depositDue)} down, ${money(pricing.balanceDue ?? 0)} ` +
+        `due at installation.`
       : '';
+
+  // Deliberately carries NO numbers. We hold no rent-to-own pricing, and a
+  // monthly figure the dealer never agreed to would be worse than not
+  // mentioning the option at all.
+  const rto = opts.offersRto
+    ? `\n\nPrefer to spread it out? We offer rent-to-own too — say the word and ` +
+      `we'll go through the terms with you.`
+    : '';
 
   return {
     kind: 'quote',
@@ -160,6 +174,7 @@ export function decideAutoQuote(
     pricing,
     message:
       `${describe(b)}: ${money(pricing.total)}.${deposit}` +
+      rto +
       `\n\nThat includes ${pricing.lineItems.length} line items — happy to send the ` +
       `full breakdown or adjust anything.` +
       signOff,

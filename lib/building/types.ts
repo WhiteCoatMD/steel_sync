@@ -233,6 +233,12 @@ export interface DealerSettings {
   colorPalette: ColorOption[];
   availableBuildingTypes: BuildingType[];
   pricing: DealerPricingRules;
+  /**
+   * Whether this dealer offers rent-to-own. We hold no RTO pricing, so a quote
+   * only ever MENTIONS the option and hands off to a human — promising terms a
+   * dealer does not offer is worse than staying quiet.
+   */
+  offersRto?: boolean;
 }
 
 // ─── Pricing Rules ──────────────────────────────────────────

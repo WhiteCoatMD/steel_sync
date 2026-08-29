@@ -2,6 +2,11 @@ import type { DealerSettings } from '../building/types';
 import { parseBuildingRequest, ParseRequestError, PROMPT_MAX_LENGTH } from '../ai/parseRequest';
 import { decideAutoQuote, combineForReparse, type AutoQuoteOutcome } from '../ai/autoQuote';
 import {
+  looksLikeFinancingQuestion,
+  mentionsDimensions,
+  financingReply,
+} from '../ai/financingIntent';
+import {
   findOrCreateConversation,
   recordTurn,
   resetConversation,
@@ -66,6 +71,22 @@ export async function handleInboundMessage(
     };
   }
 
+  // A question about PAYING, with no building in it, must not go to the parser.
+  // Mentioning rent-to-own in a quote invites exactly that reply — "yes, tell me
+  // about rent to own" — and parsing it as a building description would find no
+  // dimensions and ask how wide they want it, at the precise moment the customer
+  // showed buying intent. We hold no RTO pricing, so a human takes it.
+  if (dealer.offersRto && looksLikeFinancingQuestion(text) && !mentionsDimensions(text)) {
+    const transcriptSoFar = [...conv.transcript, text];
+    await recordTurn(conv.id, transcriptSoFar, 'financing');
+    return {
+      kind: 'handoff',
+      reply: financingReply(dealer.name, dealer.phone || undefined),
+      conversationId: conv.id,
+      quoted: false,
+    };
+  }
+
   // The customer's turns only. Our own questions are never fed back in: the
   // model would read our suggestion as something they stated.
   const transcript = [...conv.transcript, text];
@@ -97,12 +118,31 @@ export async function handleInboundMessage(
     return { kind: 'error', reply: ERROR_REPLY, conversationId: conv.id, quoted: false };
   }
 
+  // They already asked, so the generic "we also offer rent-to-own" invitation
+  // would be telling them something they just brought up. Suppress it and
+  // answer directly instead.
+  const askedAboutFinancing = dealer.offersRto === true && looksLikeFinancingQuestion(text);
+
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
     signOff: signOffFor(dealer),
+    offersRto: dealer.offersRto === true && !askedAboutFinancing,
   });
 
-  await recordTurn(conv.id, transcript, outcome.kind);
+  // "24x30 garage, can I do monthly payments?" states a whole building AND asks
+  // about money. It deserves the price — but answering only the half we can
+  // compute, and ignoring the question they actually asked, reads as not
+  // listening.
+  const reply =
+    askedAboutFinancing && outcome.kind === 'quote'
+      ? `${outcome.message}
+
+On paying monthly: ${lowerFirst(
+          financingReply(dealer.name, dealer.phone || undefined),
+        )}`
+      : outcome.message;
+
+  await recordTurn(conv.id, transcript, askedAboutFinancing ? `${outcome.kind}+financing` : outcome.kind);
 
   // A quoted thread is finished. Without this the customer's next question
   // ("what about a 30x40?") gets re-parsed together with the building they
@@ -111,11 +151,16 @@ export async function handleInboundMessage(
 
   return {
     kind: outcome.kind,
-    reply: outcome.message,
+    reply,
     conversationId: conv.id,
     outcome,
     quoted: outcome.kind === 'quote',
   };
+}
+
+/** Joins a sentence onto a lead-in without a capital letter mid-sentence. */
+function lowerFirst(s: string): string {
+  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
 }
 
 function signOffFor(dealer: DealerSettings): string | undefined {

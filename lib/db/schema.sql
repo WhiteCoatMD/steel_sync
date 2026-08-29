@@ -80,3 +80,9 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS auto_reply BOOLEAN NOT NULL DEFAULT
 
 CREATE UNIQUE INDEX IF NOT EXISTS dealers_facebook_page_idx
   ON dealers (facebook_page_id) WHERE facebook_page_id IS NOT NULL;
+
+-- Whether this dealer offers rent-to-own.
+-- We do NOT hold RTO pricing, so a quote only ever MENTIONS the option and
+-- hands the customer to a human. Per dealer because not every dealer offers it,
+-- and promising terms a dealer does not have is worse than staying quiet.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS offers_rto BOOLEAN NOT NULL DEFAULT false;

@@ -57,7 +57,27 @@ describe('a fully stated, priceable request gets a number', () => {
   it('carries the deposit split the dealer schedule defines', () => {
     if (out.kind !== 'quote') throw new Error('expected a quote');
     expect(out.message).toContain('$620'); // 18% of 3445, rounded for display
-    expect(out.message).toMatch(/due today/i);
+    // The balance is payable at installation, not on delivery: the customer
+    // pays the deposit up front and settles the rest when the crew is done.
+    expect(out.message).toMatch(/down/i);
+    expect(out.message).toMatch(/due at installation/i);
+  });
+
+  it('offers rent-to-own without ever implying a monthly figure', () => {
+    const withRto = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
+      RULES,
+      { offersRto: true },
+    );
+    expect(withRto.message).toMatch(/rent-to-own/i);
+    // We hold no RTO pricing. The only number in this reply is the cash price,
+    // so a payment the dealer never agreed to cannot leave the building.
+    expect(withRto.message).not.toMatch(/per month|\/mo|monthly payment of/i);
+  });
+
+  it('stays silent about rent-to-own for a dealer that does not offer it', () => {
+    if (out.kind !== 'quote') throw new Error('expected a quote');
+    expect(out.message).not.toMatch(/rent-to-own/i);
   });
 
   it('appends a sign-off when given one', () => {

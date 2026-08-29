@@ -172,7 +172,8 @@ export const DEFAULT_DEALER_ID = (process.env.DEFAULT_DEALER_ID ?? 'dunrite')
 export async function getDealer(id: string): Promise<DealerSettings | null> {
   const sql = getSql();
   const rows = await sql`
-    SELECT id, name, phone, email, website, theme, pricing_rules, show_pricing
+    SELECT id, name, phone, email, website, theme, pricing_rules, show_pricing,
+           site, offers_rto
     FROM dealers WHERE id = ${id} AND active = true LIMIT 1
   ` as any[];
   if (rows.length === 0) return null;
@@ -188,5 +189,7 @@ export async function getDealer(id: string): Promise<DealerSettings | null> {
     colorPalette: STANDARD_COLORS,
     availableBuildingTypes: ALL_BUILDING_TYPES,
     pricing: mergePricingRules(r.pricing_rules),
-  };
+    offersRto: r.offers_rto === true,
+    ...(r.site ? { site: r.site } : {}),
+  } as DealerSettings;
 }
