@@ -21,20 +21,51 @@ vi.mock('../../ai/parseRequest', async () => {
 });
 
 // In-memory stand-in for the conversations table.
-const store = new Map<string, { transcript: string[]; lastOutcome: string | null }>();
+const store = new Map<
+  string,
+  {
+    transcript: string[];
+    lastOutcome: string | null;
+    wantsFinancing?: boolean;
+    pendingProposal?: unknown;
+  }
+>();
+
+/** The row as it would exist, so a partial update never drops a field. */
+const at = (id: string) => store.get(id) ?? { transcript: [], lastOutcome: null };
 vi.mock('../conversation', () => ({
   MAX_TRANSCRIPT_TURNS: 12,
   findOrCreateConversation: async (_d: string, channel: string, externalId: string) => {
     const id = `conv_${channel}_${externalId}`;
     if (!store.has(id)) store.set(id, { transcript: [], lastOutcome: null });
     const s = store.get(id)!;
-    return { id, dealerId: _d, channel, externalId, transcript: s.transcript, lastOutcome: s.lastOutcome, contact: {} };
+    return {
+      id,
+      dealerId: _d,
+      channel,
+      externalId,
+      transcript: s.transcript,
+      lastOutcome: s.lastOutcome,
+      contact: {},
+      wantsFinancing: s.wantsFinancing === true,
+      // What we last offered them. Kept in the store because "that's fine"
+      // means nothing without it.
+      pendingProposal: s.pendingProposal ?? null,
+    };
   },
   recordTurn: async (id: string, transcript: string[], outcome: string) => {
-    store.set(id, { transcript, lastOutcome: outcome });
+    const prev = at(id);
+    store.set(id, { ...prev, transcript, lastOutcome: outcome });
   },
   resetConversation: async (id: string) => {
-    store.set(id, { transcript: [], lastOutcome: null });
+    const prev = at(id);
+    store.set(id, { ...prev, transcript: [], lastOutcome: prev.lastOutcome ?? null });
+  },
+  setWantsFinancing: async (id: string, wants: boolean) => {
+    store.set(id, { ...at(id), wantsFinancing: wants });
+  },
+  setPendingProposal: async (id: string, proposal: unknown) => {
+    store.set(id, { ...at(id), pendingProposal: proposal });
   },
 }));
 
@@ -85,6 +116,7 @@ const parsed = (
     needsExtraHeight: false,
     isRvUse: false,
     mentionedDoors: true,
+    acceptsSuggestion: false,
   },
 });
 
@@ -221,5 +253,69 @@ describe('failures stay quiet to the customer and keep the turn', () => {
     const r = await send('   ');
     expect(r.kind).toBe('error');
     expect(parseMock).not.toHaveBeenCalled(); // no paid call on an empty message
+  });
+});
+
+describe('accepting a suggestion we made', () => {
+  /**
+   * From a real thread: "24x30x10 vertical garage" -> "What doors do you
+   * need? Most garages get one 10x10 roll-up and a walk-in door" -> "thats
+   * fine" -> the same question again.
+   *
+   * Only the customer's turns are re-parsed, deliberately, so an acceptance
+   * arrives carrying nothing at all. The proposal has to be remembered on our
+   * side (owner, 2026-08-29).
+   */
+  const accepting = (building: Record<string, unknown>, stated: string[]) => ({
+    ...parsed(building, stated),
+    openings: [],
+    intents: {
+      asksFinancing: false,
+      asksRoofComparison: false,
+      asksWhatSize: false,
+      needsExtraHeight: false,
+      isRvUse: false,
+      mentionedDoors: false,
+      acceptsSuggestion: true,
+    },
+  });
+
+  it('applies the door package it offered when the customer says yes', async () => {
+    // Turn 1: an enclosed building with no doors -- we offer the standard set.
+    parseMock.mockResolvedValueOnce({
+      ...parsed({ type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 }, ALL),
+      openings: [],
+      intents: {
+        asksFinancing: false,
+        asksRoofComparison: false,
+        asksWhatSize: false,
+        needsExtraHeight: false,
+        isRvUse: false,
+        mentionedDoors: false,
+        acceptsSuggestion: false,
+      },
+    });
+    const first = await send('24x30x10 vertical garage');
+    expect(first.kind).toBe('clarify');
+    expect(first.reply).toMatch(/doors/i);
+
+    // Turn 2: "thats fine" carries no doors of its own.
+    parseMock.mockResolvedValueOnce(
+      accepting({ type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 }, ALL),
+    );
+    const second = await send('thats fine');
+    expect(second.kind).toBe('quote');
+    expect(second.quoted).toBe(true);
+  });
+
+  it('does not invent doors when nothing was offered', async () => {
+    // An acceptance with no proposal behind it must not conjure a door
+    // package out of nowhere.
+    parseMock.mockResolvedValueOnce(
+      accepting({ type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 }, ALL),
+    );
+    const r = await send('thats fine');
+    expect(r.kind).toBe('clarify');
+    expect(r.reply).toMatch(/doors/i);
   });
 });

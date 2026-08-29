@@ -27,6 +27,7 @@ import {
   findOrCreateConversation,
   recordTurn,
   setWantsFinancing,
+  setPendingProposal,
   resetConversation,
   type InboundChannel,
 } from './conversation';
@@ -247,6 +248,35 @@ export async function handleInboundMessage(
   // 2026-08-29). Open buildings genuinely have none, and "no doors" is an
   // answer, which is why this asks about MENTIONING doors rather than about
   // the openings list being empty.
+  // What the doors question literally offers. Named here so the question and
+  // the thing "that's fine" applies are the same object.
+  const STANDARD_DOORS = [
+    { type: 'rollup', widthFt: 10, heightFt: 10, wall: 'front', positionFt: 7 },
+    { type: 'walkin', widthFt: 3, heightFt: 7, wall: 'front', positionFt: 19 },
+  ];
+
+  // They are agreeing to what we last suggested. Their own words carry none of
+  // it -- only their turns are re-parsed -- so the proposal is merged back in
+  // (owner, 2026-08-29).
+  if (
+    (intents ? intents.acceptsSuggestion : false) &&
+    conv.pendingProposal &&
+    !(parsed.openings ?? []).length
+  ) {
+    const prop = conv.pendingProposal;
+    if (prop.building) {
+      parsed.building = { ...prop.building, ...parsed.building };
+    }
+    if (prop.openings?.length) parsed.openings = prop.openings;
+    if (prop.stated?.length) {
+      const merged = new Set([...(parsed.stated ?? []), ...prop.stated]);
+      parsed.stated = [...merged] as typeof parsed.stated;
+      parsed.missing = REQUIRED_FOR_QUOTE.filter(f => !merged.has(f));
+      parsed.autoQuotable = parsed.missing.length === 0;
+    }
+    await setPendingProposal(conv.id, null);
+  }
+
   const buildingType = (parsed.building as Record<string, unknown> | undefined)?.type;
   const doorCount = (parsed.openings ?? []).filter(
     o => o?.type === 'rollup' || o?.type === 'walkin',
@@ -472,6 +502,24 @@ On paying monthly: ${lowerFirst(
     : askedAboutFinancing
       ? `${outcome.kind}+financing`
       : outcome.kind;
+  // Remember what we just offered, so their next "that's fine" has something
+  // to apply. Cleared on anything else, so a stale proposal cannot be pulled
+  // back three questions later.
+  // Must follow the same precedence the REPLY did. A sizing question about a
+  // garage also has no doors yet, so checking doors first stored a door package
+  // while the customer was looking at a suggested SIZE -- and "yes thats good"
+  // then applied the wrong thing.
+  let proposed: Parameters<typeof setPendingProposal>[1] = null;
+  if (sizingSuggestion) {
+    proposed = {
+      building: (parsed.building ?? {}) as Record<string, unknown>,
+      stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
+    };
+  } else if (needsDoors && !refusedDoors) {
+    proposed = { openings: STANDARD_DOORS };
+  }
+  if (proposed || conv.pendingProposal) await setPendingProposal(conv.id, proposed);
+
   await recordTurn(conv.id, transcript, recorded, quoteId);
 
   // A quoted thread is finished. Without this the customer's next question

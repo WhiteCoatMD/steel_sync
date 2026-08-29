@@ -94,3 +94,12 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS offers_rto BOOLEAN NOT NULL DEFAULT
 -- an actual quote, so they call back knowing the size AND the price instead of
 -- only that somebody, somewhere, asked about financing (owner, 2026-08-29).
 ALTER TABLE conversations ADD COLUMN IF NOT EXISTS wants_financing BOOLEAN NOT NULL DEFAULT false;
+
+-- What we last PROPOSED to this customer, so "that's fine" means something.
+--
+-- Only the customer's own turns are re-parsed, deliberately: feeding our
+-- questions back lets the model read our suggestion as something they stated.
+-- But when they ACCEPT a suggestion, it becomes exactly that -- and without
+-- this the bot asked "what doors do you need?", was told "thats fine", and
+-- asked again (owner, 2026-08-29).
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS pending_proposal JSONB;

@@ -146,7 +146,8 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "asksWhatSize": false,
     "needsExtraHeight": false,
     "isRvUse": false,
-    "mentionedDoors": false
+    "mentionedDoors": false,
+    "acceptsSuggestion": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -164,6 +165,11 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   extra height or clearance.
 - isRvUse: that tall thing is specifically an RV, motorhome, camper, fifth
   wheel or travel trailer.
+- acceptsSuggestion: their LATEST message is agreement with something that was
+  suggested to them, and adds no new detail of its own. "that's fine", "yeah",
+  "sounds good", "that works", "ok do that", "perfect", "sure". A message that
+  states something concrete - "make it 30 wide", "two roll ups" - is NOT this,
+  even if it also sounds agreeable.
 - mentionedDoors: they have said something about doors ANYWHERE in the
   conversation - which ones they want, or that they want none. "one 10x10 and
   a walk in", "two roll ups", "no doors", "just leave the ends open" are all
@@ -205,6 +211,15 @@ export interface RequestIntents {
    * answer and an empty list is not.
    */
   mentionedDoors: boolean;
+  /**
+   * They are AGREEING to something we just suggested -- "that's fine", "yeah
+   * do that", "sounds good" -- rather than describing a building.
+   *
+   * Only their own turns are re-parsed, so an acceptance arrives with no
+   * content at all. Without spotting it, the bot asks "what doors do you
+   * need?", is told "thats fine", and asks again.
+   */
+  acceptsSuggestion: boolean;
 }
 
 export interface ParsedRequest {
@@ -321,6 +336,7 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'needsExtraHeight',
     'isRvUse',
     'mentionedDoors',
+    'acceptsSuggestion',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.

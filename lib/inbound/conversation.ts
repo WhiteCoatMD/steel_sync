@@ -28,6 +28,20 @@ export interface Conversation {
    * turns so the dealer can be told once there is an actual quote to hand them.
    */
   wantsFinancing: boolean;
+  /**
+   * What we last suggested to them — a size, a door package — so that "that's
+   * fine" can be acted on. Cleared once applied or once they say something
+   * else concrete.
+   */
+  pendingProposal: PendingProposal | null;
+}
+
+/** A suggestion we made, in the shape the parser would have produced. */
+export interface PendingProposal {
+  building?: Record<string, unknown>;
+  openings?: Array<Record<string, unknown>>;
+  /** Which required fields the proposal would satisfy. */
+  stated?: string[];
 }
 
 /** How many turns back we keep. Long enough for a real clarification exchange. */
@@ -54,7 +68,7 @@ export async function findOrCreateConversation(
     ON CONFLICT (channel, external_id) DO UPDATE
       SET updated_at = now()
     RETURNING id, dealer_id, channel, external_id, transcript, last_outcome, contact,
-              wants_financing
+              wants_financing, pending_proposal
   `) as Array<Record<string, unknown>>;
 
   const r = rows[0];
@@ -67,6 +81,7 @@ export async function findOrCreateConversation(
     lastOutcome: (r.last_outcome as string) ?? null,
     contact: (r.contact as Record<string, unknown>) ?? {},
     wantsFinancing: r.wants_financing === true,
+    pendingProposal: (r.pending_proposal as PendingProposal) ?? null,
   };
 }
 
@@ -122,6 +137,25 @@ export async function setWantsFinancing(
   await sql`
     UPDATE conversations
        SET wants_financing = ${wants}, updated_at = now()
+     WHERE id = ${conversationId}
+  `;
+}
+
+/**
+ * Remember the suggestion we just made, or clear it.
+ *
+ * Cleared as soon as it is applied: a stale proposal would let a much later
+ * "sounds good" pull back a door package from three questions ago.
+ */
+export async function setPendingProposal(
+  conversationId: string,
+  proposal: PendingProposal | null,
+): Promise<void> {
+  const sql = getSql();
+  await sql`
+    UPDATE conversations
+       SET pending_proposal = ${proposal ? JSON.stringify(proposal) : null}::jsonb,
+           updated_at = now()
      WHERE id = ${conversationId}
   `;
 }
