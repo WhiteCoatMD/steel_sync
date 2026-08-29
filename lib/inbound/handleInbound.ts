@@ -20,6 +20,7 @@ import {
   ROOF_STYLE_BLURBS,
 } from '../ai/roofStyleHelp';
 import { insertQuote, lastQuotedConfig } from '../db/quotes';
+import { composeReply } from '../ai/composeReply';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest } from '../notify/financing';
 import {
@@ -326,7 +327,9 @@ export async function handleInboundMessage(
       })
     : [];
 
-  const reply =
+  // The templated reply. Always correct, and the floor the composed one falls
+  // back to.
+  const templateReply =
     explainRoofs || comparingPastQuote
       ? roofStyleExplanation(roofOptions)
       : sizingSuggestion
@@ -338,6 +341,44 @@ On paying monthly: ${lowerFirst(
           financingReply(),
         )}`
       : outcome.message;
+
+  // Let the model phrase the quote, checked against the figures we priced.
+  // Everything numeric is computed above and handed over; a draft naming any
+  // other amount is rejected and the template stands. So the floor for this is
+  // the wording we already had (owner, 2026-08-29).
+  let reply = templateReply;
+  if (
+    outcome.kind === 'quote' &&
+    !sizingSuggestion &&
+    !explainRoofs &&
+    !comparingPastQuote
+  ) {
+    const p = outcome.pricing;
+    const b = outcome.config.building;
+    const figures = [p.total, p.depositDue, p.balanceDue].filter(
+      (n): n is number => typeof n === 'number',
+    );
+    reply = await composeReply({
+      customerMessage: text,
+      facts: [
+        `Building: ${b.widthFt}x${b.lengthFt}x${b.legHeightFt} ${b.type}`,
+        `Roof style: ${b.roofStyle}`,
+        `Total price: ${money(p.total)}`,
+        ...(p.depositDue != null ? [`Due now to order it: ${money(p.depositDue)}`] : []),
+        ...(p.balanceDue != null ? [`Due at delivery: ${money(p.balanceDue)}`] : []),
+        ...(dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing)
+          ? ['The customer asked about financing. We DO offer rent-to-own, but we ' +
+             'hold no terms or monthly figures — say only that it is available.']
+          : []),
+      ].join('\n'),
+      allowedFigures: figures,
+      requiredFigures: [p.total],
+      fallback: templateReply,
+      guidance:
+        'Give them the price and how it splits. Answer what they actually ' +
+        'asked. Do not offer a breakdown, do not ask them to call.',
+    });
+  }
 
   // Persist the automated quote the same way a manual one is persisted, so a
   // dealer can READ what the bot said before letting it speak for them. Without
@@ -447,6 +488,9 @@ async function alertDealerToFinancing(
     console.error(`[inbound] RTO alert failed for ${conv.id}`, err);
   }
 }
+
+/** Same formatting the templates use, so the facts read as the reply should. */
+const money = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
 /** Joins a sentence onto a lead-in without a capital letter mid-sentence. */
 function lowerFirst(s: string): string {

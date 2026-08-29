@@ -25,7 +25,7 @@ import {
  * build on any environment missing the key.
  */
 let client: Anthropic | null = null;
-function getClient(): Anthropic {
+export function getClient(): Anthropic {
   if (!client) client = new Anthropic();
   return client;
 }
