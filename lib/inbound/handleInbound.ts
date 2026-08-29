@@ -19,6 +19,7 @@ import {
   ROOF_STYLE_BLURBS,
 } from '../ai/roofStyleHelp';
 import { insertQuote } from '../db/quotes';
+import { notifyFinancingRequest } from '../notify/financing';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -114,9 +115,10 @@ export async function handleInboundMessage(
   if (dealer.offersRto && looksLikeFinancingQuestion(text) && !mentionsDimensions(text)) {
     const transcriptSoFar = [...conv.transcript, text];
     await recordTurn(conv.id, transcriptSoFar, 'financing');
+    await alertDealerToFinancing(dealer, conv, transcriptSoFar);
     return {
       kind: 'handoff',
-      reply: financingReply(dealer.name, dealer.phone || undefined),
+      reply: financingReply(),
       conversationId: conv.id,
       quoted: false,
     };
@@ -262,7 +264,7 @@ export async function handleInboundMessage(
       ? `${outcome.message}
 
 On paying monthly: ${lowerFirst(
-          financingReply(dealer.name, dealer.phone || undefined),
+          financingReply(),
         )}`
       : outcome.message;
 
@@ -297,6 +299,15 @@ On paying monthly: ${lowerFirst(
     }
   }
 
+  if (askedAboutFinancing) {
+    await alertDealerToFinancing(
+      dealer,
+      conv,
+      transcript,
+      outcome.kind === 'quote' ? outcome.message.split('\n')[0] : undefined,
+    );
+  }
+
   const recorded = sizingSuggestion
     ? 'sizing-suggestion'
     : askedAboutFinancing
@@ -325,6 +336,38 @@ On paying monthly: ${lowerFirst(
     // they already have.
     ...(asksRoofStyle && !explainRoofs ? { imageUrl: publicUrl(ROOF_STYLE_IMAGE_PATH) } : {}),
   };
+}
+
+/**
+ * Tell the dealer someone is waiting on rent-to-own terms.
+ *
+ * We just promised the customer a person would follow up, and we hold no RTO
+ * pricing to follow up WITH -- so the promise is only good if this lands. It
+ * still must not cost the customer their reply, so a failure is logged loudly
+ * and swallowed rather than thrown.
+ */
+async function alertDealerToFinancing(
+  dealer: DealerSettings,
+  conv: { id: string; channel: InboundChannel; externalId: string },
+  transcript: string[],
+  lastQuote?: string,
+): Promise<void> {
+  try {
+    const r = await notifyFinancingRequest(dealer, {
+      channel: conv.channel,
+      externalId: conv.externalId,
+      transcript,
+      ...(lastQuote ? { lastQuote } : {}),
+    });
+    if (r.status === 'skipped') {
+      console.error(
+        `[inbound] RTO request for ${conv.id} NOT delivered to the dealer: ${r.reason}. ` +
+          'The customer has been told someone will follow up.',
+      );
+    }
+  } catch (err) {
+    console.error(`[inbound] RTO alert failed for ${conv.id}`, err);
+  }
 }
 
 /** Joins a sentence onto a lead-in without a capital letter mid-sentence. */

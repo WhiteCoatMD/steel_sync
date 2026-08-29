@@ -52,12 +52,14 @@ export function mentionsDimensions(text: unknown): boolean {
   );
 }
 
-/** The reply for a financing question we cannot price. */
-export function financingReply(dealerName: string, phone?: string): string {
-  const call = phone ? ` or call ${phone}` : '';
-  return (
-    `We do offer rent-to-own, and the terms depend on the building and your ` +
-    `situation — so ${dealerName} will go through the options with you directly. ` +
-    `Someone will follow up shortly${call}.`
-  );
+/**
+ * The reply when someone asks about financing.
+ *
+ * Short on purpose (owner, 2026-08-29): confirm the option exists, promise the
+ * details, stop. We hold no rent-to-own pricing, so anything more would either
+ * repeat itself or start inventing terms. The dealer is notified separately and
+ * follows up with the real numbers.
+ */
+export function financingReply(): string {
+  return "Yes, we do offer rent-to-own. I'll get the details over to you shortly.";
 }

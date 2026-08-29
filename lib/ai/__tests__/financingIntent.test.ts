@@ -86,24 +86,19 @@ describe('a message can ask about money AND state a building', () => {
 });
 
 describe('the financing reply', () => {
-  const reply = financingReply('Dunrite Metal Buildings', '+13182498172');
+  const reply = financingReply();
 
-  it('names the dealer and promises a person', () => {
-    expect(reply).toContain('Dunrite Metal Buildings');
-    expect(reply).toMatch(/follow up/i);
-  });
-
-  it('confirms rent-to-own exists without quoting a figure', () => {
-    // The whole point: we do not hold RTO pricing, and a monthly number the
-    // dealer never agreed to would be worse than saying nothing.
+  it('confirms the option and promises the details, and stops there', () => {
+    // Short on purpose (owner, 2026-08-29). We hold no RTO pricing, so
+    // anything longer either repeats itself or starts inventing terms. The
+    // dealer is notified separately and follows up with real numbers.
     expect(reply).toMatch(/rent-to-own/i);
-    expect(reply).not.toMatch(/\$/);
-    expect(reply).not.toMatch(/\d+\s*(%|per month|\/mo)/i);
+    expect(reply).toMatch(/shortly/i);
+    expect(reply.length).toBeLessThan(120);
   });
 
-  it('works without a phone number', () => {
-    const noPhone = financingReply('Dunrite Metal Buildings');
-    expect(noPhone).toContain('Dunrite Metal Buildings');
-    expect(noPhone).not.toMatch(/undefined|null/);
+  it('quotes no figure of any kind', () => {
+    expect(reply).not.toMatch(/\$/);
+    expect(reply).not.toMatch(/\d+\s*(%|per month|\/mo|months?)/i);
   });
 });

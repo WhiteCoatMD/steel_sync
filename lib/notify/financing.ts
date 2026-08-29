@@ -1,0 +1,70 @@
+import { Resend } from 'resend';
+import type { DealerSettings } from '../building/types';
+import type { NotifyResult } from './index';
+
+/**
+ * Tells the dealer that a customer is waiting on rent-to-own terms.
+ *
+ * The bot answers "yes, we offer it, details shortly" and then has nothing
+ * further to give -- we hold no RTO pricing, so the promise is only good if a
+ * person actually follows it. Without this the customer is told someone will
+ * be in touch and nobody ever knows to be (owner, 2026-08-29).
+ *
+ * Mirrors sendLeadEmail: Resend RESOLVES on a rejected send, so a non-null
+ * `error` is treated as a failure rather than ignored.
+ */
+export interface FinancingRequest {
+  /** Where they asked -- 'facebook' or 'web'. */
+  channel: string;
+  /** Page-scoped sender id or web session key, so the dealer can find them. */
+  externalId: string;
+  /** What the customer has said so far, oldest first. */
+  transcript: string[];
+  /** The last price we quoted them, if we had got that far. */
+  lastQuote?: string;
+}
+
+export async function notifyFinancingRequest(
+  dealer: DealerSettings,
+  req: FinancingRequest,
+): Promise<NotifyResult> {
+  const key = process.env.RESEND_API_KEY;
+  const from = process.env.LEAD_FROM_EMAIL;
+  if (!key || !from) {
+    console.warn('[notify] financing alert not configured; skipping');
+    return { channel: 'email', status: 'skipped', reason: 'RESEND_API_KEY / LEAD_FROM_EMAIL not set' };
+  }
+  if (!dealer.email) {
+    return { channel: 'email', status: 'skipped', reason: 'dealer has no email address' };
+  }
+
+  const resend = new Resend(key);
+  const { error } = await resend.emails.send({
+    from,
+    to: dealer.email,
+    subject: `Rent-to-own request waiting - ${req.channel} customer`,
+    text: [
+      `A customer asked about rent-to-own and has been told you will follow up`,
+      `with the details. Nothing further was sent, and no terms were quoted.`,
+      ``,
+      `Channel:  ${req.channel}`,
+      `Customer: ${req.externalId}`,
+      req.lastQuote ? `Quoted:   ${req.lastQuote}` : `Quoted:   (no price yet)`,
+      ``,
+      `What they said:`,
+      ...req.transcript.map(t => `  - ${t}`),
+      ``,
+      `Reply to them in ${req.channel === 'facebook' ? 'Messenger' : 'the website thread'}.`,
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  });
+
+  if (error) {
+    // Rethrow rather than report success: an unverified domain or a suppressed
+    // recipient lands here on a RESOLVED promise, and a silently undelivered
+    // alert is exactly the failure this exists to prevent.
+    throw new Error(`resend: ${error.message ?? String(error)}`);
+  }
+  return { channel: 'email', status: 'sent' };
+}

@@ -63,20 +63,18 @@ describe('a fully stated, priceable request gets a number', () => {
     expect(out.message).toMatch(/due at installation/i);
   });
 
-  it('offers rent-to-own without ever implying a monthly figure', () => {
+  it('never advertises rent-to-own on a quote, even for a dealer who offers it', () => {
+    // It comes up only when the CUSTOMER raises financing (owner, 2026-08-29).
+    // An unprompted pitch under every price is the kind of clutter that made
+    // the quote unreadable in the first place.
     const withRto = decideAutoQuote(
       ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
       RULES,
       { offersRto: true },
     );
     if (withRto.kind !== 'quote') throw new Error('expected a quote');
-    // Its OWN message, not stacked under the price (owner, 2026-08-29).
     expect(withRto.message).not.toMatch(/rent-to-own/i);
-    expect(withRto.followUp).toMatch(/rent-to-own/i);
-    // We hold no RTO pricing, so a payment the dealer never agreed to cannot
-    // leave the building in either message.
-    const both = `${withRto.message} ${withRto.followUp}`;
-    expect(both).not.toMatch(/per month|\/mo|monthly payment of/i);
+    expect(withRto.followUp).toBeUndefined();
   });
 
   it('stays silent about rent-to-own for a dealer that does not offer it', () => {

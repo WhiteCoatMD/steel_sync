@@ -79,9 +79,10 @@ export interface AutoQuoteOptions {
   /** Appended to a quote reply, e.g. "Reply here or call (318) 249-8172." */
   signOff?: string;
   /**
-   * Mention rent-to-own on a quote. We hold no RTO pricing, so this only ever
-   * says the option EXISTS and that a person will explain it — it must never
-   * imply a monthly figure we cannot stand behind.
+   * Whether the dealer offers rent-to-own. NOT advertised on a quote: it comes
+   * up only when the customer raises financing themselves (owner,
+   * 2026-08-29), so this no longer changes the quote text at all. Kept because
+   * the inbound pipeline still needs to know before it answers such a question.
    */
   offersRto?: boolean;
   /**
@@ -229,13 +230,6 @@ export function decideAutoQuote(
         `due at installation.`
       : '';
 
-  // Deliberately carries NO numbers. We hold no rent-to-own pricing, and a
-  // monthly figure the dealer never agreed to would be worse than not
-  // mentioning the option at all.
-  const rto = opts.offersRto
-    ? `Prefer to spread it out? We offer rent-to-own too — say the word and ` +
-      `we'll go through the terms with you.`
-    : undefined;
 
   return {
     kind: 'quote',
@@ -243,7 +237,6 @@ export function decideAutoQuote(
     pricing,
     message:
       `${describe(b)}: ${money(pricing.total)}.${deposit}`,
-    ...(rto ? { followUp: rto } : {}),
   };
 }
 
