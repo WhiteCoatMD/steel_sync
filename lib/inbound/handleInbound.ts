@@ -1,5 +1,10 @@
 import type { DealerSettings } from '../building/types';
-import { parseBuildingRequest, ParseRequestError, PROMPT_MAX_LENGTH } from '../ai/parseRequest';
+import {
+  parseBuildingRequest,
+  ParseRequestError,
+  PROMPT_MAX_LENGTH,
+  type QuotedContext,
+} from '../ai/parseRequest';
 import { decideAutoQuote, combineForReparse, type AutoQuoteOutcome } from '../ai/autoQuote';
 import {
   looksLikeFinancingQuestion,
@@ -165,9 +170,31 @@ export async function handleInboundMessage(
   const prompt =
     combined.length > PROMPT_MAX_LENGTH ? combined.slice(-PROMPT_MAX_LENGTH) : combined;
 
+  // A thread is reset once quoted, so a follow-up like "do it with just one
+  // 10x10 roll up" arrives with no building attached. Hand the model what they
+  // were quoted, so a change to it can be read as a change (owner,
+  // 2026-08-29). Only when the transcript is short enough to BE a follow-up --
+  // a fresh, fully described building should stand on its own.
+  let quotedContext: QuotedContext | undefined;
+  if (transcript.length <= 2) {
+    // Context is a nicety, not a requirement: losing it costs an adjustment,
+    // and throwing would cost the customer their reply entirely.
+    try {
+      const prev = await lastQuotedConfig(conv.id);
+      if (prev?.building) {
+        quotedContext = {
+          building: prev.building as unknown as Record<string, unknown>,
+          openings: (prev.openings ?? []) as unknown as Array<Record<string, unknown>>,
+        };
+      }
+    } catch (err) {
+      console.warn(`[inbound] could not load the last quote for ${conv.id}`, err);
+    }
+  }
+
   let parsed;
   try {
-    parsed = await parseBuildingRequest(prompt);
+    parsed = await parseBuildingRequest(prompt, quotedContext);
   } catch (err) {
     const configError = err instanceof ParseRequestError && err.configError;
     console.error(
@@ -356,10 +383,14 @@ export async function handleInboundMessage(
     statedNow.includes(f),
   );
   if (saysRoofComparison && !hasSizeThisTurn) {
-    const prev = await lastQuotedConfig(conv.id);
-    if (prev?.building) {
-      roofBuilding = prev.building as unknown as Record<string, unknown>;
-      comparingPastQuote = true;
+    try {
+      const prev = await lastQuotedConfig(conv.id);
+      if (prev?.building) {
+        roofBuilding = prev.building as unknown as Record<string, unknown>;
+        comparingPastQuote = true;
+      }
+    } catch (err) {
+      console.warn(`[inbound] could not load the last quote for ${conv.id}`, err);
     }
   }
 
@@ -427,7 +458,10 @@ On paying monthly: ${lowerFirst(
         // will follow up to get those added in", which reads like the quote is
         // about to go up.
         `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
-        'Do not suggest anything in that list still needs pricing, adding or confirming.',
+        'Do not suggest anything in that list still needs pricing, adding or ' +
+          'confirming. If they just asked to change something, that list is ' +
+          'the building AFTER the change — confirm the new spec and price, and ' +
+          'do not tell them it was already that way.',
         ...(p.depositDue != null ? [`Due now to order it: ${money(p.depositDue)}`] : []),
         ...(p.balanceDue != null ? [`Due at delivery: ${money(p.balanceDue)}`] : []),
         ...(dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing)

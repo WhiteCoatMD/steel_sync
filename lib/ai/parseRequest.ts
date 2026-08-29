@@ -259,7 +259,50 @@ export class ParseRequestError extends Error {
   }
 }
 
-export async function parseBuildingRequest(prompt: string): Promise<ParsedRequest> {
+/**
+ * A building the customer has ALREADY been quoted, given to the model as the
+ * starting point so a follow-up can adjust it.
+ *
+ * "do it with just one 10x10 roll up" is a complete instruction next to a
+ * building and meaningless on its own -- and the thread is reset once quoted,
+ * so on its own is exactly how it arrives (owner, 2026-08-29). This is not the
+ * same as feeding our own questions back: it is what they bought, not what we
+ * suggested.
+ */
+export interface QuotedContext {
+  building: Record<string, unknown>;
+  openings: Array<Record<string, unknown>>;
+}
+
+function contextBlock(ctx: QuotedContext): string {
+  const b = ctx.building;
+  const doors = ctx.openings.length
+    ? ctx.openings
+        .map(o => `${o.widthFt}x${o.heightFt} ${o.type} on the ${o.wall} wall`)
+        .join(', ')
+    : 'no doors or windows';
+  return (
+    `
+
+THE CUSTOMER HAS ALREADY BEEN QUOTED THIS BUILDING:
+` +
+    `  ${b.widthFt}x${b.lengthFt}x${b.legHeightFt} ${b.type}, ${b.roofStyle} roof
+` +
+    `  Openings: ${doors}
+
+` +
+    `Their message is a CHANGE to that building. Return the WHOLE building as ` +
+    `it should now be, carrying everything they did not change. "just one roll ` +
+    `up" means replace the doors with one; "add a window" means keep what is ` +
+    `there and add one. Everything above counts as stated by them, because they ` +
+    `said it earlier in this conversation.`
+  );
+}
+
+export async function parseBuildingRequest(
+  prompt: string,
+  quoted?: QuotedContext,
+): Promise<ParsedRequest> {
   let message;
   try {
     message = await getClient().messages.create({
@@ -271,7 +314,9 @@ export async function parseBuildingRequest(prompt: string): Promise<ParsedReques
       // Pulling dimensions out of a sentence is not a reasoning task.
       output_config: { effort: 'low' },
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        { role: 'user', content: quoted ? `${prompt}${contextBlock(quoted)}` : prompt },
+      ],
     });
   } catch (err) {
     // Read the status off the error rather than testing `instanceof` against
