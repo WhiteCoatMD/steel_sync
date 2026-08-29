@@ -45,9 +45,16 @@ const OPENING_COMPONENTS: Record<string, string | null> = {
   'rollup_10x10': 'garage-door-6',
   'rollup_12x12': 'garage-door-8',
 
-  // windows: 3ft is 36 inches exactly
-  'window_3x3': 'window-3', //  36" x 36"
-  'window_3x4': 'window-4', //  36" x 48"
+  // Windows come in two families and the catalogue splits them by WIDTH: every
+  // 36"-wide window is insulated, and every plain one is 30" wide. So the
+  // standard sizes are the 2.5ft ones, and a customer who does not ask for
+  // insulated should not be quoted $695 for a window that costs $260 (owner,
+  // 2026-08-29).
+  'window_2.5x2.5': 'window-1', //  30" x 30", plain
+  'window_2.5x3': 'window-30-36', //  30" x 36", plain
+  // 3ft is 36 inches exactly, and at that width only the insulated line exists.
+  'window_3x3': 'window-3', //  36" x 36", insulated
+  'window_3x4': 'window-4', //  36" x 48", insulated
 
   // frame-outs: only the walk-in sized one exists as a product. There is no
   // component anywhere in the catalogue for a framed 8x8 or 10x10 opening, so

@@ -68,7 +68,9 @@ Opening sizes are NOT free-form. Use only these exact widthFt x heightFt pairs â
 they are the only ones the price list covers, and anything else cannot be quoted:
 - rollup: 8x8, 9x8, 10x10, 12x12
 - walkin: 3x7
-- window: 3x3, 3x4
+- window: 2.5x2.5, 2.5x3 (plain), 3x3, 3x4 (INSULATED, and more expensive)
+  A plain "window" means a plain one: use 2.5x3 unless they ask for insulated
+  or name a bigger size.
 Pick the nearest listed size to what the user asked for. Never invent a size
 (a "3x2 window" or a "6x6 roll-up" cannot be priced).
 

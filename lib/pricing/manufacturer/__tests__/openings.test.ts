@@ -151,3 +151,31 @@ describe('coverage of what the UI can actually build', () => {
     expect(unresolved).toEqual(['frameout 8x8', 'frameout 10x10']);
   });
 });
+
+describe('a plain window is the plain one', () => {
+  /**
+   * The catalogue splits windows by WIDTH: every 36"-wide window is insulated,
+   * every plain one is 30". So "two windows" used to land on the 36"x48"
+   * insulated line at $695 when the plain 30"x36" is $260 -- a $435 overquote
+   * per window, on an upgrade nobody asked for (owner, 2026-08-29).
+   */
+  it('maps the 2.5ft sizes to the plain windows', () => {
+    expect(componentKeyFor({ type: 'window', widthFt: 2.5, heightFt: 3 }, table)).toBe(
+      'window-30-36',
+    );
+    expect(componentKeyFor({ type: 'window', widthFt: 2.5, heightFt: 2.5 }, table)).toBe(
+      'window-1',
+    );
+  });
+
+  it('keeps the 3ft sizes on the insulated line, which is all that exists there', () => {
+    expect(componentKeyFor({ type: 'window', widthFt: 3, heightFt: 3 }, table)).toBe('window-3');
+    expect(componentKeyFor({ type: 'window', widthFt: 3, heightFt: 4 }, table)).toBe('window-4');
+  });
+
+  it('prices the plain one well below the insulated one', () => {
+    const plain = table.components.find(c => c.key === 'window-30-36')!;
+    const insulated = table.components.find(c => c.key === 'window-4')!;
+    expect(plain.price).toBeLessThan(insulated.price);
+  });
+});

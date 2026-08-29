@@ -197,6 +197,10 @@ export const DEFAULT_PRICING_RULES: DealerPricingRules = {
     rollup_9x8: 700,
     rollup_10x10: 850,
     rollup_12x12: 1100,
+    // The plain 30" windows are the standard ones; the 36" sizes are the
+    // insulated upgrade.
+    'window_2.5x2.5': 150,
+    'window_2.5x3': 160,
     window_3x3: 175,
     window_3x4: 200,
     frameout_3x7: 150,
