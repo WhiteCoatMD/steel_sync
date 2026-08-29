@@ -12,7 +12,8 @@
     "db:migrate": "dotenv -e .env.local -- tsx scripts/migrate.ts",
     "db:seed": "dotenv -e .env.local -- tsx scripts/seed-dealer.ts",
     "dealer:connect-page": "dotenv -e .env.local -- tsx scripts/connect-page.ts",
-    "dealer:add": "dotenv -e .env.local -- tsx scripts/seed-dealer.ts"
+    "dealer:add": "dotenv -e .env.local -- tsx scripts/seed-dealer.ts",
+    "test:webhook": "dotenv -e .env.local -- tsx scripts/test-webhook.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
