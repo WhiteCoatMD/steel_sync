@@ -6,6 +6,7 @@ import {
   extractMessages,
   getAppSecret,
 } from '../facebookVerify';
+import { splitForMessenger, autoReplyEnabled } from '../facebookSend';
 
 /**
  * The webhook URL is public and protected only by being hard to guess. Without
@@ -181,5 +182,51 @@ describe('pulling messages out of the envelope', () => {
   it('requires a sender id, since it keys the conversation', () => {
     const out = extractMessages(wrap([{ recipient: { id: 'PAGE_1' }, message: { text: 'hi' } }]));
     expect(out).toEqual([]);
+  });
+});
+
+describe('splitting a long reply for Messenger', () => {
+  it('leaves a short message alone', () => {
+    expect(splitForMessenger('24x30: $9,235')).toEqual(['24x30: $9,235']);
+  });
+
+  it('splits on paragraph boundaries, not mid-number', () => {
+    const quote = `24' x 30' x 10' garage: $9,235.\n\n${'detail line. '.repeat(200)}`;
+    const parts = splitForMessenger(quote);
+    expect(parts.length).toBeGreaterThan(1);
+    // The price must survive intact in the first part rather than being cut.
+    expect(parts[0]).toContain('$9,235');
+    for (const p of parts) expect(p.length).toBeLessThanOrEqual(1900);
+  });
+
+  it('hard-splits a single oversized block rather than dropping it', () => {
+    const parts = splitForMessenger('x'.repeat(5000));
+    expect(parts.join('').length).toBe(5000);
+    for (const p of parts) expect(p.length).toBeLessThanOrEqual(1900);
+  });
+
+  it('loses no content', () => {
+    const text = ['alpha', 'beta', 'gamma'].map(w => w.repeat(400)).join('\n\n');
+    expect(splitForMessenger(text).join('').replace(/\s/g, '')).toBe(text.replace(/\s/g, ''));
+  });
+});
+
+describe('replies are off unless deliberately enabled', () => {
+  afterEach(() => { delete process.env.FACEBOOK_AUTO_REPLY; });
+
+  it('is off when unset — the safe default', () => {
+    expect(autoReplyEnabled()).toBe(false);
+  });
+
+  it.each(['off', 'false', '0', 'yes', 'true', 'ON '])('is off for %s', v => {
+    // Only the exact opt-in counts; anything else must not start talking to
+    // customers by accident.
+    process.env.FACEBOOK_AUTO_REPLY = v;
+    expect(autoReplyEnabled()).toBe(v.trim().toLowerCase() === 'on');
+  });
+
+  it('is on only for "on"', () => {
+    process.env.FACEBOOK_AUTO_REPLY = 'on';
+    expect(autoReplyEnabled()).toBe(true);
   });
 });
