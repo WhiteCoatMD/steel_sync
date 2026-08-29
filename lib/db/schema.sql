@@ -54,3 +54,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS conversations_channel_external_idx
 
 CREATE INDEX IF NOT EXISTS conversations_dealer_updated_idx
   ON conversations (dealer_id, updated_at DESC);
+
+-- Generated dealer website content.
+--
+-- Separate from `theme` (colours, logo) because this is COPY: headline,
+-- tagline, about text, the service list. Kept as JSONB so the super-admin can
+-- edit any field without a migration, and so a dealer with nothing set still
+-- renders — lib/site/siteContent.ts fills every gap from the dealer's own name.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS site JSONB NOT NULL DEFAULT '{}'::jsonb;

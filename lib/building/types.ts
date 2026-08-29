@@ -215,6 +215,11 @@ export interface DealerTheme {
   headerStyle: 'dark' | 'light';
   fontFamily: string | null;
   showPoweredBy: boolean;
+  /**
+   * Raw CSS overrides for a generated dealer site. Rendered inside a <style>
+   * tag, so it MUST go through sanitizeCustomCss() first — see lib/site/siteContent.ts.
+   */
+  customCss?: string;
 }
 
 export interface DealerSettings {
