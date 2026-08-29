@@ -79,10 +79,12 @@ export interface AutoQuoteOptions {
   /** Appended to a quote reply, e.g. "Reply here or call (318) 249-8172." */
   signOff?: string;
   /**
-   * Whether the dealer offers rent-to-own. NOT advertised on a quote: it comes
-   * up only when the customer raises financing themselves (owner,
-   * 2026-08-29), so this no longer changes the quote text at all. Kept because
-   * the inbound pipeline still needs to know before it answers such a question.
+   * The customer has ALREADY raised financing, so the balance line offers
+   * rent-to-own as the alternative to paying at delivery.
+   *
+   * Never set from the dealer merely offering it: an unprompted pitch under
+   * every quote is what this replaced. Set from the customer having asked
+   * (owner, 2026-08-29).
    */
   offersRto?: boolean;
   /**
@@ -144,10 +146,30 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
 
 const money = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
+/**
+ * How the building is named back to the customer.
+ *
+ * Spoken, not tabulated: "a 20x30x7 carport", the way it would be said across a
+ * desk. The foot marks and spaced-out dimensions read like a spec sheet (owner,
+ * 2026-08-29).
+ */
 function describe(b: BuildingConfig['building']): string {
   const kind =
-    b.type === 'carport' ? 'open carport' : b.type === 'rv-cover' ? 'open RV cover' : String(b.type);
-  return `${b.widthFt}' x ${b.lengthFt}' x ${b.legHeightFt}' ${kind}`;
+    b.type === 'carport' ? 'carport' : b.type === 'rv-cover' ? 'RV cover' : String(b.type);
+  return `${b.widthFt}x${b.lengthFt}x${b.legHeightFt} ${kind}`;
+}
+
+/**
+ * "A 24x30 carport" but "An 18x30 carport".
+ *
+ * The description always starts with a NUMBER, so the article follows how that
+ * number is spoken, not how it is spelled: 8, 11 and 18 all begin with a vowel
+ * sound ("an eighteen by thirty"), and so does anything in the eighties.
+ */
+function article(description: string): string {
+  const lead = description.match(/^\d+/)?.[0];
+  if (lead) return /^(8|11|18)/.test(lead) ? 'An' : 'A';
+  return /^[aeiou]/i.test(description) ? 'An' : 'A';
 }
 
 export function decideAutoQuote(
@@ -224,10 +246,15 @@ export function decideAutoQuote(
   }
 
   const b = config.building;
+  // They asked about rent-to-own earlier in this thread, so the balance names
+  // it as the alternative rather than presenting delivery as the only way to
+  // pay. Still no monthly figure -- we hold no RTO pricing.
+  const rtoTail = opts.offersRto ? ', or we can set it up rent-to-own' : '';
+
   const deposit =
     pricing.depositDue != null && pricing.depositPercent != null
-      ? `\n${money(pricing.depositDue)} down, ${money(pricing.balanceDue ?? 0)} ` +
-        `due at installation.`
+      ? ` It would be ${money(pricing.depositDue)} down to order it and ` +
+        `${money(pricing.balanceDue ?? 0)} due at delivery${rtoTail}.`
       : '';
 
 
@@ -236,7 +263,7 @@ export function decideAutoQuote(
     config,
     pricing,
     message:
-      `${describe(b)}: ${money(pricing.total)}.${deposit}`,
+      `${article(describe(b))} ${describe(b)} would be ${money(pricing.total)}.${deposit}`,
   };
 }
 

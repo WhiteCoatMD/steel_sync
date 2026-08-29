@@ -49,18 +49,19 @@ describe('a fully stated, priceable request gets a number', () => {
   });
 
   it('describes back what it priced, so a wrong reading is visible', () => {
+    // Spoken, not tabulated: "A 24x25x9 carport", the way it would be said
+    // across a desk rather than printed on a spec sheet (owner, 2026-08-29).
     if (out.kind !== 'quote') throw new Error('expected a quote');
-    expect(out.message).toContain("24' x 25' x 9'");
-    expect(out.message).toMatch(/open carport/);
+    expect(out.message).toContain('24x25x9');
+    expect(out.message).toMatch(/carport/);
+    expect(out.message).toMatch(/^A 24x25x9 carport would be/);
   });
 
   it('carries the deposit split the dealer schedule defines', () => {
     if (out.kind !== 'quote') throw new Error('expected a quote');
     expect(out.message).toContain('$620'); // 18% of 3445, rounded for display
-    // The balance is payable at installation, not on delivery: the customer
-    // pays the deposit up front and settles the rest when the crew is done.
-    expect(out.message).toMatch(/down/i);
-    expect(out.message).toMatch(/due at installation/i);
+    expect(out.message).toMatch(/down to order it/i);
+    expect(out.message).toMatch(/due at delivery/i);
   });
 
   it('never advertises rent-to-own on a quote, even for a dealer who offers it', () => {
@@ -73,8 +74,19 @@ describe('a fully stated, priceable request gets a number', () => {
       { offersRto: true },
     );
     if (withRto.kind !== 'quote') throw new Error('expected a quote');
-    expect(withRto.message).not.toMatch(/rent-to-own/i);
     expect(withRto.followUp).toBeUndefined();
+    // `offersRto` is set from the CUSTOMER having asked, so when it is on the
+    // balance line names rent-to-own as the alternative to paying at delivery.
+    expect(withRto.message).toMatch(/rent-to-own/i);
+    // Still no terms: we hold no RTO pricing.
+    expect(withRto.message).not.toMatch(/per month|\/mo|months?/i);
+
+    // Unasked, it is never mentioned.
+    const unasked = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
+      RULES,
+    );
+    expect(unasked.message).not.toMatch(/rent-to-own/i);
   });
 
   it('stays silent about rent-to-own for a dealer that does not offer it', () => {
@@ -103,8 +115,8 @@ describe('a fully stated, priceable request gets a number', () => {
     );
     if (short.kind !== 'quote') throw new Error(`expected a quote, got ${short.kind}`);
     expect(short.config.building.lengthFt).toBe(20);
-    expect(short.message).toContain("12' x 20' x 7'");
-    expect(short.message).not.toContain("18'");
+    expect(short.message).toContain('12x20x7');
+    expect(short.message).not.toContain('12x18x7');
 
     // And it costs exactly what asking for a 20 outright costs.
     const exact = decideAutoQuote(

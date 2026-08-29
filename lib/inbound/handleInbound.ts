@@ -218,7 +218,9 @@ export async function handleInboundMessage(
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
     signOff: signOffFor(dealer),
-    offersRto: dealer.offersRto === true && !askedAboutFinancing,
+    // Offered on the balance only because the customer raised it -- either in
+    // this message, or earlier in the thread.
+    offersRto: dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing),
     extraQuestions,
     ...(verticalNote ? { note: verticalNote } : {}),
   });
