@@ -19,7 +19,8 @@ import {
   roofStyleExplanation,
   ROOF_STYLE_BLURBS,
 } from '../ai/roofStyleHelp';
-import { insertQuote } from '../db/quotes';
+import { insertQuote, lastQuotedConfig } from '../db/quotes';
+import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest } from '../notify/financing';
 import {
   findOrCreateConversation,
@@ -261,13 +262,36 @@ export async function handleInboundMessage(
   // cost", so each style is priced for the building they actually described
   // rather than explained in the abstract. Everything but the roof is already
   // known here -- roofStyle is the only field we are waiting on.
-  const roofOptions = explainRoofs
+  // They are asking about roofs but this turn carries no building, because the
+  // thread was reset when we quoted them. "How much are the other roof styles"
+  // is a follow-up ABOUT that building, so fall back to it rather than asking
+  // for the dimensions they already gave us (owner, 2026-08-29).
+  let roofBuilding = parsed.building as Record<string, unknown> | undefined;
+  let comparingPastQuote = false;
+  const statedNow = Array.isArray(parsed.stated) ? parsed.stated : [];
+  const hasSizeThisTurn = (['widthFt', 'lengthFt', 'legHeightFt'] as const).every(f =>
+    statedNow.includes(f),
+  );
+  if (asksToExplainRoofStyles(text) && !hasSizeThisTurn) {
+    const prev = await lastQuotedConfig(conv.id);
+    if (prev?.building) {
+      roofBuilding = prev.building as unknown as Record<string, unknown>;
+      comparingPastQuote = true;
+    }
+  }
+
+  const roofOptions = (explainRoofs || comparingPastQuote)
     ? ROOF_STYLE_BLURBS.map(o => {
         const priced = decideAutoQuote(
           {
             ...parsed,
-            building: { ...(parsed.building ?? {}), roofStyle: o.key },
-            stated: [...(Array.isArray(parsed.stated) ? parsed.stated : []), 'roofStyle'],
+            building: { ...(roofBuilding ?? {}), roofStyle: o.key },
+            // A building recovered from their own past quote IS fully stated
+            // -- they told us every one of these fields, just in an earlier
+            // turn. Without this the comparison clarifies instead of pricing.
+            stated: comparingPastQuote
+              ? [...REQUIRED_FOR_QUOTE]
+              : [...(Array.isArray(parsed.stated) ? parsed.stated : []), 'roofStyle'],
           },
           dealer.pricing,
           { dealerId: dealer.id },
@@ -279,7 +303,7 @@ export async function handleInboundMessage(
     : [];
 
   const reply =
-    explainRoofs
+    explainRoofs || comparingPastQuote
       ? roofStyleExplanation(roofOptions)
       : sizingSuggestion
       ? sizingSuggestion

@@ -8,7 +8,7 @@
  */
 
 const EXPLAIN_PATTERNS: RegExp[] = [
-  /\bwhat(?:'s| is| are)? the difference\b/i,
+  /\bwhat(?:'s| is| are)?(?: the)?(?: \w+)? difference\b/i,
   /\bdifference between\b/i,
   /\bwhat(?:'s| is)? the best\b/i,
   /\bwhich (?:one|is|do you|would you|should)\b/i,
@@ -19,6 +19,12 @@ const EXPLAIN_PATTERNS: RegExp[] = [
   /\bwhat(?:'s| is) (?:a |the )?(?:regular|boxed eave|vertical)\b/i,
   /\bwhy (?:is |would )?(?:vertical|regular|boxed eave)\b/i,
   /\btell me (?:more|about)\b/i,
+  /\b(?:other|others|rest of the) (?:roof )?(?:styles?|options?)\b/i,
+  /\bhow much (?:are|is|for) the (?:other|others)\b/i,
+  /\bprice (?:difference|on the other)\b/i,
+  /\bcost (?:difference|of the other)\b/i,
+  /\bcompare\b/i,
+  /\bwhat about (?:the )?(?:regular|boxed eave|vertical|other)\b/i,
 ];
 
 /** True when the customer is asking us to explain the options. */

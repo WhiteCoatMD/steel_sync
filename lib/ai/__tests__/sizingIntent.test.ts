@@ -7,6 +7,7 @@ import {
   isOpenSided,
   HEIGHT_QUESTIONS,
 } from '../sizingIntent';
+import { asksToExplainRoofStyles } from '../roofStyleHelp';
 
 /**
  * "how much for a 2 car garage?" ... "and what size is it?" came from the first
@@ -159,5 +160,37 @@ describe('RV is the tall-need case we have an answer for', () => {
     const r = sizingReply({ widthFt: 18, lengthFt: 40, legHeightFt: 12, type: 'rv-cover' });
     expect(r).toContain('an RV cover');
     expect(r).toContain("12' side walls");
+  });
+});
+
+describe('asking what the other roof styles cost', () => {
+  /**
+   * From a real thread: "what is the price difference" and, after a quote,
+   * "how much are the other roof styles". Neither matched, so a customer
+   * comparing options got a clarifying question instead of three prices
+   * (owner, 2026-08-29).
+   */
+  it.each([
+    'what is the price difference',
+    'how much are the other roof styles',
+    'how much are the others',
+    'what about the other styles',
+    'price difference',
+    'cost difference',
+    'compare them',
+    'what about vertical',
+  ])('recognises "%s"', msg => {
+    expect(asksToExplainRoofStyles(msg)).toBe(true);
+  });
+
+  it.each([
+    '18x25x7 carport',
+    'vertical',
+    'do you deliver to Monroe',
+    'i want a garage',
+  ])('leaves "%s" alone', msg => {
+    // "vertical" is an ANSWER to the roof question. Reading it as a request to
+    // explain the roofs would loop the conversation forever.
+    expect(asksToExplainRoofStyles(msg)).toBe(false);
   });
 });

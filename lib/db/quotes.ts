@@ -39,3 +39,26 @@ export async function markNotifyFailed(id: string): Promise<void> {
                   'the lead is undelivered AND unflagged');
   }
 }
+
+/**
+ * The building most recently quoted in a conversation.
+ *
+ * A thread is reset once quoted, so the customer's next message arrives with no
+ * dimensions attached -- which is right for "what about a 30x40?" and wrong for
+ * "how much are the other roof styles", a follow-up ABOUT the building they
+ * were just quoted. The quote row outlives the reset, so it is what we ask.
+ */
+export async function lastQuotedConfig(
+  conversationId: string,
+): Promise<BuildingConfig | null> {
+  const sql = getSql();
+  const rows = (await sql`
+    SELECT q.config
+      FROM conversations c
+      JOIN quotes q ON q.id = c.quote_id
+     WHERE c.id = ${conversationId}
+     LIMIT 1
+  `) as Array<Record<string, unknown>>;
+  const config = rows[0]?.config;
+  return config ? (config as BuildingConfig) : null;
+}
