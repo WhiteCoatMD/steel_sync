@@ -248,11 +248,15 @@ export async function handleInboundMessage(
   // answer, which is why this asks about MENTIONING doors rather than about
   // the openings list being empty.
   const buildingType = (parsed.building as Record<string, unknown> | undefined)?.type;
-  const needsDoors =
-    !isOpenSided(buildingType) &&
-    buildingType != null &&
-    !(parsed.openings ?? []).length &&
-    !(intents ? intents.mentionedDoors : false);
+  const doorCount = (parsed.openings ?? []).filter(
+    o => o?.type === 'rollup' || o?.type === 'walkin',
+  ).length;
+  const needsDoors = !isOpenSided(buildingType) && buildingType != null && doorCount === 0;
+
+  // "No doors" is not an answer we take: we do not sell an enclosed building
+  // with no way into it, so saying so out loud beats asking the same question
+  // again and looking like we did not hear them (owner, 2026-08-29).
+  const refusedDoors = needsDoors && (intents ? intents.mentionedDoors : false);
 
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
@@ -264,8 +268,11 @@ export async function handleInboundMessage(
     ...(needsDoors
       ? {
           requiredExtras: [
-            'What doors do you need? Most garages get one 10x10 roll-up and a ' +
-              'walk-in door, but tell me what suits you.',
+            refusedDoors
+              ? 'We do not build an enclosed one with no doors — you would not ' +
+                'be able to get into it. What roll-up and walk-in doors do you want?'
+              : 'What doors do you need? Most garages get one 10x10 roll-up ' +
+                'and a walk-in door, but tell me what suits you.',
           ],
         }
       : {}),
@@ -403,7 +410,13 @@ On paying monthly: ${lowerFirst(
       fallback: templateReply,
       guidance:
         'Give them the price and how it splits. Answer what they actually ' +
-        'asked. Do not offer a breakdown, do not ask them to call.',
+        'asked. Do not offer a breakdown, do not ask them to call. ' +
+        // Insulation is not in the price file at all, so there is no figure to
+        // give and no way to check one. It goes to a person (owner,
+        // 2026-08-29).
+        'If they mentioned INSULATION, the total does not cover it and we do ' +
+        'not price it here — say the dealer will follow up on the insulation, ' +
+        'and never put a number on it.',
     });
   }
 

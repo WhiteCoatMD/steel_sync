@@ -54,6 +54,16 @@ const DEALER = {
 } as unknown as DealerSettings;
 
 const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
+
+/**
+ * An enclosed building is not quoted until it has doors -- we do not sell a
+ * sealed box someone cannot get into. These fixtures are about multi-turn and
+ * handoff, so they carry the doors a real request would.
+ */
+const DOORS = [
+  { type: 'rollup', widthFt: 10, heightFt: 10, wall: 'front', positionFt: 7 },
+  { type: 'walkin', widthFt: 3, heightFt: 7, wall: 'front', positionFt: 19 },
+];
 const parsed = (
   building: Record<string, unknown>,
   stated: string[],
@@ -119,7 +129,7 @@ describe('an incomplete request asks, then quotes on the answer', () => {
 
     // Turn 2: the customer replies with just "enclosed, 10ft walls".
     parseMock.mockResolvedValueOnce(
-      parsed({ type: 'garage', widthFt: 20, lengthFt: 30, legHeightFt: 10 }, ALL),
+      parsed({ type: 'garage', widthFt: 20, lengthFt: 30, legHeightFt: 10 }, ALL, DOORS),
     );
     const second = await send('enclosed, 10ft walls');
     expect(second.kind).toBe('quote');
@@ -179,7 +189,7 @@ describe('separate senders never share a conversation', () => {
 describe('a stated request we cannot price hands off rather than inventing', () => {
   it('sends no number for a 40ft-wide shop', async () => {
     parseMock.mockResolvedValueOnce(
-      parsed({ type: 'shop', widthFt: 40, lengthFt: 60, legHeightFt: 12 }, ALL),
+      parsed({ type: 'shop', widthFt: 40, lengthFt: 60, legHeightFt: 12 }, ALL, DOORS),
     );
     const r = await send('40x60x12 shop');
     expect(r.kind).toBe('handoff');
