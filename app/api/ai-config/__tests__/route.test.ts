@@ -134,3 +134,76 @@ describe('/api/ai-config request validation', () => {
     else process.env.ANTHROPIC_API_KEY = originalKey;
   });
 });
+
+/**
+ * The endpoint spent a stretch reporting "AI service is temporarily
+ * unavailable. Please try again." while nothing was down: the model ID
+ * `claude-sonnet-4-20250514` had been retired, so every request 404'd and the
+ * catch collapsed it into the same generic 503 a real outage produces.
+ *
+ * The public response stays generic on purpose — this route is unauthenticated
+ * and must not leak the key, the model, or a stack. So the guard has to be on
+ * the LOG and on the model ID itself.
+ */
+describe('a retired model must not masquerade as an outage', () => {
+  beforeEach(() => {
+    constructed.mockClear();
+    createMock.mockReset();
+    process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+  });
+
+  const callWithStatus = async (status: number) => {
+    const err: Error & { status?: number } = new Error('boom');
+    err.status = status;
+    createMock.mockRejectedValueOnce(err);
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const res = await POST(req({ prompt: '24x25 carport' }) as never);
+    const logged = spy.mock.calls.map(c => String(c[0])).join(' ');
+    spy.mockRestore();
+    return { res, logged };
+  };
+
+  it.each([401, 403, 404])('logs a %i as a configuration error, not a blip', async status => {
+    const { res, logged } = await callWithStatus(status);
+    expect(res.status).toBe(503); // public response stays generic
+    expect(logged).toMatch(/CONFIGURATION ERROR/);
+    expect(logged).toMatch(/will not fix itself/);
+    expect(logged).toMatch(/ANTHROPIC_API_KEY/);
+  });
+
+  it.each([429, 500, 529])('still logs a %i as likely transient', async status => {
+    const { res, logged } = await callWithStatus(status);
+    expect(res.status).toBe(503);
+    expect(logged).toMatch(/likely transient/);
+    expect(logged).not.toMatch(/CONFIGURATION ERROR/);
+  });
+
+  it('classifies without throwing when the error carries no status', async () => {
+    // The classification runs inside the catch. If it throws there, a handled
+    // 503 becomes an unhandled 500 that leaks a stack to a public caller.
+    createMock.mockRejectedValueOnce('a bare string, not an Error');
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const res = await POST(req({ prompt: '24x25 carport' }) as never);
+    spy.mockRestore();
+    expect(res.status).toBe(503);
+    expect(await res.json()).toEqual({
+      error: 'AI service is temporarily unavailable. Please try again.',
+    });
+  });
+
+  it('asks for a model ID without a date suffix', async () => {
+    // Current model IDs are complete as-is; a dated variant is the shape that
+    // gets retired out from under you.
+    createMock.mockResolvedValueOnce({ content: [{ type: 'text', text: '{"building":{}}' }] });
+    await POST(req({ prompt: '24x25 carport' }) as never);
+    const model = createMock.mock.calls[0][0].model as string;
+    expect(model).not.toMatch(/-\d{8}$/);
+    expect(model).toBe('claude-opus-5');
+  });
+
+  it('allows enough output tokens for a description with several openings', async () => {
+    createMock.mockResolvedValueOnce({ content: [{ type: 'text', text: '{"building":{}}' }] });
+    await POST(req({ prompt: '30x60 garage, 4 windows, 2 roll-ups, walk-in' }) as never);
+    expect(createMock.mock.calls[0][0].max_tokens).toBeGreaterThanOrEqual(4096);
+  });
+});
