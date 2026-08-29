@@ -26,6 +26,8 @@ interface Reply {
   total?: number;
   lineItems?: LineItem[];
   questions?: string[];
+  /** Roof-style comparison, sent with the question that needs it. */
+  imageUrl?: string;
 }
 
 /**
@@ -174,9 +176,19 @@ export default function QuoteRequestForm({
           ) : (
             // clarify / handoff / error all share this shape: a message, and
             // deliberately no number.
-            <p className="whitespace-pre-line text-sm leading-relaxed text-gray-800">
-              {reply.reply}
-            </p>
+            <>
+              {/* Picture above the question it explains, matching Messenger. */}
+              {reply.imageUrl ? (
+                <img
+                  src={reply.imageUrl}
+                  alt="Regular, boxed eave and vertical roof styles compared"
+                  className="mb-4 w-full rounded-lg border border-gray-200"
+                />
+              ) : null}
+              <p className="whitespace-pre-line text-sm leading-relaxed text-gray-800">
+                {reply.reply}
+              </p>
+            </>
           )}
 
           {reply.kind === 'clarify' && (

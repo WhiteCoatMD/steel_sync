@@ -93,6 +93,9 @@ export async function POST(req: NextRequest) {
       kind: result.kind,
       reply: result.reply,
       quoted: result.quoted,
+      // The website form asks the same roof-style question Messenger does, so
+      // it gets the same comparison graphic to show beside it.
+      ...(result.imageUrl ? { imageUrl: result.imageUrl } : {}),
       // Enough for the page to render a breakdown next to the reply, without
       // exposing anything the customer could not already see in the designer.
       ...(result.outcome?.kind === 'quote'
