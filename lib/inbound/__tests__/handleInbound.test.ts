@@ -54,13 +54,28 @@ const DEALER = {
 } as unknown as DealerSettings;
 
 const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
-const parsed = (building: Record<string, unknown>, stated: string[]) => ({
+const parsed = (
+  building: Record<string, unknown>,
+  stated: string[],
+  openings: Array<Record<string, unknown>> = [],
+) => ({
   building,
-  openings: [],
+  openings,
   stated,
   missing: ALL.filter(f => !stated.includes(f)),
   questions: [],
   autoQuotable: ALL.every(f => stated.includes(f)),
+  // An enclosed building whose doors were never raised now waits for an answer
+  // rather than quoting a sealed box, so these fixtures say the subject was
+  // covered. Their subject is multi-turn and handoff, not doors.
+  intents: {
+    asksFinancing: false,
+    asksRoofComparison: false,
+    asksWhatSize: false,
+    needsExtraHeight: false,
+    isRvUse: false,
+    mentionedDoors: true,
+  },
 });
 
 const send = (text: string, externalId = 'web:tester') =>

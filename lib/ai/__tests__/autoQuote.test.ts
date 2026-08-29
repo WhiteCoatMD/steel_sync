@@ -105,6 +105,21 @@ describe('a fully stated, priceable request gets a number', () => {
 
   });
 
+  it('withholds the price until a required extra is answered', () => {
+    // Doors are the case. An enclosed building with no doors is not a product,
+    // and quoting one under-prices a 24x30 garage by $1,530 -- in the direction
+    // that costs the dealer (owner, 2026-08-29).
+    const blocked = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
+      RULES,
+      { requiredExtras: ['What doors do you need?'] },
+    );
+    expect(blocked.kind).toBe('clarify');
+    expect(blocked.message).toContain('What doors do you need?');
+    // The whole point: a fully stated request still sends no number.
+    expect(blocked.message).not.toMatch(/\$/);
+  });
+
   it('quotes a too-short building at the 20ft minimum, and says so', () => {
     // A real customer asked for a 12x18x7 carport. 20ft is the shortest we
     // build, so it prices as a 20 -- and the reply has to DESCRIBE the 20, or

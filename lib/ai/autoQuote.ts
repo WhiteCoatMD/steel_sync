@@ -98,6 +98,15 @@ export interface AutoQuoteOptions {
    * sign-off, so advice does not end up stranded under "Questions? Call us".
    */
   note?: string;
+  /**
+   * Questions that must be answered BEFORE a price goes out, unlike
+   * `extraQuestions` which merely ride along on a clarify.
+   *
+   * Doors are the case: an enclosed building with no doors is not a product,
+   * and quoting one silently under-prices a 24x30 garage by $1,530 (owner,
+   * 2026-08-29).
+   */
+  requiredExtras?: string[];
 }
 
 /** Folds an AI parse into a real BuildingConfig the engine can price. */
@@ -182,8 +191,14 @@ export function decideAutoQuote(
   // ── 1. Do we know what they asked for? ────────────────────
   // Trust `stated`, not the caller's own `autoQuotable` flag: recomputing here
   // means a channel that forgets to forward the flag fails toward asking.
-  if (!isAutoQuotable(ai.stated)) {
-    const questions = [...clarifyingQuestions(ai.stated), ...(opts.extraQuestions ?? [])];
+  // A required extra blocks the price the same way a missing dimension does.
+  const blocking = opts.requiredExtras ?? [];
+  if (!isAutoQuotable(ai.stated) || blocking.length > 0) {
+    const questions = [
+      ...clarifyingQuestions(ai.stated),
+      ...blocking,
+      ...(opts.extraQuestions ?? []),
+    ];
     const b = sanitizeBuilding(ai.building) as Record<string, unknown>;
     const understood = {
       ...(b.type != null ? { type: b.type } : {}),

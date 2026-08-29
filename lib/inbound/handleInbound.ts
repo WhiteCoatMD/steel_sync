@@ -241,6 +241,19 @@ export async function handleInboundMessage(
         `horizontal panel.`
       : '';
 
+  // An enclosed building with no doors is not a product -- it is a sealed metal
+  // box. Quoting one silently under-prices a 24x30 garage by $1,530, in the
+  // direction that costs the dealer, so the price waits until we know (owner,
+  // 2026-08-29). Open buildings genuinely have none, and "no doors" is an
+  // answer, which is why this asks about MENTIONING doors rather than about
+  // the openings list being empty.
+  const buildingType = (parsed.building as Record<string, unknown> | undefined)?.type;
+  const needsDoors =
+    !isOpenSided(buildingType) &&
+    buildingType != null &&
+    !(parsed.openings ?? []).length &&
+    !(intents ? intents.mentionedDoors : false);
+
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
     signOff: signOffFor(dealer),
@@ -248,6 +261,14 @@ export async function handleInboundMessage(
     // this message, or earlier in the thread.
     offersRto: dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing),
     extraQuestions,
+    ...(needsDoors
+      ? {
+          requiredExtras: [
+            'What doors do you need? Most garages get one 10x10 roll-up and a ' +
+              'walk-in door, but tell me what suits you.',
+          ],
+        }
+      : {}),
     ...(verticalNote ? { note: verticalNote } : {}),
   });
 
@@ -364,6 +385,12 @@ On paying monthly: ${lowerFirst(
         `Building: ${b.widthFt}x${b.lengthFt}x${b.legHeightFt} ${b.type}`,
         `Roof style: ${b.roofStyle}`,
         `Total price: ${money(p.total)}`,
+        // Without this the model hedges -- it sees doors in the customer's
+        // message, cannot tell they are already priced, and writes "someone
+        // will follow up to get those added in", which reads like the quote is
+        // about to go up.
+        `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
+        'Do not suggest anything in that list still needs pricing, adding or confirming.',
         ...(p.depositDue != null ? [`Due now to order it: ${money(p.depositDue)}`] : []),
         ...(p.balanceDue != null ? [`Due at delivery: ${money(p.balanceDue)}`] : []),
         ...(dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing)

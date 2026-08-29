@@ -143,7 +143,8 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "asksRoofComparison": false,
     "asksWhatSize": false,
     "needsExtraHeight": false,
-    "isRvUse": false
+    "isRvUse": false,
+    "mentionedDoors": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -161,6 +162,10 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   extra height or clearance.
 - isRvUse: that tall thing is specifically an RV, motorhome, camper, fifth
   wheel or travel trailer.
+- mentionedDoors: they have said something about doors ANYWHERE in the
+  conversation - which ones they want, or that they want none. "one 10x10 and
+  a walk in", "two roll ups", "no doors", "just leave the ends open" are all
+  true. Never having raised the subject is false.
 
 Default every one of these to false. They pick which correct answer to send,
 never whether to send a price, so a false negative just means a slightly
@@ -192,6 +197,12 @@ export interface RequestIntents {
   needsExtraHeight: boolean;
   /** Specifically an RV, motorhome, camper or fifth wheel. */
   isRvUse: boolean;
+  /**
+   * They have SAID something about doors -- what they want, or that they want
+   * none. Distinct from `openings` being non-empty, because "no doors" is an
+   * answer and an empty list is not.
+   */
+  mentionedDoors: boolean;
 }
 
 export interface ParsedRequest {
@@ -307,6 +318,7 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'asksWhatSize',
     'needsExtraHeight',
     'isRvUse',
+    'mentionedDoors',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.
