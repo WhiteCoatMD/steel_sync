@@ -13,6 +13,7 @@ import {
   mentionsRv,
   isOpenSided,
 } from '../ai/sizingIntent';
+import { insertQuote } from '../db/quotes';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -193,12 +194,43 @@ On paying monthly: ${lowerFirst(
         )}`
       : outcome.message;
 
+  // Persist the automated quote the same way a manual one is persisted, so a
+  // dealer can READ what the bot said before letting it speak for them. Without
+  // this the only record was a log line: the conversation row said "quote" and
+  // the transcript was already cleared, so what was asked and what was answered
+  // were both gone.
+  let quoteId: string | undefined;
+  if (outcome.kind === 'quote') {
+    try {
+      const id = `q_${conv.channel}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      await insertQuote({
+        id,
+        dealerId: dealer.id,
+        config: outcome.config,
+        pricing: outcome.pricing,
+        customer: {
+          source: `auto-quote:${conv.channel}`,
+          externalId: conv.externalId,
+          // Kept verbatim: reviewing the bot means seeing exactly what it was
+          // asked and exactly what it answered.
+          request: transcript.join('\n'),
+          reply,
+        } as never,
+      });
+      quoteId = id;
+    } catch (err) {
+      // A quote that cannot be filed is still a quote worth sending. Log loudly
+      // rather than failing the customer's reply over bookkeeping.
+      console.error(`[inbound] could not save quote for ${conv.id}`, err);
+    }
+  }
+
   const recorded = sizingSuggestion
     ? 'sizing-suggestion'
     : askedAboutFinancing
       ? `${outcome.kind}+financing`
       : outcome.kind;
-  await recordTurn(conv.id, transcript, recorded);
+  await recordTurn(conv.id, transcript, recorded, quoteId);
 
   // A quoted thread is finished. Without this the customer's next question
   // ("what about a 30x40?") gets re-parsed together with the building they
