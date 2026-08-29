@@ -84,6 +84,11 @@ export interface AutoQuoteOptions {
    * nothing else would ever ask about — and an RV owner needs it right.
    */
   extraQuestions?: string[];
+  /**
+   * A line added to a clarify reply after the questions but BEFORE the
+   * sign-off, so advice does not end up stranded under "Questions? Call us".
+   */
+  note?: string;
 }
 
 /** Folds an AI parse into a real BuildingConfig the engine can price. */
@@ -156,6 +161,7 @@ export function decideAutoQuote(
       message:
         `Happy to price that for you — just need a couple of details first:\n\n` +
         questions.map(q => `• ${q}`).join('\n') +
+        (opts.note ? `\n\n${opts.note}` : '') +
         signOff,
     };
   }

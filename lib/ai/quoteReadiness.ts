@@ -30,7 +30,13 @@ import type { BuildingType } from '../building/types';
  * unattended. Each one moves the price enough that guessing it is a real error,
  * not a rounding one.
  */
-export const REQUIRED_FOR_QUOTE = ['type', 'widthFt', 'lengthFt', 'legHeightFt'] as const;
+export const REQUIRED_FOR_QUOTE = [
+  'type',
+  'widthFt',
+  'lengthFt',
+  'legHeightFt',
+  'roofStyle',
+] as const;
 export type RequiredField = (typeof REQUIRED_FOR_QUOTE)[number];
 
 /** What we ask when the customer left a field out. One question per field. */
@@ -39,6 +45,13 @@ const QUESTION: Record<RequiredField, string> = {
   widthFt: 'How wide do you need it, in feet?',
   lengthFt: 'How long do you need it, in feet?',
   legHeightFt: 'How tall should the side walls be, in feet?',
+  // Roof style is worth a question rather than a default: on a 24x30x10 the
+  // same building is $3,563 regular and $4,411 vertical (owner, 2026-08-29).
+  // Assuming vertical overquotes a regular-roof customer by $848.
+  roofStyle:
+    'Which roof style — Regular (good), Boxed Eave (better), or Vertical ' +
+    '(best)? The picture shows the difference. Vertical panels shed water, ' +
+    'snow and leaves instead of holding them, so they last longest.',
 };
 
 /**

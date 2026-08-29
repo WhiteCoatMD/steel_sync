@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { REQUIRED_FOR_QUOTE } from '@/lib/ai/quoteReadiness';
 
 // Stands in for the real SDK: counts construction and, like the real one,
 // throws when no API key is available. No network call is ever made.
@@ -238,10 +239,16 @@ describe('quote readiness gates the automated path', () => {
   const reply = (obj: unknown) =>
     createMock.mockResolvedValueOnce({ content: [{ type: 'text', text: JSON.stringify(obj) }] });
 
-  it('is auto-quotable when the customer stated all four price-moving fields', async () => {
+  it('is auto-quotable when the customer stated every price-moving field', async () => {
     reply({
-      building: { type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 },
-      stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
+      building: {
+        type: 'garage',
+        widthFt: 24,
+        lengthFt: 30,
+        legHeightFt: 10,
+        roofStyle: 'vertical',
+      },
+      stated: [...REQUIRED_FOR_QUOTE],
     });
     const body = await (await POST(req({ prompt: '24x30x10 enclosed' }) as never)).json();
     expect(body.autoQuotable).toBe(true);
@@ -269,7 +276,7 @@ describe('quote readiness gates the automated path', () => {
     const body = await (await POST(req({ prompt: 'anything' }) as never)).json();
     // No evidence the customer stated anything -> ask about everything.
     expect(body.autoQuotable).toBe(false);
-    expect(body.questions).toHaveLength(4);
+    expect(body.questions).toHaveLength(REQUIRED_FOR_QUOTE.length);
   });
 
   it('still returns the parsed config so the designer can populate', async () => {

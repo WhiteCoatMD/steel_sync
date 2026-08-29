@@ -53,14 +53,14 @@ const DEALER = {
   pricing: { ...DEFAULT_PRICING_RULES, manufacturerKey: 'tejasmex' },
 } as unknown as DealerSettings;
 
-const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt'];
+const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
 const parsed = (building: Record<string, unknown>, stated: string[]) => ({
   building,
   openings: [],
   stated,
   missing: ALL.filter(f => !stated.includes(f)),
   questions: [],
-  autoQuotable: stated.length === 4,
+  autoQuotable: ALL.every(f => stated.includes(f)),
 });
 
 const send = (text: string, externalId = 'web:tester') =>

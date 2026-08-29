@@ -48,6 +48,55 @@ export function splitForMessenger(text: string, max = MAX_CHARS): string[] {
   return parts;
 }
 
+/**
+ * Sends an image by URL. Meta fetches the URL itself, so it has to be publicly
+ * reachable -- these live in `public/` and are served from the deployment.
+ *
+ * Sent BEFORE the text it illustrates: a customer who sees the roof comparison
+ * and then the question reads it the way a salesman would hand over a brochure
+ * and then ask. The reverse order asks a question about a picture that has not
+ * arrived yet.
+ */
+export async function sendFacebookImage(
+  recipientId: string,
+  imageUrl: string,
+  ctx: SendContext,
+): Promise<SendResult> {
+  if (!ctx.dealerAutoReply || !repliesGloballyEnabled()) {
+    const why = !ctx.dealerAutoReply ? 'dealer auto-reply off' : 'platform muted';
+    console.log(`[facebook] NOT SENT (${why}) — would have sent image ${imageUrl} to ${recipientId}`);
+    return { sent: false, reason: why };
+  }
+  if (!ctx.pageToken) {
+    console.error(`[facebook] no usable page token for ${ctx.dealerId} — cannot send image`);
+    return { sent: false, reason: 'no page access token' };
+  }
+
+  const res = await fetch(`${GRAPH}?access_token=${encodeURIComponent(ctx.pageToken)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      recipient: { id: recipientId },
+      messaging_type: 'RESPONSE',
+      message: {
+        attachment: {
+          type: 'image',
+          // is_reusable lets Meta cache it, so the same graphic is not
+          // re-uploaded for every customer who asks about roofs.
+          payload: { url: imageUrl, is_reusable: true },
+        },
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    console.error(`[facebook] image send failed ${res.status}: ${detail.slice(0, 300)}`);
+    return { sent: false, reason: `graph ${res.status}` };
+  }
+  return { sent: true };
+}
+
 export interface SendResult {
   sent: boolean;
   reason?: string;

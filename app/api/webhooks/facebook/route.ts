@@ -4,7 +4,7 @@ import {
   verifySubscription,
   extractMessages,
 } from '@/lib/inbound/facebookVerify';
-import { sendFacebookReply } from '@/lib/inbound/facebookSend';
+import { sendFacebookReply, sendFacebookImage } from '@/lib/inbound/facebookSend';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
 import { dealerForPage } from '@/lib/db/messaging';
 
@@ -92,11 +92,24 @@ export async function POST(req: NextRequest) {
         `[facebook] ${target.dealer.id} <- ${msg.senderId}: ${result.kind}`,
       );
 
-      await sendFacebookReply(msg.senderId, result.reply, {
+      const sendCtx = {
         pageToken: target.pageToken,
         dealerAutoReply: target.autoReply,
         dealerId: target.dealer.id,
-      });
+      };
+
+      // Picture first, then the question about it -- the way a salesman hands
+      // over the comparison sheet before asking which one they want. A failed
+      // image must not cost them the reply, so it is not awaited into a throw.
+      if (result.imageUrl) {
+        try {
+          await sendFacebookImage(msg.senderId, result.imageUrl, sendCtx);
+        } catch (err) {
+          console.error('[facebook] roof graphic failed to send', err);
+        }
+      }
+
+      await sendFacebookReply(msg.senderId, result.reply, sendCtx);
     }
   } catch (err) {
     // Never surface detail, and never fail the webhook: Meta retries a non-200,

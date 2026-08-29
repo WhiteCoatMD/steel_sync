@@ -76,7 +76,9 @@ Rules:
 - "open" or "carport" = carport type
 - Default wall is "front" for roll-up doors, distribute windows evenly on side walls
 - Space openings sensibly (don't overlap, center single doors on walls)
-- If no roof style mentioned, default to "vertical"
+- If no roof style mentioned, put "vertical" in the building as a placeholder
+  but do NOT list roofStyle in "stated" - it changes the price by hundreds of
+  dollars, so it is asked rather than assumed
 
 Standard sizes to SUGGEST when someone describes a need instead of a size
 (owner, 2026-08-29). These are suggestions only - they are never "stated":
@@ -101,12 +103,17 @@ ALSO return a "stated" array listing ONLY the fields the customer actually told
 you. This drives whether we can quote automatically or have to ask them first,
 so it must reflect what they WROTE, not what you inferred.
 
-  "stated": ["type", "widthFt", "lengthFt", "legHeightFt"]
+  "stated": ["type", "widthFt", "lengthFt", "legHeightFt", "roofStyle"]
 
 Include a field name only if the customer's own words determine it:
 - "24x30" states widthFt and lengthFt. "about 24 foot" states widthFt.
 - "enclosed", "garage", "shop", "carport", "open" state type.
 - "10 ft walls", "10ft legs", "10 tall" state legHeightFt.
+- "vertical roof", "a-frame", "boxed eave", "regular roof" state roofStyle.
+  Map the sales names to the values: "regular" -> regular, "boxed eave" or
+  "a-frame" -> aframe, "vertical" -> vertical. Good/better/best also map to
+  regular/aframe/vertical in that order.
+  Wanting the ROOF a certain colour does not state a roof STYLE.
 - "2 car garage" states type ONLY. It does not state a width or a length -
   you may still suggest sizes, but do not list them as stated.
 - "big", "cheap", "for my RV", "to cover 3 cars" state NOTHING. They describe a

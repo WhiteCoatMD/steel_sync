@@ -23,22 +23,33 @@ import {
  */
 
 describe('a field the customer did not state is a question, not a default', () => {
-  it('treats all four price-moving fields as required', () => {
-    expect([...REQUIRED_FOR_QUOTE]).toEqual(['type', 'widthFt', 'lengthFt', 'legHeightFt']);
+  it('treats every price-moving field as required', () => {
+    // roofStyle joined these on 2026-08-29: the same 24x30x10 is $3,563 with a
+    // regular roof and $4,411 vertical, so defaulting it overquotes by $848.
+    expect([...REQUIRED_FOR_QUOTE]).toEqual([
+      'type',
+      'widthFt',
+      'lengthFt',
+      'legHeightFt',
+      'roofStyle',
+    ]);
   });
 
   it('is auto-quotable only when every required field was stated', () => {
-    expect(isAutoQuotable(['type', 'widthFt', 'lengthFt', 'legHeightFt'])).toBe(true);
-    expect(missingRequired(['type', 'widthFt', 'lengthFt', 'legHeightFt'])).toEqual([]);
-    expect(clarifyingQuestions(['type', 'widthFt', 'lengthFt', 'legHeightFt'])).toEqual([]);
+    const all = [...REQUIRED_FOR_QUOTE];
+    expect(isAutoQuotable(all)).toBe(true);
+    expect(missingRequired(all)).toEqual([]);
+    expect(clarifyingQuestions(all)).toEqual([]);
   });
 
-  it.each([
-    [['widthFt', 'lengthFt', 'legHeightFt'], 'type'],
-    [['type', 'lengthFt', 'legHeightFt'], 'widthFt'],
-    [['type', 'widthFt', 'legHeightFt'], 'lengthFt'],
-    [['type', 'widthFt', 'lengthFt'], 'legHeightFt'],
-  ])('refuses to auto-quote when %s omits %s', (stated, missing) => {
+  it.each(
+    // Drop exactly one required field at a time; whichever is missing must be
+    // the one and only thing asked about.
+    REQUIRED_FOR_QUOTE.map(missing => [
+      REQUIRED_FOR_QUOTE.filter(f => f !== missing),
+      missing,
+    ]),
+  )('refuses to auto-quote when %s omits %s', (stated, missing) => {
     expect(isAutoQuotable(stated)).toBe(false);
     expect(missingRequired(stated)).toEqual([missing]);
     expect(clarifyingQuestions(stated)).toHaveLength(1);

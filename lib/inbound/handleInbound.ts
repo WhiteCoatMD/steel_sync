@@ -41,6 +41,26 @@ export interface InboundResult {
   outcome?: AutoQuoteOutcome;
   /** True only when a real price reached the customer. */
   quoted: boolean;
+  /**
+   * A graphic to send BEFORE the reply text, as a live operator would hand
+   * over a brochure and then ask. Absolute URL, because Meta fetches it itself.
+   */
+  imageUrl?: string;
+}
+
+/**
+ * The roof comparison Mitch uses on the lot. Shown whenever we ask which roof
+ * they want: three styles at three prices is a lot to picture from words, and
+ * on a 24x30x10 the choice is worth $848.
+ */
+export const ROOF_STYLE_IMAGE_PATH = '/roof-styles.png';
+
+/** Beyond this, the vendor's own guidance is to use a vertical roof. */
+export const VERTICAL_RECOMMENDED_OVER_FT = 36;
+
+function publicUrl(path: string): string | undefined {
+  const base = process.env.PUBLIC_BASE_URL || process.env.ADMIN_ORIGIN;
+  return base ? `${base.replace(/\/$/, '')}${path}` : undefined;
 }
 
 export interface InboundMessage {
@@ -148,11 +168,29 @@ export async function handleInboundMessage(
       ? ['How tall do the roll-up doors need to be?']
       : [];
 
+  // Three roof styles at three prices is a lot to picture from words, so the
+  // comparison graphic goes with the question - picture first, then the ask.
+  // Derived from the parse, not the outcome: a missing roofStyle always makes
+  // this a clarify, and the note has to exist before the reply is built.
+  const asksRoofStyle = Array.isArray(parsed.missing) && parsed.missing.includes('roofStyle');
+
+  // The vendor's own guidance, printed on that graphic: horizontal panels hold
+  // water, snow and leaves, and a long roof holds more of it. Worth saying
+  // BEFORE they choose, not after they have bought the cheapest one.
+  const lengthFt = Number((parsed.building as Record<string, unknown> | undefined)?.lengthFt);
+  const verticalNote =
+    asksRoofStyle && Number.isFinite(lengthFt) && lengthFt > VERTICAL_RECOMMENDED_OVER_FT
+      ? `At ${lengthFt}ft long we recommend the vertical roof - anything over ` +
+        `${VERTICAL_RECOMMENDED_OVER_FT}ft holds too much water and debris on a ` +
+        `horizontal panel.`
+      : '';
+
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
     signOff: signOffFor(dealer),
     offersRto: dealer.offersRto === true && !askedAboutFinancing,
     extraQuestions,
+    ...(verticalNote ? { note: verticalNote } : {}),
   });
 
   // "24x30 garage, can I do monthly payments?" states a whole building AND asks
@@ -243,6 +281,7 @@ On paying monthly: ${lowerFirst(
     conversationId: conv.id,
     outcome,
     quoted: outcome.kind === 'quote',
+    ...(asksRoofStyle ? { imageUrl: publicUrl(ROOF_STYLE_IMAGE_PATH) } : {}),
   };
 }
 
