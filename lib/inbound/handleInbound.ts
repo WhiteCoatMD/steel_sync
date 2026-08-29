@@ -115,6 +115,9 @@ export async function handleInboundMessage(
   // about rent to own" — and parsing it as a building description would find no
   // dimensions and ask how wide they want it, at the precise moment the customer
   // showed buying intent. We hold no RTO pricing, so a human takes it.
+  // Detected by the model further down when the parse succeeds; this regex
+  // pass is the fallback for when it does not, and the fast path for a message
+  // that is PURELY about paying and would otherwise be parsed as a building.
   if (dealer.offersRto && looksLikeFinancingQuestion(text) && !mentionsDimensions(text)) {
     // Answer, then keep going. Notifying the dealer HERE would hand them a
     // customer with no building and no price -- nothing to call back about. We
@@ -180,7 +183,28 @@ export async function handleInboundMessage(
   // They already asked, so the generic "we also offer rent-to-own" invitation
   // would be telling them something they just brought up. Suppress it and
   // answer directly instead.
-  const askedAboutFinancing = dealer.offersRto === true && looksLikeFinancingQuestion(text);
+  /**
+   * What the customer is doing, as the model read it -- falling back to the
+   * regex matchers when the parse returned no intents.
+   *
+   * The model is better at this by a wide margin: "is there any way to make
+   * payments on something like this" is plainly a financing question and
+   * matches no pattern anyone would think to write. The matchers stay as the
+   * floor, so an AI hiccup degrades to the old behaviour instead of none.
+   *
+   * None of these decide whether a PRICE is sent. That is still `stated` and
+   * the engine, so a misread costs a slightly-off reply, never a wrong number.
+   */
+  const intents = parsed.intents;
+  const saysFinancing = intents ? intents.asksFinancing : looksLikeFinancingQuestion(text);
+  const saysRoofComparison = intents
+    ? intents.asksRoofComparison
+    : asksToExplainRoofStyles(text);
+  const saysWhatSize = intents ? intents.asksWhatSize : looksLikeSizingQuestion(text);
+  const saysExtraHeight = intents ? intents.needsExtraHeight : mentionsTallNeed(text);
+  const saysRv = intents ? intents.isRvUse : mentionsRv(text);
+
+  const askedAboutFinancing = dealer.offersRto === true && saysFinancing;
 
   // Something tall is going inside, and height is the one dimension a guess
   // gets badly wrong: 9ft side walls for an RV owner is a building their
@@ -189,7 +213,7 @@ export async function handleInboundMessage(
   // 2026-08-29). Only asked when they have not already told us.
   // An RV is the exception: most RV customers buy an open-sided building with
   // 12ft walls (owner, 2026-08-29), so that one we can suggest instead of ask.
-  const needsHeight = mentionsTallNeed(text) && !mentionsRv(text);
+  const needsHeight = saysExtraHeight && !saysRv;
   const statedHeight = Array.isArray(parsed.stated) && parsed.stated.includes('legHeightFt');
 
   // No roll-up door on an open-sided building, so no height to ask for.
@@ -236,7 +260,7 @@ export async function handleInboundMessage(
   // withheld from PRICING because an inference is not something the customer
   // stated, but offering it to confirm is exactly what a salesperson does.
   let sizingSuggestion: string | null = null;
-  if (outcome.kind === 'clarify' && looksLikeSizingQuestion(text)) {
+  if (outcome.kind === 'clarify' && saysWhatSize) {
     const b = (parsed.building ?? {}) as Record<string, unknown>;
     const { widthFt: w, lengthFt: l, legHeightFt: h } = b;
     if (typeof w === 'number' && typeof l === 'number' && typeof h === 'number') {
@@ -256,7 +280,7 @@ export async function handleInboundMessage(
   // the question again so the thread still moves forward. Only while the roof
   // style is what we are waiting on -- otherwise "which one is best?" about
   // something else would get a roof lecture.
-  const explainRoofs = asksRoofStyle && asksToExplainRoofStyles(text);
+  const explainRoofs = asksRoofStyle && saysRoofComparison;
 
   // "What's the difference?" almost always means "what does the difference
   // cost", so each style is priced for the building they actually described
@@ -272,7 +296,7 @@ export async function handleInboundMessage(
   const hasSizeThisTurn = (['widthFt', 'lengthFt', 'legHeightFt'] as const).every(f =>
     statedNow.includes(f),
   );
-  if (asksToExplainRoofStyles(text) && !hasSizeThisTurn) {
+  if (saysRoofComparison && !hasSizeThisTurn) {
     const prev = await lastQuotedConfig(conv.id);
     if (prev?.building) {
       roofBuilding = prev.building as unknown as Record<string, unknown>;

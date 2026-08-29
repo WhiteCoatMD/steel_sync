@@ -132,7 +132,67 @@ separate question, decided later — do not answer it by pretending they never
 said it, which would make us ask "how long?" of someone who just told us.
 
 When in doubt, leave the field OUT of "stated". Asking one extra question costs
-far less than sending a confident wrong price.`;
+far less than sending a confident wrong price.
+
+ALSO return an "intents" object describing what the customer is DOING in their
+LATEST message - not what they described, and not what they asked three turns
+ago. Judge meaning, not wording; people ask these a hundred different ways.
+
+  "intents": {
+    "asksFinancing": false,
+    "asksRoofComparison": false,
+    "asksWhatSize": false,
+    "needsExtraHeight": false,
+    "isRvUse": false
+  }
+
+- asksFinancing: they are asking about rent-to-own, financing, monthly
+  payments, a payment plan, no-credit-check, or how they can pay over time.
+  "do you do rto", "can I make payments", "whats the monthly".
+- asksRoofComparison: they want to know what the roof styles ARE or what the
+  other ones COST. "what is the price difference", "how much are the other
+  roof styles", "which is best", "not sure", "whats the difference between
+  them". Naming a style they want - "vertical", "give me the boxed eave" - is
+  an ANSWER, not a comparison: that is false.
+- asksWhatSize: they are asking US to recommend a size. "what size do I need
+  for 2 cars", "how big should it be". Stating a size is not this.
+- needsExtraHeight: something tall is going inside - RV, motorhome, camper,
+  fifth wheel, boat, lifted truck, car lift, tractor - or they say they need
+  extra height or clearance.
+- isRvUse: that tall thing is specifically an RV, motorhome, camper, fifth
+  wheel or travel trailer.
+
+Default every one of these to false. They pick which correct answer to send,
+never whether to send a price, so a false negative just means a slightly
+plainer reply.`;
+
+/**
+ * What the customer is DOING in this message, as opposed to what they are
+ * describing.
+ *
+ * Read by the model rather than matched by regex. Every regex here has now
+ * failed twice on wording nobody predicted -- "what is the price difference"
+ * missed because the pattern wanted "the difference" immediately after "what
+ * is". A list of phrasings is the wrong shape for a question people ask a
+ * hundred different ways (owner, 2026-08-29).
+ *
+ * These NEVER decide whether to send a price. That still comes from `stated`,
+ * which is a claim about what the customer literally wrote, and from the
+ * pricing engine. Intent only chooses which of several correct replies to send,
+ * so a misread costs a slightly-off answer, never a wrong number.
+ */
+export interface RequestIntents {
+  /** Asking about rent-to-own, financing, monthly payments. */
+  asksFinancing: boolean;
+  /** Asking what the roof styles are, or what the others cost. */
+  asksRoofComparison: boolean;
+  /** Asking US what size they need, rather than telling us. */
+  asksWhatSize: boolean;
+  /** Something tall is going inside: RV, lifted truck, car lift. */
+  needsExtraHeight: boolean;
+  /** Specifically an RV, motorhome, camper or fifth wheel. */
+  isRvUse: boolean;
+}
 
 export interface ParsedRequest {
   building: Record<string, unknown>;
@@ -142,6 +202,8 @@ export interface ParsedRequest {
   missing: RequiredField[];
   questions: string[];
   autoQuotable: boolean;
+  /** Absent when the model did not return them; callers fall back to regex. */
+  intents?: RequestIntents;
 }
 
 /**
@@ -222,8 +284,33 @@ export function shapeParsed(raw: Record<string, unknown>): ParsedRequest {
     openings: Array.isArray(raw?.openings) ? (raw.openings as Array<Record<string, unknown>>) : [],
     ...(raw?.colors ? { colors: raw.colors as Record<string, unknown> } : {}),
     stated: statedFields(raw?.stated),
+    ...(shapeIntents(raw?.intents) ? { intents: shapeIntents(raw?.intents)! } : {}),
     missing: missingRequired(raw?.stated),
     questions: clarifyingQuestions(raw?.stated),
     autoQuotable: isAutoQuotable(raw?.stated),
   };
+}
+
+/**
+ * Coerce the model's intents into booleans, or return null if it sent none.
+ *
+ * Null rather than all-false, because "the model did not answer" and "the model
+ * said no" have different fallbacks: the first hands over to the regex
+ * matchers, the second is a real answer to respect.
+ */
+export function shapeIntents(raw: unknown): RequestIntents | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const keys: Array<keyof RequestIntents> = [
+    'asksFinancing',
+    'asksRoofComparison',
+    'asksWhatSize',
+    'needsExtraHeight',
+    'isRvUse',
+  ];
+  // Anything not literally true is false: a string, a number or a missing key
+  // must not read as intent.
+  const out = {} as RequestIntents;
+  for (const k of keys) out[k] = r[k] === true;
+  return out;
 }
