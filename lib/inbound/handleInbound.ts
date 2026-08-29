@@ -5,6 +5,7 @@ import {
   looksLikeFinancingQuestion,
   mentionsDimensions,
   financingReply,
+  financingThenAskReply,
 } from '../ai/financingIntent';
 import {
   looksLikeSizingQuestion,
@@ -23,6 +24,7 @@ import { notifyFinancingRequest } from '../notify/financing';
 import {
   findOrCreateConversation,
   recordTurn,
+  setWantsFinancing,
   resetConversation,
   type InboundChannel,
 } from './conversation';
@@ -113,12 +115,31 @@ export async function handleInboundMessage(
   // dimensions and ask how wide they want it, at the precise moment the customer
   // showed buying intent. We hold no RTO pricing, so a human takes it.
   if (dealer.offersRto && looksLikeFinancingQuestion(text) && !mentionsDimensions(text)) {
+    // Answer, then keep going. Notifying the dealer HERE would hand them a
+    // customer with no building and no price -- nothing to call back about. We
+    // remember the interest instead and alert once there is a real quote
+    // (owner, 2026-08-29).
     const transcriptSoFar = [...conv.transcript, text];
     await recordTurn(conv.id, transcriptSoFar, 'financing');
-    await alertDealerToFinancing(dealer, conv, transcriptSoFar);
+    await setWantsFinancing(conv.id, true);
+
+    // If they have already been quoted in this thread, we DO have something to
+    // hand over, so the dealer hears about it now.
+    const alreadyQuoted = conv.lastOutcome?.startsWith('quote') === true;
+    if (alreadyQuoted) {
+      await alertDealerToFinancing(dealer, conv, transcriptSoFar);
+      await setWantsFinancing(conv.id, false);
+      return {
+        kind: 'handoff',
+        reply: financingReply(),
+        conversationId: conv.id,
+        quoted: false,
+      };
+    }
+
     return {
       kind: 'handoff',
-      reply: financingReply(),
+      reply: financingThenAskReply(),
       conversationId: conv.id,
       quoted: false,
     };
@@ -297,6 +318,13 @@ On paying monthly: ${lowerFirst(
       // rather than failing the customer's reply over bookkeeping.
       console.error(`[inbound] could not save quote for ${conv.id}`, err);
     }
+  }
+
+  // They asked about rent-to-own earlier and we have finally priced something.
+  // This is the moment the dealer can be given a customer worth calling.
+  if (conv.wantsFinancing && outcome.kind === 'quote') {
+    await alertDealerToFinancing(dealer, conv, transcript, outcome.message.split('\n')[0]);
+    await setWantsFinancing(conv.id, false);
   }
 
   if (askedAboutFinancing) {

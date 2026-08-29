@@ -23,6 +23,11 @@ export interface Conversation {
   transcript: string[];
   lastOutcome: string | null;
   contact: Record<string, unknown>;
+  /**
+   * They asked about rent-to-own before describing a building. Held across
+   * turns so the dealer can be told once there is an actual quote to hand them.
+   */
+  wantsFinancing: boolean;
 }
 
 /** How many turns back we keep. Long enough for a real clarification exchange. */
@@ -48,7 +53,8 @@ export async function findOrCreateConversation(
     VALUES (${id}, ${dealerId}, ${channel}, ${externalId}, ${JSON.stringify(contact)}::jsonb)
     ON CONFLICT (channel, external_id) DO UPDATE
       SET updated_at = now()
-    RETURNING id, dealer_id, channel, external_id, transcript, last_outcome, contact
+    RETURNING id, dealer_id, channel, external_id, transcript, last_outcome, contact,
+              wants_financing
   `) as Array<Record<string, unknown>>;
 
   const r = rows[0];
@@ -60,6 +66,7 @@ export async function findOrCreateConversation(
     transcript: Array.isArray(r.transcript) ? (r.transcript as string[]) : [],
     lastOutcome: (r.last_outcome as string) ?? null,
     contact: (r.contact as Record<string, unknown>) ?? {},
+    wantsFinancing: r.wants_financing === true,
   };
 }
 
@@ -97,6 +104,24 @@ export async function resetConversation(conversationId: string): Promise<void> {
   await sql`
     UPDATE conversations
        SET transcript = '[]'::jsonb, updated_at = now()
+     WHERE id = ${conversationId}
+  `;
+}
+
+/**
+ * Remember (or clear) that this customer is waiting on rent-to-own terms.
+ *
+ * Set when they ask before describing a building; cleared once the dealer has
+ * been told, so a second quote in the same thread does not re-alert them.
+ */
+export async function setWantsFinancing(
+  conversationId: string,
+  wants: boolean,
+): Promise<void> {
+  const sql = getSql();
+  await sql`
+    UPDATE conversations
+       SET wants_financing = ${wants}, updated_at = now()
      WHERE id = ${conversationId}
   `;
 }

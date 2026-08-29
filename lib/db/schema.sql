@@ -86,3 +86,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS dealers_facebook_page_idx
 -- hands the customer to a human. Per dealer because not every dealer offers it,
 -- and promising terms a dealer does not have is worse than staying quiet.
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS offers_rto BOOLEAN NOT NULL DEFAULT false;
+
+-- Someone asked about rent-to-own before describing a building.
+--
+-- Remembered across turns so the answer can be "yes, what are you looking to
+-- build?" rather than a dead handoff: the dealer is then notified once we have
+-- an actual quote, so they call back knowing the size AND the price instead of
+-- only that somebody, somewhere, asked about financing (owner, 2026-08-29).
+ALTER TABLE conversations ADD COLUMN IF NOT EXISTS wants_financing BOOLEAN NOT NULL DEFAULT false;

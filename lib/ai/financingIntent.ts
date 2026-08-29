@@ -63,3 +63,17 @@ export function mentionsDimensions(text: unknown): boolean {
 export function financingReply(): string {
   return "Yes, we do offer rent-to-own. I'll get the details over to you shortly.";
 }
+
+/**
+ * The answer when they ask about financing before saying what they want built.
+ *
+ * A bare "yes, someone will follow up" ends the conversation at the moment the
+ * customer showed buying intent, and leaves the dealer calling back with
+ * nothing to discuss. Answering and then asking gets us to a real quote, so the
+ * dealer arrives knowing the building AND the price (owner, 2026-08-29).
+ */
+export function financingThenAskReply(): string {
+  return (
+    'Yes, we do offer rent-to-own. What are you looking to build?'
+  );
+}

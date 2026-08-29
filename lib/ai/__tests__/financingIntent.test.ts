@@ -3,6 +3,7 @@ import {
   looksLikeFinancingQuestion,
   mentionsDimensions,
   financingReply,
+  financingThenAskReply,
 } from '../financingIntent';
 
 /**
@@ -100,5 +101,27 @@ describe('the financing reply', () => {
   it('quotes no figure of any kind', () => {
     expect(reply).not.toMatch(/\$/);
     expect(reply).not.toMatch(/\d+\s*(%|per month|\/mo|months?)/i);
+  });
+});
+
+describe('asking about financing before naming a building', () => {
+  const reply = financingThenAskReply();
+
+  it('answers yes and then asks what they want built', () => {
+    // A bare "someone will follow up" ends the conversation exactly when the
+    // customer showed buying intent, and leaves the dealer calling back with
+    // nothing to discuss (owner, 2026-08-29).
+    expect(reply).toMatch(/rent-to-own/i);
+    expect(reply).toMatch(/\?$/);
+  });
+
+  it('does not promise a follow-up it is too early to make', () => {
+    // The dealer is told once there is a QUOTE to hand them, not now.
+    expect(reply).not.toMatch(/shortly/i);
+  });
+
+  it('quotes no terms, same as every other financing reply', () => {
+    expect(reply).not.toMatch(/\$/);
+    expect(`${reply} ${financingReply()}`).not.toMatch(/per month|\/mo/i);
   });
 });
