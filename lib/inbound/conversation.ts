@@ -89,9 +89,14 @@ export async function recordTurn(
  */
 export async function resetConversation(conversationId: string): Promise<void> {
   const sql = getSql();
+  // Clear the TRANSCRIPT but keep last_outcome. The transcript has to go so the
+  // customer's next question is not re-parsed together with the building they
+  // already have a price for; the outcome is the audit trail, and blanking it
+  // made a successfully quoted thread look in the admin dashboard exactly like
+  // one where nothing had happened.
   await sql`
     UPDATE conversations
-       SET transcript = '[]'::jsonb, last_outcome = NULL, updated_at = now()
+       SET transcript = '[]'::jsonb, updated_at = now()
      WHERE id = ${conversationId}
   `;
 }

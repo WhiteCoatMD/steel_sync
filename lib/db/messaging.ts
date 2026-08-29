@@ -50,14 +50,31 @@ export async function dealerForPage(pageId: string): Promise<DealerMessaging | n
 export async function setDealerPage(
   dealerId: string,
   pageId: string,
-  pageToken: string,
+  pageToken?: string | null,
 ): Promise<void> {
   const sql = getSql();
+
+  // A token is OPTIONAL, so a page can be attached in listen-only mode before
+  // one exists. That is the useful first state: inbound messages are parsed,
+  // priced and logged, and the dealer can read what the bot WOULD have said
+  // before anyone generates a credential. Without this, watching first would
+  // require the very token you only need in order to speak.
+  if (pageToken) {
+    await sql`
+      UPDATE dealers
+         SET facebook_page_id = ${pageId},
+             facebook_page_token = ${encryptSecret(pageToken)},
+             updated_at = now()
+       WHERE id = ${dealerId}
+    `;
+    return;
+  }
+
+  // Leave any existing token alone — attaching a page again must not silently
+  // wipe a working credential.
   await sql`
     UPDATE dealers
-       SET facebook_page_id = ${pageId},
-           facebook_page_token = ${encryptSecret(pageToken)},
-           updated_at = now()
+       SET facebook_page_id = ${pageId}, updated_at = now()
      WHERE id = ${dealerId}
   `;
 }

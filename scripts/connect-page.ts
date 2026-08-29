@@ -41,11 +41,12 @@ async function main() {
     process.exit(1);
   }
 
-  if (pageId || pageToken) {
-    if (!pageId || !pageToken) {
-      console.error('PAGE_ID and PAGE_TOKEN must be given together.');
-      process.exit(1);
-    }
+  if (pageToken && !pageId) {
+    console.error('PAGE_TOKEN needs PAGE_ID too — which page is the token for?');
+    process.exit(1);
+  }
+
+  if (pageId) {
     // Refuse to steal a page already claimed by someone else: two dealers on
     // one page would race for whose pricing answers a customer.
     const existing = await dealerForPage(pageId);
@@ -56,8 +57,14 @@ async function main() {
       );
       process.exit(1);
     }
-    await setDealerPage(dealerId, pageId, pageToken);
-    console.log(`connected page ${pageId} to ${dealerId} (token stored encrypted)`);
+    await setDealerPage(dealerId, pageId, pageToken || null);
+    console.log(
+      pageToken
+        ? `connected page ${pageId} to ${dealerId} (token stored encrypted)`
+        : `connected page ${pageId} to ${dealerId} in LISTEN-ONLY mode — ` +
+            'messages will be parsed, priced and logged, but nothing can be sent ' +
+            'until a PAGE_TOKEN is supplied.',
+    );
   }
 
   if (autoReply === 'on' || autoReply === 'off') {
