@@ -29,16 +29,50 @@ export function asksToExplainRoofStyles(text: unknown): boolean {
   return EXPLAIN_PATTERNS.some(re => re.test(t));
 }
 
+/** One style, its pitch, and what it costs for the building they described. */
+export interface RoofStyleOption {
+  key: 'regular' | 'aframe' | 'vertical';
+  label: string;
+  blurb: string;
+  /** Priced for THIS customer's dimensions, or undefined if we could not. */
+  price?: string;
+}
+
+export const ROOF_STYLE_BLURBS: Array<Omit<RoofStyleOption, 'price'>> = [
+  {
+    key: 'regular',
+    label: 'Regular',
+    blurb: 'Our value roof. Rounded corners, panels run side to side.',
+  },
+  {
+    key: 'aframe',
+    label: 'Boxed Eave',
+    blurb: 'A peaked A-frame roof on a galvanized frame.',
+  },
+  {
+    key: 'vertical',
+    label: 'Vertical',
+    blurb:
+      'Top of the line. Panels run down the roof, so water, snow and leaves ' +
+      'slide off instead of sitting on it. Lasts the longest.',
+  },
+];
+
 /**
- * The explanation, in the order the graphic shows them.
+ * The explanation, one style per block.
+ *
+ * Spaced rather than run together: three styles in a single paragraph is a
+ * run-on sentence in a chat window (owner, 2026-08-29). Prices are included
+ * when we know the size, because "what is the difference" usually means "what
+ * does the difference cost".
  *
  * Ends by re-asking, so an explanation still moves the conversation forward
  * rather than leaving the customer to restart it.
  */
-export const ROOF_STYLE_EXPLANATION =
-  'Regular is our value roof — rounded corners, panels running side to side. ' +
-  'Boxed Eave adds an A-frame peak and a galvanized frame. Vertical is the ' +
-  'top of the line: the panels run down the roof instead of across, so water, ' +
-  'snow and leaves slide off instead of sitting on it, which is why it lasts ' +
-  'longest. Anything over 36ft long we recommend vertical.\n\n' +
-  'Which one would you like?';
+export function roofStyleExplanation(options: RoofStyleOption[]): string {
+  const blocks = options.map(o => {
+    const price = o.price ? ` — ${o.price}` : '';
+    return `${o.label}${price}\n${o.blurb}`;
+  });
+  return `${blocks.join('\n\n')}\n\nWhich one would you like?`;
+}

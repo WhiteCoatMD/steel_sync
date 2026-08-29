@@ -110,6 +110,12 @@ export async function POST(req: NextRequest) {
       }
 
       await sendFacebookReply(msg.senderId, result.reply, sendCtx);
+
+      // A separate bubble, deliberately: the price lands on its own and the
+      // rent-to-own offer follows, rather than one dense block of text.
+      if (result.followUp) {
+        await sendFacebookReply(msg.senderId, result.followUp, sendCtx);
+      }
     }
   } catch (err) {
     // Never surface detail, and never fail the webhook: Meta retries a non-200,

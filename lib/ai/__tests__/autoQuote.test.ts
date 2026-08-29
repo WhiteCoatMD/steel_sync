@@ -69,15 +69,30 @@ describe('a fully stated, priceable request gets a number', () => {
       RULES,
       { offersRto: true },
     );
-    expect(withRto.message).toMatch(/rent-to-own/i);
-    // We hold no RTO pricing. The only number in this reply is the cash price,
-    // so a payment the dealer never agreed to cannot leave the building.
-    expect(withRto.message).not.toMatch(/per month|\/mo|monthly payment of/i);
+    if (withRto.kind !== 'quote') throw new Error('expected a quote');
+    // Its OWN message, not stacked under the price (owner, 2026-08-29).
+    expect(withRto.message).not.toMatch(/rent-to-own/i);
+    expect(withRto.followUp).toMatch(/rent-to-own/i);
+    // We hold no RTO pricing, so a payment the dealer never agreed to cannot
+    // leave the building in either message.
+    const both = `${withRto.message} ${withRto.followUp}`;
+    expect(both).not.toMatch(/per month|\/mo|monthly payment of/i);
   });
 
   it('stays silent about rent-to-own for a dealer that does not offer it', () => {
     if (out.kind !== 'quote') throw new Error('expected a quote');
     expect(out.message).not.toMatch(/rent-to-own/i);
+    expect(out.followUp).toBeUndefined();
+  });
+
+  it('keeps the quote to the price and the split, nothing else', () => {
+    // No line-item count, no "happy to send the full breakdown" (owner,
+    // 2026-08-29). One message, one number.
+    if (out.kind !== 'quote') throw new Error('expected a quote');
+    expect(out.message).not.toMatch(/line items?/i);
+    expect(out.message).not.toMatch(/breakdown/i);
+    expect(out.message.split('\n\n')).toHaveLength(1);
+
   });
 
   it('quotes a too-short building at the 20ft minimum, and says so', () => {

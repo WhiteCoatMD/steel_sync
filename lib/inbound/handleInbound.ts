@@ -13,7 +13,11 @@ import {
   mentionsRv,
   isOpenSided,
 } from '../ai/sizingIntent';
-import { asksToExplainRoofStyles, ROOF_STYLE_EXPLANATION } from '../ai/roofStyleHelp';
+import {
+  asksToExplainRoofStyles,
+  roofStyleExplanation,
+  ROOF_STYLE_BLURBS,
+} from '../ai/roofStyleHelp';
 import { insertQuote } from '../db/quotes';
 import {
   findOrCreateConversation,
@@ -47,6 +51,8 @@ export interface InboundResult {
    * over a brochure and then ask. Absolute URL, because Meta fetches it itself.
    */
   imageUrl?: string;
+  /** A second message, sent after `reply` rather than crammed into it. */
+  followUp?: string;
 }
 
 /**
@@ -226,9 +232,30 @@ export async function handleInboundMessage(
   // something else would get a roof lecture.
   const explainRoofs = asksRoofStyle && asksToExplainRoofStyles(text);
 
+  // "What's the difference?" almost always means "what does the difference
+  // cost", so each style is priced for the building they actually described
+  // rather than explained in the abstract. Everything but the roof is already
+  // known here -- roofStyle is the only field we are waiting on.
+  const roofOptions = explainRoofs
+    ? ROOF_STYLE_BLURBS.map(o => {
+        const priced = decideAutoQuote(
+          {
+            ...parsed,
+            building: { ...(parsed.building ?? {}), roofStyle: o.key },
+            stated: [...(Array.isArray(parsed.stated) ? parsed.stated : []), 'roofStyle'],
+          },
+          dealer.pricing,
+          { dealerId: dealer.id },
+        );
+        return priced.kind === 'quote'
+          ? { ...o, price: `$${priced.pricing.total.toLocaleString()}` }
+          : o;
+      })
+    : [];
+
   const reply =
     explainRoofs
-      ? ROOF_STYLE_EXPLANATION
+      ? roofStyleExplanation(roofOptions)
       : sizingSuggestion
       ? sizingSuggestion
       : askedAboutFinancing && outcome.kind === 'quote'
@@ -288,6 +315,11 @@ On paying monthly: ${lowerFirst(
     conversationId: conv.id,
     outcome,
     quoted: outcome.kind === 'quote',
+    // Rent-to-own goes out as its own bubble, and only when we did not already
+    // answer a financing question inline -- otherwise we say it twice.
+    ...(outcome.kind === 'quote' && outcome.followUp && !askedAboutFinancing
+      ? { followUp: outcome.followUp }
+      : {}),
     // Not on the explanation turn: they are asking ABOUT the picture they were
     // just sent, so sending it again is answering a question with the thing
     // they already have.

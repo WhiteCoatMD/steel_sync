@@ -52,6 +52,12 @@ export type AutoQuoteOutcome =
       pricing: PricingResult;
       /** Reply text safe to send as-is. */
       message: string;
+      /**
+       * Sent as its OWN message after the price, never appended to it. The
+       * number, the deposit split and a rent-to-own pitch stacked into one
+       * bubble is a wall of text in a chat window (owner, 2026-08-29).
+       */
+      followUp?: string;
     }
   | {
       kind: 'clarify';
@@ -227,19 +233,17 @@ export function decideAutoQuote(
   // monthly figure the dealer never agreed to would be worse than not
   // mentioning the option at all.
   const rto = opts.offersRto
-    ? `\n\nPrefer to spread it out? We offer rent-to-own too — say the word and ` +
+    ? `Prefer to spread it out? We offer rent-to-own too — say the word and ` +
       `we'll go through the terms with you.`
-    : '';
+    : undefined;
 
   return {
     kind: 'quote',
     config,
     pricing,
     message:
-      `${describe(b)}: ${money(pricing.total)}.${deposit}` +
-      rto +
-      `\n\nThat includes ${pricing.lineItems.length} line items — happy to send the ` +
-      `full breakdown or adjust anything.`,
+      `${describe(b)}: ${money(pricing.total)}.${deposit}`,
+    ...(rto ? { followUp: rto } : {}),
   };
 }
 
