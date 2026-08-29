@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { isAllowedAdmin } from '@/lib/admin/auth';
+import { isAllowedAdmin, adminOrigin } from '@/lib/admin/auth';
 import { sendMagicLink } from '@/lib/admin/sendMagicLink';
 import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 
@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
 
   if (isAllowedAdmin(email)) {
     try {
-      const origin = process.env.ADMIN_ORIGIN || new URL(req.url).origin;
-      await sendMagicLink(email.toLowerCase(), origin);
+      // Never the request's Host - see adminOrigin().
+      await sendMagicLink(email.toLowerCase(), adminOrigin(req));
     } catch (err) {
       // Logged, never surfaced: the reply must not differ between "we failed to
       // send" and "you are not an admin".

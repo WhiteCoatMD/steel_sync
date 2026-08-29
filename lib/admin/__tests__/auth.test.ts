@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   isAllowedAdmin,
   allowedAdmins,
@@ -8,6 +8,8 @@ import {
   createSessionToken,
   verifySessionToken,
   sessionCookieOptions,
+  adminOrigin,
+  adminUrl,
   DEFAULT_SUPER_ADMIN,
   TTL,
 } from '../auth';
@@ -188,5 +190,64 @@ describe('the session cookie', () => {
   it('is scoped to the whole site and expires', () => {
     expect(opts.path).toBe('/');
     expect(opts.maxAge).toBe(Math.floor(TTL.SESSION_TTL_MS / 1000));
+  });
+});
+
+describe('admin links never trust the request Host', () => {
+  /**
+   * `new URL(req.url).origin` reflects the Host header, which is
+   * attacker-supplied. Using it to build a sign-in link is an account-takeover
+   * chain: the attacker POSTs /api/admin/login with Host: evil.com and the REAL
+   * admin's address, the link is built on evil.com, the email goes to the real
+   * admin, and their click delivers a valid magic token to the attacker.
+   * Tokens are not bound to a host, so the stolen one works.
+   */
+  const spoofed = { url: 'https://evil.com/api/admin/login' };
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    delete process.env.ADMIN_ORIGIN;
+  });
+
+  it('uses the configured origin, not the spoofed Host', () => {
+    process.env.ADMIN_ORIGIN = 'https://steel-sync.vercel.app';
+    expect(adminOrigin(spoofed)).toBe('https://steel-sync.vercel.app');
+    expect(adminOrigin(spoofed)).not.toContain('evil.com');
+  });
+
+  it('builds every admin URL on the configured origin', () => {
+    process.env.ADMIN_ORIGIN = 'https://steel-sync.vercel.app';
+    for (const path of ['/admin', '/admin/login?error=expired', '/api/admin/callback']) {
+      const built = adminUrl(path, spoofed);
+      expect(built.startsWith('https://steel-sync.vercel.app')).toBe(true);
+      expect(built).not.toContain('evil.com');
+    }
+  });
+
+  it('fails CLOSED in production when nothing is configured', () => {
+    // No sign-in at all beats a sign-in link pointing at an attacker.
+    vi.stubEnv('NODE_ENV', 'production');
+    expect(() => adminOrigin(spoofed)).toThrow(/ADMIN_ORIGIN/);
+    expect(() => adminUrl('/admin', spoofed)).toThrow(/ADMIN_ORIGIN/);
+  });
+
+  it('still allows the request origin in development', () => {
+    // The host is not meaningfully attacker-controlled locally, and requiring
+    // config there would just get someone to hardcode a fallback.
+    vi.stubEnv('NODE_ENV', 'development');
+    expect(adminOrigin({ url: 'http://localhost:3001/api/admin/login' })).toBe(
+      'http://localhost:3001',
+    );
+  });
+
+  it('normalises a trailing slash so the path is never doubled', () => {
+    process.env.ADMIN_ORIGIN = 'https://steel-sync.vercel.app/';
+    expect(adminUrl('/admin', spoofed)).toBe('https://steel-sync.vercel.app/admin');
+  });
+
+  it('cannot be talked into an absolute off-site path', () => {
+    process.env.ADMIN_ORIGIN = 'https://steel-sync.vercel.app';
+    // Even if a path were ever built from input, the origin stays ours.
+    expect(adminUrl('/admin/login?error=expired', spoofed)).toContain('steel-sync.vercel.app');
   });
 });

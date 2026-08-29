@@ -162,4 +162,45 @@ export function sessionCookieOptions() {
   };
 }
 
+/**
+ * The canonical origin for anything security-sensitive we build a URL from.
+ *
+ * NEVER derive this from the request. `new URL(req.url).origin` reflects the
+ * Host header, which is attacker-supplied, and that turns the sign-in endpoint
+ * into an account-takeover chain:
+ *
+ *   1. attacker POSTs /api/admin/login with Host: evil.com and the REAL
+ *      admin's address
+ *   2. the link is built as https://evil.com/api/admin/callback?token=...
+ *   3. the email goes to the real admin, who clicks it
+ *   4. a valid magic token lands on the attacker's server, exchangeable for a
+ *      session
+ *
+ * Tokens are not bound to a host, so a stolen one works perfectly. The same
+ * header also steers the post-login and post-logout redirects, which is an open
+ * redirect on its own.
+ *
+ * In production this must be configured, and it fails CLOSED like the signing
+ * secret: no sign-in at all beats a sign-in link pointing somewhere else. In
+ * development the host is not meaningfully attacker-controlled, so the request
+ * origin keeps local work convenient.
+ */
+export function adminOrigin(req: { url: string }): string {
+  const configured = process.env.ADMIN_ORIGIN?.trim().replace(/\/+$/, '');
+  if (configured) return configured;
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'ADMIN_ORIGIN is not set. Refusing to build an admin link from the ' +
+        'request Host header, which is attacker-supplied. Set it to e.g. ' +
+        'https://steel-sync.vercel.app',
+    );
+  }
+  return new URL(req.url).origin;
+}
+
+/** Builds an admin URL on the canonical origin, never on the request's host. */
+export function adminUrl(path: string, req: { url: string }): string {
+  return new URL(path, `${adminOrigin(req)}/`).toString();
+}
+
 export const TTL = { MAGIC_LINK_TTL_MS, SESSION_TTL_MS };
