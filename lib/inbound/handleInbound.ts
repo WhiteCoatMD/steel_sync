@@ -6,6 +6,7 @@ import {
   mentionsDimensions,
   financingReply,
 } from '../ai/financingIntent';
+import { looksLikeSizingQuestion, sizingReply } from '../ai/sizingIntent';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -133,8 +134,31 @@ export async function handleInboundMessage(
   // about money. It deserves the price — but answering only the half we can
   // compute, and ignoring the question they actually asked, reads as not
   // listening.
+  // "and what size is it?" asks US to pick, and the default clarify reply asks
+  // them right back -- a dead end on the most common question a dealer gets.
+  // The parser has already inferred a sensible size for "2 car garage"; it is
+  // withheld from PRICING because an inference is not something the customer
+  // stated, but offering it to confirm is exactly what a salesperson does.
+  let sizingSuggestion: string | null = null;
+  if (outcome.kind === 'clarify' && looksLikeSizingQuestion(text)) {
+    const b = (parsed.building ?? {}) as Record<string, unknown>;
+    const { widthFt: w, lengthFt: l, legHeightFt: h } = b;
+    if (typeof w === 'number' && typeof l === 'number' && typeof h === 'number') {
+      sizingSuggestion = sizingReply({
+        widthFt: w,
+        lengthFt: l,
+        legHeightFt: h,
+        type: typeof b.type === 'string' ? b.type : undefined,
+      });
+    }
+  }
+
   const reply =
-    askedAboutFinancing && outcome.kind === 'quote'
+    sizingSuggestion
+      ? `${sizingSuggestion}${dealer.phone ? `
+
+Questions? Call us at ${dealer.phone}.` : ''}`
+      : askedAboutFinancing && outcome.kind === 'quote'
       ? `${outcome.message}
 
 On paying monthly: ${lowerFirst(
@@ -142,7 +166,12 @@ On paying monthly: ${lowerFirst(
         )}`
       : outcome.message;
 
-  await recordTurn(conv.id, transcript, askedAboutFinancing ? `${outcome.kind}+financing` : outcome.kind);
+  const recorded = sizingSuggestion
+    ? 'sizing-suggestion'
+    : askedAboutFinancing
+      ? `${outcome.kind}+financing`
+      : outcome.kind;
+  await recordTurn(conv.id, transcript, recorded);
 
   // A quoted thread is finished. Without this the customer's next question
   // ("what about a 30x40?") gets re-parsed together with the building they

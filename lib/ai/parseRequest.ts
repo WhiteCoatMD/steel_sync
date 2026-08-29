@@ -77,6 +77,12 @@ Rules:
 - Default wall is "front" for roll-up doors, distribute windows evenly on side walls
 - Space openings sensibly (don't overlap, center single doors on walls)
 - If no roof style mentioned, default to "vertical"
+
+Standard sizes to SUGGEST when someone describes a need instead of a size
+(owner, 2026-08-29). These are suggestions only - they are never "stated":
+- 2 car garage: 24ft wide x 20ft long x 9ft legs. Go taller than 9ft legs only
+  if they mention needing taller doors (an RV, a lifted truck, a car lift).
+- 2 car carport: 20ft wide x 20ft long x 7ft legs.
 - If no colors mentioned, omit the colors field
 - Return ONLY the JSON object, no explanation
 
