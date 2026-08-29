@@ -30,3 +30,19 @@ export function normalizeWidthFt(requested: number): number {
   if (!Number.isFinite(requested)) return requested;
   return requested % 2 === 0 ? requested : requested + 1;
 }
+
+/**
+ * The tallest side walls that may be quoted automatically.
+ *
+ * 14ft and up goes to the dealer (owner, 2026-08-29). The engine will happily
+ * price an open 24x30x14 at $5,077 from the measured table, so this is not
+ * about a missing number -- it is that buildings this tall carry questions the
+ * bot cannot settle (anchoring, permits, site access, what actually has to fit
+ * inside), and getting one wrong is expensive in a way a carport is not.
+ */
+export const MAX_AUTO_QUOTE_LEG_HEIGHT_FT = 14;
+
+/** True when side walls this tall must be handed to a person. */
+export function needsDealerReview(legHeightFt: number): boolean {
+  return Number.isFinite(legHeightFt) && legHeightFt >= MAX_AUTO_QUOTE_LEG_HEIGHT_FT;
+}

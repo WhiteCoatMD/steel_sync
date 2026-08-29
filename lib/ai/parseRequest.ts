@@ -83,6 +83,10 @@ Standard sizes to SUGGEST when someone describes a need instead of a size
 - 2 car garage: 24ft wide x 20ft long x 9ft legs. Go taller than 9ft legs only
   if they mention needing taller doors (an RV, a lifted truck, a car lift).
 - 2 car carport: 20ft wide x 20ft long x 7ft legs.
+- RV / motorhome / camper cover: most RV customers buy an OPEN-SIDED building,
+  so suggest type "rv-cover" (or "carport") rather than a garage unless they
+  ask to have it enclosed. 12ft legs is the usual height. Never suggest 14ft or
+  taller - that has to be priced by a person.
 - If no colors mentioned, omit the colors field
 - Return ONLY the JSON object, no explanation
 

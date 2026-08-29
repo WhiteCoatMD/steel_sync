@@ -10,7 +10,8 @@ import {
   looksLikeSizingQuestion,
   sizingReply,
   mentionsTallNeed,
-  HEIGHT_QUESTIONS,
+  mentionsRv,
+  isOpenSided,
 } from '../ai/sizingIntent';
 import {
   findOrCreateConversation,
@@ -134,10 +135,17 @@ export async function handleInboundMessage(
   // vehicle does not fit in. The door has its own height, separate from the
   // walls, which nothing else in the pipeline ever asked about (owner,
   // 2026-08-29). Only asked when they have not already told us.
-  const needsHeight = mentionsTallNeed(text);
+  // An RV is the exception: most RV customers buy an open-sided building with
+  // 12ft walls (owner, 2026-08-29), so that one we can suggest instead of ask.
+  const needsHeight = mentionsTallNeed(text) && !mentionsRv(text);
   const statedHeight = Array.isArray(parsed.stated) && parsed.stated.includes('legHeightFt');
+
+  // No roll-up door on an open-sided building, so no height to ask for.
+  const openSided = isOpenSided((parsed.building as Record<string, unknown> | undefined)?.type);
   const extraQuestions =
-    needsHeight && !statedHeight ? ['How tall do the roll-up doors need to be?'] : [];
+    needsHeight && !statedHeight && !openSided
+      ? ['How tall do the roll-up doors need to be?']
+      : [];
 
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,

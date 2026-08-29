@@ -50,8 +50,20 @@ export interface SuggestedSize {
  * say yes before anything is priced, so an inference cannot turn into a quote
  * behind their back.
  */
+/** "an RV cover", not "a RV cover". RV reads as starting with a vowel. */
+function article(noun: string): string {
+  return /^[aeiou]/i.test(noun) || /^rv/i.test(noun) ? 'an' : 'a';
+}
+
 export function sizingReply(s: SuggestedSize, needsHeight = false): string {
-  const what = s.type === 'carport' ? 'carport' : s.type ? String(s.type) : 'building';
+  const what =
+    s.type === 'carport'
+      ? 'carport'
+      : s.type === 'rv-cover'
+        ? 'RV cover'
+        : s.type
+          ? String(s.type)
+          : 'building';
 
   // When they have told us something tall is going inside, the footprint is
   // still worth suggesting but the HEIGHT is not ours to pick - guessing it is
@@ -60,7 +72,8 @@ export function sizingReply(s: SuggestedSize, needsHeight = false): string {
     const bullets = HEIGHT_QUESTIONS.map(q => `• ${q}`).join('\n');
     return (
       `On the footprint, most people go with ${s.widthFt}' wide x ` +
-      `${s.lengthFt}' long for a ${what} like that. The height I do not want ` +
+      `${s.lengthFt}' long for ${article(what)} ${what} like that. The height ` +
+      `I do not want ` +
       `to guess at, since that is what has to clear:\n\n` +
       bullets
     );
@@ -68,8 +81,8 @@ export function sizingReply(s: SuggestedSize, needsHeight = false): string {
 
   return (
     `Most people go with ${s.widthFt}' wide x ${s.lengthFt}' long and ` +
-    `${s.legHeightFt}' side walls for a ${what} like that. Want me to price ` +
-    `that one, or did you have different dimensions in mind?`
+    `${s.legHeightFt}' side walls for ${article(what)} ${what} like that. ` +
+    `Want me to price that one, or did you have different dimensions in mind?`
   );
 }
 
@@ -119,3 +132,28 @@ export const HEIGHT_QUESTIONS = [
   'How tall do you need the side walls, in feet?',
   'How tall do the roll-up doors need to be?',
 ];
+
+/**
+ * An RV is the one tall-need case with a documented standard: most RV
+ * customers buy an open-sided building with 12ft walls (owner, 2026-08-29).
+ * So unlike a lifted truck or a car lift, we can suggest a height instead of
+ * asking for one.
+ */
+const RV_PATTERNS: RegExp[] = [
+  /\brv\b/i,
+  /\bmotor ?home\b/i,
+  /\bcamper\b/i,
+  /\bfifth ?wheel\b/i,
+  /\b5th ?wheel\b/i,
+  /\btravel trailer\b/i,
+];
+
+export function mentionsRv(text: unknown): boolean {
+  if (typeof text !== 'string') return false;
+  return RV_PATTERNS.some(re => re.test(text));
+}
+
+/** Open-sided buildings have no roll-up door to ask the height of. */
+export function isOpenSided(type: unknown): boolean {
+  return type === 'carport' || type === 'rv-cover';
+}

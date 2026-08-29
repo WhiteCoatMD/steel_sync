@@ -3,6 +3,8 @@ import {
   looksLikeSizingQuestion,
   sizingReply,
   mentionsTallNeed,
+  mentionsRv,
+  isOpenSided,
   HEIGHT_QUESTIONS,
 } from '../sizingIntent';
 
@@ -121,5 +123,41 @@ describe('height is asked, never guessed', () => {
     expect(r).toMatch(/side walls/i);
     expect(r).toMatch(/roll-?up doors/i);
     expect(HEIGHT_QUESTIONS).toHaveLength(2);
+  });
+});
+
+describe('RV is the tall-need case we have an answer for', () => {
+  /**
+   * Most RV customers buy an OPEN-SIDED building with 12ft walls (owner,
+   * 2026-08-29). So unlike a lifted truck, we suggest a height rather than
+   * asking for one -- and an open building has no roll-up door to ask about.
+   */
+  it.each(['my RV', 'the motorhome', 'a camper', 'fifth wheel', '5th wheel', 'travel trailer'])(
+    'recognises "%s"',
+    msg => {
+      expect(mentionsRv(msg)).toBe(true);
+      expect(mentionsTallNeed(msg)).toBe(true);
+    },
+  );
+
+  it.each(['lifted truck', 'car lift', 'taller doors'])(
+    'treats "%s" as tall but NOT an RV, so it still asks',
+    msg => {
+      expect(mentionsTallNeed(msg)).toBe(true);
+      expect(mentionsRv(msg)).toBe(false);
+    },
+  );
+
+  it('knows which buildings have no roll-up door', () => {
+    expect(isOpenSided('carport')).toBe(true);
+    expect(isOpenSided('rv-cover')).toBe(true);
+    expect(isOpenSided('garage')).toBe(false);
+    expect(isOpenSided(undefined)).toBe(false);
+  });
+
+  it('writes "an RV cover", not "a RV cover"', () => {
+    const r = sizingReply({ widthFt: 18, lengthFt: 40, legHeightFt: 12, type: 'rv-cover' });
+    expect(r).toContain('an RV cover');
+    expect(r).toContain("12' side walls");
   });
 });

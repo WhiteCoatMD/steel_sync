@@ -8,7 +8,12 @@ import { createDefaultConfig } from '../building/defaultConfig';
 import { DEFAULT_DEALER_ID } from '../db/dealers';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
-import { normalizeLengthFt, normalizeWidthFt } from '../pricing/dimensions';
+import {
+  normalizeLengthFt,
+  normalizeWidthFt,
+  needsDealerReview,
+  MAX_AUTO_QUOTE_LEG_HEIGHT_FT,
+} from '../pricing/dimensions';
 import { clarifyingQuestions, isAutoQuotable, sanitizeBuilding } from './quoteReadiness';
 
 /**
@@ -120,7 +125,8 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
 const money = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
 function describe(b: BuildingConfig['building']): string {
-  const kind = b.type === 'carport' ? 'open carport' : String(b.type);
+  const kind =
+    b.type === 'carport' ? 'open carport' : b.type === 'rv-cover' ? 'open RV cover' : String(b.type);
   return `${b.widthFt}' x ${b.lengthFt}' x ${b.legHeightFt}' ${kind}`;
 }
 
@@ -156,6 +162,25 @@ export function decideAutoQuote(
 
   // ── 2. Can we price what they asked for? ──────────────────
   const config = configFromAI(ai, opts.dealerId);
+
+  // Tall walls go to a person even though the table CAN price them. An open
+  // 24x30x14 comes back at $5,077 from real measured rows, so this is a policy
+  // gate, not a missing number: a building that tall raises anchoring, permit
+  // and site-access questions the bot has no way to settle (owner, 2026-08-29).
+  const legHeightFt = Number(config.building.legHeightFt);
+  if (needsDealerReview(legHeightFt)) {
+    return {
+      kind: 'handoff',
+      reasons: [`${MAX_AUTO_QUOTE_LEG_HEIGHT_FT}ft or taller side walls`],
+      config,
+      message:
+        `${describe(config.building)} — at ${legHeightFt}ft walls I want one of ` +
+        `our guys to price this one properly rather than quote you off a table. ` +
+        `Someone will follow up shortly with a firm number.` +
+        signOff,
+    };
+  }
+
   const pricing = calculatePrice(config, rules);
 
   if (isQuoteIncomplete(pricing)) {
