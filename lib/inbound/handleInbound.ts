@@ -6,7 +6,12 @@ import {
   mentionsDimensions,
   financingReply,
 } from '../ai/financingIntent';
-import { looksLikeSizingQuestion, sizingReply } from '../ai/sizingIntent';
+import {
+  looksLikeSizingQuestion,
+  sizingReply,
+  mentionsTallNeed,
+  HEIGHT_QUESTIONS,
+} from '../ai/sizingIntent';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -124,10 +129,21 @@ export async function handleInboundMessage(
   // answer directly instead.
   const askedAboutFinancing = dealer.offersRto === true && looksLikeFinancingQuestion(text);
 
+  // Something tall is going inside, and height is the one dimension a guess
+  // gets badly wrong: 9ft side walls for an RV owner is a building their
+  // vehicle does not fit in. The door has its own height, separate from the
+  // walls, which nothing else in the pipeline ever asked about (owner,
+  // 2026-08-29). Only asked when they have not already told us.
+  const needsHeight = mentionsTallNeed(text);
+  const statedHeight = Array.isArray(parsed.stated) && parsed.stated.includes('legHeightFt');
+  const extraQuestions =
+    needsHeight && !statedHeight ? ['How tall do the roll-up doors need to be?'] : [];
+
   const outcome = decideAutoQuote(parsed, dealer.pricing, {
     dealerId: dealer.id,
     signOff: signOffFor(dealer),
     offersRto: dealer.offersRto === true && !askedAboutFinancing,
+    extraQuestions,
   });
 
   // "24x30 garage, can I do monthly payments?" states a whole building AND asks
@@ -144,12 +160,15 @@ export async function handleInboundMessage(
     const b = (parsed.building ?? {}) as Record<string, unknown>;
     const { widthFt: w, lengthFt: l, legHeightFt: h } = b;
     if (typeof w === 'number' && typeof l === 'number' && typeof h === 'number') {
-      sizingSuggestion = sizingReply({
-        widthFt: w,
-        lengthFt: l,
-        legHeightFt: h,
-        type: typeof b.type === 'string' ? b.type : undefined,
-      });
+      sizingSuggestion = sizingReply(
+        {
+          widthFt: w,
+          lengthFt: l,
+          legHeightFt: h,
+          type: typeof b.type === 'string' ? b.type : undefined,
+        },
+        needsHeight && !statedHeight,
+      );
     }
   }
 

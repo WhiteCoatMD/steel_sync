@@ -73,6 +73,12 @@ export interface AutoQuoteOptions {
    * imply a monthly figure we cannot stand behind.
    */
   offersRto?: boolean;
+  /**
+   * Extra questions folded into a clarify reply. Used for the roll-up door
+   * height, which is not one of the four fields a quote requires but which
+   * nothing else would ever ask about — and an RV owner needs it right.
+   */
+  extraQuestions?: string[];
 }
 
 /** Folds an AI parse into a real BuildingConfig the engine can price. */
@@ -129,7 +135,7 @@ export function decideAutoQuote(
   // Trust `stated`, not the caller's own `autoQuotable` flag: recomputing here
   // means a channel that forgets to forward the flag fails toward asking.
   if (!isAutoQuotable(ai.stated)) {
-    const questions = clarifyingQuestions(ai.stated);
+    const questions = [...clarifyingQuestions(ai.stated), ...(opts.extraQuestions ?? [])];
     const b = sanitizeBuilding(ai.building) as Record<string, unknown>;
     const understood = {
       ...(b.type != null ? { type: b.type } : {}),

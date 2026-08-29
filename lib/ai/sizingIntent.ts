@@ -50,11 +50,72 @@ export interface SuggestedSize {
  * say yes before anything is priced, so an inference cannot turn into a quote
  * behind their back.
  */
-export function sizingReply(s: SuggestedSize): string {
+export function sizingReply(s: SuggestedSize, needsHeight = false): string {
   const what = s.type === 'carport' ? 'carport' : s.type ? String(s.type) : 'building';
+
+  // When they have told us something tall is going inside, the footprint is
+  // still worth suggesting but the HEIGHT is not ours to pick - guessing it is
+  // how someone ends up with a building their RV does not fit in.
+  if (needsHeight) {
+    const bullets = HEIGHT_QUESTIONS.map(q => `• ${q}`).join('\n');
+    return (
+      `On the footprint, most people go with ${s.widthFt}' wide x ` +
+      `${s.lengthFt}' long for a ${what} like that. The height I do not want ` +
+      `to guess at, since that is what has to clear:\n\n` +
+      bullets
+    );
+  }
+
   return (
     `Most people go with ${s.widthFt}' wide x ${s.lengthFt}' long and ` +
     `${s.legHeightFt}' side walls for a ${what} like that. Want me to price ` +
     `that one, or did you have different dimensions in mind?`
   );
 }
+
+/**
+ * Signals that the customer needs more height than standard.
+ *
+ * These matter because height is the one dimension a guess gets badly wrong.
+ * An RV owner given 9ft side walls has been quoted a building their vehicle
+ * does not fit inside — and the roll-up door has its own height, separate from
+ * the walls, which nothing used to ask about at all. Both get asked rather than
+ * assumed (owner, 2026-08-29).
+ */
+const TALL_NEED_PATTERNS: RegExp[] = [
+  /\brv\b/i,
+  /\bmotor ?home\b/i,
+  /\bcamper\b/i,
+  /\bfifth ?wheel\b/i,
+  /\b5th ?wheel\b/i,
+  /\btravel trailer\b/i,
+  /\bboat\b/i,
+  /\blifted\b/i,
+  /\bcar ?lift\b/i,
+  /\bhoist\b/i,
+  /\bsemi[- ]?truck\b/i,
+  /\btractor\b/i,
+  /\bcombine\b/i,
+  /\bdump truck\b/i,
+  /\bbox truck\b/i,
+  /\btall(er)?\b/i,
+  /\bhigh(er)? (ceiling|door|walls?)\b/i,
+  /\bclearance\b/i,
+];
+
+/** True when something in the message implies extra height is needed. */
+export function mentionsTallNeed(text: unknown): boolean {
+  if (typeof text !== 'string') return false;
+  const t = text.trim();
+  if (!t) return false;
+  return TALL_NEED_PATTERNS.some(re => re.test(t));
+}
+
+/**
+ * The two height questions. Side walls and door height are NOT the same
+ * number, and a quote is only accurate with both.
+ */
+export const HEIGHT_QUESTIONS = [
+  'How tall do you need the side walls, in feet?',
+  'How tall do the roll-up doors need to be?',
+];

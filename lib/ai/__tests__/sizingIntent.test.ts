@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { looksLikeSizingQuestion, sizingReply } from '../sizingIntent';
+import {
+  looksLikeSizingQuestion,
+  sizingReply,
+  mentionsTallNeed,
+  HEIGHT_QUESTIONS,
+} from '../sizingIntent';
 
 /**
  * "how much for a 2 car garage?" ... "and what size is it?" came from the first
@@ -60,5 +65,61 @@ describe('the suggestion', () => {
   it('still reads correctly with no type', () => {
     const r = sizingReply({ widthFt: 24, lengthFt: 20, legHeightFt: 9 });
     expect(r).not.toMatch(/undefined|null/);
+  });
+});
+
+describe('height is asked, never guessed', () => {
+  /**
+   * Height is the one dimension a guess gets badly wrong. An RV owner handed
+   * 9ft side walls has been quoted a building their vehicle does not fit in --
+   * and the roll-up door has its OWN height, which nothing used to ask about.
+   */
+  it.each([
+    'i need a garage for my RV',
+    'somewhere to park the motorhome',
+    'room for a camper',
+    'i have a fifth wheel',
+    'garage for my lifted truck',
+    'i want to put a car lift in it',
+    'need to store a boat',
+    'something with taller doors',
+    'i need more clearance',
+    'a shop for my tractor',
+  ])('flags "%s"', msg => {
+    expect(mentionsTallNeed(msg)).toBe(true);
+  });
+
+  it.each([
+    '24x30x10 enclosed garage',
+    'how much for a 2 car garage',
+    'do you deliver to Monroe',
+    'i want to park two cars in it',
+    '',
+  ])('does not flag "%s"', msg => {
+    expect(mentionsTallNeed(msg)).toBe(false);
+  });
+
+  it('does not fire on a word that merely contains a keyword', () => {
+    // Without word boundaries /rv/ matches "curve" and "serve", and every
+    // ordinary message would start demanding door heights.
+    for (const s of ['a curved roof', 'we serve the whole parish', 'semicolon']) {
+      expect(mentionsTallNeed(s)).toBe(false);
+    }
+  });
+
+  it.each([undefined, null, 42, {}])('survives the non-string %s', v => {
+    expect(() => mentionsTallNeed(v)).not.toThrow();
+    expect(mentionsTallNeed(v)).toBe(false);
+  });
+
+  it('suggests a footprint but asks both heights', () => {
+    const r = sizingReply({ widthFt: 24, lengthFt: 20, legHeightFt: 9, type: 'garage' }, true);
+    expect(r).toContain("24'");
+    expect(r).toContain("20'");
+    // The guessed leg height must NOT be asserted as the answer.
+    expect(r).not.toContain("9' side walls");
+    expect(r).toMatch(/side walls/i);
+    expect(r).toMatch(/roll-?up doors/i);
+    expect(HEIGHT_QUESTIONS).toHaveLength(2);
   });
 });
