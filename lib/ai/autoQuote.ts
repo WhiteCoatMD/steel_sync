@@ -167,10 +167,15 @@ export function decideAutoQuote(
       questions,
       understood,
       message:
-        `Happy to price that for you — just need a couple of details first:\n\n` +
-        questions.map(q => `• ${q}`).join('\n') +
-        (opts.note ? `\n\n${opts.note}` : '') +
-        signOff,
+        // One question is just a question. The preamble and the bullet only
+        // earn their place when there is a list to introduce - "just need a
+        // couple of details" above a single line reads like a form, not a
+        // conversation (owner, 2026-08-29).
+        (questions.length === 1
+          ? questions[0]
+          : `Happy to price that for you — just need a couple of details first:\n\n` +
+            questions.map(q => `• ${q}`).join('\n')) +
+        (opts.note ? `\n\n${opts.note}` : ''),
     };
   }
 
@@ -234,8 +239,7 @@ export function decideAutoQuote(
       `${describe(b)}: ${money(pricing.total)}.${deposit}` +
       rto +
       `\n\nThat includes ${pricing.lineItems.length} line items — happy to send the ` +
-      `full breakdown or adjust anything.` +
-      signOff,
+      `full breakdown or adjust anything.`,
   };
 }
 

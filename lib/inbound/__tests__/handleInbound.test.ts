@@ -83,11 +83,13 @@ describe('a complete request is quoted on the first turn', () => {
     expect(r.reply).toContain('$3,445');
   });
 
-  it('signs off with the dealer’s own phone number', async () => {
+  it('leaves the phone number off — a quote is not a dead end', async () => {
+    // The number belongs on a handoff, not under a price we just quoted
+    // (owner, 2026-08-29).
     parseMock.mockResolvedValueOnce(
       parsed({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }, ALL),
     );
-    expect((await send('24x25x9 carport')).reply).toContain('(318) 249-8172');
+    expect((await send('24x25x9 carport')).reply).not.toContain('(318) 249-8172');
   });
 });
 

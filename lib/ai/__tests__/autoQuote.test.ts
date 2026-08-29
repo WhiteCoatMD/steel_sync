@@ -102,13 +102,27 @@ describe('a fully stated, priceable request gets a number', () => {
     expect(short.pricing.total).toBe(exact.pricing.total);
   });
 
-  it('appends a sign-off when given one', () => {
-    const withSignOff = decideAutoQuote(
+  it('keeps the phone number OFF a quote — it is for dead ends only', () => {
+    // "Call us" under an answer we just gave undercuts the answer (owner,
+    // 2026-08-29). Only a handoff, where a person really must take over,
+    // carries it.
+    const quoted = decideAutoQuote(
       ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9 }),
       RULES,
       { signOff: 'Call us at (318) 249-8172.' },
     );
-    expect(withSignOff.message).toContain('(318) 249-8172');
+    expect(quoted.kind).toBe('quote');
+    expect(quoted.message).not.toContain('(318) 249-8172');
+  });
+
+  it('signs off on a handoff, where a person does have to take over', () => {
+    const handed = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 24, lengthFt: 30, legHeightFt: 14 }),
+      RULES,
+      { signOff: 'Call us at (318) 249-8172.' },
+    );
+    expect(handed.kind).toBe('handoff');
+    expect(handed.message).toContain('(318) 249-8172');
   });
 });
 

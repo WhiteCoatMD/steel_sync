@@ -13,6 +13,7 @@ import {
   mentionsRv,
   isOpenSided,
 } from '../ai/sizingIntent';
+import { asksToExplainRoofStyles, ROOF_STYLE_EXPLANATION } from '../ai/roofStyleHelp';
 import { insertQuote } from '../db/quotes';
 import {
   findOrCreateConversation,
@@ -219,11 +220,17 @@ export async function handleInboundMessage(
     }
   }
 
-  const reply =
-    sizingSuggestion
-      ? `${sizingSuggestion}${dealer.phone ? `
+  // They have the graphic and came back asking what it means. Explain, then put
+  // the question again so the thread still moves forward. Only while the roof
+  // style is what we are waiting on -- otherwise "which one is best?" about
+  // something else would get a roof lecture.
+  const explainRoofs = asksRoofStyle && asksToExplainRoofStyles(text);
 
-Questions? Call us at ${dealer.phone}.` : ''}`
+  const reply =
+    explainRoofs
+      ? ROOF_STYLE_EXPLANATION
+      : sizingSuggestion
+      ? sizingSuggestion
       : askedAboutFinancing && outcome.kind === 'quote'
       ? `${outcome.message}
 
@@ -281,7 +288,10 @@ On paying monthly: ${lowerFirst(
     conversationId: conv.id,
     outcome,
     quoted: outcome.kind === 'quote',
-    ...(asksRoofStyle ? { imageUrl: publicUrl(ROOF_STYLE_IMAGE_PATH) } : {}),
+    // Not on the explanation turn: they are asking ABOUT the picture they were
+    // just sent, so sending it again is answering a question with the thing
+    // they already have.
+    ...(asksRoofStyle && !explainRoofs ? { imageUrl: publicUrl(ROOF_STYLE_IMAGE_PATH) } : {}),
   };
 }
 

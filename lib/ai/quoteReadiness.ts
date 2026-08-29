@@ -48,10 +48,10 @@ const QUESTION: Record<RequiredField, string> = {
   // Roof style is worth a question rather than a default: on a 24x30x10 the
   // same building is $3,563 regular and $4,411 vertical (owner, 2026-08-29).
   // Assuming vertical overquotes a regular-roof customer by $848.
-  roofStyle:
-    'Which roof style — Regular (good), Boxed Eave (better), or Vertical ' +
-    '(best)? The picture shows the difference. Vertical panels shed water, ' +
-    'snow and leaves instead of holding them, so they last longest.',
+  // Short on purpose. The graphic goes with this question and does the
+  // explaining; repeating it in text is a wall of sales copy in a chat window
+  // (owner, 2026-08-29). The detail is there if they ask for it.
+  roofStyle: 'What style roof would you like?',
 };
 
 /**
