@@ -1,0 +1,187 @@
+import type {
+  BuildingConfig,
+  DealerPricingRules,
+  PricingResult,
+  BuildingType,
+} from '../building/types';
+import { createDefaultConfig } from '../building/defaultConfig';
+import { calculatePrice } from '../pricing/calculatePrice';
+import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
+import { clarifyingQuestions, isAutoQuotable, sanitizeBuilding } from './quoteReadiness';
+
+/**
+ * Decides what to reply to an inbound "how much for..." message.
+ *
+ * This is the whole safety boundary for unattended quoting, kept in ONE place
+ * so a second channel (page messages, SMS, email, web form) cannot quietly
+ * reimplement it with a subtly different rule. It decides; it never sends.
+ *
+ * There are two independent ways an inbound request fails to be quotable, and
+ * conflating them is how a wrong number gets sent:
+ *
+ *   1. We do not know what they asked for. The customer never said whether it
+ *      is open or enclosed, or how big. -> ASK. (`quoteReadiness`)
+ *   2. We know exactly what they asked for and cannot price it. A 40ft-wide
+ *      shop is perfectly clear and simply outside what has been measured.
+ *      -> HAND OFF to a human. (`unpriceable` from the engine)
+ *
+ * A request can be fully stated and still unpriceable, which is why
+ * `autoQuotable` alone is not sufficient to send a price.
+ */
+
+export interface AutoQuoteInput {
+  /** The `/api/ai-config` response shape. */
+  building?: Record<string, unknown>;
+  openings?: Array<Record<string, unknown>>;
+  colors?: Record<string, unknown>;
+  stated?: unknown;
+  autoQuotable?: boolean;
+}
+
+export type AutoQuoteOutcome =
+  | {
+      kind: 'quote';
+      config: BuildingConfig;
+      pricing: PricingResult;
+      /** Reply text safe to send as-is. */
+      message: string;
+    }
+  | {
+      kind: 'clarify';
+      questions: string[];
+      /** What we did understand, so a human reading the thread has context. */
+      understood: Partial<Record<'type' | 'widthFt' | 'lengthFt' | 'legHeightFt', unknown>>;
+      message: string;
+    }
+  | {
+      kind: 'handoff';
+      /** Customer-facing reasons, not engine vocabulary. */
+      reasons: string[];
+      config: BuildingConfig;
+      message: string;
+    };
+
+export interface AutoQuoteOptions {
+  dealerId?: string;
+  /** Appended to a quote reply, e.g. "Reply here or call (318) 249-8172." */
+  signOff?: string;
+}
+
+/** Folds an AI parse into a real BuildingConfig the engine can price. */
+export function configFromAI(ai: AutoQuoteInput, dealerId = 'dealer_columbia'): BuildingConfig {
+  const c = createDefaultConfig(dealerId);
+
+  // sanitizeBuilding keeps an omitted field from blanking a good default.
+  c.building = { ...c.building, ...sanitizeBuilding(ai.building) } as typeof c.building;
+
+  // Lean-tos are never inferred from a message: the manufacturer sells them as
+  // their own building styles, so one would only make the quote unpriceable.
+  c.leanTos = [];
+
+  c.openings = (ai.openings ?? []).map((o, i) => ({
+    id: `ai_${i}`,
+    type: o.type,
+    widthFt: o.widthFt,
+    heightFt: o.heightFt,
+    wall: o.wall ?? 'front',
+    positionFt: o.positionFt ?? 3,
+    color: null,
+  })) as typeof c.openings;
+
+  return c;
+}
+
+const money = (n: number) => `$${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+
+function describe(b: BuildingConfig['building']): string {
+  const kind = b.type === 'carport' ? 'open carport' : String(b.type);
+  return `${b.widthFt}' x ${b.lengthFt}' x ${b.legHeightFt}' ${kind}`;
+}
+
+export function decideAutoQuote(
+  ai: AutoQuoteInput,
+  rules: DealerPricingRules,
+  opts: AutoQuoteOptions = {},
+): AutoQuoteOutcome {
+  const signOff = opts.signOff ? `\n\n${opts.signOff}` : '';
+
+  // ── 1. Do we know what they asked for? ────────────────────
+  // Trust `stated`, not the caller's own `autoQuotable` flag: recomputing here
+  // means a channel that forgets to forward the flag fails toward asking.
+  if (!isAutoQuotable(ai.stated)) {
+    const questions = clarifyingQuestions(ai.stated);
+    const b = sanitizeBuilding(ai.building) as Record<string, unknown>;
+    const understood = {
+      ...(b.type != null ? { type: b.type } : {}),
+      ...(b.widthFt != null ? { widthFt: b.widthFt } : {}),
+      ...(b.lengthFt != null ? { lengthFt: b.lengthFt } : {}),
+      ...(b.legHeightFt != null ? { legHeightFt: b.legHeightFt } : {}),
+    };
+    return {
+      kind: 'clarify',
+      questions,
+      understood,
+      message:
+        `Happy to price that for you — just need a couple of details first:\n\n` +
+        questions.map(q => `• ${q}`).join('\n') +
+        signOff,
+    };
+  }
+
+  // ── 2. Can we price what they asked for? ──────────────────
+  const config = configFromAI(ai, opts.dealerId);
+  const pricing = calculatePrice(config, rules);
+
+  if (isQuoteIncomplete(pricing)) {
+    // Fully specified and outside what has been measured. Never a number.
+    const reasons = incompleteReasons(pricing);
+    return {
+      kind: 'handoff',
+      reasons,
+      config,
+      message:
+        `Thanks — I can build that spec, but I can't price ${reasons.join(' or ')} ` +
+        `automatically. Someone will follow up shortly with a firm number.` +
+        signOff,
+    };
+  }
+
+  const b = config.building;
+  const deposit =
+    pricing.depositDue != null && pricing.depositPercent != null
+      ? `\n${money(pricing.depositDue)} due today (${pricing.depositPercent}%), ` +
+        `${money(pricing.balanceDue ?? 0)} on delivery.`
+      : '';
+
+  return {
+    kind: 'quote',
+    config,
+    pricing,
+    message:
+      `${describe(b)}: ${money(pricing.total)}.${deposit}` +
+      `\n\nThat includes ${pricing.lineItems.length} line items — happy to send the ` +
+      `full breakdown or adjust anything.` +
+      signOff,
+  };
+}
+
+/**
+ * Merge the customer's answers to our clarifying questions back into the
+ * original request, so the follow-up can be re-parsed as one complete message.
+ *
+ * Re-parsing the combined text beats patching fields directly: "actually make
+ * it 30 wide" has to override the original, and only the model can resolve
+ * that. Keeping the original first preserves everything they already said.
+ */
+export function combineForReparse(originalMessage: string, ...replies: string[]): string {
+  return [originalMessage, ...replies.filter(r => r && r.trim())]
+    .map(s => s.trim())
+    .join('\n');
+}
+
+/** Convenience for callers that only need the yes/no. */
+export function canSendPrice(outcome: AutoQuoteOutcome): outcome is Extract<AutoQuoteOutcome, { kind: 'quote' }> {
+  return outcome.kind === 'quote';
+}
+
+export type { BuildingType };
