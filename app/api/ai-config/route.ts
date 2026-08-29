@@ -1,5 +1,21 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest, NextResponse } from 'next/server';
+import { createRateLimiter, clientKey } from '@/lib/rateLimit';
+import {
+  statedFields,
+  missingRequired,
+  clarifyingQuestions,
+  isAutoQuotable,
+  sanitizeBuilding,
+} from '@/lib/ai/quoteReadiness';
+
+/**
+ * 10 requests a minute per IP. A person describing a building sends one every
+ * several seconds at most, so this is far above real use and well below what
+ * makes a paid endpoint worth abusing. See lib/rateLimit.ts for the honest
+ * limits of counting in memory on serverless.
+ */
+const limiter = createRateLimiter(10, 60_000);
 
 /**
  * Constructed lazily, on the same reasoning as getSql() in lib/db/index.ts.
@@ -83,7 +99,24 @@ Rules:
 - Space openings sensibly (don't overlap, center single doors on walls)
 - If no roof style mentioned, default to "vertical"
 - If no colors mentioned, omit the colors field
-- Return ONLY the JSON object, no explanation`;
+- Return ONLY the JSON object, no explanation
+
+ALSO return a "stated" array listing ONLY the fields the customer actually told
+you. This drives whether we can quote automatically or have to ask them first,
+so it must reflect what they WROTE, not what you inferred.
+
+  "stated": ["type", "widthFt", "lengthFt", "legHeightFt"]
+
+Include a field name only if the customer's own words determine it:
+- "24x30" states widthFt and lengthFt. "about 24 foot" states widthFt.
+- "enclosed", "garage", "shop", "carport", "open" state type.
+- "10 ft walls", "10ft legs", "10 tall" state legHeightFt.
+- "2 car garage" states type ONLY. It does not state a width or a length -
+  you may still suggest sizes, but do not list them as stated.
+- "big", "cheap", "for my RV", "to cover 3 cars" state NOTHING. They describe a
+  need, not a dimension.
+When in doubt, leave the field OUT of "stated". Asking one extra question costs
+far less than sending a confident wrong price.`;
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -91,6 +124,15 @@ export async function POST(req: NextRequest) {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Malformed JSON' }, { status: 400 });
+  }
+
+  // Before anything that costs money.
+  const gate = limiter.check(clientKey(req.headers));
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429, headers: { 'Retry-After': String(gate.retryAfterSec) } },
+    );
   }
 
   const prompt = body?.prompt;
@@ -175,8 +217,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Could not parse AI response' }, { status: 500 });
     }
 
-    const config = JSON.parse(jsonMatch[0]);
-    return NextResponse.json(config);
+    const raw = JSON.parse(jsonMatch[0]);
+
+    // Strip null/undefined before this reaches the config merge. Spreading a
+    // key set to `undefined` overwrites a good default with nothing, which is
+    // how an unstated building type became a silently corrupted one.
+    const building = sanitizeBuilding(raw.building);
+
+    // A field the customer did not state is a question, not a default. The
+    // caller gets the parsed config either way — the designer still populates
+    // and the customer can correct it on screen — but `autoQuotable` is the
+    // flag an unattended path must gate on before sending a price.
+    const stated = statedFields(raw.stated);
+    const missing = missingRequired(raw.stated);
+
+    return NextResponse.json({
+      ...raw,
+      building,
+      stated,
+      missing,
+      questions: clarifyingQuestions(raw.stated),
+      autoQuotable: isAutoQuotable(raw.stated),
+    });
   } catch (err) {
     console.error('[ai-config] failed to parse AI response', err);
     return NextResponse.json({ error: 'Could not parse AI response' }, { status: 500 });

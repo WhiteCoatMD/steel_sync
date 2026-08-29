@@ -27,8 +27,18 @@ delete process.env.ANTHROPIC_API_KEY;
 // environment where ANTHROPIC_API_KEY is absent. This import must not throw.
 const { POST } = await import('../route');
 
-const req = (b: unknown) => new Request('http://x/api/ai-config', {
-  method: 'POST', body: JSON.stringify(b), headers: { 'Content-Type': 'application/json' },
+// Each call gets its own caller identity. The route rate-limits per client, and
+// a shared key would make every test after the tenth fail on a 429 that has
+// nothing to do with what it is asserting. Tests that WANT the limiter pass an
+// explicit ip (see the rate-limiting block at the bottom).
+let ipSeq = 0;
+const req = (b: unknown, ip?: string) => new Request('http://x/api/ai-config', {
+  method: 'POST',
+  body: JSON.stringify(b),
+  headers: {
+    'Content-Type': 'application/json',
+    'x-forwarded-for': ip ?? `10.0.0.${++ipSeq % 250}-${ipSeq}`,
+  },
 });
 
 describe('/api/ai-config client construction', () => {
@@ -56,7 +66,8 @@ describe('/api/ai-config client construction', () => {
 
     const first = await POST(req({ prompt: '30ft garage' }) as any);
     expect(first.status).toBe(200);
-    expect(await first.json()).toEqual({ building: { widthFt: 30 } });
+    // The response now carries quote-readiness alongside the parsed config.
+    expect(await first.json()).toMatchObject({ building: { widthFt: 30 }, autoQuotable: false });
     expect(constructed).toHaveBeenCalledTimes(1);
 
     await POST(req({ prompt: '40ft shop' }) as any);
@@ -114,7 +125,7 @@ describe('/api/ai-config request validation', () => {
 
     const res = await POST(req({ prompt: 'x'.repeat(2000) }) as any);
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({ building: { widthFt: 24 } });
+    expect(await res.json()).toMatchObject({ building: { widthFt: 24 }, autoQuotable: false });
 
     if (originalKey === undefined) delete process.env.ANTHROPIC_API_KEY;
     else process.env.ANTHROPIC_API_KEY = originalKey;
@@ -205,5 +216,105 @@ describe('a retired model must not masquerade as an outage', () => {
     createMock.mockResolvedValueOnce({ content: [{ type: 'text', text: '{"building":{}}' }] });
     await POST(req({ prompt: '30x60 garage, 4 windows, 2 roll-ups, walk-in' }) as never);
     expect(createMock.mock.calls[0][0].max_tokens).toBeGreaterThanOrEqual(4096);
+  });
+});
+
+/**
+ * A field the customer did not state is a question, not a default.
+ *
+ * Measured before this existed: "price on 20x30 please" omitted the building
+ * type, the config merge fell back to `garage`, and it quoted $7,720 — where
+ * the same size as a carport is $3,786. Behind the designer the customer sees
+ * the 3D model and corrects it; an automated reply has no such step.
+ */
+describe('quote readiness gates the automated path', () => {
+  beforeEach(() => {
+    constructed.mockClear();
+    createMock.mockReset();
+    process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  const reply = (obj: unknown) =>
+    createMock.mockResolvedValueOnce({ content: [{ type: 'text', text: JSON.stringify(obj) }] });
+
+  it('is auto-quotable when the customer stated all four price-moving fields', async () => {
+    reply({
+      building: { type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 },
+      stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
+    });
+    const body = await (await POST(req({ prompt: '24x30x10 enclosed' }) as never)).json();
+    expect(body.autoQuotable).toBe(true);
+    expect(body.questions).toEqual([]);
+    expect(body.missing).toEqual([]);
+  });
+
+  it('refuses and asks when the building type was never stated', async () => {
+    reply({ building: { widthFt: 20, lengthFt: 30 }, stated: ['widthFt', 'lengthFt'] });
+    const body = await (await POST(req({ prompt: 'price on 20x30 please' }) as never)).json();
+    expect(body.autoQuotable).toBe(false);
+    expect(body.missing).toContain('type');
+    expect(body.questions.join(' ')).toMatch(/carport/i);
+  });
+
+  it('does not let an omitted type overwrite a good default with undefined', async () => {
+    reply({ building: { type: undefined, widthFt: 20, lengthFt: 30 }, stated: ['widthFt'] });
+    const body = await (await POST(req({ prompt: '20x30' }) as never)).json();
+    expect(Object.prototype.hasOwnProperty.call(body.building, 'type')).toBe(false);
+    expect(body.building).toEqual({ widthFt: 20, lengthFt: 30 });
+  });
+
+  it('fails safe when the model omits the stated list entirely', async () => {
+    reply({ building: { type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 10 } });
+    const body = await (await POST(req({ prompt: 'anything' }) as never)).json();
+    // No evidence the customer stated anything -> ask about everything.
+    expect(body.autoQuotable).toBe(false);
+    expect(body.questions).toHaveLength(4);
+  });
+
+  it('still returns the parsed config so the designer can populate', async () => {
+    reply({ building: { type: 'carport', widthFt: 24 }, stated: ['type'] });
+    const body = await (await POST(req({ prompt: 'a carport' }) as never)).json();
+    expect(body.building).toEqual({ type: 'carport', widthFt: 24 });
+    expect(body.autoQuotable).toBe(false);
+  });
+});
+
+describe('rate limiting protects a public, paid endpoint', () => {
+  beforeEach(() => {
+    createMock.mockReset();
+    process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  it('refuses a caller who exceeds the window, with a Retry-After', async () => {
+    const ip = '198.51.100.77'; // one identity for every call in this test
+    createMock.mockResolvedValue({ content: [{ type: 'text', text: '{"building":{}}' }] });
+
+    let last = new Response();
+    for (let i = 0; i < 12; i++) {
+      last = await POST(req({ prompt: 'a carport' }, ip) as never);
+    }
+    expect(last.status).toBe(429);
+    expect(Number(last.headers.get('Retry-After'))).toBeGreaterThan(0);
+    expect((await last.json()).error).toMatch(/too many requests/i);
+  });
+
+  it('does not spend a model call on a rejected request', async () => {
+    const ip = '198.51.100.88';
+    createMock.mockResolvedValue({ content: [{ type: 'text', text: '{"building":{}}' }] });
+    for (let i = 0; i < 10; i++) await POST(req({ prompt: 'a carport' }, ip) as never);
+    const callsBefore = createMock.mock.calls.length;
+    const blocked = await POST(req({ prompt: 'a carport' }, ip) as never);
+    expect(blocked.status).toBe(429);
+    // The whole point: the limiter runs before anything billable.
+    expect(createMock.mock.calls.length).toBe(callsBefore);
+  });
+
+  it('does not punish a different caller', async () => {
+    createMock.mockResolvedValue({ content: [{ type: 'text', text: '{"building":{}}' }] });
+    for (let i = 0; i < 12; i++) await POST(req({ prompt: 'x' }, '198.51.100.99') as never);
+    const other = await POST(req({ prompt: 'x' }, '198.51.100.100') as never);
+    expect(other.status).toBe(200);
   });
 });
