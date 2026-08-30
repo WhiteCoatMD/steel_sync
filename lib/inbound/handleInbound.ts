@@ -34,6 +34,7 @@ import {
   recordTurn,
   setWantsFinancing,
   setPendingProposal,
+  saveContact,
   resetConversation,
   type InboundChannel,
 } from './conversation';
@@ -176,8 +177,12 @@ export async function handleInboundMessage(
   // were quoted, so a change to it can be read as a change (owner,
   // 2026-08-29). Only when the transcript is short enough to BE a follow-up --
   // a fresh, fully described building should stand on its own.
+  //
+  // Not when a proposal is pending: an offer of our own is what they are
+  // replying to, and the previous quote is a DIFFERENT building. Loading both
+  // put the carport's 7ft legs on the garage we had offered to price next.
   let quotedContext: QuotedContext | undefined;
-  if (transcript.length <= 2) {
+  if (transcript.length <= 2 && !conv.pendingProposal) {
     // Context is a nicety, not a requirement: losing it costs an adjustment,
     // and throwing would cost the customer their reply entirely.
     try {
@@ -308,7 +313,9 @@ export async function handleInboundMessage(
   ) {
     const prop = conv.pendingProposal;
     if (prop.building) {
-      parsed.building = { ...prop.building, ...parsed.building };
+      // The PROPOSAL wins. It is the thing they just said yes to, and anything
+      // the parse inferred from a bare "yes please" is a guess beside it.
+      parsed.building = { ...parsed.building, ...prop.building };
     }
     if (prop.openings?.length) parsed.openings = prop.openings;
     if (prop.stated?.length) {
@@ -318,6 +325,20 @@ export async function handleInboundMessage(
       parsed.autoQuotable = parsed.missing.length === 0;
     }
     await setPendingProposal(conv.id, null);
+  }
+
+  // Anything they have typed for an invoice, merged across turns -- people
+  // send an address in one message and a phone number in the next.
+  const contactSoFar = {
+    ...((conv.contact ?? {}) as Record<string, unknown>),
+    ...(parsed.contact ?? {}),
+  };
+  if (parsed.contact && Object.keys(parsed.contact).length) {
+    try {
+      await saveContact(conv.id, contactSoFar);
+    } catch (err) {
+      console.error(`[inbound] could not save contact details for ${conv.id}`, err);
+    }
   }
 
   const buildingType = (parsed.building as Record<string, unknown> | undefined)?.type;
@@ -523,6 +544,35 @@ On paying monthly: ${lowerFirst(
         // about to go up.
         `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
         ...(dealer.policies ? [dealer.policies] : []),
+        // How the deposit actually gets paid (owner, 2026-08-29).
+        ...(intents?.isReadyToBuy || intents?.wantsInvoice
+          ? [
+              'To pay the deposit we can either send an invoice over or have ' +
+                'someone call them — offer both and let them pick.',
+              'If they want the INVOICE, we need four things: full name, ' +
+                'installation address, phone number and email. Ask for whichever ' +
+                'of those they have not given yet, and never invent one.',
+              'Once they have chosen and given everything, confirm the invoice ' +
+                'is on its way. Do not offer the choice again or ask for ' +
+                'details they have already sent.',
+            ]
+          : []),
+        ...(contactSoFar && Object.keys(contactSoFar).length
+          ? [`Already given: ${JSON.stringify(contactSoFar)}`]
+          : []),
+        // Everything here prices ONE building. Say which one this is, so the
+        // other does not quietly disappear.
+        ...(intents?.mentionsMultipleBuildings
+          ? [
+              'They described more than one building and this price covers only ' +
+                'the FIRST one.' +
+                (parsed.secondBuilding
+                  ? ` The other one they mentioned: ${JSON.stringify(parsed.secondBuilding)}. ` +
+                    'Name it back to them and offer to price it next. Do NOT ask ' +
+                    'them to repeat details they have already given.'
+                  : ' Ask for the details of the other one.'),
+            ]
+          : []),
         // Volunteered on every quote, the warranty is the same clutter the
         // line-item breakdown was. It answers a question; it does not open one.
         'Mention the warranty ONLY if they asked about it.',
@@ -600,6 +650,36 @@ On paying monthly: ${lowerFirst(
     await setWantsFinancing(conv.id, false);
   }
 
+  // Invoice details are complete, so the dealer has something to act on. The
+  // reply has just told the customer an invoice is coming; nothing else in the
+  // system sends one.
+  const invoiceFields = ['fullName', 'address', 'phone', 'email'] as const;
+  const invoiceReady =
+    intents?.wantsInvoice === true &&
+    invoiceFields.every(f => typeof contactSoFar[f] === 'string' && contactSoFar[f]);
+  if (invoiceReady) {
+    try {
+      const r = await notifyReadyToBuy(dealer, {
+        channel: conv.channel,
+        externalId: conv.externalId,
+        transcript: [
+          ...transcript,
+          `-- INVOICE REQUESTED --`,
+          ...invoiceFields.map(f => `${f}: ${contactSoFar[f]}`),
+        ],
+        ...(outcome.kind === 'quote' ? { lastQuote: outcome.message.split('\n')[0] } : {}),
+      });
+      if (r.status === 'skipped') {
+        console.error(
+          `[inbound] INVOICE REQUEST for ${conv.id} NOT delivered: ${r.reason}. ` +
+            'The customer has been told an invoice is coming.',
+        );
+      }
+    } catch (err) {
+      console.error(`[inbound] invoice alert failed for ${conv.id}`, err);
+    }
+  }
+
   // They said yes. Everything else in this file can afford to be wrong; this
   // cannot, because the reply promises someone will be in touch.
   if (intents?.isReadyToBuy) {
@@ -651,6 +731,23 @@ On paying monthly: ${lowerFirst(
     proposed = {
       building: (parsed.building ?? {}) as Record<string, unknown>,
       stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
+    };
+  } else if (intents?.mentionsMultipleBuildings && parsed.secondBuilding) {
+    // "yes, price the garage too" then applies it, instead of making them
+    // describe a building they already described.
+    //
+    // Openings arrive NESTED inside the second building, and everything
+    // downstream expects them alongside it -- left nested, the doors are
+    // invisible and an enclosed building is refused for having none.
+    const { openings: secondOpenings, ...secondBuilding } = parsed.secondBuilding as {
+      openings?: Array<Record<string, unknown>>;
+    } & Record<string, unknown>;
+    proposed = {
+      building: secondBuilding,
+      ...(Array.isArray(secondOpenings) && secondOpenings.length
+        ? { openings: secondOpenings }
+        : {}),
+      stated: [...REQUIRED_FOR_QUOTE],
     };
   } else if (needsDoors && !refusedDoors && STANDARD_DOORS) {
     proposed = { openings: STANDARD_DOORS };

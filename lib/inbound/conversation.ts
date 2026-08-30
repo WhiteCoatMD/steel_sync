@@ -159,3 +159,21 @@ export async function setPendingProposal(
      WHERE id = ${conversationId}
   `;
 }
+
+/**
+ * Store what the customer has told us about themselves, for an invoice.
+ *
+ * Merged rather than replaced by the caller, because people send an address in
+ * one message and a phone number in the next.
+ */
+export async function saveContact(
+  conversationId: string,
+  contact: Record<string, unknown>,
+): Promise<void> {
+  const sql = getSql();
+  await sql`
+    UPDATE conversations
+       SET contact = ${JSON.stringify(contact)}::jsonb, updated_at = now()
+     WHERE id = ${conversationId}
+  `;
+}

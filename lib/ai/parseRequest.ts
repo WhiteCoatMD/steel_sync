@@ -60,7 +60,10 @@ export const SYSTEM_PROMPT = `You are a metal building configurator assistant. P
       "positionFt": number (distance from left edge of that wall)
     }
   ],
-  "colors": { "roof": color_id, "walls": color_id, "trim": color_id }
+  "colors": { "roof": color_id, "walls": color_id, "trim": color_id },
+  "contact": { "fullName", "address", "phone", "email" — ONLY fields the
+               customer actually typed, for an invoice. Never invent or
+               complete one. }
 }
 
 Available color IDs: white, ivory, tan, clay, brown, burnished-slate, charcoal, black, pewter-gray, ash-gray, barn-red, rustic-red, burgundy, forest-green, hunter-green, ocean-blue, royal-blue, galvalume
@@ -158,7 +161,9 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "asksSomethingElse": false,
     "isGreeting": false,
     "isWrappingUp": false,
-    "isReadyToBuy": false
+    "isReadyToBuy": false,
+    "mentionsMultipleBuildings": false,
+    "wantsInvoice": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -185,6 +190,15 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   building and asks nothing - "hey", "hello", "just looking around for now",
   "just browsing". A message naming ANY building detail, or asking anything at
   all, is not this.
+- mentionsMultipleBuildings: they described two or more SEPARATE buildings in
+  one message - "a 20x30 carport and a 24x30 garage". When this is true, put
+  the FIRST building they named in "building" and list only ITS fields in
+  "stated", and put the second in "secondBuilding" so we never have to ask them
+  to repeat details they already gave. Do not blend the two into one spec. A single building with several
+  openings, or a building plus a lean-to, is one building and not this.
+- wantsInvoice: they have asked for an invoice, or chosen an invoice over a
+  phone call, for their deposit. "send me an invoice", "email me the invoice",
+  "invoice works".
 - isReadyToBuy: they are committing or asking how to commit - "lets do it",
   "sign me up", "how do I pay", "when can you install", "I'll take it", "put me
   down for that". Agreeing to a SUGGESTION we made ("that's fine" about doors)
@@ -288,12 +302,49 @@ export interface RequestIntents {
    * 2026-08-29).
    */
   isReadyToBuy: boolean;
+  /**
+   * They described more than one building in one message -- "a 20x30 carport
+   * and a 24x30 garage".
+   *
+   * Everything downstream prices ONE building, so without knowing this the two
+   * blur into a single confused spec. Quoting the first and asking about the
+   * second beats deferring both (owner, 2026-08-29).
+   */
+  mentionsMultipleBuildings: boolean;
+  /**
+   * They want an invoice for the deposit, rather than a phone call.
+   *
+   * That is the branch that needs their details, so it is worth knowing apart
+   * from the general "how do I pay" (owner, 2026-08-29).
+   */
+  wantsInvoice: boolean;
+}
+
+/**
+ * Contact details a customer has given, for an invoice.
+ *
+ * Only ever what they TYPED. Nothing here is inferred or completed — a guessed
+ * address on an invoice is worse than no invoice.
+ */
+export interface ParsedContact {
+  fullName?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
 }
 
 export interface ParsedRequest {
   building: Record<string, unknown>;
   openings: Array<Record<string, unknown>>;
   colors?: Record<string, unknown>;
+  /**
+   * The SECOND building, when they described more than one. Held so the reply
+   * can name it back and price it next, rather than asking the customer to
+   * repeat details they already gave (owner, 2026-08-29).
+   */
+  secondBuilding?: Record<string, unknown>;
+  /** Contact details the customer typed, for an invoice. */
+  contact?: ParsedContact;
   stated: RequiredField[];
   missing: RequiredField[];
   questions: string[];
@@ -424,6 +475,12 @@ export function shapeParsed(raw: Record<string, unknown>): ParsedRequest {
     building: sanitizeBuilding(raw?.building) as Record<string, unknown>,
     openings: Array.isArray(raw?.openings) ? (raw.openings as Array<Record<string, unknown>>) : [],
     ...(raw?.colors ? { colors: raw.colors as Record<string, unknown> } : {}),
+    ...(raw?.secondBuilding && typeof raw.secondBuilding === 'object'
+      ? { secondBuilding: sanitizeBuilding(raw.secondBuilding) as Record<string, unknown> }
+      : {}),
+    ...(raw?.contact && typeof raw.contact === 'object'
+      ? { contact: shapeContact(raw.contact) }
+      : {}),
     stated: statedFields(raw?.stated),
     ...(shapeIntents(raw?.intents) ? { intents: shapeIntents(raw?.intents)! } : {}),
     missing: missingRequired(raw?.stated),
@@ -454,10 +511,24 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'isGreeting',
     'isWrappingUp',
     'isReadyToBuy',
+    'mentionsMultipleBuildings',
+    'wantsInvoice',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.
   const out = {} as RequestIntents;
   for (const k of keys) out[k] = r[k] === true;
+  return out;
+}
+
+/** Keep only the four invoice fields, and only when they are non-empty strings. */
+export function shapeContact(raw: unknown): ParsedContact {
+  if (!raw || typeof raw !== 'object') return {};
+  const r = raw as Record<string, unknown>;
+  const out: ParsedContact = {};
+  for (const k of ['fullName', 'address', 'phone', 'email'] as const) {
+    const v = r[k];
+    if (typeof v === 'string' && v.trim()) out[k] = v.trim().slice(0, 200);
+  }
   return out;
 }
