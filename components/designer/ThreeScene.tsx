@@ -757,10 +757,19 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         onPointerDown={handlePointerDown}>
         {highlight}
 
-        {/* White window frame (outer) */}
+        {/*
+          The backing behind the glass. What shows between the panes IS this
+          panel, so its colour is the mullion colour — at near-white the grid
+          washed out against the glass and the panes did not read as panes
+          (owner, 2026-08-30). A dark sash gives the glass something to sit
+          against.
+
+          Its outer edge is covered by the trim on all four sides, so darkening
+          it changes the dividers and nothing else.
+        */}
         <mesh position={[0, 0, 0.01]}>
           <boxGeometry args={[ow + 0.1, oh + 0.1, 0.06]} />
-          <meshStandardMaterial color="#f0f0f0" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
+          <meshStandardMaterial color="#4a5058" metalness={STEEL_METALNESS} roughness={0.7} />
         </mesh>
 
         {/* Glass panes in grid */}
@@ -771,7 +780,9 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
             return (
               <mesh key={`pane-${r}-${c}`} position={[px, py, 0.045]}>
                 <planeGeometry args={[paneW, paneH]} />
-                <meshPhysicalMaterial color="#9ac8e0" transparent opacity={0.35} roughness={0.05} metalness={0.1} side={THREE.DoubleSide} />
+                {/* Slightly more opaque than before, so each pane reads as a
+                    pane against the dark sash rather than as a tint. */}
+                <meshPhysicalMaterial color="#a8d4ea" transparent opacity={0.55} roughness={0.05} metalness={0.1} side={THREE.DoubleSide} />
               </mesh>
             );
           })
