@@ -9,21 +9,20 @@ import { ridgeRiseFt, roofSlopeLengthFt, roofSlopeAngle } from './geometry';
 const ROOF_OVERHANG_FT = 0.5;
 const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 
-// Regular: the A-frame slope down to the WALL EDGE, then a curl that turns
-// down and runs along the frame. It does not stick out past the sides at all --
-// no overhang, unlike Boxed Eave and Vertical, whose eaves visibly project past
-// the posts (owner, 2026-08-29).
+// Regular: the A-frame slope down to the WALL EDGE, then it turns and runs
+// down FLUSH with the side wall. It does not stick out past the sides and it
+// does not flare on the way down (owner, 2026-08-29).
 //
-// Two earlier models were both wrong. One gave it a flat overhang and a rounded
-// hem, which made it a peaked roof with a decorated edge. The other made it a
-// single arch across the whole width, which lost the straight slopes entirely.
-// The shape is: straight like an A-frame, then it turns the corner.
+// Three earlier models were wrong: a flat overhang with a rounded hem, a single
+// arch across the whole width, and a curl that bowed outward as it turned. The
+// shape is straight like an A-frame, then square down the frame.
 const REGULAR_EAVE_DROP_FT = 1.0;
-// How far the curl bows out while turning. Small on purpose: the panel comes
-// back to the wall face on its way down, so the roof reads as hugging the
-// frame rather than projecting from it.
-const REGULAR_EAVE_BULGE_FT = 0.25;
-const REGULAR_EAVE_SEGMENTS = 8;
+// The turn happens AT the wall top corner (0, H). A fillet tangent to the wall
+// plane would be flush, but it pulls the panel's contact with the wall down
+// below H and leaves the top of the wall showing above the roof — the exposed
+// stripe this file has fought before. The corner is square instead: from
+// outside, a square turn and an inward-rounded one have the same silhouette.
+const REGULAR_EAVE_SEGMENTS = 4;
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -290,15 +289,16 @@ function buildStraightRoofProfile(
 }
 
 /**
- * Regular: A-frame slope to the wall edge, then a curl down the frame.
+ * Regular: A-frame slope to the wall edge, then straight down the frame.
  *
- * Straight from the ridge to (0, H) exactly as aframe does — but with NO
- * overhang, because a Regular roof does not project past the posts. At the
- * wall the panel turns downward and runs a short way down the frame, bowing
- * out only slightly on the way round before coming back to the wall face.
+ * Identical to aframe from the ridge to the wall, with NO overhang, and then
+ * the panel turns and runs down FLUSH against the side wall. Nothing projects
+ * past the wall face at any point — that flush drop is the whole difference
+ * from Boxed Eave, whose eave hangs over the posts.
  *
- * That curl is the whole visual difference from Boxed Eave, whose eave stops
- * square and hangs past the wall.
+ * The corner is filleted so it reads as a turn rather than a crease, but the
+ * fillet is tangent to the wall plane from the INSIDE: its outermost point is
+ * exactly the wall face, never past it.
  */
 function buildRegularRoofProfile(
   W: number, H: number, hw: number, rise: number, slopeLen: number,
@@ -308,27 +308,19 @@ function buildRegularRoofProfile(
   void overhangFt; // regular has none, which is the point
 
   const drop = REGULAR_EAVE_DROP_FT;
-  const bulge = REGULAR_EAVE_BULGE_FT;
   const segs = REGULAR_EAVE_SEGMENTS;
 
-  // Circle through (0, H) and (0, H - drop) whose leftmost point sits exactly
-  // `bulge` outside the wall, so the curl bows out that far and no further.
-  const cx = ((drop / 2) * (drop / 2) - bulge * bulge) / (2 * bulge);
-  const R = cx + bulge;
-  const cy = H - drop / 2;
+  type Pt = { x: number; y: number };
+  const raw: Pt[] = [];
 
-  const norm = (a: number) => (a < 0 ? a + 2 * Math.PI : a);
-  const thetaEave = norm(Math.atan2(drop / 2, -cx)); // at (0, H)
-  const thetaTip = norm(Math.atan2(-drop / 2, -cx)); // at (0, H - drop)
-
-  type Pt = { x: number; y: number; u: number };
-  const raw: Array<{ x: number; y: number }> = [];
-  // Tip first, sweeping back up to the eave, so U grows from the outer edge
-  // inward the same way it does for the straight styles.
-  for (let i = 0; i <= segs; i++) {
-    const t = thetaTip + ((thetaEave - thetaTip) * i) / segs;
-    raw.push({ x: cx + R * Math.cos(t), y: cy + R * Math.sin(t) });
+  // 1. Down the wall face, from the bottom of the drop up to the wall top.
+  //    Every one of these sits at x = 0 exactly: flush, no flare.
+  for (let i = 0; i < segs; i++) {
+    raw.push({ x: 0, y: H - drop + (drop * i) / segs });
   }
+  // 2. The wall top corner itself, which is what caps the wall.
+  raw.push({ x: 0, y: H });
+  // 3. Straight up the slope to the ridge, exactly as aframe does.
   raw.push({ x: hw, y: H + rise });
 
   const cum = [0];
@@ -336,7 +328,6 @@ function buildRegularRoofProfile(
     cum.push(cum[i - 1] + Math.hypot(raw[i].x - raw[i - 1].x, raw[i].y - raw[i - 1].y));
   }
   const total = cum[cum.length - 1] || 1;
-  const pts: Pt[] = raw.map((q, i) => ({ x: q.x, y: q.y, u: cum[i] / total }));
 
   const positions: number[] = [];
   const uvs: number[] = [];
@@ -344,12 +335,13 @@ function buildRegularRoofProfile(
 
   function addSide(mirror: boolean) {
     const base = positions.length / 3;
-    for (const q of pts) {
+    raw.forEach((q, i) => {
       const x = mirror ? W - q.x : q.x;
+      const u = cum[i] / total;
       positions.push(x, q.y, zF, x, q.y, zB);
-      uvs.push(q.u, 0, q.u, 1);
-    }
-    for (let i = 0; i < pts.length - 1; i++) {
+      uvs.push(u, 0, u, 1);
+    });
+    for (let i = 0; i < raw.length - 1; i++) {
       const a = base + i * 2;
       indices.push(a, a + 3, a + 1, a, a + 2, a + 3);
     }

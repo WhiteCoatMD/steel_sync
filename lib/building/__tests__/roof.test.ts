@@ -144,10 +144,12 @@ describe('buildRoofProfile', () => {
     const H = cfg.legHeightFt;
     const hw = cfg.widthFt / 2;
     const slopeAt = (x: number) => H + (rise(cfg) * x) / hw;
-    // Everything from the wall face inward sits ON the straight slope.
-    for (const q of front.filter(p => p.x >= 0 && p.x <= hw)) {
-      expect(q.y).toBeCloseTo(slopeAt(q.x), 6);
-    }
+    // Everything from the wall face inward AND at or above eave height sits on
+    // the straight slope. The vertices below eave height are the flush drop
+    // running down the wall, which shares x=0 with the eave.
+    const onRoof = front.filter(p => p.x >= 0 && p.x <= hw && p.y >= H - 1e-9);
+    expect(onRoof.length).toBeGreaterThan(1);
+    for (const q of onRoof) expect(q.y).toBeCloseTo(slopeAt(q.x), 6);
   });
 
   it('meets the wall face at eave height', () => {
@@ -169,13 +171,30 @@ describe('buildRoofProfile', () => {
     expect(lowest).toBeLessThan(cfg.legHeightFt - 0.5);
   });
 
-  it('does not stick out past the posts as far as an A-frame does', () => {
-    // The whole distinction: Boxed Eave hangs over, Regular does not.
-    const reg = frontProfile(buildRoofProfile(makeConfig('regular'), OVERHANG));
+  it('does not stick out past the posts at all', () => {
+    // The whole distinction: Boxed Eave hangs over, Regular is flush. Not
+    // "less far" — flush. It reached 0.25ft out while it still flared on the
+    // way down (owner, 2026-08-29).
+    const cfg = makeConfig('regular');
+    const reg = frontProfile(buildRoofProfile(cfg, OVERHANG));
+    expect(Math.min(...reg.map(q => q.x))).toBeCloseTo(0, 9);
+    expect(Math.max(...reg.map(q => q.x))).toBeCloseTo(cfg.widthFt, 9);
+
     const afr = frontProfile(buildRoofProfile(makeConfig('aframe'), OVERHANG));
-    const reach = (pts: Array<{ x: number }>) => -Math.min(...pts.map(q => q.x));
-    expect(reach(reg)).toBeLessThan(reach(afr));
-    expect(reach(reg)).toBeLessThan(0.5);
+    expect(Math.min(...afr.map(q => q.x))).toBeLessThan(0);
+  });
+
+  it('runs the drop flush down the wall face', () => {
+    // Every vertex below eave height is exactly ON the wall plane. A flare of
+    // even a couple of inches is visible on the building and was wrong.
+    const cfg = makeConfig('regular');
+    const reg = frontProfile(buildRoofProfile(cfg, OVERHANG));
+    const below = reg.filter(q => q.y < cfg.legHeightFt - 1e-9);
+    expect(below.length).toBeGreaterThan(0);
+    for (const q of below) {
+      const onAWall = Math.abs(q.x) < 1e-9 || Math.abs(q.x - cfg.widthFt) < 1e-9;
+      expect(onAWall, `vertex at (${q.x}, ${q.y}) is off the wall plane`).toBe(true);
+    }
   });
 
   it('is symmetric about the centre line', () => {
