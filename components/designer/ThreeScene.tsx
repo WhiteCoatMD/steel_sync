@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useRef } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, AdaptiveDpr } from '@react-three/drei';
+import { OrbitControls, AdaptiveDpr } from '@react-three/drei';
 import * as THREE from 'three';
 import { useDesignerStore } from '@/lib/store/designerStore';
 import { buildBuilding, type BuildingResult } from '@/lib/building/buildBuilding';
@@ -112,7 +112,6 @@ export function ThreeScene() {
   return (
     <div className="h-full w-full">
       <Canvas
-        shadows
         camera={{ position: [30, 25, -40], fov: 40, near: 0.1, far: 1000 }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {
@@ -150,7 +149,9 @@ function SceneContents() {
   const ground = GROUND_BY_ANCHOR[anchoring ?? ''] ?? GROUND_DEFAULT;
   const controlsRef = useRef<any>(null);
 
-  const shadowSize = building
+  // Roughly how big the scene is, used to place the lights far enough out that
+  // they read as directional. Named for shadows once; there are none now.
+  const sceneScale = building
     ? Math.max(building.widthFt, building.lengthFt) * 1.2
     : 60;
 
@@ -158,40 +159,31 @@ function SceneContents() {
     <>
       {/* A lighter backdrop lifts the whole scene; the old slate read as dusk. */}
       <color attach="background" args={['#8291a3']} />
-      <ambientLight intensity={1.05} />
-      <directionalLight
-        position={[shadowSize * 0.5, shadowSize * 1.0, -shadowSize * 0.3]}
-        intensity={1.2}
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-far={shadowSize * 3}
-        shadow-camera-left={-shadowSize}
-        shadow-camera-right={shadowSize}
-        shadow-camera-top={shadowSize}
-        shadow-camera-bottom={-shadowSize}
-        shadow-bias={-0.0005}
-      />
-      {/* Fill from the opposite side, so the shaded elevation is readable rather
-          than a silhouette — a customer is usually looking at two faces. */}
-      <directionalLight position={[-shadowSize * 0.4, shadowSize * 0.5, -shadowSize * 0.6]} intensity={0.55} />
-      <hemisphereLight args={['#ffffff', '#d0ccc8', 0.5]} />
+
+      {/*
+        Lit evenly on purpose (owner, 2026-08-30). One strong directional left
+        the faces turned away from it visibly darker — one eave and one side
+        wall — which reads as a rendering fault rather than as form, and makes
+        a customer think the colour differs from panel to panel.
+
+        So most of the light is ambient, with four weak directionals from
+        opposing sides for just enough definition to tell the surfaces apart.
+        Shadows are off entirely; they are not wanted here.
+      */}
+      <ambientLight intensity={1.75} />
+      <hemisphereLight args={['#ffffff', '#e8e6e2', 0.55]} />
+      <directionalLight position={[sceneScale, sceneScale, sceneScale]} intensity={0.28} />
+      <directionalLight position={[-sceneScale, sceneScale, -sceneScale]} intensity={0.28} />
+      <directionalLight position={[sceneScale, sceneScale * 0.6, -sceneScale]} intensity={0.22} />
+      <directionalLight position={[-sceneScale, sceneScale * 0.6, sceneScale]} intensity={0.22} />
 
       <BuildingModel />
 
-      <mesh rotation-x={-Math.PI / 2} position-y={-0.02} receiveShadow
+      <mesh rotation-x={-Math.PI / 2} position-y={-0.02}
         onClick={() => useDesignerStore.getState().selectOpening(null)}>
         <planeGeometry args={[500, 500]} />
         <meshStandardMaterial color={ground.color} roughness={ground.roughness} metalness={0} />
       </mesh>
-      <ContactShadows
-        position={[0, 0.01, 0]}
-        opacity={0.2}
-        scale={shadowSize * 2}
-        blur={2.5}
-        far={shadowSize}
-      />
-
       <CameraController controlsRef={controlsRef} />
       <OrbitControlsWrapper controlsRef={controlsRef} />
     </>
@@ -290,7 +282,7 @@ function BuildingModel() {
 function SlabMesh({ result }: { result: BuildingResult }) {
   const { position: p, size: s } = result.slab;
   return (
-    <mesh position={p} receiveShadow castShadow>
+    <mesh position={p}>
       <boxGeometry args={s} />
       <meshStandardMaterial color="#c8c8c4" roughness={0.95} metalness={0} />
     </mesh>
@@ -325,7 +317,7 @@ function FrameBox({ pos, size, rot }: {
   rot?: [number, number, number];
 }) {
   return (
-    <mesh position={pos} rotation={rot} castShadow>
+    <mesh position={pos} rotation={rot}>
       <boxGeometry args={size} />
       <meshStandardMaterial color="#d8d8d4" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
     </mesh>
@@ -364,7 +356,7 @@ function PurlinMeshes({ result }: { result: BuildingResult }) {
           key={`purlin-${i}`}
           position={[p.x, p.y, L / 2]}
           rotation={[0, 0, p.side === 'L' ? angle : -angle]}
-          castShadow
+         
         >
           <boxGeometry args={[RAFTER_T * 0.5, RAFTER_T * 0.5, L]} />
           <meshStandardMaterial color="#d0d0cc" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
@@ -489,7 +481,7 @@ function GableTriangle({ width, height, rise, color, side }: {
   }, [geometry]);
 
   return (
-    <mesh geometry={geometry} castShadow>
+    <mesh geometry={geometry}>
       <meshStandardMaterial color={color} side={THREE.DoubleSide} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
     </mesh>
   );
@@ -523,7 +515,7 @@ function PanelPanel({ x, y, w, h, zOff, color, panelDir }: {
   // the same total overlap (now all below) while making the top land
   // exactly at y+h, so the roof fully caps the wall with no gap.
   return (
-    <mesh position={[x + w / 2, y + h / 2 - 0.01, zOff / 2]} castShadow receiveShadow>
+    <mesh position={[x + w / 2, y + h / 2 - 0.01, zOff / 2]}>
       <boxGeometry args={[w + 0.04, h + 0.02, WALL_THICKNESS]} />
       <meshStandardMaterial
         color={color}
@@ -753,7 +745,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         {highlight}
 
         {/* Solid door face with horizontal groove texture */}
-        <mesh castShadow>
+        <mesh>
           <boxGeometry args={[ow, oh, 0.06]} />
           <meshStandardMaterial color="#f2f2f2" metalness={0.25} roughness={0.55}
             normalMap={doorNormal} normalScale={new THREE.Vector2(0.4, 0.4)} />
@@ -784,7 +776,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
       onPointerDown={handlePointerDown}>
       {highlight}
       {/* Door panel */}
-      <mesh castShadow>
+      <mesh>
         <boxGeometry args={[ow, oh, 0.08]} />
         <meshStandardMaterial color="#f0f0f0" metalness={0.25} roughness={STEEL_ROUGHNESS} />
       </mesh>
@@ -849,7 +841,7 @@ function RoofMeshes({ result, color, panelDir, building }: {
   }, [geometry]);
 
   return (
-    <mesh geometry={geometry} castShadow receiveShadow>
+    <mesh geometry={geometry}>
       <meshStandardMaterial
         color={color}
         metalness={STEEL_METALNESS}
@@ -914,8 +906,8 @@ function LeanToMeshes({ result }: { result: BuildingResult }) {
               key={m.id}
               position={m.position}
               rotation={m.rotation}
-              castShadow
-              receiveShadow
+             
+             
             >
               <boxGeometry args={m.size} />
               <meshStandardMaterial
