@@ -9,50 +9,19 @@ import { ridgeRiseFt, roofSlopeLengthFt, roofSlopeAngle } from './geometry';
 const ROOF_OVERHANG_FT = 0.5;
 const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 
-// 'regular' style eave wrap: a tessellated curl that terminates a genuine
-// horizontal overhang, instead of curling down at the wall face itself.
+// Regular is the ARCHED style: one continuous curve across the width, with no
+// ridge line. Boxed Eave and Vertical are the A-frames -- that is what tells
+// them apart on the vendor's own comparison sheet, and at a glance on the lot.
 //
-// IMPORTANT — this is a DELIBERATELY EXAGGERATED product/legibility choice,
-// not a dimensionally accurate one. A physically realistic wrap radius
-// (~0.5ft / 6") measures correctly but is visually invisible at normal zoom
-// on a 24ft+ building — Regular and Boxed Eave (aframe) looked nearly
-// identical with it. The configurator's job is to let a customer tell roof
-// styles apart, so a deliberately enlarged radius was chosen to make the
-// curve unmistakable at default zoom, matching the reference product's
-// obviously-rounded Regular eave. Do NOT "fix" this back down toward
-// ROOF_OVERHANG_FT (0.5ft) — that constant is the flat, dimensionally-
-// accurate overhang used by aframe and vertical; this one is intentionally
-// a different, larger concept (visual legibility of the wrap), not the same
-// measurement done twice.
+// This replaced a long-running attempt to model Regular as an A-frame with a
+// rounded hem at the eave. Successive commits tuned that hem's radius, its
+// sweep and its overhang without ever getting the silhouette right, because
+// the error was the SHAPE and not the number: a peak with a curled edge is
+// still a peak.
 //
-// 2026-08-21 update: the eave used to curl down starting AT the wall face,
-// so the panel's outermost point was the *bottom* of the curl and the roof
-// read as hugging/running down the wall with no overhang at all. Fixed by
-// giving regular a real flat overhang stage (reusing ROOF_OVERHANG_FT, same
-// 0.5ft aframe/vertical use — no reason for regular's flat run to be a
-// different length) BEFORE the curl begins, and shrinking the radius from
-// 1.25ft to 1.0ft: with a genuine overhang now doing part of the visual
-// work of "this roof clearly projects past the wall", the curl no longer
-// needs to carry the full legibility burden by itself. 1.0ft is still more
-// than double the physically-accurate wrap and reads as unmistakably
-// rounded — do not shrink it further toward 0.5ft (see paragraph above).
-const REGULAR_EAVE_RADIUS_FT = 1.0;
-// 6 segments turns the curve into a visible radius rather than a kink —
-// enough to read as "rounded" at building scale without over-tessellating
-// a shape that's just a small corner detail.
-const REGULAR_EAVE_SEGMENTS = 6;
-// The curl sweeps 135° (3π/4): starting at the top of its circle (tangent
-// horizontal, so it continues smoothly from the flat overhang with no kink
-// at that joint), past the circle's leftmost/widest point at 180° (this is
-// the panel's outermost point), and on to 225° where it ends below AND
-// pulled back inboard of that widest point. Stopping at exactly 180° (a
-// plain quarter-round) would make the outermost point and the curl's lowest
-// point the SAME vertex — which is precisely the "flares down the wall"
-// bug this fix corrects. Sweeping past 180° is what makes them different
-// points, matching a real rolled/crimped eave hem. Chosen so segment 4 of 6
-// lands exactly on the true geometric widest point (180°), giving the
-// overhang's reach a clean closed-form value instead of an approximation.
-const REGULAR_EAVE_SWEEP = (3 * Math.PI) / 4;
+// Tessellated across each half-width. 14 segments reads as a smooth curve at
+// building scale without over-tessellating what is geometrically a single arc.
+const REGULAR_ARCH_SEGMENTS = 14;
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -319,72 +288,87 @@ function buildStraightRoofProfile(
 }
 
 /**
- * Regular: three stages, ridge to outer edge —
- *   1. main slope descends to the eave line AT the wall face (x=0 / x=W,
- *      y=H) — no exposed wall stripe above the roof edge.
- *   2. the panel continues OUTWARD past the wall as a genuine flat
- *      overhang, still at eave height — this is the stage the original
- *      implementation was missing entirely, which is what made the roof
- *      read as hugging the wall with no overhang.
- *   3. only at the outer end of that overhang does the panel curl
- *      downward in a tight radius, terminating below and inboard of its
- *      own outermost point (see REGULAR_EAVE_SWEEP above for why the curl
- *      must sweep past the widest point rather than stop there).
+ * Regular: a single ARCH across the full width — not a peaked roof.
+ *
+ * This is the shape the vendor's own comparison sheet shows: one continuous
+ * curve from eave to eave, crowned in the middle, with no ridge line at all.
+ * Boxed Eave and Vertical are the A-frames; Regular is the rounded one, which
+ * is exactly what distinguishes it at a glance (owner, 2026-08-29).
+ *
+ * Earlier versions modelled it as an A-frame with a small rounded hem at the
+ * eave, and no amount of tuning that radius could fix it, because the error was
+ * the mental model rather than the number: a peak with a curled edge is still a
+ * peak.
+ *
+ * The arc is the circle through the two eave points (0, H) and (W, H) with its
+ * crown at (W/2, H + rise), continued past each wall for the overhang — so the
+ * panel keeps curving down past the posts rather than stopping flat, which is
+ * what the picture shows.
  */
 function buildRegularRoofProfile(
   W: number, H: number, hw: number, rise: number, slopeLen: number,
   zF: number, zB: number, overhangFt: number,
 ): RoofProfile {
-  const r = REGULAR_EAVE_RADIUS_FT;
-  const segs = REGULAR_EAVE_SEGMENTS;
-  const sweep = REGULAR_EAVE_SWEEP;
-  const thetaStart = Math.PI / 2; // top of the circle: tangent horizontal, meets the flat overhang with no kink
-  const thetaEnd = thetaStart + sweep;
-  const curveArc = r * sweep;
-  const totalLen = curveArc + overhangFt + slopeLen;
+  void slopeLen; // the arc length is derived here, not the straight-slope one
 
-  // Circle center for the curl, positioned so theta=thetaStart (the top of
-  // the circle) lands exactly at the outer end of the flat overhang:
-  // (x, y) = (-overhangFt, H).
-  const cx = -overhangFt;
-  const cy = H - r;
-
-  // Curve points ordered from the outer tip (u=0, i=0) inward to where the
-  // curl meets the flat overhang (i=segs). theta sweeps thetaEnd -> thetaStart
-  // as i increases, so distance-from-tip grows monotonically with i.
-  type Pt = { x: number; y: number; u: number };
-  const curvePts: Pt[] = [];
-  for (let i = 0; i <= segs; i++) {
-    const theta = thetaEnd - (i / segs) * sweep;
-    const y = cy + r * Math.sin(theta);
-    const xOffset = cx + r * Math.cos(theta); // <= 0; -overhangFt at the curl/overhang joint (i=segs)
-    const distFromTip = r * (i / segs) * sweep;
-    curvePts.push({ x: xOffset, y, u: distFromTip / totalLen });
+  // A degenerate pitch has no arch to draw; fall back rather than divide by 0.
+  if (!(rise > 0) || hw <= 0) {
+    return buildStraightRoofProfile(W, H, hw, rise, zF, zB, overhangFt);
   }
-  // Shoulder: the flat overhang's inner end, exactly at the wall face
-  // (x=0, y=H) — this is what caps the wall top with no gap.
-  const shoulderDist = curveArc + overhangFt;
-  const shoulder: Pt = { x: 0, y: H, u: shoulderDist / totalLen };
-  // Ridge point continues the same "offset added to xBase" convention used
-  // by addSide() below: +hw takes the left side (xBase=0) to x=hw, and the
-  // right side (xBase=W, mirrored) to x = W - hw = hw — the two sides' ridge
-  // vertices land on the same point. (A previous version used -hw here,
-  // which put the ridge a full half-width beyond each wall face instead of
-  // at the actual ridge line — the wrap's horizontal travel must be bounded
-  // by the eave radius `r`, not by `hw`.)
-  const ridge: Pt = { x: hw, y: H + rise, u: 1 };
-  const pts: Pt[] = [...curvePts, shoulder, ridge];
 
+  // Circle through (0,H), (W,H) and (hw, H+rise). By symmetry the centre sits
+  // on x = hw, so only its height is unknown:
+  //   hw^2 + d^2 = (d + rise)^2   =>   d = (hw^2 - rise^2) / (2 * rise)
+  const d = (hw * hw - rise * rise) / (2 * rise);
+  const cy = H - d;
+  const R = d + rise;
+
+  const segs = REGULAR_ARCH_SEGMENTS;
+  const yAt = (x: number) => {
+    const dx = x - hw;
+    const inside = R * R - dx * dx;
+    return cy + Math.sqrt(Math.max(0, inside));
+  };
+
+  type Pt = { x: number; y: number; u: number };
+
+  /**
+   * One half of the arch, from the outer tip of the overhang (u=0) up to the
+   * crown (u=1). Two halves rather than one strip keeps U running eave->crown
+   * on both sides, which is what keeps the panel ribs aligned.
+   */
+  function halfArch(): Pt[] {
+    const xStart = -overhangFt;
+    // A vertex must land EXACTLY on the wall face (x=0), because that is what
+    // caps the wall top -- sampling straight from the overhang tip to the
+    // crown steps over it and leaves a stripe of bare wall showing.
+    const xs: number[] = [];
+    const ovhSegs = overhangFt > 0 ? Math.max(2, Math.round((segs * overhangFt) / (hw + overhangFt))) : 0;
+    for (let i = 0; i < ovhSegs; i++) xs.push(xStart + ((0 - xStart) * i) / ovhSegs);
+    const mainSegs = Math.max(2, segs - ovhSegs);
+    for (let i = 0; i <= mainSegs; i++) xs.push((hw * i) / mainSegs);
+    const raw = xs.map(x => ({ x, y: yAt(x) }));
+    // U by arc length, so the ribs stay evenly spaced around the curve rather
+    // than bunching where it is steepest.
+    const cum = [0];
+    for (let i = 1; i < raw.length; i++) {
+      const dx = raw[i].x - raw[i - 1].x;
+      const dy = raw[i].y - raw[i - 1].y;
+      cum.push(cum[i - 1] + Math.hypot(dx, dy));
+    }
+    const total = cum[cum.length - 1] || 1;
+    return raw.map((p, i) => ({ x: p.x, y: p.y, u: cum[i] / total }));
+  }
+
+  const pts = halfArch();
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
-  function addSide(xBase: number, mirror: boolean) {
+  function addSide(mirror: boolean) {
     const base = positions.length / 3;
     for (const p of pts) {
-      // Left (mirror=false): actual x = xBase + p.x (p.x already <= 0, outward).
-      // Right (mirror=true): actual x = xBase - p.x (flips outward to +x).
-      const x = mirror ? xBase - p.x : xBase + p.x;
+      const x = mirror ? W - p.x : p.x;
       positions.push(x, p.y, zF, x, p.y, zB);
       uvs.push(p.u, 0, p.u, 1);
     }
@@ -392,13 +376,13 @@ function buildRegularRoofProfile(
       const a = base + i * 2;
       const b = a + 1;
       const c = a + 3;
-      const d = a + 2;
-      indices.push(a, c, b, a, d, c);
+      const dd = a + 2;
+      indices.push(a, c, b, a, dd, c);
     }
   }
 
-  addSide(0, false);
-  addSide(W, true);
-
+  addSide(false);
+  addSide(true);
   return { positions, uvs, indices };
 }
+
