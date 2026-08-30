@@ -68,3 +68,48 @@ export async function notifyFinancingRequest(
   }
   return { channel: 'email', status: 'sent' };
 }
+
+/**
+ * Tells the dealer a customer has said YES.
+ *
+ * The bot answers "someone will reach out to get the paperwork started", and
+ * that promise is worthless unless someone is told. This is the most expensive
+ * message in any thread to drop on the floor (owner, 2026-08-29).
+ */
+export async function notifyReadyToBuy(
+  dealer: DealerSettings,
+  req: FinancingRequest,
+): Promise<NotifyResult> {
+  const key = process.env.RESEND_API_KEY;
+  const from = process.env.LEAD_FROM_EMAIL;
+  if (!key || !from) {
+    console.warn('[notify] ready-to-buy alert not configured; skipping');
+    return { channel: 'email', status: 'skipped', reason: 'RESEND_API_KEY / LEAD_FROM_EMAIL not set' };
+  }
+  if (!dealer.email) {
+    return { channel: 'email', status: 'skipped', reason: 'dealer has no email address' };
+  }
+
+  const resend = new Resend(key);
+  const { error } = await resend.emails.send({
+    from,
+    to: dealer.email,
+    subject: `READY TO BUY - ${req.channel} customer${req.lastQuote ? ` - ${req.lastQuote}` : ''}`,
+    text: [
+      `A customer has said yes and been told someone will reach out to start`,
+      `the paperwork. Nobody else has been told.`,
+      ``,
+      `Channel:  ${req.channel}`,
+      `Customer: ${req.externalId}`,
+      req.lastQuote ? `Quoted:   ${req.lastQuote}` : `Quoted:   (no price yet)`,
+      ``,
+      `What they said:`,
+      ...req.transcript.map(t => `  - ${t}`),
+      ``,
+      `Reply to them in ${req.channel === 'facebook' ? 'Messenger' : 'the website thread'}.`,
+    ].join('\n'),
+  });
+
+  if (error) throw new Error(`resend: ${error.message ?? String(error)}`);
+  return { channel: 'email', status: 'sent' };
+}

@@ -28,7 +28,7 @@ import { insertQuote, lastQuotedConfig } from '../db/quotes';
 import { composeReply } from '../ai/composeReply';
 import { standardDoorPackage } from '../pricing/openingFit';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
-import { notifyFinancingRequest } from '../notify/financing';
+import { notifyFinancingRequest, notifyReadyToBuy } from '../notify/financing';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -235,6 +235,7 @@ export async function handleInboundMessage(
   // building" from keywords is exactly what the model is better at, and the
   // fallback behaviour (ask for dimensions) is the old behaviour anyway.
   const saysSomethingElse = intents ? intents.asksSomethingElse : false;
+  const saysHello = intents ? intents.isGreeting : false;
   const saysExtraHeight = intents ? intents.needsExtraHeight : mentionsTallNeed(text);
   const saysRv = intents ? intents.isRvUse : mentionsRv(text);
 
@@ -442,10 +443,16 @@ export async function handleInboundMessage(
   const deferQuestion =
     saysSomethingElse && outcome.kind === 'clarify' && !sizingSuggestion && !explainRoofs;
 
+  // "hey" is not a quote request. Opening with five questions about width and
+  // roof style is a form to fill in, not a conversation (owner, 2026-08-29).
+  const greeting = saysHello && outcome.kind === 'clarify' && !deferQuestion;
+
   // The templated reply. Always correct, and the floor the composed one falls
   // back to.
   const templateReply =
-    deferQuestion
+    greeting
+      ? `Hey — happy to help. What are you looking to build?`
+      : deferQuestion
       ? `Good question — let me have someone here get you a proper answer on ` +
         `that. In the meantime, what are you looking to build?`
       : explainRoofs || comparingPastQuote
@@ -516,6 +523,9 @@ On paying monthly: ${lowerFirst(
         // about to go up.
         `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
         ...(dealer.policies ? [dealer.policies] : []),
+        // Volunteered on every quote, the warranty is the same clutter the
+        // line-item breakdown was. It answers a question; it does not open one.
+        'Mention the warranty ONLY if they asked about it.',
         'Do not suggest anything in that list still needs pricing, adding or ' +
           'confirming. If they just asked to change something, that list is ' +
           'the building AFTER the change — confirm the new spec and price, and ' +
@@ -528,7 +538,10 @@ On paying monthly: ${lowerFirst(
           : []),
       ].join('\n'),
       allowedFigures: figures,
-      requiredFigures: [p.total],
+      // Normally the price MUST appear -- a fluent reply that never states it
+      // answers nothing. But someone signing off already has the number, and
+      // requiring it there forces a recap they did not ask for.
+      requiredFigures: intents?.isWrappingUp ? [] : [p.total],
       ...(dealer.policies && /warrant/i.test(dealer.policies)
         ? { allowClaims: ['warranty' as const] }
         : {}),
@@ -536,6 +549,10 @@ On paying monthly: ${lowerFirst(
       guidance:
         'Give them the price and how it splits. Answer what they actually ' +
         'asked. Do not offer a breakdown, do not ask them to call. ' +
+        // "ok thanks ill think about it" got the entire quote read back to
+        // them. Someone winding down wants an acknowledgement, not a recap.
+        'If they are wrapping up or going away to think, keep it to a short ' +
+        'friendly acknowledgement and do not restate the whole quote. ' +
         // Insulation is not in the price file at all, so there is no figure to
         // give and no way to check one. It goes to a person (owner,
         // 2026-08-29).
@@ -583,6 +600,27 @@ On paying monthly: ${lowerFirst(
     await setWantsFinancing(conv.id, false);
   }
 
+  // They said yes. Everything else in this file can afford to be wrong; this
+  // cannot, because the reply promises someone will be in touch.
+  if (intents?.isReadyToBuy) {
+    try {
+      const r = await notifyReadyToBuy(dealer, {
+        channel: conv.channel,
+        externalId: conv.externalId,
+        transcript,
+        ...(outcome.kind === 'quote' ? { lastQuote: outcome.message.split('\n')[0] } : {}),
+      });
+      if (r.status === 'skipped') {
+        console.error(
+          `[inbound] READY-TO-BUY for ${conv.id} NOT delivered: ${r.reason}. ` +
+            'The customer has been told someone will reach out.',
+        );
+      }
+    } catch (err) {
+      console.error(`[inbound] ready-to-buy alert failed for ${conv.id}`, err);
+    }
+  }
+
   if (askedAboutFinancing) {
     await alertDealerToFinancing(
       dealer,
@@ -592,7 +630,9 @@ On paying monthly: ${lowerFirst(
     );
   }
 
-  const recorded = deferQuestion
+  const recorded = greeting
+    ? 'greeting'
+    : deferQuestion
     ? 'question-for-dealer'
     : sizingSuggestion
     ? 'sizing-suggestion'

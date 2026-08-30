@@ -155,7 +155,10 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "isRvUse": false,
     "mentionedDoors": false,
     "acceptsSuggestion": false,
-    "asksSomethingElse": false
+    "asksSomethingElse": false,
+    "isGreeting": false,
+    "isWrappingUp": false,
+    "isReadyToBuy": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -178,6 +181,18 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "sounds good", "that works", "ok do that", "perfect", "sure". A message that
   states something concrete - "make it 30 wide", "two roll ups" - is NOT this,
   even if it also sounds agreeable.
+- isGreeting: a greeting or an "only looking" message that describes no
+  building and asks nothing - "hey", "hello", "just looking around for now",
+  "just browsing". A message naming ANY building detail, or asking anything at
+  all, is not this.
+- isReadyToBuy: they are committing or asking how to commit - "lets do it",
+  "sign me up", "how do I pay", "when can you install", "I'll take it", "put me
+  down for that". Agreeing to a SUGGESTION we made ("that's fine" about doors)
+  is not this; that is acceptsSuggestion.
+- isWrappingUp: they are ending the conversation for now - "ok thanks ill think
+  about it", "sounds good", "let me talk to my wife", "ill get back to you".
+  Accepting a suggestion ("that's fine", "yes do that") is NOT this: that moves
+  the order forward.
 - asksSomethingElse: their message asks about something we cannot price or
   size - delivery, travel distance, site prep, concrete vs gravel vs dirt,
   permits, inspections, engineering approval, warranties, lead times, install
@@ -245,6 +260,31 @@ export interface RequestIntents {
    * (owner, 2026-08-29).
    */
   asksSomethingElse: boolean;
+  /**
+   * A greeting, or someone saying they are only browsing -- no building, no
+   * question. "hey", "just looking around for now".
+   *
+   * Met with five questions about width and roof style, which is a form to
+   * fill in rather than a conversation (owner, 2026-08-29).
+   */
+  isGreeting: boolean;
+  /**
+   * They are winding the conversation down -- "thanks, I'll think about it",
+   * "sounds good", "I'll get back to you". Not a question and not a change.
+   *
+   * They already have the number; reading the whole quote back is a recap
+   * nobody asked for (owner, 2026-08-29).
+   */
+  isWrappingUp: boolean;
+  /**
+   * They are saying YES -- "lets do it", "how do I pay", "sign me up", "when
+   * can you start".
+   *
+   * The single most expensive message in the thread to miss: the bot promises
+   * someone will be in touch, and until now nobody was told to be (owner,
+   * 2026-08-29).
+   */
+  isReadyToBuy: boolean;
 }
 
 export interface ParsedRequest {
@@ -408,6 +448,9 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'mentionedDoors',
     'acceptsSuggestion',
     'asksSomethingElse',
+    'isGreeting',
+    'isWrappingUp',
+    'isReadyToBuy',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.
