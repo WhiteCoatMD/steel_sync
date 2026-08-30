@@ -193,10 +193,13 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   about it", "sounds good", "let me talk to my wife", "ill get back to you".
   Accepting a suggestion ("that's fine", "yes do that") is NOT this: that moves
   the order forward.
-- asksSomethingElse: their message asks about something we cannot price or
-  size - delivery, travel distance, site prep, concrete vs gravel vs dirt,
+- asksSomethingElse: their message is about something other than sizing a
+  building - delivery, travel distance, site prep, concrete vs gravel vs dirt,
   permits, inspections, engineering approval, warranties, lead times, install
-  scheduling, colours we have in stock, financing paperwork. "do yall deliver
+  scheduling, colours we have in stock, financing paperwork. It also covers
+  COMPLAINTS and accusations ("this is a scam", "yall never called me back",
+  "your installer damaged my driveway") and anything aimed at a person rather
+  than a quote - those must reach a human, not a list of questions. "do yall deliver
   to shreveport", "does it have to go on concrete", "will this pass permit",
   "how long till its up", "do these come with a warranty". A message that only
   describes or asks the price of a building is NOT this.

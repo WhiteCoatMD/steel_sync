@@ -8,6 +8,7 @@ import { createDefaultConfig } from '../building/defaultConfig';
 import { DEFAULT_DEALER_ID } from '../db/dealers';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { checkOpeningFit } from '../pricing/openingFit';
+import { checkBuildable } from '../pricing/dimensions';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
 import {
   normalizeLengthFt,
@@ -195,6 +196,21 @@ export function decideAutoQuote(
   opts: AutoQuoteOptions = {},
 ): AutoQuoteOutcome {
   const signOff = opts.signOff ? `\n\n${opts.signOff}` : '';
+
+  // ── 0. Is this a size we build at all? ────────────────────
+  // Before asking anything: collecting a roof style and door sizes for a
+  // 100x200 shop spends the customer's time on a building we could never price
+  // (owner, 2026-08-29).
+  const tooBig = checkBuildable(sanitizeBuilding(ai.building) as Record<string, unknown>);
+  if (tooBig) {
+    const config = configFromAI(ai, opts.dealerId);
+    return {
+      kind: 'handoff',
+      reasons: [tooBig.message],
+      config,
+      message: tooBig.message + signOff,
+    };
+  }
 
   // ── 1. Do we know what they asked for? ────────────────────
   // Trust `stated`, not the caller's own `autoQuotable` flag: recomputing here
