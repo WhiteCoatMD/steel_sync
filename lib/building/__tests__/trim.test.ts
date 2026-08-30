@@ -16,12 +16,22 @@ function makeConfig(roofStyle: RoofStyle): BuildingDimensions {
 }
 
 describe('buildTrim', () => {
-  it('omits eave fascia and rake trim for regular style, but keeps corner and base', () => {
-    const result = buildTrim(makeConfig('regular'));
-    expect(result.pieces.some((p) => p.category === 'eave')).toBe(false);
-    expect(result.pieces.some((p) => p.category === 'rake')).toBe(false);
-    expect(result.pieces.some((p) => p.category === 'corner')).toBe(true);
-    expect(result.pieces.some((p) => p.category === 'base')).toBe(true);
+  it('gives every style the same edge trim, regular included', () => {
+    // Regular used to be skipped here, on the theory that a bare wrapped edge
+    // was what made it read as the economy profile. The vendor's own sheet
+    // lists "End Roof Trim" and "Eave Side Trim" against all three (owner,
+    // 2026-08-30), and without them the roof looked unfinished.
+    const counts = (style: 'regular' | 'aframe' | 'vertical') => {
+      const out: Record<string, number> = {};
+      for (const p of buildTrim(makeConfig(style)).pieces) {
+        out[p.category] = (out[p.category] ?? 0) + 1;
+      }
+      return out;
+    };
+    expect(counts('regular')).toEqual(counts('aframe'));
+    expect(counts('regular')).toEqual(counts('vertical'));
+    expect(counts('regular').eave).toBeGreaterThan(0);
+    expect(counts('regular').rake).toBeGreaterThan(0);
   });
 
   it('gives aframe both eave fascia and rake trim', () => {
@@ -30,14 +40,19 @@ describe('buildTrim', () => {
     expect(result.pieces.some((p) => p.category === 'rake')).toBe(true);
   });
 
-  it("gives vertical a ridge cap larger than aframe's", () => {
-    const aframe = buildTrim(makeConfig('aframe'));
-    const vertical = buildTrim(makeConfig('vertical'));
-    const aframeRidge = aframe.pieces.find((p) => p.category === 'ridge')!;
-    const verticalRidge = vertical.pieces.find((p) => p.category === 'ridge')!;
-    expect(aframeRidge).toBeDefined();
-    expect(verticalRidge).toBeDefined();
-    expect(verticalRidge.size[0]).toBeGreaterThan(aframeRidge.size[0]);
-    expect(verticalRidge.size[1]).toBeGreaterThan(aframeRidge.size[1]);
+  it('puts no ridge cap on any style — the planes just meet at the peak', () => {
+    // There was a flat bar running the length of the ridge, scaled up further
+    // for vertical, and it read as a bar sitting on the roof (owner,
+    // 2026-08-30).
+    //
+    // The vendor's sheet does list "Ridge Cap Trim" for Vertical alone, so if
+    // one ever comes back it belongs there and nowhere else — which is exactly
+    // what this test would catch.
+    for (const style of ['regular', 'aframe', 'vertical'] as const) {
+      expect(
+        buildTrim(makeConfig(style)).pieces.some(p => p.category === 'ridge'),
+        `${style} should have no ridge cap`,
+      ).toBe(false);
+    }
   });
 });

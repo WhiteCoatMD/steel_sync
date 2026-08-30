@@ -42,28 +42,24 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   const roofLen = L + ovh * 2; // total roof length along Z
 
   const pieces: TrimPiece[] = [];
-  const isRegular = config.roofStyle === 'regular';
-  const isVertical = config.roofStyle === 'vertical';
 
-  // ── Ridge cap — sits on top of roof at the peak ──
-  // Vertical gets a visibly larger ridge cap: standing-seam vertical roofs
-  // read as the premium style, and a prominent cap is the cheapest visual
-  // cue for that without touching price.
-  const ridgeScale = isVertical ? 1.8 : 1;
-  pieces.push({
-    id: 'ridge',
-    category: 'ridge',
-    position: [halfW, H + rise + (T * ridgeScale) / 2, L / 2],
-    size: [T * 4 * ridgeScale, T * ridgeScale, roofLen],
-  });
+  // No ridge cap on any style: the roof planes just meet at the peak (owner,
+  // 2026-08-30). There used to be a flat bar running the length of the ridge,
+  // scaled up further for vertical, and it read as a bar sitting on the roof
+  // rather than as a cap.
+  //
+  // NOTE the vendor's own comparison sheet lists "Ridge Cap Trim" for Vertical
+  // only. If it comes back, it comes back there and nowhere else.
 
   // ── Eave trim (left + right) — runs along the bottom edge of the roof ──
-  // Regular style has no fascia here: the wrapped panel *is* the edge, and
-  // that absence (vs. aframe/vertical) is what reads as the economy profile.
+  // Every style has this. Regular used to be skipped, on the theory that a bare
+  // wrapped edge was what made it read as the economy profile — but the
+  // vendor's own sheet lists "Eave Side Trim" for Regular too (owner,
+  // 2026-08-30), and the roof looked unfinished without it.
   // Derived from wallFrame: a fascia strip proud of each non-gable wall's
   // outer face, spanning exactly that wall's length (not the roof's overhang-
   // extended length — that mismatch was the source of the eave z-fighting seam).
-  if (!isRegular) {
+  {
     const EAVE_WALLS: WallId[] = ['left', 'right'];
     for (const wall of EAVE_WALLS) {
       const f = wallFrame(wall, config);
@@ -135,8 +131,9 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   // These follow the roof edge on the gable ends (front z=0, back z=L)
   // Positioned at the roof surface, running along the slope.
   // Regular style has no rake trim, matching its bare-eave treatment above —
-  // the wrapped panel edge is the whole point of the economy look.
-  if (!isRegular) {
+  // Rake trim on the gable ends, for every style: the sheet lists "End Roof
+  // Trim" against all three.
+  {
     const gableZPositions: [number, string][] = [
       [-ovh, 'front'],
       [L + ovh, 'back'],
