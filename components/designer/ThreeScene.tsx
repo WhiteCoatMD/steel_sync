@@ -104,6 +104,55 @@ function usePanelNormal(
       Math.round(offsetU * 100), Math.round(offsetV * 100)]);
 }
 
+/**
+ * Slat shading for a roll-up door.
+ *
+ * A normal map alone did not read: the door was a flat white box and the
+ * grooves vanished at any distance (owner, 2026-08-30). This is a real
+ * light/dark texture, so the slats show up regardless of viewing angle.
+ *
+ * One slat is drawn into a tall thin canvas and repeated up the door — a
+ * gradient across the slat's face for the curve of the steel, then a hard dark
+ * line at the joint where it meets the next one.
+ *
+ * White with grey lines, used as `map`, which three multiplies by the material
+ * colour — so a coloured door stays its colour and gains the slats.
+ */
+const SLAT_HEIGHT_FT = 0.25; // 3" — a typical rolling-steel slat
+
+function useRollupSlatTexture(heightFt: number): THREE.Texture {
+  return useMemo(() => {
+    const CELL = 64;
+    const canvas = document.createElement('canvas');
+    canvas.width = 4;
+    canvas.height = CELL;
+    const ctx = canvas.getContext('2d')!;
+
+    // Face of the slat: brightest just below the joint, falling away downward,
+    // the way light catches a convex slat.
+    const grad = ctx.createLinearGradient(0, 0, 0, CELL);
+    grad.addColorStop(0.0, '#ffffff');
+    grad.addColorStop(0.22, '#f6f6f6');
+    grad.addColorStop(0.75, '#dcdcdc');
+    grad.addColorStop(1.0, '#c9c9c9');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 4, CELL);
+
+    // The joint itself — a hard shadow line, which is what actually reads as
+    // "this door is made of slats".
+    ctx.fillStyle = '#8f8f8f';
+    ctx.fillRect(0, CELL - 3, 4, 3);
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(1, Math.max(4, Math.round(heightFt / SLAT_HEIGHT_FT)));
+    tex.anisotropy = 4;
+    tex.needsUpdate = true;
+    return tex;
+  }, [Math.round(heightFt * 4)]);
+}
+
 // ═══════════════════════════════════════════════════════════════
 // ENTRY — Canvas wrapper
 // ═══════════════════════════════════════════════════════════════
@@ -657,6 +706,15 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   const selectOpening = useDesignerStore((s) => s.selectOpening);
   const selectedId = useDesignerStore((s) => s.selectedOpeningId);
   const trimColor = useDesignerStore((s) => s.config?.colors.trim.hex ?? '#ffffff');
+
+  // Roll-up textures, built here rather than inside the `type === 'rollup'`
+  // branch below. Hooks must run in the same order every render, and an
+  // opening's type can be changed in the designer — calling these
+  // conditionally means the hook order shifts on that change and React throws.
+  // They cost nothing for a window or a walk-in; both are memoised.
+  const doorNormal = usePanelNormal('horizontal', 1, oh * 2.5);
+  const slatTexture = useRollupSlatTexture(oh);
+
   const isSelected = selectedId === opening.id;
   const cx = ox + ow / 2;
   const depthOff = Math.sign(zOff) * (Math.abs(zOff) + 0.05);
@@ -734,8 +792,8 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
   }
 
   if (type === 'rollup') {
-    // Solid white door face with subtle horizontal grooves (normal map)
-    const doorNormal = usePanelNormal('horizontal', 1, oh * 2.5); // many fine horizontal lines
+    // Slats are real light and shade, not just a normal map — see
+    // useRollupSlatTexture. Both textures come from the top of the component.
     const trimT = 0.3;
     const trimD = 0.15;
 
@@ -744,11 +802,23 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         onPointerDown={handlePointerDown}>
         {highlight}
 
-        {/* Solid door face with horizontal groove texture */}
+        {/* Door face: slat shading on the front, plain on the other five sides */}
         <mesh>
           <boxGeometry args={[ow, oh, 0.06]} />
-          <meshStandardMaterial color="#f2f2f2" metalness={0.25} roughness={0.55}
-            normalMap={doorNormal} normalScale={new THREE.Vector2(0.4, 0.4)} />
+          <meshStandardMaterial attach="material-0" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
+          <meshStandardMaterial attach="material-1" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
+          <meshStandardMaterial attach="material-2" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
+          <meshStandardMaterial attach="material-3" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
+          <meshStandardMaterial
+            attach="material-4"
+            color="#f2f2f2"
+            metalness={STEEL_METALNESS}
+            roughness={STEEL_ROUGHNESS}
+            map={slatTexture}
+            normalMap={doorNormal}
+            normalScale={new THREE.Vector2(0.8, 0.8)}
+          />
+          <meshStandardMaterial attach="material-5" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
 
         {/* Trim frame — pushed forward */}
