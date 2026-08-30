@@ -414,6 +414,12 @@ export class ParseRequestError extends Error {
 export interface QuotedContext {
   building: Record<string, unknown>;
   openings: Array<Record<string, unknown>>;
+  /**
+   * What it sits on. Carried because it lives on the CONFIG rather than the
+   * building, so it was dropped from the context and a follow-up like "and a
+   * walk in door" asked for the surface all over again (owner, 2026-08-29).
+   */
+  surface?: string;
 }
 
 function contextBlock(ctx: QuotedContext): string {
@@ -431,7 +437,10 @@ THE CUSTOMER HAS ALREADY BEEN QUOTED THIS BUILDING:
     `  ${b.widthFt}x${b.lengthFt}x${b.legHeightFt} ${b.type}, ${b.roofStyle} roof
 ` +
     `  Openings: ${doors}
-
+` +
+    (ctx.surface ? `  Sitting on: ${ctx.surface}
+` : '') +
+    `
 ` +
     `Their message is a CHANGE to that building. Return the WHOLE building as ` +
     `it should now be, carrying everything they did not change. "just one roll ` +

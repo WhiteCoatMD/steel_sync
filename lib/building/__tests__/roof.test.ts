@@ -103,7 +103,8 @@ describe('buildRoofProfile', () => {
     const atWall: number[] = [];
     for (let i = 0; i < profile.positions.length; i += 3) {
       const x = profile.positions[i];
-      if (Math.abs(x) < 1e-6 || Math.abs(x - W) < 1e-6) atWall.push(profile.positions[i + 1]);
+      // Within the anti-z-fighting clearance of either wall plane.
+      if (Math.abs(x) < 0.03 || Math.abs(x - W) < 0.03) atWall.push(profile.positions[i + 1]);
     }
     expect(atWall.length).toBeGreaterThan(0);
     expect(Math.max(...atWall)).toBeCloseTo(H, 6);
@@ -144,19 +145,27 @@ describe('buildRoofProfile', () => {
     const H = cfg.legHeightFt;
     const hw = cfg.widthFt / 2;
     const slopeAt = (x: number) => H + (rise(cfg) * x) / hw;
-    // Everything from the wall face inward AND at or above eave height sits on
-    // the straight slope. The vertices below eave height are the flush drop
-    // running down the wall, which shares x=0 with the eave.
-    const onRoof = front.filter(p => p.x >= 0 && p.x <= hw && p.y >= H - 1e-9);
-    expect(onRoof.length).toBeGreaterThan(1);
-    for (const q of onRoof) expect(q.y).toBeCloseTo(slopeAt(q.x), 6);
+    // The roof proper — everything at or above eave height — runs in ONE
+    // straight line from the wall edge to the ridge, exactly as aframe does.
+    // A single segment is the point: any extra vertex between them would mean
+    // a bend that an A-frame does not have.
+    const onRoof = front
+      .filter(p => p.x <= hw + 1e-9 && p.y >= H - 1e-9)
+      .sort((a, b) => a.x - b.x);
+    expect(onRoof.length).toBe(2);
+
+    const [eave, ridge] = onRoof;
+    expect(eave.y).toBeCloseTo(H, 6);
+    expect(Math.abs(eave.x)).toBeLessThan(0.03); // at the wall, give or take clearance
+    expect(ridge.x).toBeCloseTo(hw, 6);
+    expect(ridge.y).toBeCloseTo(slopeAt(hw), 6);
   });
 
   it('meets the wall face at eave height', () => {
     const cfg = makeConfig('regular');
     const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
     for (const x of [0, cfg.widthFt]) {
-      const at = front.filter(q => Math.abs(q.x - x) < 1e-6);
+      const at = front.filter(q => Math.abs(q.x - x) < 0.03);
       expect(at.length, `no vertex at the wall face x=${x}`).toBeGreaterThan(0);
       expect(Math.max(...at.map(q => q.y))).toBeCloseTo(cfg.legHeightFt, 6);
     }
@@ -175,13 +184,36 @@ describe('buildRoofProfile', () => {
     // The whole distinction: Boxed Eave hangs over, Regular is flush. Not
     // "less far" — flush. It reached 0.25ft out while it still flared on the
     // way down (owner, 2026-08-29).
+    //
+    // A quarter of an inch of clearance is allowed and deliberate: exactly
+    // coplanar surfaces z-fight, and the wall colour flickered through the
+    // roof along the sides.
+    const CLEARANCE = 0.03;
     const cfg = makeConfig('regular');
     const reg = frontProfile(buildRoofProfile(cfg, OVERHANG));
-    expect(Math.min(...reg.map(q => q.x))).toBeCloseTo(0, 9);
-    expect(Math.max(...reg.map(q => q.x))).toBeCloseTo(cfg.widthFt, 9);
+    expect(Math.min(...reg.map(q => q.x))).toBeGreaterThan(-CLEARANCE);
+    expect(Math.max(...reg.map(q => q.x))).toBeLessThan(cfg.widthFt + CLEARANCE);
 
     const afr = frontProfile(buildRoofProfile(makeConfig('aframe'), OVERHANG));
-    expect(Math.min(...afr.map(q => q.x))).toBeLessThan(0);
+    expect(Math.min(...afr.map(q => q.x))).toBeLessThan(-0.4);
+  });
+
+  it('ends flush with the gable ends, unlike the A-frames', () => {
+    // Regular has no overhang in EITHER direction — it must not run past the
+    // front or back of the building either (owner, 2026-08-29).
+    const cfg = makeConfig('regular');
+    const zOf = (p: { positions: number[] }) => {
+      const zs: number[] = [];
+      for (let i = 2; i < p.positions.length; i += 3) zs.push(p.positions[i]);
+      return { min: Math.min(...zs), max: Math.max(...zs) };
+    };
+    const reg = zOf(buildRoofProfile(cfg, OVERHANG));
+    expect(reg.min).toBeCloseTo(0, 9);
+    expect(reg.max).toBeCloseTo(cfg.lengthFt, 9);
+
+    const afr = zOf(buildRoofProfile(makeConfig('aframe'), OVERHANG));
+    expect(afr.min).toBeLessThan(0);
+    expect(afr.max).toBeGreaterThan(cfg.lengthFt);
   });
 
   it('runs the drop flush down the wall face', () => {
@@ -192,7 +224,8 @@ describe('buildRoofProfile', () => {
     const below = reg.filter(q => q.y < cfg.legHeightFt - 1e-9);
     expect(below.length).toBeGreaterThan(0);
     for (const q of below) {
-      const onAWall = Math.abs(q.x) < 1e-9 || Math.abs(q.x - cfg.widthFt) < 1e-9;
+      // Within the anti-z-fighting clearance of a wall plane, not flared off it.
+      const onAWall = Math.abs(q.x) < 0.03 || Math.abs(q.x - cfg.widthFt) < 0.03;
       expect(onAWall, `vertex at (${q.x}, ${q.y}) is off the wall plane`).toBe(true);
     }
   });

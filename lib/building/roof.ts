@@ -23,6 +23,11 @@ const REGULAR_EAVE_DROP_FT = 1.0;
 // stripe this file has fought before. The corner is square instead: from
 // outside, a square turn and an inward-rounded one have the same silhouette.
 const REGULAR_EAVE_SEGMENTS = 4;
+// The drop sits a whisker outside the wall plane. Exactly coplanar surfaces
+// z-fight, and the wall colour flickered through the roof panel along the
+// sides (owner, 2026-08-29). A quarter of an inch is invisible at building
+// scale and is which side of the wall the panel really is anyway.
+const REGULAR_EAVE_CLEARANCE_FT = 0.02;
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -262,7 +267,10 @@ export function buildRoofProfile(config: BuildingDimensions, overhangFt: number)
 
   if (config.roofStyle === 'regular') {
     const slopeLen = roofSlopeLengthFt(config);
-    return buildRegularRoofProfile(W, H, hw, rise, slopeLen, zF, zB, overhangFt);
+    // Regular has no overhang in EITHER direction: it ends flush with the gable
+    // ends as well as the side walls (owner, 2026-08-29). aframe and vertical
+    // keep their projection past both.
+    return buildRegularRoofProfile(W, H, hw, rise, slopeLen, 0, L, overhangFt);
   }
   return buildStraightRoofProfile(W, H, hw, rise, zF, zB, overhangFt);
 }
@@ -314,12 +322,13 @@ function buildRegularRoofProfile(
   const raw: Pt[] = [];
 
   // 1. Down the wall face, from the bottom of the drop up to the wall top.
-  //    Every one of these sits at x = 0 exactly: flush, no flare.
+  //    Held a hair OUTSIDE the wall plane so the two surfaces do not z-fight.
+  const eps = -REGULAR_EAVE_CLEARANCE_FT;
   for (let i = 0; i < segs; i++) {
-    raw.push({ x: 0, y: H - drop + (drop * i) / segs });
+    raw.push({ x: eps, y: H - drop + (drop * i) / segs });
   }
   // 2. The wall top corner itself, which is what caps the wall.
-  raw.push({ x: 0, y: H });
+  raw.push({ x: eps, y: H });
   // 3. Straight up the slope to the ridge, exactly as aframe does.
   raw.push({ x: hw, y: H + rise });
 

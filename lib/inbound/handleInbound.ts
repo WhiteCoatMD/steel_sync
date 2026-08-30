@@ -190,9 +190,11 @@ export async function handleInboundMessage(
     try {
       const prev = await lastQuotedConfig(conv.id);
       if (prev?.building) {
+        const anchoring = (prev.options as { anchoring?: unknown } | undefined)?.anchoring;
         quotedContext = {
           building: prev.building as unknown as Record<string, unknown>,
           openings: (prev.openings ?? []) as unknown as Array<Record<string, unknown>>,
+          ...(typeof anchoring === 'string' ? { surface: anchoring } : {}),
         };
       }
     } catch (err) {
