@@ -9,19 +9,21 @@ import { ridgeRiseFt, roofSlopeLengthFt, roofSlopeAngle } from './geometry';
 const ROOF_OVERHANG_FT = 0.5;
 const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 
-// Regular is the ARCHED style: one continuous curve across the width, with no
-// ridge line. Boxed Eave and Vertical are the A-frames -- that is what tells
-// them apart on the vendor's own comparison sheet, and at a glance on the lot.
+// Regular: the A-frame slope down to the WALL EDGE, then a curl that turns
+// down and runs along the frame. It does not stick out past the sides at all --
+// no overhang, unlike Boxed Eave and Vertical, whose eaves visibly project past
+// the posts (owner, 2026-08-29).
 //
-// This replaced a long-running attempt to model Regular as an A-frame with a
-// rounded hem at the eave. Successive commits tuned that hem's radius, its
-// sweep and its overhang without ever getting the silhouette right, because
-// the error was the SHAPE and not the number: a peak with a curled edge is
-// still a peak.
-//
-// Tessellated across each half-width. 14 segments reads as a smooth curve at
-// building scale without over-tessellating what is geometrically a single arc.
-const REGULAR_ARCH_SEGMENTS = 14;
+// Two earlier models were both wrong. One gave it a flat overhang and a rounded
+// hem, which made it a peaked roof with a decorated edge. The other made it a
+// single arch across the whole width, which lost the straight slopes entirely.
+// The shape is: straight like an A-frame, then it turns the corner.
+const REGULAR_EAVE_DROP_FT = 1.0;
+// How far the curl bows out while turning. Small on purpose: the panel comes
+// back to the wall face on its way down, so the roof reads as hugging the
+// frame rather than projecting from it.
+const REGULAR_EAVE_BULGE_FT = 0.25;
+const REGULAR_EAVE_SEGMENTS = 8;
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -288,96 +290,68 @@ function buildStraightRoofProfile(
 }
 
 /**
- * Regular: a single ARCH across the full width — not a peaked roof.
+ * Regular: A-frame slope to the wall edge, then a curl down the frame.
  *
- * This is the shape the vendor's own comparison sheet shows: one continuous
- * curve from eave to eave, crowned in the middle, with no ridge line at all.
- * Boxed Eave and Vertical are the A-frames; Regular is the rounded one, which
- * is exactly what distinguishes it at a glance (owner, 2026-08-29).
+ * Straight from the ridge to (0, H) exactly as aframe does — but with NO
+ * overhang, because a Regular roof does not project past the posts. At the
+ * wall the panel turns downward and runs a short way down the frame, bowing
+ * out only slightly on the way round before coming back to the wall face.
  *
- * Earlier versions modelled it as an A-frame with a small rounded hem at the
- * eave, and no amount of tuning that radius could fix it, because the error was
- * the mental model rather than the number: a peak with a curled edge is still a
- * peak.
- *
- * The arc is the circle through the two eave points (0, H) and (W, H) with its
- * crown at (W/2, H + rise), continued past each wall for the overhang — so the
- * panel keeps curving down past the posts rather than stopping flat, which is
- * what the picture shows.
+ * That curl is the whole visual difference from Boxed Eave, whose eave stops
+ * square and hangs past the wall.
  */
 function buildRegularRoofProfile(
   W: number, H: number, hw: number, rise: number, slopeLen: number,
   zF: number, zB: number, overhangFt: number,
 ): RoofProfile {
-  void slopeLen; // the arc length is derived here, not the straight-slope one
+  void slopeLen;
+  void overhangFt; // regular has none, which is the point
 
-  // A degenerate pitch has no arch to draw; fall back rather than divide by 0.
-  if (!(rise > 0) || hw <= 0) {
-    return buildStraightRoofProfile(W, H, hw, rise, zF, zB, overhangFt);
-  }
+  const drop = REGULAR_EAVE_DROP_FT;
+  const bulge = REGULAR_EAVE_BULGE_FT;
+  const segs = REGULAR_EAVE_SEGMENTS;
 
-  // Circle through (0,H), (W,H) and (hw, H+rise). By symmetry the centre sits
-  // on x = hw, so only its height is unknown:
-  //   hw^2 + d^2 = (d + rise)^2   =>   d = (hw^2 - rise^2) / (2 * rise)
-  const d = (hw * hw - rise * rise) / (2 * rise);
-  const cy = H - d;
-  const R = d + rise;
+  // Circle through (0, H) and (0, H - drop) whose leftmost point sits exactly
+  // `bulge` outside the wall, so the curl bows out that far and no further.
+  const cx = ((drop / 2) * (drop / 2) - bulge * bulge) / (2 * bulge);
+  const R = cx + bulge;
+  const cy = H - drop / 2;
 
-  const segs = REGULAR_ARCH_SEGMENTS;
-  const yAt = (x: number) => {
-    const dx = x - hw;
-    const inside = R * R - dx * dx;
-    return cy + Math.sqrt(Math.max(0, inside));
-  };
+  const norm = (a: number) => (a < 0 ? a + 2 * Math.PI : a);
+  const thetaEave = norm(Math.atan2(drop / 2, -cx)); // at (0, H)
+  const thetaTip = norm(Math.atan2(-drop / 2, -cx)); // at (0, H - drop)
 
   type Pt = { x: number; y: number; u: number };
-
-  /**
-   * One half of the arch, from the outer tip of the overhang (u=0) up to the
-   * crown (u=1). Two halves rather than one strip keeps U running eave->crown
-   * on both sides, which is what keeps the panel ribs aligned.
-   */
-  function halfArch(): Pt[] {
-    const xStart = -overhangFt;
-    // A vertex must land EXACTLY on the wall face (x=0), because that is what
-    // caps the wall top -- sampling straight from the overhang tip to the
-    // crown steps over it and leaves a stripe of bare wall showing.
-    const xs: number[] = [];
-    const ovhSegs = overhangFt > 0 ? Math.max(2, Math.round((segs * overhangFt) / (hw + overhangFt))) : 0;
-    for (let i = 0; i < ovhSegs; i++) xs.push(xStart + ((0 - xStart) * i) / ovhSegs);
-    const mainSegs = Math.max(2, segs - ovhSegs);
-    for (let i = 0; i <= mainSegs; i++) xs.push((hw * i) / mainSegs);
-    const raw = xs.map(x => ({ x, y: yAt(x) }));
-    // U by arc length, so the ribs stay evenly spaced around the curve rather
-    // than bunching where it is steepest.
-    const cum = [0];
-    for (let i = 1; i < raw.length; i++) {
-      const dx = raw[i].x - raw[i - 1].x;
-      const dy = raw[i].y - raw[i - 1].y;
-      cum.push(cum[i - 1] + Math.hypot(dx, dy));
-    }
-    const total = cum[cum.length - 1] || 1;
-    return raw.map((p, i) => ({ x: p.x, y: p.y, u: cum[i] / total }));
+  const raw: Array<{ x: number; y: number }> = [];
+  // Tip first, sweeping back up to the eave, so U grows from the outer edge
+  // inward the same way it does for the straight styles.
+  for (let i = 0; i <= segs; i++) {
+    const t = thetaTip + ((thetaEave - thetaTip) * i) / segs;
+    raw.push({ x: cx + R * Math.cos(t), y: cy + R * Math.sin(t) });
   }
+  raw.push({ x: hw, y: H + rise });
 
-  const pts = halfArch();
+  const cum = [0];
+  for (let i = 1; i < raw.length; i++) {
+    cum.push(cum[i - 1] + Math.hypot(raw[i].x - raw[i - 1].x, raw[i].y - raw[i - 1].y));
+  }
+  const total = cum[cum.length - 1] || 1;
+  const pts: Pt[] = raw.map((q, i) => ({ x: q.x, y: q.y, u: cum[i] / total }));
+
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
   function addSide(mirror: boolean) {
     const base = positions.length / 3;
-    for (const p of pts) {
-      const x = mirror ? W - p.x : p.x;
-      positions.push(x, p.y, zF, x, p.y, zB);
-      uvs.push(p.u, 0, p.u, 1);
+    for (const q of pts) {
+      const x = mirror ? W - q.x : q.x;
+      positions.push(x, q.y, zF, x, q.y, zB);
+      uvs.push(q.u, 0, q.u, 1);
     }
     for (let i = 0; i < pts.length - 1; i++) {
       const a = base + i * 2;
-      const b = a + 1;
-      const c = a + 3;
-      const dd = a + 2;
-      indices.push(a, c, b, a, dd, c);
+      indices.push(a, a + 3, a + 1, a, a + 2, a + 3);
     }
   }
 

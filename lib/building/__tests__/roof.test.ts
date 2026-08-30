@@ -92,21 +92,22 @@ describe('buildRoofProfile', () => {
   // 0 or exactly W, i.e. the shoulder point where the roof and wall meet),
   // the roof must cap the wall at y >= H so there's no gap showing the wall
   // above the roof edge. Vertices away from the wall face are exempt.
-  it('caps the wall top at the wall face for regular (no exposed wall stripe)', () => {
+  it('caps the wall top for regular, and runs the curl down below it', () => {
+    // There must be a vertex exactly at (wall face, eave height) — that is what
+    // covers the top of the wall. Vertices BELOW it at the same x are the curl
+    // running down the frame, which is the shape, not a gap.
     const cfg = makeConfig('regular');
     const profile = buildRoofProfile(cfg, OVERHANG);
     const H = cfg.legHeightFt;
     const W = cfg.widthFt;
-    let foundWallFaceVertex = false;
+    const atWall: number[] = [];
     for (let i = 0; i < profile.positions.length; i += 3) {
       const x = profile.positions[i];
-      const y = profile.positions[i + 1];
-      if (Math.abs(x) < 1e-6 || Math.abs(x - W) < 1e-6) {
-        foundWallFaceVertex = true;
-        expect(y).toBeGreaterThanOrEqual(H - 1e-9);
-      }
+      if (Math.abs(x) < 1e-6 || Math.abs(x - W) < 1e-6) atWall.push(profile.positions[i + 1]);
     }
-    expect(foundWallFaceVertex).toBe(true);
+    expect(atWall.length).toBeGreaterThan(0);
+    expect(Math.max(...atWall)).toBeCloseTo(H, 6);
+    expect(Math.min(...atWall)).toBeLessThan(H);
   });
 
   it('gives regular more than two distinct slope segments per side (not a two-segment kink)', () => {
@@ -127,96 +128,66 @@ describe('buildRoofProfile', () => {
   // past the wall face (previously RADIUS alone, before the overhang stage
   // existed).
   /**
-   * Regular is the ARCHED style: one continuous curve across the width with no
-   * ridge line, which is what tells it apart from Boxed Eave and Vertical on
-   * the vendor's own sheet.
+   * Regular is the A-frame slope down to the wall edge, then a curl that turns
+   * down and runs along the frame — with NO overhang. It does not project past
+   * the posts at all, which is exactly what separates it from Boxed Eave
+   * (owner, 2026-08-29).
    *
-   * These replaced a set of tests that pinned a rounded HEM on an A-frame --
-   * radius, sweep, where the curl bottomed out. They all passed while the
-   * silhouette stayed wrong, because they measured a detail of the wrong shape.
+   * Two earlier shapes were wrong and both had tests that passed: a peaked roof
+   * with a decorative hem, and a single arch across the whole width. The tests
+   * described the model rather than the product, so they agreed with whatever
+   * was there.
    */
-  it('crowns the regular arch at the ridge height, in the middle', () => {
-    const cfg = makeConfig('regular');
-    const p = buildRoofProfile(cfg, OVERHANG);
-    const front = frontProfile(p);
-    const crown = front.reduce((a, b) => (b.y > a.y ? b : a));
-    expect(crown.y).toBeCloseTo(cfg.legHeightFt + rise(cfg), 6);
-    expect(crown.x).toBeCloseTo(cfg.widthFt / 2, 6);
-  });
-
-  it('meets the wall face at eave height on both sides', () => {
+  it('keeps the straight A-frame slope from ridge to wall edge', () => {
     const cfg = makeConfig('regular');
     const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
-    for (const x of [0, cfg.widthFt]) {
-      const at = front.find(q => Math.abs(q.x - x) < 1e-6);
-      expect(at, `no vertex at the wall face x=${x}`).toBeDefined();
-      expect(at!.y).toBeCloseTo(cfg.legHeightFt, 6);
-    }
-  });
-
-  it('curves the whole way — no straight run and no ridge kink', () => {
-    // Every interior point sits ABOVE the chord between its neighbours. An
-    // A-frame fails this at the ridge (the kink) and everywhere along its
-    // straight slopes, where the point sits exactly ON the chord.
-    const front = frontProfile(buildRoofProfile(makeConfig('regular'), OVERHANG));
-    const half = front.filter(q => q.x <= makeConfig('regular').widthFt / 2 + 1e-9);
-    let strictlyCurved = 0;
-    for (let i = 1; i < half.length - 1; i++) {
-      const a = half[i - 1];
-      const b = half[i + 1];
-      // Interpolate the chord AT this point's x. Averaging the neighbours
-      // instead only works on evenly spaced samples, and the overhang is
-      // deliberately sampled finer than the main span.
-      const t = (half[i].x - a.x) / (b.x - a.x);
-      const chord = a.y + (b.y - a.y) * t;
-      expect(half[i].y).toBeGreaterThan(chord - 1e-9);
-      if (half[i].y > chord + 1e-6) strictlyCurved++;
-    }
-    expect(strictlyCurved).toBeGreaterThan(half.length - 4);
-  });
-
-  it('sits above the A-frame everywhere between eave and crown', () => {
-    // The visible difference: at the same height and pitch, an arch bulges
-    // above the straight slope. If these two ever coincide, the styles look
-    // identical again, which is the bug this shape fixes.
-    const cfg = makeConfig('regular');
-    const arch = frontProfile(buildRoofProfile(cfg, OVERHANG));
-    const straight = frontProfile(buildRoofProfile(makeConfig('aframe'), OVERHANG));
     const H = cfg.legHeightFt;
     const hw = cfg.widthFt / 2;
     const slopeAt = (x: number) => H + (rise(cfg) * x) / hw;
-    const mid = arch.filter(q => q.x > 1 && q.x < hw - 1);
-    expect(mid.length).toBeGreaterThan(3);
-    for (const q of mid) expect(q.y).toBeGreaterThan(slopeAt(q.x));
-    // ...and the A-frame really is the straight one, so the comparison means
-    // something.
-    const straightMid = straight.filter(q => q.x > 0 && q.x < hw);
-    for (const q of straightMid) expect(q.y).toBeCloseTo(slopeAt(q.x), 6);
+    // Everything from the wall face inward sits ON the straight slope.
+    for (const q of front.filter(p => p.x >= 0 && p.x <= hw)) {
+      expect(q.y).toBeCloseTo(slopeAt(q.x), 6);
+    }
+  });
+
+  it('meets the wall face at eave height', () => {
+    const cfg = makeConfig('regular');
+    const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
+    for (const x of [0, cfg.widthFt]) {
+      const at = front.filter(q => Math.abs(q.x - x) < 1e-6);
+      expect(at.length, `no vertex at the wall face x=${x}`).toBeGreaterThan(0);
+      expect(Math.max(...at.map(q => q.y))).toBeCloseTo(cfg.legHeightFt, 6);
+    }
+  });
+
+  it('turns down and runs along the frame below the eave', () => {
+    const cfg = makeConfig('regular');
+    const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
+    const lowest = Math.min(...front.map(q => q.y));
+    // The curl ends a real distance BELOW eave height — that is the bit that
+    // reads as hugging the frame.
+    expect(lowest).toBeLessThan(cfg.legHeightFt - 0.5);
+  });
+
+  it('does not stick out past the posts as far as an A-frame does', () => {
+    // The whole distinction: Boxed Eave hangs over, Regular does not.
+    const reg = frontProfile(buildRoofProfile(makeConfig('regular'), OVERHANG));
+    const afr = frontProfile(buildRoofProfile(makeConfig('aframe'), OVERHANG));
+    const reach = (pts: Array<{ x: number }>) => -Math.min(...pts.map(q => q.x));
+    expect(reach(reg)).toBeLessThan(reach(afr));
+    expect(reach(reg)).toBeLessThan(0.5);
   });
 
   it('is symmetric about the centre line', () => {
     const cfg = makeConfig('regular');
     const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
     for (const q of front) {
-      const mirrored = front.find(o => Math.abs(o.x - (cfg.widthFt - q.x)) < 1e-6);
-      expect(mirrored, `no mirror for x=${q.x}`).toBeDefined();
-      expect(mirrored!.y).toBeCloseTo(q.y, 6);
+      const mirrored = front.find(
+        o => Math.abs(o.x - (cfg.widthFt - q.x)) < 1e-6 && Math.abs(o.y - q.y) < 1e-6,
+      );
+      expect(mirrored, `no mirror for (${q.x}, ${q.y})`).toBeDefined();
     }
   });
-
-  it('carries the arch past the wall for the overhang, still descending', () => {
-    const cfg = makeConfig('regular');
-    const front = frontProfile(buildRoofProfile(cfg, OVERHANG));
-    const { minX, maxX } = { minX: Math.min(...front.map(q => q.x)), maxX: Math.max(...front.map(q => q.x)) };
-    expect(minX).toBeCloseTo(-OVERHANG, 6);
-    expect(maxX).toBeCloseTo(cfg.widthFt + OVERHANG, 6);
-    // Past the wall the arc keeps falling, so the tip is BELOW eave height --
-    // that is the overhang reading as part of the same curve rather than a
-    // flat shelf stuck on the end.
-    const tip = front.find(q => Math.abs(q.x - -OVERHANG) < 1e-6)!;
-    expect(tip.y).toBeLessThan(cfg.legHeightFt);
-  });
-
 
   it('gives aframe and vertical a flat eave overhang past the wall face', () => {
     for (const style of ['aframe', 'vertical'] as const) {
