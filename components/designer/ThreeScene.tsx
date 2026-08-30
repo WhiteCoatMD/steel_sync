@@ -116,8 +116,24 @@ export function ThreeScene() {
 // SCENE — lighting, environment, building, ground, controls
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * The ground takes the look of whatever the building is being anchored to, so
+ * the surface choice is visible rather than only priced (owner, 2026-08-29).
+ *
+ * Roughness carries as much of it as colour: gravel and dirt scatter light,
+ * asphalt and a finished slab do not.
+ */
+const GROUND_BY_ANCHOR: Record<string, { color: string; roughness: number }> = {
+  ground: { color: '#8a6a4a', roughness: 1.0 },   // rough brown — dirt or gravel
+  asphalt: { color: '#3a3a3d', roughness: 0.55 }, // smooth dark grey
+  concrete: { color: '#b8b8b4', roughness: 0.6 }, // smooth light grey
+};
+const GROUND_DEFAULT = GROUND_BY_ANCHOR.ground;
+
 function SceneContents() {
   const building = useDesignerStore((s) => s.config?.building);
+  const anchoring = useDesignerStore((s) => s.config?.options?.anchoring);
+  const ground = GROUND_BY_ANCHOR[anchoring ?? ''] ?? GROUND_DEFAULT;
   const controlsRef = useRef<any>(null);
 
   const shadowSize = building
@@ -149,7 +165,7 @@ function SceneContents() {
       <mesh rotation-x={-Math.PI / 2} position-y={-0.02} receiveShadow
         onClick={() => useDesignerStore.getState().selectOpening(null)}>
         <planeGeometry args={[500, 500]} />
-        <meshStandardMaterial color="#d4d2c4" roughness={0.9} metalness={0} />
+        <meshStandardMaterial color={ground.color} roughness={ground.roughness} metalness={0} />
       </mesh>
       <ContactShadows
         position={[0, 0.01, 0]}
@@ -507,14 +523,28 @@ function WallSegMesh({ seg, zOff, color, panelDir, wainscotColor }: {
   seg: WallSeg; zOff: number; color: string; panelDir: 'horizontal' | 'vertical';
   wainscotColor: string | null;
 }) {
-  const hasWainscot = wainscotColor !== null && seg.y < 0.05 && seg.h > WAINSCOT_HEIGHT + 0.5;
+  // Any segment standing on the ground carries the wainscot, including the
+  // short one under a window. The old guard wanted the segment to be TALLER
+  // than the band plus half a foot — and a window sill is at 3.5ft, exactly the
+  // band plus half a foot, so it failed by a hair and the wall colour ran to
+  // the ground under every window (owner, 2026-08-29).
+  const onTheGround = wainscotColor !== null && seg.y < 0.05;
+  const remainder = seg.h - WAINSCOT_HEIGHT;
 
-  if (hasWainscot) {
+  if (onTheGround && remainder > 0.05) {
     return (
       <group>
         <PanelPanel x={seg.x} y={0} w={seg.w} h={WAINSCOT_HEIGHT} zOff={zOff} color={wainscotColor!} panelDir="horizontal" />
-        <PanelPanel x={seg.x} y={WAINSCOT_HEIGHT} w={seg.w} h={seg.h - WAINSCOT_HEIGHT} zOff={zOff} color={color} panelDir={panelDir} />
+        <PanelPanel x={seg.x} y={WAINSCOT_HEIGHT} w={seg.w} h={remainder} zOff={zOff} color={color} panelDir={panelDir} />
       </group>
+    );
+  }
+
+  // Shorter than the band itself — under a low window, say. The whole segment
+  // is wainscot rather than a sliver of it.
+  if (onTheGround) {
+    return (
+      <PanelPanel x={seg.x} y={seg.y} w={seg.w} h={seg.h} zOff={zOff} color={wainscotColor!} panelDir="horizontal" />
     );
   }
 

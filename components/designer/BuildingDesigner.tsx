@@ -679,28 +679,15 @@ function OptionsSection() {
         </div>
       </div>
 
-      {/* Installation */}
-      <div className="mb-3">
-        <div className="mb-1.5 text-xs font-medium text-gray-600">Installation</div>
-        <div className="flex gap-1">
-          {([['included', 'Included'], ['diy', 'DIY']] as const).map(([val, label]) => (
-            <button
-              key={val}
-              onClick={() => updateOptions({ installation: val })}
-              className={`flex-1 rounded border py-1 text-[11px] font-medium transition ${
-                options.installation === val
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/*
+        No Installation toggle: every quote is an installed price, so offering
+        DIY here produced a number nobody sells (owner, 2026-08-29). Self-install
+        is roughly 10% off and is quoted by a person.
 
-      {/* Certifications */}
-      <Slider label="Wind Rating" value={certs.windSpeedMph} min={90} max={170} step={5} unit="mph" onChange={v => updateCertifications({ windSpeedMph: v })} />
+        No Wind Rating slider either. It reads like a priced option and is not
+        one — the manufacturer's certification is a single fixed tier, which is
+        what the Engineered Drawings box below actually buys.
+      */}
       <label className="flex items-center gap-1.5 text-xs text-gray-700">
         <input
           type="checkbox"
