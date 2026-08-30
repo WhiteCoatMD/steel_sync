@@ -69,7 +69,12 @@ export function sizingReply(s: SuggestedSize, needsHeight = false): string {
   // still worth suggesting but the HEIGHT is not ours to pick - guessing it is
   // how someone ends up with a building their RV does not fit in.
   if (needsHeight) {
-    const bullets = HEIGHT_QUESTIONS.map(q => `• ${q}`).join('\n');
+    // An open building has no roll-up door, so asking its height is asking
+    // about something that is not there.
+    const questions = isOpenSided(s.type)
+      ? HEIGHT_QUESTIONS.filter(q => !/roll-?up/i.test(q))
+      : HEIGHT_QUESTIONS;
+    const bullets = questions.map(q => `• ${q}`).join('\n');
     return (
       `On the footprint, most people go with ${s.widthFt}' wide x ` +
       `${s.lengthFt}' long for ${article(what)} ${what} like that. The height ` +

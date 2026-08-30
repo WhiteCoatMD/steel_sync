@@ -174,8 +174,11 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   roof styles", "which is best", "not sure", "whats the difference between
   them". Naming a style they want - "vertical", "give me the boxed eave" - is
   an ANSWER, not a comparison: that is false.
-- asksWhatSize: they are asking US to recommend a size. "what size do I need
-  for 2 cars", "how big should it be". Stating a size is not this.
+- asksWhatSize: they want US to work out the size. Asked outright — "what size
+  do I need for 2 cars", "how big should it be" — or implied by describing what
+  goes in it with NO dimensions: "something to park two tractors under",
+  "somewhere for the boat", "a shop big enough for a lift". Stating any
+  dimension is not this.
 - needsExtraHeight: something tall is going inside - RV, motorhome, camper,
   fifth wheel, boat, lifted truck, car lift, tractor - or they say they need
   extra height or clearance.

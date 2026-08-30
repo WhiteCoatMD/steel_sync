@@ -27,6 +27,7 @@ import {
 import { insertQuote, lastQuotedConfig } from '../db/quotes';
 import { composeReply } from '../ai/composeReply';
 import { standardDoorPackage } from '../pricing/openingFit';
+import { STANDARD_COLORS } from '../building/defaultConfig';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest, notifyReadyToBuy } from '../notify/financing';
 import {
@@ -256,10 +257,14 @@ export async function handleInboundMessage(
   const needsHeight = saysExtraHeight && !saysRv;
   const statedHeight = Array.isArray(parsed.stated) && parsed.stated.includes('legHeightFt');
 
-  // No roll-up door on an open-sided building, so no height to ask for.
-  const openSided = isOpenSided((parsed.building as Record<string, unknown> | undefined)?.type);
+  // No roll-up door on an open-sided building, so no height to ask for -- and
+  // none to ask for either when we do not yet know WHICH kind of building it
+  // is. Asking about a door before knowing there is one gets the question in
+  // ahead of "carport or garage?", which reads as not listening.
+  const knownType = (parsed.building as Record<string, unknown> | undefined)?.type;
+  const enclosedType = knownType != null && !isOpenSided(knownType);
   const extraQuestions =
-    needsHeight && !statedHeight && !openSided
+    needsHeight && !statedHeight && enclosedType
       ? ['How tall do the roll-up doors need to be?']
       : [];
 
@@ -504,6 +509,11 @@ On paying monthly: ${lowerFirst(
         `Dealer: ${dealer.name}`,
         dealer.serviceArea ? `We deliver to: ${dealer.serviceArea}` : null,
         dealer.policies ? dealer.policies : null,
+        // We hold the palette, so "can i get it in red" is answerable rather
+        // than deferrable — and a colour we do NOT stock must not be promised.
+        `Colours available: ${STANDARD_COLORS.map(c => c.name).join(', ')}. ` +
+          'Those are the only ones — if they ask for a colour that is not on ' +
+          'that list, say we do not carry it and name the closest we do.',
         'We have not priced anything for this customer yet.',
       ]
         .filter(Boolean)
@@ -544,6 +554,11 @@ On paying monthly: ${lowerFirst(
         // about to go up.
         `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
         ...(dealer.policies ? [dealer.policies] : []),
+        // We hold the palette, so "can i get it in red" is answerable rather
+        // than deferrable — and a colour we do NOT stock must not be promised.
+        `Colours available: ${STANDARD_COLORS.map(c => c.name).join(', ')}. ` +
+          'Those are the only ones — if they ask for a colour that is not on ' +
+          'that list, say we do not carry it and name the closest we do.',
         // How the deposit actually gets paid (owner, 2026-08-29).
         ...(intents?.isReadyToBuy || intents?.wantsInvoice
           ? [
