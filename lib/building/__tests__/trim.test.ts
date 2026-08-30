@@ -21,9 +21,14 @@ describe('buildTrim', () => {
     // was what made it read as the economy profile. The vendor's own sheet
     // lists "End Roof Trim" and "Eave Side Trim" against all three (owner,
     // 2026-08-30), and without them the roof looked unfinished.
+    // EDGE trim only. The ridge cap is not edge trim and is vertical-only by
+    // design, so counting it here would make this fail for the right reason at
+    // the wrong assertion.
+    const EDGES = ['eave', 'rake', 'corner', 'base'];
     const counts = (style: 'regular' | 'aframe' | 'vertical') => {
       const out: Record<string, number> = {};
       for (const p of buildTrim(makeConfig(style)).pieces) {
+        if (!EDGES.includes(p.category)) continue;
         out[p.category] = (out[p.category] ?? 0) + 1;
       }
       return out;
