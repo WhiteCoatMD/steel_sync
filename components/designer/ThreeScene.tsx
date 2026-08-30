@@ -118,11 +118,16 @@ function usePanelNormal(
  * White with grey lines, used as `map`, which three multiplies by the material
  * colour — so a coloured door stays its colour and gains the slats.
  */
-const SLAT_HEIGHT_FT = 0.25; // 3" — a typical rolling-steel slat
+// 6in slats. Real rolling steel is nearer 3in, but at that size a 10ft door
+// carries 40 lines, each a pixel or two on screen at normal zoom — and
+// mipmapping averages them straight back into flat grey, which is why the
+// first attempt showed nothing. Same trade the roof eave radius makes: the
+// customer has to be able to SEE which door they picked.
+const SLAT_HEIGHT_FT = 0.5;
 
 function useRollupSlatTexture(heightFt: number): THREE.Texture {
   return useMemo(() => {
-    const CELL = 64;
+    const CELL = 32;
     const canvas = document.createElement('canvas');
     canvas.width = 4;
     canvas.height = CELL;
@@ -132,22 +137,24 @@ function useRollupSlatTexture(heightFt: number): THREE.Texture {
     // the way light catches a convex slat.
     const grad = ctx.createLinearGradient(0, 0, 0, CELL);
     grad.addColorStop(0.0, '#ffffff');
-    grad.addColorStop(0.22, '#f6f6f6');
-    grad.addColorStop(0.75, '#dcdcdc');
-    grad.addColorStop(1.0, '#c9c9c9');
+    grad.addColorStop(0.25, '#f2f2f2');
+    grad.addColorStop(0.80, '#cfcfcf');
+    grad.addColorStop(1.0, '#b4b4b4');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 4, CELL);
 
-    // The joint itself — a hard shadow line, which is what actually reads as
-    // "this door is made of slats".
-    ctx.fillStyle = '#8f8f8f';
-    ctx.fillRect(0, CELL - 3, 4, 3);
+    // The joint — a hard shadow line, which is what actually reads as "this
+    // door is made of slats". Two of 32 rows, so it survives being scaled down.
+    ctx.fillStyle = '#6e6e6e';
+    ctx.fillRect(0, CELL - 2, 4, 2);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(1, Math.max(4, Math.round(heightFt / SLAT_HEIGHT_FT)));
-    tex.anisotropy = 4;
+    // Anisotropy keeps the lines from smearing away when the door is seen at a
+    // glancing angle, which is most of the time on a 3/4 view.
+    tex.anisotropy = 8;
     tex.needsUpdate = true;
     return tex;
   }, [Math.round(heightFt * 4)]);
