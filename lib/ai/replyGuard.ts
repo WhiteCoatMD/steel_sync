@@ -25,16 +25,16 @@ export interface GuardResult {
  * Rent-to-own is the live example: we carry no RTO pricing at all, so a monthly
  * figure or a term length would be invented, and a customer would hold us to it.
  */
-const FORBIDDEN: Array<[RegExp, string]> = [
-  [/\bper month\b/i, 'quoted a monthly figure'],
-  [/\/\s?mo\b/i, 'quoted a monthly figure'],
-  [/\bmonthly payments? of\b/i, 'quoted a monthly figure'],
-  [/\b\d+\s*months?\b/i, 'quoted a term length'],
-  [/\b\d+(\.\d+)?\s*%\s*(apr|interest|rate)/i, 'quoted an interest rate'],
-  [/\bapproved?\b/i, 'implied a credit decision'],
-  [/\bguarantee[ds]?\b/i, 'made a guarantee'],
-  [/\bfree\b/i, 'called something free'],
-  [/\bwarrant(y|ies|ed)\b/i, 'made a warranty claim'],
+const FORBIDDEN: Array<[RegExp, string, string]> = [
+  [/\bper month\b/i, 'quoted a monthly figure', 'financing'],
+  [/\/\s?mo\b/i, 'quoted a monthly figure', 'financing'],
+  [/\bmonthly payments? of\b/i, 'quoted a monthly figure', 'financing'],
+  [/\b\d+\s*months?\b/i, 'quoted a term length', 'financing'],
+  [/\b\d+(\.\d+)?\s*%\s*(apr|interest|rate)/i, 'quoted an interest rate', 'financing'],
+  [/\bapproved?\b/i, 'implied a credit decision', 'financing'],
+  [/\bguarantee[ds]?\b/i, 'made a guarantee', 'guarantee'],
+  [/\bfree\b/i, 'called something free', 'free'],
+  [/\bwarrant(y|ies|ed)\b/i, 'made a warranty claim', 'warranty'],
 ];
 
 /** Every money amount in the text, as numbers. */
@@ -54,16 +54,27 @@ export function moneyFigures(text: string): number[] {
  * a number it made up, whether by hallucination or by arithmetic it was never
  * asked to do (a "total" it computed itself, a deposit it re-derived).
  */
+/**
+ * Topics the dealer has given us real terms for, so a claim about them is a
+ * quotation rather than an invention.
+ *
+ * Nothing is allowed by default. A dealer who has not told us their warranty
+ * gets the refusal; one who has gets an answer (owner, 2026-08-29).
+ */
+export type AllowedClaim = 'warranty' | 'guarantee' | 'free' | 'financing';
+
 export function guardReply(
   draft: string,
   allowed: number[],
   mustInclude: number[] = [],
+  allowClaims: AllowedClaim[] = [],
 ): GuardResult {
   const text = (draft ?? '').trim();
   if (!text) return { ok: false, reason: 'empty draft' };
   if (text.length > 700) return { ok: false, reason: `draft too long (${text.length} chars)` };
 
-  for (const [re, why] of FORBIDDEN) {
+  for (const [re, why, topic] of FORBIDDEN) {
+    if (allowClaims.includes(topic as AllowedClaim)) continue;
     if (re.test(text)) return { ok: false, reason: why };
   }
 

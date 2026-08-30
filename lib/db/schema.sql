@@ -111,3 +111,11 @@ ALTER TABLE conversations ADD COLUMN IF NOT EXISTS pending_proposal JSONB;
 -- state list: dealers describe their area in their own terms, and the model is
 -- reading it, not matching on it (owner, 2026-08-29).
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS service_area TEXT;
+
+-- Free-text facts the model may answer FROM: warranty terms, site prep, and
+-- whatever else a dealer wants it to be able to state without a person.
+--
+-- Deliberately prose rather than fields. These are things the model reads and
+-- repeats, not values anything computes with, and a dealer adding a new policy
+-- should not need a migration (owner, 2026-08-29).
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS policies TEXT;

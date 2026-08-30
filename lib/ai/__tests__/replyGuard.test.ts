@@ -78,3 +78,37 @@ describe('degenerate drafts', () => {
     expect(guardReply('$2,483. ' + 'word '.repeat(300), PRICED).ok).toBe(false);
   });
 });
+
+describe('claims the dealer has actually given us terms for', () => {
+  /**
+   * The blanket ban was right while we held no terms, but it also blocked a
+   * TRUE answer: Dunrite has a 90 day workmanship and 10 year materials
+   * warranty, and the bot was refusing to say so (owner, 2026-08-29).
+   *
+   * Nothing is allowed by default. A dealer who has not told us their warranty
+   * still gets the refusal.
+   */
+  const draft = 'There is a 90 day workmanship warranty and a 10 year manufacturer warranty.';
+
+  it('still refuses a warranty claim by default', () => {
+    const r = guardReply(draft, PRICED);
+    expect(r.ok).toBe(false);
+    expect(r.reason).toMatch(/warranty/);
+  });
+
+  it('permits it once warranty is an allowed claim', () => {
+    expect(guardReply(draft, PRICED, [], ['warranty']).ok).toBe(true);
+  });
+
+  it('allowing warranty does not unlock financing', () => {
+    // Each topic is unlocked on its own; a warranty answer must not license a
+    // monthly figure we still hold no basis for.
+    const money = 'It works out to about $89 per month.';
+    expect(guardReply(money, [...PRICED, 89], [], ['warranty']).ok).toBe(false);
+  });
+
+  it('still rejects an invented price inside an allowed answer', () => {
+    const mixed = 'That is $2,438 with a 10 year manufacturer warranty.';
+    expect(guardReply(mixed, PRICED, [], ['warranty']).ok).toBe(false);
+  });
+});

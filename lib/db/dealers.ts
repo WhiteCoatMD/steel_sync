@@ -173,7 +173,7 @@ export async function getDealer(id: string): Promise<DealerSettings | null> {
   const sql = getSql();
   const rows = await sql`
     SELECT id, name, phone, email, website, theme, pricing_rules, show_pricing,
-           site, offers_rto, service_area
+           site, offers_rto, service_area, policies
     FROM dealers WHERE id = ${id} AND active = true LIMIT 1
   ` as any[];
   if (rows.length === 0) return null;
@@ -191,6 +191,7 @@ export async function getDealer(id: string): Promise<DealerSettings | null> {
     pricing: mergePricingRules(r.pricing_rules),
     offersRto: r.offers_rto === true,
     serviceArea: (r.service_area as string) ?? null,
+    policies: (r.policies as string) ?? null,
     ...(r.site ? { site: r.site } : {}),
   } as DealerSettings;
 }

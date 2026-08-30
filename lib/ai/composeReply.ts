@@ -1,5 +1,5 @@
 import { getClient, MODEL, ParseRequestError } from './parseRequest';
-import { guardReply } from './replyGuard';
+import { guardReply, type AllowedClaim } from './replyGuard';
 
 /**
  * Phrases a reply the way a person would, without ever being trusted with a
@@ -23,6 +23,8 @@ export interface ComposeInput {
   allowedFigures: number[];
   /** Figures the reply MUST contain — a quote that omits the price is no use. */
   requiredFigures?: number[];
+  /** Topics the dealer has given real terms for, so stating them is quoting. */
+  allowClaims?: AllowedClaim[];
   /** Used when the model fails, is slow, or writes something we reject. */
   fallback: string;
   /** Extra steer for this particular kind of reply. */
@@ -82,7 +84,12 @@ export async function composeReply(input: ComposeInput): Promise<string> {
     .join('')
     .trim();
 
-  const verdict = guardReply(draft, input.allowedFigures, input.requiredFigures ?? []);
+  const verdict = guardReply(
+    draft,
+    input.allowedFigures,
+    input.requiredFigures ?? [],
+    input.allowClaims ?? [],
+  );
   if (!verdict.ok) {
     // Loud, because a pattern of rejections is the signal that the prompt needs
     // work -- and because silently templating would hide it.

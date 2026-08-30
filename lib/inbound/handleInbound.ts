@@ -475,12 +475,16 @@ On paying monthly: ${lowerFirst(
       facts: [
         `Dealer: ${dealer.name}`,
         dealer.serviceArea ? `We deliver to: ${dealer.serviceArea}` : null,
+        dealer.policies ? dealer.policies : null,
         'We have not priced anything for this customer yet.',
       ]
         .filter(Boolean)
         .join('\n'),
       allowedFigures: [],
       fallback: templateReply,
+      ...(dealer.policies && /warrant/i.test(dealer.policies)
+        ? { allowClaims: ['warranty' as const] }
+        : {}),
       guidance:
         'Answer their question from the facts if the facts cover it. If they ' +
         'do not, say someone will follow up with a proper answer — never guess ' +
@@ -511,6 +515,7 @@ On paying monthly: ${lowerFirst(
         // will follow up to get those added in", which reads like the quote is
         // about to go up.
         `That total ALREADY INCLUDES: ${p.lineItems.map(l => l.label).join('; ')}`,
+        ...(dealer.policies ? [dealer.policies] : []),
         'Do not suggest anything in that list still needs pricing, adding or ' +
           'confirming. If they just asked to change something, that list is ' +
           'the building AFTER the change — confirm the new spec and price, and ' +
@@ -524,6 +529,9 @@ On paying monthly: ${lowerFirst(
       ].join('\n'),
       allowedFigures: figures,
       requiredFigures: [p.total],
+      ...(dealer.policies && /warrant/i.test(dealer.policies)
+        ? { allowClaims: ['warranty' as const] }
+        : {}),
       fallback: templateReply,
       guidance:
         'Give them the price and how it splits. Answer what they actually ' +

@@ -241,6 +241,11 @@ export interface DealerSettings {
   offersRto?: boolean;
   /** Where this dealer delivers, in plain words. Answers "do you deliver to X". */
   serviceArea?: string | null;
+  /**
+   * Free-text facts the model may answer FROM — warranty terms and the like.
+   * Prose, not fields: it repeats these, it does not compute with them.
+   */
+  policies?: string | null;
 }
 
 // ─── Pricing Rules ──────────────────────────────────────────
