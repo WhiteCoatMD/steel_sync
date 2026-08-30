@@ -231,6 +231,10 @@ export async function handleInboundMessage(
     ? intents.asksRoofComparison
     : asksToExplainRoofStyles(text);
   const saysWhatSize = intents ? intents.asksWhatSize : looksLikeSizingQuestion(text);
+  // No regex floor for this one: guessing at "is this about delivery or about a
+  // building" from keywords is exactly what the model is better at, and the
+  // fallback behaviour (ask for dimensions) is the old behaviour anyway.
+  const saysSomethingElse = intents ? intents.asksSomethingElse : false;
   const saysExtraHeight = intents ? intents.needsExtraHeight : mentionsTallNeed(text);
   const saysRv = intents ? intents.isRvUse : mentionsRv(text);
 
@@ -430,10 +434,21 @@ export async function handleInboundMessage(
       })
     : [];
 
+  // They asked something we cannot price -- delivery, permits, site prep,
+  // warranty. Answering that with five questions about width and roof style is
+  // an interrogation, not a reply (owner, 2026-08-29). Only when there is
+  // nothing to quote: once a building is on the table, the composed quote reply
+  // handles the question alongside the price.
+  const deferQuestion =
+    saysSomethingElse && outcome.kind === 'clarify' && !sizingSuggestion && !explainRoofs;
+
   // The templated reply. Always correct, and the floor the composed one falls
   // back to.
   const templateReply =
-    explainRoofs || comparingPastQuote
+    deferQuestion
+      ? `Good question — let me have someone here get you a proper answer on ` +
+        `that. In the meantime, what are you looking to build?`
+      : explainRoofs || comparingPastQuote
       ? roofStyleExplanation(roofOptions)
       : sizingSuggestion
       ? sizingSuggestion
@@ -450,6 +465,30 @@ On paying monthly: ${lowerFirst(
   // other amount is rejected and the template stands. So the floor for this is
   // the wording we already had (owner, 2026-08-29).
   let reply = templateReply;
+
+  // A deferred question still goes through the composer, so anything the dealer
+  // HAS told us gets answered instead of punted. The guard allows no figures
+  // here, because none were priced.
+  if (deferQuestion) {
+    reply = await composeReply({
+      customerMessage: text,
+      facts: [
+        `Dealer: ${dealer.name}`,
+        dealer.serviceArea ? `We deliver to: ${dealer.serviceArea}` : null,
+        'We have not priced anything for this customer yet.',
+      ]
+        .filter(Boolean)
+        .join('\n'),
+      allowedFigures: [],
+      fallback: templateReply,
+      guidance:
+        'Answer their question from the facts if the facts cover it. If they ' +
+        'do not, say someone will follow up with a proper answer — never guess ' +
+        'at delivery, permits, site prep, warranties or timing. Then ask what ' +
+        'they are looking to build. Do not quote any price or number.',
+    });
+  }
+
   if (
     outcome.kind === 'quote' &&
     !sizingSuggestion &&
@@ -545,7 +584,9 @@ On paying monthly: ${lowerFirst(
     );
   }
 
-  const recorded = sizingSuggestion
+  const recorded = deferQuestion
+    ? 'question-for-dealer'
+    : sizingSuggestion
     ? 'sizing-suggestion'
     : askedAboutFinancing
       ? `${outcome.kind}+financing`

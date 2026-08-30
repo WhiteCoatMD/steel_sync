@@ -154,7 +154,8 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "needsExtraHeight": false,
     "isRvUse": false,
     "mentionedDoors": false,
-    "acceptsSuggestion": false
+    "acceptsSuggestion": false,
+    "asksSomethingElse": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -177,6 +178,13 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "sounds good", "that works", "ok do that", "perfect", "sure". A message that
   states something concrete - "make it 30 wide", "two roll ups" - is NOT this,
   even if it also sounds agreeable.
+- asksSomethingElse: their message asks about something we cannot price or
+  size - delivery, travel distance, site prep, concrete vs gravel vs dirt,
+  permits, inspections, engineering approval, warranties, lead times, install
+  scheduling, colours we have in stock, financing paperwork. "do yall deliver
+  to shreveport", "does it have to go on concrete", "will this pass permit",
+  "how long till its up", "do these come with a warranty". A message that only
+  describes or asks the price of a building is NOT this.
 - mentionedDoors: they have said something about doors ANYWHERE in the
   conversation - which ones they want, or that they want none. "one 10x10 and
   a walk in", "two roll ups", "no doors", "just leave the ends open" are all
@@ -227,6 +235,16 @@ export interface RequestIntents {
    * need?", is told "thats fine", and asks again.
    */
   acceptsSuggestion: boolean;
+  /**
+   * They asked about something other than sizing or pricing a building --
+   * delivery, site prep, permits, warranty, lead times.
+   *
+   * Without this the pipeline reads every message as a building description,
+   * so "do yall deliver to shreveport" came back with five questions about
+   * width and roof style. A customer asking a plain question got interrogated
+   * (owner, 2026-08-29).
+   */
+  asksSomethingElse: boolean;
 }
 
 export interface ParsedRequest {
@@ -389,6 +407,7 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'isRvUse',
     'mentionedDoors',
     'acceptsSuggestion',
+    'asksSomethingElse',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.

@@ -239,6 +239,8 @@ export interface DealerSettings {
    * dealer does not offer is worse than staying quiet.
    */
   offersRto?: boolean;
+  /** Where this dealer delivers, in plain words. Answers "do you deliver to X". */
+  serviceArea?: string | null;
 }
 
 // ─── Pricing Rules ──────────────────────────────────────────

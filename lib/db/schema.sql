@@ -103,3 +103,11 @@ ALTER TABLE conversations ADD COLUMN IF NOT EXISTS wants_financing BOOLEAN NOT N
 -- this the bot asked "what doors do you need?", was told "thats fine", and
 -- asked again (owner, 2026-08-29).
 ALTER TABLE conversations ADD COLUMN IF NOT EXISTS pending_proposal JSONB;
+
+-- Where this dealer delivers, in plain words.
+--
+-- Given to the model as a FACT so "do yall deliver to shreveport" gets an
+-- answer instead of five questions about roof style. Free text rather than a
+-- state list: dealers describe their area in their own terms, and the model is
+-- reading it, not matching on it (owner, 2026-08-29).
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS service_area TEXT;
