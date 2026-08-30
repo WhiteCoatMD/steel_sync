@@ -802,15 +802,17 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         onPointerDown={handlePointerDown}>
         {highlight}
 
-        {/* Door face: slat shading on the front, plain on the other five sides */}
+        {/*
+          Slats on EVERY face, not just the one I guessed was the front.
+          Openings sit on all four walls and the group is rotated to suit, so
+          +Z is the outward face for some of them and the inward face for
+          others — putting the texture on material-4 alone left half the doors
+          plain, which is exactly what it looked like (owner, 2026-08-30). The
+          box is 0.06ft thick, so the edges carrying it too costs nothing.
+        */}
         <mesh>
           <boxGeometry args={[ow, oh, 0.06]} />
-          <meshStandardMaterial attach="material-0" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
-          <meshStandardMaterial attach="material-1" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
-          <meshStandardMaterial attach="material-2" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
-          <meshStandardMaterial attach="material-3" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
           <meshStandardMaterial
-            attach="material-4"
             color="#f2f2f2"
             metalness={STEEL_METALNESS}
             roughness={STEEL_ROUGHNESS}
@@ -818,7 +820,6 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
             normalMap={doorNormal}
             normalScale={new THREE.Vector2(0.8, 0.8)}
           />
-          <meshStandardMaterial attach="material-5" color="#e8e8e8" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
 
         {/* Trim frame — pushed forward */}
