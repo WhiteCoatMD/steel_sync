@@ -16,10 +16,17 @@ import type { BuildingConfig } from '../building/types';
 
 /** Wall above the door, for the header. */
 export const MIN_HEADER_FT = 1;
-/** Wall between a door and the corner. */
+/** Wall a DOOR needs beside it, whether that is the corner or the next opening. */
 export const MIN_EDGE_FT = 2;
 /** Wall between two doors on the same wall. */
 export const MIN_BETWEEN_FT = 2;
+/** A window needs less room than a door, but it is not nothing. */
+export const MIN_WINDOW_CLEARANCE_FT = 1;
+
+/** How much wall this opening needs beside it, on any side. */
+export function clearanceFt(type: unknown): number {
+  return type === 'window' ? MIN_WINDOW_CLEARANCE_FT : MIN_EDGE_FT;
+}
 
 export interface FitProblem {
   kind: 'height' | 'width';
@@ -43,12 +50,22 @@ export function widestThatFits(count: number, wallFt: number): number | null {
 
 type Opening = { type?: unknown; widthFt?: unknown; heightFt?: unknown; wall?: unknown };
 
-/** "Two 9ft doors" reads better than "2 9ft doors" in a sentence. */
+/** "two 9ft doors" reads better than "2 9ft doors" in a sentence. */
 function count(n: number): string {
-  return ['zero', 'one', 'Two', 'Three', 'Four'][n] ?? String(n);
+  return (
+    ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][
+      n
+    ] ?? String(n)
+  );
+}
+
+/** The suggestion follows a full stop, so it starts a sentence. */
+function sentence(s: string): string {
+  return s ? `${s.charAt(0).toUpperCase()}${s.slice(1)}` : s;
 }
 
 const isDoor = (o: Opening) => o?.type === 'rollup' || o?.type === 'walkin';
+const takesWallSpace = (o: Opening) => isDoor(o) || o?.type === 'window';
 
 /** Front and back are the gable ends, so their width is the building's width. */
 function wallWidthFt(wall: unknown, b: { widthFt: number; lengthFt: number }): number {
@@ -62,10 +79,32 @@ function wallWidthFt(wall: unknown, b: { widthFt: number; lengthFt: number }): n
  * which is the case that started this.
  */
 export function wallNeededFt(doorWidths: number[]): number {
-  if (!doorWidths.length) return 0;
-  const doors = doorWidths.reduce((a, b) => a + b, 0);
-  const gaps = MIN_BETWEEN_FT * (doorWidths.length - 1);
-  return doors + gaps + MIN_EDGE_FT * 2;
+  return wallNeededForOpenings(doorWidths.map(widthFt => ({ widthFt, type: 'rollup' })));
+}
+
+/**
+ * The same sum for a wall carrying doors AND windows, which need different
+ * room: 2ft beside a door, 1ft beside a window (owner, 2026-08-29).
+ *
+ * A gap shared by two openings has to satisfy the greedier of them, so it is
+ * the larger clearance rather than the sum. Windows are placed at the ends,
+ * since that is the arrangement that fits if any does -- refusing a layout the
+ * customer could actually have would be its own kind of wrong.
+ */
+export function wallNeededForOpenings(
+  openings: Array<{ widthFt: number; type: unknown }>,
+): number {
+  if (!openings.length) return 0;
+
+  const sorted = [...openings].sort((a, b) => clearanceFt(a.type) - clearanceFt(b.type));
+  const widths = sorted.reduce((a, o) => a + o.widthFt, 0);
+
+  // n + 1 gaps: one at each end, one between each neighbouring pair.
+  let gaps = clearanceFt(sorted[0].type) + clearanceFt(sorted[sorted.length - 1].type);
+  for (let i = 1; i < sorted.length; i++) {
+    gaps += Math.max(clearanceFt(sorted[i - 1].type), clearanceFt(sorted[i].type));
+  }
+  return widths + gaps;
 }
 
 export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
@@ -76,14 +115,17 @@ export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
   };
   const openings = (config.openings ?? []) as unknown as Opening[];
   const doors = openings.filter(isDoor);
-  if (!doors.length) return [];
+  // Bail only when NOTHING takes wall space. Checking `doors` here skipped the
+  // width check for a wall of windows entirely -- eight of them on a 24ft wall
+  // came back as fitting when they need 29ft.
+  if (!openings.filter(takesWallSpace).length) return [];
 
   const problems: FitProblem[] = [];
 
   // ── Height ────────────────────────────────────────────────
-  const tallest = Math.max(
-    ...doors.map(d => (typeof d.heightFt === 'number' ? d.heightFt : 0)),
-  );
+  const tallest = doors.length
+    ? Math.max(...doors.map(d => (typeof d.heightFt === 'number' ? d.heightFt : 0)))
+    : 0;
   if (Number.isFinite(tallest) && tallest > 0 && tallest + MIN_HEADER_FT > b.legHeightFt) {
     const needed = tallest + MIN_HEADER_FT;
     problems.push({
@@ -96,24 +138,43 @@ export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
   }
 
   // ── Width, wall by wall ───────────────────────────────────
-  const byWall = new Map<string, number[]>();
-  for (const d of doors) {
-    const wall = typeof d.wall === 'string' ? d.wall : 'front';
-    const w = typeof d.widthFt === 'number' ? d.widthFt : 0;
-    byWall.set(wall, [...(byWall.get(wall) ?? []), w]);
+  // Windows take wall too, so a 12ft door with four windows beside it can
+  // overrun a wall that the door alone fits on.
+  const byWall = new Map<string, Array<{ widthFt: number; type: unknown }>>();
+  for (const o of openings.filter(takesWallSpace)) {
+    const wall = typeof o.wall === 'string' ? o.wall : 'front';
+    const w = typeof o.widthFt === 'number' ? o.widthFt : 0;
+    byWall.set(wall, [...(byWall.get(wall) ?? []), { widthFt: w, type: o.type }]);
   }
 
-  for (const [wall, widths] of byWall) {
+  for (const [wall, items] of byWall) {
     const available = wallWidthFt(wall, b);
-    const needed = wallNeededFt(widths);
+    const needed = wallNeededForOpenings(items);
     if (needed > available) {
-      const n = widths.length;
-      const widest = Math.max(...widths);
-      const subject = n === 1 ? `A ${widest}ft door` : `${count(n)} ${widest}ft doors`;
-      const spacing = n > 1 ? ', 2ft at each end and 2ft between them' : ', 2ft at each end';
+      const doorItems = items.filter(o => o.type !== 'window');
+      const windowItems = items.filter(o => o.type === 'window');
+      const n = doorItems.length;
+      const widest = n ? Math.max(...doorItems.map(o => o.widthFt)) : 0;
+
+      const parts: string[] = [];
+      if (n) parts.push(n === 1 ? `a ${widest}ft door` : `${count(n)} ${widest}ft doors`);
+      if (windowItems.length) {
+        parts.push(
+          windowItems.length === 1 ? 'a window' : `${count(windowItems.length)} windows`,
+        );
+      }
+      const subject = `${parts.join(' and ')}`;
+      const spacing =
+        windowItems.length && n
+          ? ', with 2ft either side of a door and 1ft either side of a window'
+          : windowItems.length
+            ? ', 1ft either side of each window'
+            : n > 1
+              ? ', 2ft at each end and 2ft between them'
+              : ', 2ft at each end';
 
       // The fix is a narrower door, or one fewer. Offer whichever exists.
-      const narrower = widestThatFits(n, available);
+      const narrower = n ? widestThatFits(n, available) : null;
       const fewer = n > 1 ? widestThatFits(n - 1, available) : null;
       const options: string[] = [];
       if (narrower) {
@@ -126,11 +187,16 @@ export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
       problems.push({
         kind: 'width',
         message:
-          `${subject} ${n === 1 ? 'needs' : 'need'} ${needed}ft of wall${spacing} — ` +
+          `${subject.charAt(0).toUpperCase()}${subject.slice(1)} ` +
+          `${items.length === 1 ? 'needs' : 'need'} ${needed}ft of wall${spacing} — ` +
           `and the ${wall} wall is only ${available}ft.`,
         suggestion: options.length
-          ? `${options.join(' would fit, or ')}${options.length === 1 ? ' would fit' : ''}.`
-          : 'A narrower door would fit.',
+          ? sentence(
+              `${options.join(' would fit, or ')}${options.length === 1 ? ' would fit' : ''}.`,
+            )
+          : windowItems.length
+            ? 'Dropping a window or two would fit.'
+            : 'A narrower door would fit.',
       });
     }
   }

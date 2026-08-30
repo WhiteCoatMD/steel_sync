@@ -2,8 +2,10 @@ import { describe, it, expect } from 'vitest';
 import {
   checkOpeningFit,
   wallNeededFt,
+  wallNeededForOpenings,
   widestThatFits,
   MIN_HEADER_FT,
+  MIN_WINDOW_CLEARANCE_FT,
 } from '../openingFit';
 import { createDefaultConfig } from '../../building/defaultConfig';
 import type { BuildingConfig } from '../../building/types';
@@ -106,5 +108,64 @@ describe('doors have to fit across the wall', () => {
 describe('a building with no doors', () => {
   it('has nothing to check', () => {
     expect(checkOpeningFit(build({}, []))).toEqual([]);
+  });
+});
+
+describe('windows take wall too', () => {
+  /**
+   * A window needs 1ft either side rather than a door's 2ft (owner,
+   * 2026-08-29). Leaving them out of the sum let a 12ft door with six windows
+   * beside it price as though the wall were empty.
+   */
+  const window = (wall = 'front') => ({
+    id: 'w',
+    type: 'window',
+    widthFt: 2.5,
+    heightFt: 3,
+    wall,
+    positionFt: 3,
+    color: null,
+  });
+
+  it('gives a window 1ft where a door gets 2ft', () => {
+    expect(MIN_WINDOW_CLEARANCE_FT).toBe(1);
+    // 1 + 2.5 + 1 + 2.5 + 1
+    expect(wallNeededForOpenings([
+      { widthFt: 2.5, type: 'window' },
+      { widthFt: 2.5, type: 'window' },
+    ])).toBe(8);
+  });
+
+  it('makes a shared gap satisfy the greedier neighbour', () => {
+    // Windows outside, door inside: 1 + 2.5 + 1 + 2.5 + 2 + 12 + 2 = 23.
+    expect(wallNeededForOpenings([
+      { widthFt: 12, type: 'rollup' },
+      { widthFt: 2.5, type: 'window' },
+      { widthFt: 2.5, type: 'window' },
+    ])).toBe(23);
+  });
+
+  it('refuses a wall of windows that does not fit', () => {
+    // Eight at 2.5ft is 20ft of glass and 9ft of gaps against a 24ft wall.
+    // This returned "fits" while the check bailed early on there being no
+    // doors to look at.
+    const many = build({ legHeightFt: 12 }, Array.from({ length: 8 }, () => window()));
+    expect(checkOpeningFit(many).some(p => p.kind === 'width')).toBe(true);
+  });
+
+  it('counts them per wall, so spreading them out fits', () => {
+    const spread = build({ legHeightFt: 12 }, [
+      ...Array.from({ length: 4 }, () => window('front')),
+      ...Array.from({ length: 4 }, () => window('back')),
+    ]);
+    expect(checkOpeningFit(spread)).toEqual([]);
+  });
+
+  it('counts them alongside a door on the same wall', () => {
+    const crowded = build({ legHeightFt: 14 }, [
+      rollup(12, 12),
+      ...Array.from({ length: 6 }, () => window()),
+    ]);
+    expect(checkOpeningFit(crowded).some(p => p.kind === 'width')).toBe(true);
   });
 });
