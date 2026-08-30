@@ -588,9 +588,15 @@ On paying monthly: ${lowerFirst(
                   : ' Ask for the details of the other one.'),
             ]
           : []),
-        // Volunteered on every quote, the warranty is the same clutter the
-        // line-item breakdown was. It answers a question; it does not open one.
-        'Mention the warranty ONLY if they asked about it.',
+        // Volunteered on every quote, these are the same clutter the line-item
+        // breakdown was. They answer questions; they do not open them. Each one
+        // added here has drifted into the default reply until it was said
+        // plainly, so this covers the whole class rather than naming them one
+        // at a time.
+        'The warranty, the install lead time, and the colour list are REFERENCE ' +
+          'facts. Use them to answer a question they actually asked, and leave ' +
+          'them out otherwise — do not volunteer them, and do not close by ' +
+          'asking about colours.',
         'Do not suggest anything in that list still needs pricing, adding or ' +
           'confirming. If they just asked to change something, that list is ' +
           'the building AFTER the change — confirm the new spec and price, and ' +
