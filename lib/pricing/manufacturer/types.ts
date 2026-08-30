@@ -91,7 +91,11 @@ export interface Surcharge {
  * price identically). `price` is already the CHARGED amount - walls are not
  * touched by the line-item surcharge.
  */
+/** Which siding a wall row was measured with. They are priced differently. */
+export type Siding = 'horizontal' | 'vertical';
+
 export interface SideWallRow {
+  siding: Siding;
   widthBand: Bracket;
   length: Bracket;
   heightFt: number;
@@ -100,6 +104,7 @@ export interface SideWallRow {
 
 /** A fully-enclosed end wall (spans the WIDTH). Varies by exact width, not band. */
 export interface EndWallRow {
+  siding: Siding;
   widthFt: number;
   heightFt: number;
   price: number;

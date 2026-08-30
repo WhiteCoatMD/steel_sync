@@ -177,7 +177,7 @@ export function quoteFromTable(
     legType = 'standard-legs',
     componentKeys = [],
     enclosed = false,
-    siding = 'vertical',
+    siding = 'horizontal',
     leanTos = [],
     leanToCount = leanTos.length,
   } = input;
@@ -370,18 +370,20 @@ export function quoteFromTable(
     // Wall price does NOT vary with roof style - the vendor's own wall rows carry
     // no style key at all, only a horizontal and a vertical price column. What it
     // varies with is SIDING orientation, which the estimate lists separately
-    // ("Left Side Siding: Vertical"). Every measurement here was taken on vertical
-    // siding, so horizontal is refused until measured.
-    if (siding !== 'vertical') {
-      unpriceable.push(`enclosed walls are only measured with vertical siding, not ${siding}`);
-    }
+    // ("Left Side Siding: Horizontal"). Both are measured now, and horizontal is
+    // the default because it is what Dunrite sells unless vertical is asked for
+    // (owner, 2026-08-29). Getting this wrong is expensive in both directions: a
+    // 24x30x11 garage is $1,500 dearer on vertical walls.
     const side = table.sideWalls?.find(
       r =>
+        r.siding === siding &&
         inBracket(widthFt, r.widthBand) &&
         inBracket(lengthFt, r.length) &&
         r.heightFt === legHeightFt,
     );
-    const end = table.endWalls?.find(r => r.widthFt === widthFt && r.heightFt === legHeightFt);
+    const end = table.endWalls?.find(
+      r => r.siding === siding && r.widthFt === widthFt && r.heightFt === legHeightFt,
+    );
 
     if (side && end) {
       // Two of each: left/right run the length, front/back close the ends.

@@ -16,6 +16,8 @@ describe('the live dealer row shape prices from the captured table', () => {
 
   function referenceCarport() {
     const c = createDefaultConfig('tejasmex');
+    // Measured with VERTICAL siding; horizontal is the default now.
+    c.building = { ...c.building, panelDirection: { ...c.building.panelDirection, walls: 'vertical' } };
     c.building = { ...c.building, type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical' };
     c.openings = [];
     c.leanTos = [];

@@ -137,6 +137,13 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
     c.certifications = { ...c.certifications, engineered: true };
   }
 
+  // Wall siding lives under panelDirection, which is where the adapter reads it.
+  // Horizontal is the standard build; vertical is an upgrade and costs more.
+  const sidingAsked = (sanitizeBuilding(ai.building) as Record<string, unknown>).siding;
+  if (sidingAsked === 'vertical' || sidingAsked === 'horizontal') {
+    c.building.panelDirection = { ...c.building.panelDirection, walls: sidingAsked };
+  }
+
   // Lean-tos are never inferred from a message: the manufacturer sells them as
   // their own building styles, so one would only make the quote unpriceable.
   c.leanTos = [];

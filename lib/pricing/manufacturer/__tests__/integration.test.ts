@@ -18,6 +18,8 @@ const TEJASMEX_RULES: DealerPricingRules = {
 /** The live-measured reference build: Standard Carport 24x25x9, Vertical, cement. */
 function referenceCarport(): BuildingConfig {
   const c = createDefaultConfig('dealer_columbia');
+  // Measured with VERTICAL siding; horizontal is the default now.
+  c.building = { ...c.building, panelDirection: { ...c.building.panelDirection, walls: 'vertical' } };
   c.building = {
     ...c.building,
     type: 'carport',

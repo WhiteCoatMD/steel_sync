@@ -10955,6 +10955,7 @@
  },
  "sideWalls": [
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -10967,6 +10968,7 @@
    "price": 578
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -10979,6 +10981,7 @@
    "price": 382
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -10991,6 +10994,7 @@
    "price": 447
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11003,6 +11007,7 @@
    "price": 518
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11015,6 +11020,7 @@
    "price": 600
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11027,6 +11033,7 @@
    "price": 682
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11039,6 +11046,7 @@
    "price": 829
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11051,6 +11059,7 @@
    "price": 895
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11063,6 +11072,7 @@
    "price": 966
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11075,6 +11085,7 @@
    "price": 1037
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11087,6 +11098,7 @@
    "price": 421
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11099,6 +11111,7 @@
    "price": 500
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11111,6 +11124,7 @@
    "price": 578
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11123,6 +11137,7 @@
    "price": 656
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11135,6 +11150,7 @@
    "price": 734
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11147,6 +11163,7 @@
    "price": 921
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11159,6 +11176,7 @@
    "price": 999
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11171,6 +11189,7 @@
    "price": 1077
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11183,6 +11202,7 @@
    "price": 1156
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11195,6 +11215,7 @@
    "price": 466
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11207,6 +11228,7 @@
    "price": 542
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11219,6 +11241,7 @@
    "price": 626
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11231,6 +11254,7 @@
    "price": 692
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11243,6 +11267,7 @@
    "price": 767
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11255,6 +11280,7 @@
    "price": 1008
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11267,6 +11293,7 @@
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11279,6 +11306,7 @@
    "price": 1168
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11291,6 +11319,7 @@
    "price": 1253
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11303,6 +11332,7 @@
    "price": 492
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11315,6 +11345,7 @@
    "price": 662
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11327,6 +11358,7 @@
    "price": 763
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11339,6 +11371,7 @@
    "price": 532
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11351,6 +11384,7 @@
    "price": 623
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11363,6 +11397,7 @@
    "price": 715
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11375,6 +11410,7 @@
    "price": 825
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11387,6 +11423,7 @@
    "price": 936
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11399,6 +11436,7 @@
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11411,6 +11449,7 @@
    "price": 1246
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11423,6 +11462,7 @@
    "price": 1337
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11435,6 +11475,7 @@
    "price": 1429
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11447,6 +11488,7 @@
    "price": 669
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11459,6 +11501,7 @@
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11471,6 +11514,7 @@
    "price": 910
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11483,6 +11527,7 @@
    "price": 1031
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11495,6 +11540,7 @@
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11507,6 +11553,7 @@
    "price": 1452
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11519,6 +11566,7 @@
    "price": 1566
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11531,6 +11579,7 @@
    "price": 715
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11543,6 +11592,7 @@
    "price": 799
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11555,6 +11605,7 @@
    "price": 946
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11567,6 +11618,7 @@
    "price": 1096
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11579,6 +11631,7 @@
    "price": 1223
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11591,6 +11644,7 @@
    "price": 653
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11603,6 +11657,7 @@
    "price": 490
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11615,6 +11670,7 @@
    "price": 614
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11627,6 +11683,7 @@
    "price": 727
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11639,6 +11696,7 @@
    "price": 829
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11651,6 +11709,7 @@
    "price": 832
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11663,6 +11722,7 @@
    "price": 1325
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11675,6 +11735,7 @@
    "price": 1693
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11687,6 +11748,7 @@
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11699,6 +11761,7 @@
    "price": 1070
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11711,6 +11774,7 @@
    "price": 1820
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11723,6 +11787,7 @@
    "price": 1598
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11735,6 +11800,7 @@
    "price": 1156
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11747,6 +11813,7 @@
    "price": 1745
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11759,6 +11826,7 @@
    "price": 1892
   },
   {
+   "siding": "vertical",
    "widthBand": [
     12,
     24
@@ -11771,6 +11839,7 @@
    "price": 1240
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11783,6 +11852,7 @@
    "price": 440
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11795,6 +11865,7 @@
    "price": 689
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11807,6 +11878,7 @@
    "price": 779
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11819,6 +11891,7 @@
    "price": 942
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11831,6 +11904,7 @@
    "price": 1004
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11843,6 +11917,7 @@
    "price": 1086
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11855,6 +11930,7 @@
    "price": 1168
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11867,6 +11943,7 @@
    "price": 464
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11879,6 +11956,7 @@
    "price": 761
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11891,6 +11969,7 @@
    "price": 845
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11903,6 +11982,7 @@
    "price": 1018
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11915,6 +11995,7 @@
    "price": 1109
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11927,6 +12008,7 @@
    "price": 1177
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11939,6 +12021,7 @@
    "price": 1246
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11951,6 +12034,7 @@
    "price": 927
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11963,6 +12047,7 @@
    "price": 1228
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11975,6 +12060,7 @@
    "price": 1341
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11987,6 +12073,7 @@
    "price": 1454
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -11999,6 +12086,7 @@
    "price": 878
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12011,6 +12099,7 @@
    "price": 969
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12023,6 +12112,7 @@
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12035,6 +12125,7 @@
    "price": 1305
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12047,6 +12138,7 @@
    "price": 1409
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12059,6 +12151,7 @@
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12071,6 +12164,7 @@
    "price": 571
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12083,6 +12177,7 @@
    "price": 940
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12095,6 +12190,7 @@
    "price": 1074
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12107,6 +12203,7 @@
    "price": 1308
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12119,6 +12216,7 @@
    "price": 1474
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12131,6 +12229,7 @@
    "price": 1546
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12143,6 +12242,7 @@
    "price": 1618
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12155,6 +12255,7 @@
    "price": 685
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12167,6 +12268,7 @@
    "price": 1197
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12179,6 +12281,7 @@
    "price": 1393
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12191,6 +12294,7 @@
    "price": 1572
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12203,6 +12307,7 @@
    "price": 1775
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12215,6 +12320,7 @@
    "price": 1912
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12227,6 +12333,7 @@
    "price": 2049
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12239,6 +12346,7 @@
    "price": 744
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12251,6 +12359,7 @@
    "price": 1243
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12263,6 +12372,7 @@
    "price": 1491
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12275,6 +12385,7 @@
    "price": 1690
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12287,6 +12398,7 @@
    "price": 1892
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12299,6 +12411,7 @@
    "price": 2006
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12311,6 +12424,7 @@
    "price": 2121
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12323,6 +12437,7 @@
    "price": 502
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12335,6 +12450,7 @@
    "price": 554
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12347,6 +12463,7 @@
    "price": 1103
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12359,6 +12476,7 @@
    "price": 536
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12371,6 +12489,7 @@
    "price": 737
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12383,6 +12502,7 @@
    "price": 887
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12395,6 +12515,7 @@
    "price": 946
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12407,6 +12528,7 @@
    "price": 584
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12419,6 +12541,7 @@
    "price": 623
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12431,6 +12554,7 @@
    "price": 757
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12443,6 +12567,7 @@
    "price": 809
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12455,6 +12580,7 @@
    "price": 1024
   },
   {
+   "siding": "vertical",
    "widthBand": [
     26,
     30
@@ -12465,1093 +12591,4250 @@
    ],
    "heightFt": 12,
    "price": 1060
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 267
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 320
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 362
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 9,
+   "price": 900
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 11,
+   "price": 1090
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 12,
+   "price": 1008
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 9,
+   "price": 743
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 12,
+   "price": 1044
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 11,
+   "price": 1168
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 506
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 9,
+   "price": 796
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 12,
+   "price": 1142
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 12,
+   "price": 1240
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 522
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 9,
+   "price": 848
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 245
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 267
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 375
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 424
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 483
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 411
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 483
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 600
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 662
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 741
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 787
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 486
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 552
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 633
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 9,
+   "price": 675
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 779
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 871
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 969
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 6,
+   "price": 519
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 7,
+   "price": 594
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 9,
+   "price": 763
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 10,
+   "price": 885
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 11,
+   "price": 986
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 12,
+   "price": 1103
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 6,
+   "price": 549
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 7,
+   "price": 653
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 8,
+   "price": 770
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 9,
+   "price": 848
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 10,
+   "price": 1019
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 11,
+   "price": 1123
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 12,
+   "price": 1240
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 6,
+   "price": 614
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 7,
+   "price": 706
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 8,
+   "price": 869
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 9,
+   "price": 936
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 10,
+   "price": 1074
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 11,
+   "price": 1194
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 12,
+   "price": 1289
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 6,
+   "price": 679
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 7,
+   "price": 758
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 8,
+   "price": 967
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 9,
+   "price": 1024
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 10,
+   "price": 1129
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 11,
+   "price": 1265
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 12,
+   "price": 1337
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 339
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 6,
+   "price": 275
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 7,
+   "price": 327
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 10,
+   "price": 509
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 11,
+   "price": 562
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 12,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 8,
+   "price": 679
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 339
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 379
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 512
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 564
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 633
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 669
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 6,
+   "price": 235
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 7,
+   "price": 275
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 320
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 9,
+   "price": 346
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 10,
+   "price": 385
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 11,
+   "price": 440
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 12,
+   "price": 486
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 398
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 6,
+   "price": 307
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 7,
+   "price": 365
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 414
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 9,
+   "price": 450
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 10,
+   "price": 502
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 11,
+   "price": 584
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 12,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 6,
+   "price": 356
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 7,
+   "price": 411
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 447
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 9,
+   "price": 518
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 10,
+   "price": 581
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 11,
+   "price": 656
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 12,
+   "price": 721
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 6,
+   "price": 405
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 7,
+   "price": 457
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 8,
+   "price": 490
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 10,
+   "price": 659
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 11,
+   "price": 731
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    36,
+    40
+   ],
+   "heightFt": 12,
+   "price": 799
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 6,
+   "price": 502
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 7,
+   "price": 594
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 8,
+   "price": 681
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 10,
+   "price": 829
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    41,
+    45
+   ],
+   "heightFt": 11,
+   "price": 946
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 6,
+   "price": 535
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 7,
+   "price": 639
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 8,
+   "price": 724
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 10,
+   "price": 887
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    46,
+    50
+   ],
+   "heightFt": 11,
+   "price": 1012
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 6,
+   "price": 574
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 7,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 8,
+   "price": 776
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    51,
+    55
+   ],
+   "heightFt": 10,
+   "price": 946
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 6,
+   "price": 614
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 7,
+   "price": 731
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 8,
+   "price": 828
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    56,
+    60
+   ],
+   "heightFt": 10,
+   "price": 1004
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    0,
+    20
+   ],
+   "heightFt": 8,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 8,
+   "price": 385
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    21,
+    25
+   ],
+   "heightFt": 9,
+   "price": 424
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    26,
+    30
+   ],
+   "heightFt": 8,
+   "price": 483
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    31,
+    35
+   ],
+   "heightFt": 8,
+   "price": 552
   }
  ],
  "endWalls": [
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 9,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 9,
    "price": 1305
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 9,
    "price": 1305
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 6,
    "price": 1351
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 6,
    "price": 1351
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 7,
    "price": 1442
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 7,
    "price": 1442
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 8,
    "price": 1520
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 8,
    "price": 1520
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 9,
    "price": 1606
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 9,
    "price": 1606
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 10,
    "price": 1755
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 10,
    "price": 1755
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 11,
    "price": 1977
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 11,
    "price": 1977
   },
   {
+   "siding": "vertical",
    "widthFt": 23,
    "heightFt": 12,
    "price": 2154
   },
   {
+   "siding": "vertical",
    "widthFt": 24,
    "heightFt": 12,
    "price": 2154
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 9,
    "price": 2094
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 9,
    "price": 2094
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 8,
    "price": 2441
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 8,
    "price": 2441
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 6,
    "price": 718
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 7,
    "price": 783
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 8,
    "price": 849
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 9,
    "price": 907
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 10,
    "price": 986
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 11,
    "price": 1110
   },
   {
+   "siding": "vertical",
    "widthFt": 0,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 1,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 2,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 3,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 4,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 5,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 6,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 7,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 8,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 9,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 10,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 11,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 12,
    "heightFt": 12,
    "price": 1188
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 6,
    "price": 959
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 7,
    "price": 1044
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 8,
    "price": 1084
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 10,
    "price": 1220
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 11,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 13,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 14,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 15,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 16,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 17,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 18,
    "heightFt": 12,
    "price": 1514
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 6,
    "price": 1090
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 6,
    "price": 1090
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 7,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 7,
    "price": 1155
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 8,
    "price": 1233
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 8,
    "price": 1233
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 10,
    "price": 1416
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 10,
    "price": 1416
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 11,
    "price": 1586
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 11,
    "price": 1586
   },
   {
+   "siding": "vertical",
    "widthFt": 19,
    "heightFt": 12,
    "price": 1736
   },
   {
+   "siding": "vertical",
    "widthFt": 20,
    "heightFt": 12,
    "price": 1736
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 6,
    "price": 1227
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 6,
    "price": 1227
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 7,
    "price": 1319
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 7,
    "price": 1319
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 8,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 8,
    "price": 1377
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 9,
    "price": 1455
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 9,
    "price": 1455
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 10,
    "price": 1560
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 10,
    "price": 1560
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 11,
    "price": 1775
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 11,
    "price": 1775
   },
   {
+   "siding": "vertical",
    "widthFt": 21,
    "heightFt": 12,
    "price": 1814
   },
   {
+   "siding": "vertical",
    "widthFt": 22,
    "heightFt": 12,
    "price": 1814
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 6,
    "price": 1788
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 6,
    "price": 1788
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 7,
    "price": 1859
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 7,
    "price": 1859
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 8,
    "price": 1997
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 8,
    "price": 1997
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 10,
    "price": 2199
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 10,
    "price": 2199
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 11,
    "price": 2355
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 11,
    "price": 2355
   },
   {
+   "siding": "vertical",
    "widthFt": 25,
    "heightFt": 12,
    "price": 2506
   },
   {
+   "siding": "vertical",
    "widthFt": 26,
    "heightFt": 12,
    "price": 2506
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 6,
    "price": 1990
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 6,
    "price": 1990
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 7,
    "price": 2108
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 7,
    "price": 2108
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 8,
    "price": 2212
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 8,
    "price": 2212
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 9,
    "price": 2329
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 9,
    "price": 2329
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 10,
    "price": 2434
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 10,
    "price": 2434
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 11,
    "price": 2662
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 11,
    "price": 2662
   },
   {
+   "siding": "vertical",
    "widthFt": 27,
    "heightFt": 12,
    "price": 2793
   },
   {
+   "siding": "vertical",
    "widthFt": 28,
    "heightFt": 12,
    "price": 2793
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 6,
    "price": 2232
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 6,
    "price": 2232
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 7,
    "price": 2336
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 7,
    "price": 2336
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 9,
    "price": 2545
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 9,
    "price": 2545
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 10,
    "price": 2702
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 10,
    "price": 2702
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 11,
    "price": 2937
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 11,
    "price": 2937
   },
   {
+   "siding": "vertical",
    "widthFt": 29,
    "heightFt": 12,
    "price": 3067
   },
   {
+   "siding": "vertical",
    "widthFt": 30,
    "heightFt": 12,
    "price": 3067
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 6,
+   "price": 554
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 7,
+   "price": 620
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 8,
+   "price": 685
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 9,
+   "price": 744
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 10,
+   "price": 823
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 11,
+   "price": 914
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 0,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 1,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 2,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 3,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 4,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 5,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 6,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 7,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 8,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 9,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 10,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 11,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 12,
+   "heightFt": 12,
+   "price": 992
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 6,
+   "price": 666
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 7,
+   "price": 751
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 8,
+   "price": 789
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 10,
+   "price": 927
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 9,
+   "price": 861
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 12,
+   "price": 1188
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 13,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 14,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 15,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 16,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 17,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 18,
+   "heightFt": 11,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 6,
+   "price": 763
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 6,
+   "price": 763
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 7,
+   "price": 829
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 7,
+   "price": 829
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 8,
+   "price": 907
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 8,
+   "price": 907
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 10,
+   "price": 1090
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 10,
+   "price": 1090
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 11,
+   "price": 1227
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 11,
+   "price": 1227
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 12,
+   "price": 1377
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 12,
+   "price": 1377
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 6,
+   "price": 868
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 6,
+   "price": 868
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 7,
+   "price": 959
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 7,
+   "price": 959
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 8,
+   "price": 1018
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 8,
+   "price": 1018
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 10,
+   "price": 1201
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 10,
+   "price": 1201
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 11,
+   "price": 1383
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 11,
+   "price": 1383
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 12,
+   "price": 1423
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 12,
+   "price": 1423
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 21,
+   "heightFt": 9,
+   "price": 1096
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 22,
+   "heightFt": 9,
+   "price": 1096
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 6,
+   "price": 1331
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 6,
+   "price": 1331
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 7,
+   "price": 1403
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 7,
+   "price": 1403
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 10,
+   "price": 1742
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 10,
+   "price": 1742
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 11,
+   "price": 1833
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 11,
+   "price": 1833
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 12,
+   "price": 1984
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 12,
+   "price": 1984
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 9,
+   "price": 1638
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 9,
+   "price": 1638
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 25,
+   "heightFt": 8,
+   "price": 1540
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 26,
+   "heightFt": 8,
+   "price": 1540
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 9,
+   "price": 1807
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 9,
+   "price": 1807
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 6,
+   "price": 1468
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 6,
+   "price": 1468
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 7,
+   "price": 1586
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 7,
+   "price": 1586
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 10,
+   "price": 1912
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 10,
+   "price": 1912
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 11,
+   "price": 2042
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 11,
+   "price": 2042
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 12,
+   "price": 2173
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 12,
+   "price": 2173
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 27,
+   "heightFt": 8,
+   "price": 1690
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 28,
+   "heightFt": 8,
+   "price": 1690
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 6,
+   "price": 1644
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 6,
+   "price": 1644
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 7,
+   "price": 1749
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 7,
+   "price": 1749
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 9,
+   "price": 1958
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 9,
+   "price": 1958
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 10,
+   "price": 2114
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 10,
+   "price": 2114
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 11,
+   "price": 2219
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 11,
+   "price": 2219
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 12,
+   "price": 2349
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 12,
+   "price": 2349
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 19,
+   "heightFt": 9,
+   "price": 979
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 20,
+   "heightFt": 9,
+   "price": 979
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 6,
+   "price": 959
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 6,
+   "price": 959
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 7,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 7,
+   "price": 1050
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 8,
+   "price": 1129
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 8,
+   "price": 1129
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 9,
+   "price": 1214
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 9,
+   "price": 1214
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 10,
+   "price": 1364
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 10,
+   "price": 1364
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 11,
+   "price": 1553
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 11,
+   "price": 1553
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 23,
+   "heightFt": 12,
+   "price": 1729
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 24,
+   "heightFt": 12,
+   "price": 1729
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 29,
+   "heightFt": 8,
+   "price": 1853
+  },
+  {
+   "siding": "horizontal",
+   "widthFt": 30,
+   "heightFt": 8,
+   "price": 1853
   }
  ],
  "legMeasured": [

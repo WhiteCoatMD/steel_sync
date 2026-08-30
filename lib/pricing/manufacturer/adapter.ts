@@ -122,6 +122,10 @@ export function toQuoteInput(
       roofStyle: b.roofStyle,
       surface: config.options?.anchoring ?? 'concrete',
       engineered: config.certifications?.engineered === true,
+      // The config carried this all along and the adapter dropped it, so every
+      // enclosed building was priced with VERTICAL walls -- $1,500 over on a
+      // 24x30x11 garage. Horizontal is the default and what Dunrite sells.
+      siding: b.panelDirection?.walls ?? 'horizontal',
       componentKeys,
       ...(declaredOverhang != null ? { roofOverhangFtPerEnd: declaredOverhang } : {}),
       // Enclosed types are now priced from the measured wall tables. Outside the

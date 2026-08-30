@@ -48,6 +48,9 @@ describe('enclosed walls reproduce every measured configuration', () => {
           engineered: r.cert != null,
           legType: r.legType,
           enclosed: true,
+          // walls-measured.json was captured with VERTICAL siding; horizontal
+          // is the engine default now (owner, 2026-08-29).
+          siding: 'vertical',
         },
         table,
       );
@@ -68,7 +71,7 @@ describe('enclosed walls reproduce every measured configuration', () => {
 describe('walls are charged at face value, not surcharged', () => {
   it('a measured wall price passes through unchanged', () => {
     const q = quoteFromTable(
-      { widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', engineered: true, enclosed: true },
+      { widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', engineered: true, enclosed: true, siding: 'vertical' },
       table,
     );
     const side = q.lines.find(l => /^Left Side/.test(l.label))!;
@@ -157,17 +160,35 @@ describe('enclosed walls are style-independent but siding-scoped', () => {
 
   for (const roofStyle of ['vertical', 'regular', 'aframe'] as const) {
     it(`prices an enclosed ${roofStyle} build - walls do not key on roof style`, () => {
-      const q = quoteFromTable({ ...base, roofStyle, enclosed: true }, table);
+      const q = quoteFromTable({ ...base, roofStyle, enclosed: true, siding: 'vertical' }, table);
       expect(q.unpriceable).toBeUndefined();
-      const side = q.lines.find(l => /^Left Side/.test(l.label))?.amount;
-      const end = q.lines.find(l => /^Front End/.test(l.label))?.amount;
-      expect(side).toBe(578);
-      expect(end).toBe(1606);
+      expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(578);
+      expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1606);
     });
   }
 
-  it('refuses horizontal siding, which was never measured', () => {
+  /**
+   * Siding is the thing walls DO key on, and it is expensive to get wrong: the
+   * adapter was dropping it, so every enclosed building priced as vertical --
+   * $1,500 over on a 24x30x11 garage (owner, 2026-08-29).
+   */
+  it('prices horizontal siding, which is the standard build', () => {
     const q = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
-    expect(q.unpriceable?.some(u => /vertical siding/.test(u))).toBe(true);
+    expect(q.unpriceable).toBeUndefined();
+    expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(398);
+    expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1214);
+  });
+
+  it('defaults to horizontal when siding is not stated', () => {
+    const stated = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
+    const omitted = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true }, table);
+    expect(omitted.subtotal).toBe(stated.subtotal);
+  });
+
+  it('charges more for vertical siding, in that direction', () => {
+    const h = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
+    const v = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'vertical' }, table);
+    expect(v.subtotal).toBeGreaterThan(h.subtotal);
   });
 });
+

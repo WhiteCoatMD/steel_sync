@@ -247,11 +247,22 @@ const walls2 = JSON.parse(fs.readFileSync(path.join(SNAP, 'walls2-measured.json'
 const END_WALL_BANDS = [[0, 12], [13, 18], [19, 20], [21, 22], [23, 24], [25, 26], [27, 28], [29, 30]];
 const endBandFor = w => END_WALL_BANDS.find(b => w >= b[0] && w <= b[1]);
 
+// Horizontal siding is Dunrite's standard; vertical is an upgrade the customer
+// has to ask for (owner, 2026-08-29). Both sets are captured, and every row
+// carries which one it is, because pricing a horizontal building off the
+// vertical table overcharged a 24x30x11 garage by $1,500.
+const walls2h = JSON.parse(
+  fs.readFileSync(path.join(SNAP, 'walls2-measured-horizontal.json'), 'utf8'),
+);
+
 const sideWalls = [];
 const endWalls = [];
-{
+for (const [siding, source] of [
+  ['vertical', [...measured, ...walls2]],
+  ['horizontal', walls2h],
+]) {
   const seenSide = new Map(), seenEnd = new Map();
-  for (const r of [...measured, ...walls2]) {
+  for (const r of source) {
     const br = bracketFor(r.l);
     if (!br) continue;
     const band = bandFor(r.w);
@@ -260,7 +271,7 @@ const endWalls = [];
       if (seenSide.get(sk) !== r.side) note(`side wall conflict ${sk}: ${seenSide.get(sk)} vs ${r.side}`);
     } else {
       seenSide.set(sk, r.side);
-      sideWalls.push({ widthBand: band, length: br, heightFt: r.h, price: r.side });
+      sideWalls.push({ siding, widthBand: band, length: br, heightFt: r.h, price: r.side });
     }
     // End walls are band-wide, so one measurement answers for every width in
     // its band. Expanded to exact-width rows here so the engine's lookup stays
@@ -272,11 +283,11 @@ const endWalls = [];
       const ek = `${w}|${r.h}`;
       if (seenEnd.has(ek)) {
         if (seenEnd.get(ek) !== r.end) {
-          note(`end wall conflict ${ek} (band ${eb[0]}-${eb[1]}, from measured w=${r.w}): ${seenEnd.get(ek)} vs ${r.end}`);
+          note(`${siding} end wall conflict ${ek} (band ${eb[0]}-${eb[1]}, from measured w=${r.w}): ${seenEnd.get(ek)} vs ${r.end}`);
         }
       } else {
         seenEnd.set(ek, r.end);
-        endWalls.push({ widthFt: w, heightFt: r.h, price: r.end });
+        endWalls.push({ siding, widthFt: w, heightFt: r.h, price: r.end });
       }
     }
   }

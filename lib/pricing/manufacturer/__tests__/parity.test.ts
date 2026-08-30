@@ -137,13 +137,14 @@ describe('roof length, not building length, keys the base price', () => {
 
 describe('refuses to invent a price', () => {
   it('prices enclosed walls where they were measured', () => {
-    const q = quoteFromTable({ ...BASE, enclosed: true }, table);
+    // Measured with VERTICAL siding; horizontal is the default now.
+    const q = quoteFromTable({ ...BASE, enclosed: true, siding: 'vertical' }, table);
     expect(q.unpriceable).toBeUndefined();
     expect(q.subtotal).toBe(8128); // live estimate for 24x25x9 fully enclosed
   });
 
   it('reports enclosed walls outside the measured envelope rather than guessing', () => {
-    const q = quoteFromTable({ ...BASE, legHeightFt: 13, enclosed: true }, table);
+    const q = quoteFromTable({ ...BASE, legHeightFt: 13, enclosed: true, siding: 'vertical' }, table);
     expect(q.unpriceable?.length).toBeGreaterThan(0);
   });
 

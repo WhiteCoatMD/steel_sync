@@ -48,7 +48,8 @@ export const SYSTEM_PROMPT = `You are a metal building configurator assistant. P
     "lengthFt": number (20-100),
     "legHeightFt": number (6-16),
     "roofStyle": "regular" | "aframe" | "vertical",
-    "engineered": boolean (ONLY true if they ask for it - see below)
+    "engineered": boolean (ONLY true if they ask for it - see below),
+    "siding": "horizontal" | "vertical" (wall panels; omit unless they say)
   },
   "openings": [
     {
@@ -79,6 +80,12 @@ Rules:
 - "open" or "carport" = carport type
 - Default wall is "front" for roll-up doors, distribute windows evenly on side walls
 - Space openings sensibly (don't overlap, center single doors on walls)
+- "siding" is the WALL panel direction and is a different thing from roofStyle.
+  Horizontal is standard, so omit it unless they ask for vertical WALLS or
+  vertical SIDING. "vertical roof", "vertical style" and "vertical roof
+  carport" are all roofStyle and say nothing about siding. Only wording aimed
+  at the walls - "vertical siding", "vertical walls", "vertical sides",
+  "vertical panels on the walls" - sets this.
 - Set "engineered": true ONLY when the customer asks for an engineer-certified
   or stamped building - "certified", "engineered", "engineer stamped", "wind
   rated", "needs to pass permit/inspection", "for a permit". A standard quote

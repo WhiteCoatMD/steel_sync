@@ -25,6 +25,8 @@ const RULES: DealerPricingRules = { ...DEFAULT_PRICING_RULES, manufacturerKey: '
 
 function enclosed(widthFt: number, lengthFt: number, legHeightFt: number): BuildingConfig {
   const c = createDefaultConfig('dealer_columbia');
+  // Measured with VERTICAL siding; horizontal is the default now.
+  c.building = { ...c.building, panelDirection: { ...c.building.panelDirection, walls: 'vertical' } };
   c.building = { ...c.building, type: 'garage', widthFt, lengthFt, legHeightFt, roofStyle: 'vertical' };
   c.openings = [];
   c.leanTos = [];
@@ -114,6 +116,8 @@ describe('enclosing a wide build drops the Skytrack trigger by a foot', () => {
 
   it('leaves the open build alone at 12ft', () => {
     const open = createDefaultConfig('dealer_columbia');
+    // Measured with VERTICAL siding; horizontal is the default now.
+    open.building = { ...open.building, panelDirection: { ...open.building.panelDirection, walls: 'vertical' } };
     open.building = { ...open.building, type: 'carport', widthFt: 26, lengthFt: 25, legHeightFt: 12, roofStyle: 'vertical' };
     open.openings = [];
     open.leanTos = [];
