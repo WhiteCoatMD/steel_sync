@@ -40,19 +40,23 @@ describe('buildTrim', () => {
     expect(result.pieces.some((p) => p.category === 'rake')).toBe(true);
   });
 
-  it('puts no ridge cap on any style — the planes just meet at the peak', () => {
-    // There was a flat bar running the length of the ridge, scaled up further
-    // for vertical, and it read as a bar sitting on the roof (owner,
-    // 2026-08-30).
-    //
-    // The vendor's sheet does list "Ridge Cap Trim" for Vertical alone, so if
-    // one ever comes back it belongs there and nowhere else — which is exactly
-    // what this test would catch.
-    for (const style of ['regular', 'aframe', 'vertical'] as const) {
-      expect(
-        buildTrim(makeConfig(style)).pieces.some(p => p.category === 'ridge'),
-        `${style} should have no ridge cap`,
-      ).toBe(false);
-    }
+  it('caps the ridge on vertical only', () => {
+    // The vendor's sheet lists "Ridge Cap Trim" against Vertical alone. Regular
+    // and Boxed Eave planes just meet at the peak (owner, 2026-08-30).
+    const has = (style: 'regular' | 'aframe' | 'vertical') =>
+      buildTrim(makeConfig(style)).pieces.some(p => p.category === 'ridge');
+    expect(has('vertical')).toBe(true);
+    expect(has('regular')).toBe(false);
+    expect(has('aframe')).toBe(false);
+  });
+
+  it('keeps that cap slim', () => {
+    // It was 0.864 x 0.216 — scaled up on the theory that a prominent cap
+    // signalled the premium option — and read as a flat bar sitting on the
+    // roof. Narrower now than even the old standard cap (0.480 x 0.120).
+    const ridge = buildTrim(makeConfig('vertical')).pieces.find(p => p.category === 'ridge')!;
+    expect(ridge.size[0]).toBeLessThan(0.48);
+    expect(ridge.size[1]).toBeLessThan(0.12);
+    expect(ridge.size[0]).toBeGreaterThan(0);
   });
 });

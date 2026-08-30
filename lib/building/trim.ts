@@ -43,13 +43,25 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
 
   const pieces: TrimPiece[] = [];
 
-  // No ridge cap on any style: the roof planes just meet at the peak (owner,
-  // 2026-08-30). There used to be a flat bar running the length of the ridge,
-  // scaled up further for vertical, and it read as a bar sitting on the roof
-  // rather than as a cap.
+  // ── Ridge cap — VERTICAL only ──
+  // Regular and Boxed Eave have none: their planes just meet at the peak. Only
+  // Vertical carries "Ridge Cap Trim" on the vendor's comparison sheet, and
+  // only Vertical gets one here (owner, 2026-08-30).
   //
-  // NOTE the vendor's own comparison sheet lists "Ridge Cap Trim" for Vertical
-  // only. If it comes back, it comes back there and nowhere else.
+  // Kept slim. The old one was scaled up 1.8x on the theory that a prominent
+  // cap signalled the premium option, and at that size it read as a flat bar
+  // sitting on the roof rather than as a cap. Narrower than even the old
+  // standard cap: it should be noticeable if you look for it, not a feature.
+  if (config.roofStyle === 'vertical') {
+    const capW = T * 2.2;
+    const capH = T * 0.6;
+    pieces.push({
+      id: 'ridge',
+      category: 'ridge',
+      position: [halfW, H + rise + capH / 2, L / 2],
+      size: [capW, capH, roofLen],
+    });
+  }
 
   // ── Eave trim (left + right) — runs along the bottom edge of the roof ──
   // Every style has this. Regular used to be skipped, on the theory that a bare
