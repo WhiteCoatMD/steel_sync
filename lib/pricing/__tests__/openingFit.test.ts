@@ -169,3 +169,35 @@ describe('windows take wall too', () => {
     expect(checkOpeningFit(crowded).some(p => p.kind === 'width')).toBe(true);
   });
 });
+
+describe('describing a wall that will not take what they asked for', () => {
+  const walkin = (wall = 'front') => ({
+    id: 'k', type: 'walkin', widthFt: 3, heightFt: 7, wall, positionFt: 3, color: null,
+  });
+
+  it('does not call a 3ft walk-in a 10ft door', () => {
+    // "two 10x10 doors and a man door" came back as "Three 10ft doors".
+    const p = checkOpeningFit(
+      build({ widthFt: 30, lengthFt: 40, legHeightFt: 12 }, [rollup(10, 10), rollup(10, 10), walkin()]),
+    );
+    const width = p.find(x => x.kind === 'width')!;
+    expect(width.message).toMatch(/three doors/i);
+    expect(width.message).not.toMatch(/three 10ft doors/i);
+  });
+
+  it('offers the other wall when one opening is the odd one out', () => {
+    const p = checkOpeningFit(
+      build({ widthFt: 30, lengthFt: 40, legHeightFt: 12 }, [rollup(10, 10), rollup(10, 10), walkin()]),
+    );
+    expect(p.find(x => x.kind === 'width')!.suggestion).toMatch(/3ft door round to a side wall/i);
+  });
+
+  it('does not say "the smallest" when they are all the same size', () => {
+    const p = checkOpeningFit(
+      build({ widthFt: 24, lengthFt: 30, legHeightFt: 12 }, [rollup(10, 10), rollup(10, 10)]),
+    );
+    const s = p.find(x => x.kind === 'width')!.suggestion;
+    expect(s).toMatch(/one on each wall/i);
+    expect(s).not.toMatch(/smallest/i);
+  });
+});

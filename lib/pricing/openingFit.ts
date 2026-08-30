@@ -155,15 +155,42 @@ export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
       const windowItems = items.filter(o => o.type === 'window');
       const n = doorItems.length;
       const widest = n ? Math.max(...doorItems.map(o => o.widthFt)) : 0;
+      const sameSize = n > 0 && doorItems.every(o => o.widthFt === widest);
 
       const parts: string[] = [];
-      if (n) parts.push(n === 1 ? `a ${widest}ft door` : `${count(n)} ${widest}ft doors`);
+      if (n) {
+        // "two 10x10 doors and a man door" came back as "Three 10ft doors" --
+        // the 3ft walk-in counted as a 10-footer. Only say a single size when
+        // they ARE a single size.
+        parts.push(
+          n === 1
+            ? `a ${widest}ft door`
+            : sameSize
+              ? `${count(n)} ${widest}ft doors`
+              : `${count(n)} doors`,
+        );
+      }
       if (windowItems.length) {
         parts.push(
           windowItems.length === 1 ? 'a window' : `${count(windowItems.length)} windows`,
         );
       }
       const subject = `${parts.join(' and ')}`;
+
+      // The cheapest fix is usually not a smaller door but a different wall:
+      // the sides run the LENGTH, which is longer on most buildings.
+      const otherWall = wall === 'front' || wall === 'back' ? 'side' : 'end';
+      const otherWidth = wallWidthFt(otherWall === 'side' ? 'left' : 'front', b);
+      const smallest = Math.min(...items.map(o => o.widthFt));
+      const oddOneOut = items.find(o => o.widthFt === smallest)!;
+      const rest = items.filter(o => o !== oddOneOut);
+      const spreadFits =
+        items.length > 1 &&
+        wallNeededForOpenings(rest) <= available &&
+        wallNeededForOpenings([oddOneOut]) <= otherWidth;
+      // "the smallest one" means nothing when they are all the same size.
+      const mixedSizes = new Set(items.map(o => o.widthFt)).size > 1;
+      const movable = oddOneOut.type === 'window' ? 'the window' : `the ${smallest}ft door`;
       const spacing =
         windowItems.length && n
           ? ', with 2ft either side of a door and 1ft either side of a window'
@@ -190,7 +217,14 @@ export function checkOpeningFit(config: BuildingConfig): FitProblem[] {
           `${subject.charAt(0).toUpperCase()}${subject.slice(1)} ` +
           `${items.length === 1 ? 'needs' : 'need'} ${needed}ft of wall${spacing} — ` +
           `and the ${wall} wall is only ${available}ft.`,
-        suggestion: options.length
+        suggestion: spreadFits && mixedSizes
+          ? `Moving ${movable} round to ${otherWall === 'side' ? 'a side' : 'an end'} ` +
+            `wall would fit.`
+          : spreadFits
+          ? `One on each wall would fit${
+              options.length ? `, or ${options[0]} on the one wall` : ''
+            }.`
+          : options.length
           ? sentence(
               `${options.join(' would fit, or ')}${options.length === 1 ? ' would fit' : ''}.`,
             )
