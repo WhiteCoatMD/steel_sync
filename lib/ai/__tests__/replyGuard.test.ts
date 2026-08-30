@@ -143,3 +143,29 @@ describe("numbers the customer typed themselves", () => {
     expect(guardReply(draft, figuresInText('i got about 8000 to spend')).ok).toBe(false);
   });
 });
+
+describe('a percentage is not a price', () => {
+  /**
+   * Self-install is about 10% less than installed (owner, 2026-08-29), and the
+   * bot may say so. What it must never do is DO the arithmetic: 10% of a
+   * $10,333 building is a number the engine never produced, and a customer
+   * would hold us to it.
+   */
+  const priced = [10333, 1860, 8473];
+
+  it('lets the reply state the percentage', () => {
+    const draft = 'It runs about 10% less than the installed price of $10,333.';
+    expect(guardReply(draft, priced).ok).toBe(true);
+  });
+
+  it('rejects a self-install total worked out from it', () => {
+    const draft = 'Material only would be about $9,300 instead of $10,333.';
+    const r = guardReply(draft, priced);
+    expect(r.ok).toBe(false);
+    expect(r.reason).toMatch(/9300/);
+  });
+
+  it('rejects a discount it invented outright', () => {
+    expect(guardReply('I can do $9,000 if you build it yourself.', priced).ok).toBe(false);
+  });
+});
