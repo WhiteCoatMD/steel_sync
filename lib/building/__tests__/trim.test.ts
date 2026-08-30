@@ -64,4 +64,41 @@ describe('buildTrim', () => {
     expect(ridge.size[1]).toBeLessThan(0.12);
     expect(ridge.size[0]).toBeGreaterThan(0);
   });
+
+  it('puts the rake trim on the gable end the roof actually reaches', () => {
+    // Regular ends flush with the walls; the other two project. Placed at the
+    // overhang regardless, regular's rake floated half a foot off each end of
+    // the roof it was meant to be edging (owner, 2026-08-30).
+    const zOf = (style: 'regular' | 'aframe') =>
+      [...new Set(
+        buildTrim(makeConfig(style))
+          .pieces.filter(p => p.category === 'rake')
+          .map(p => Number(p.position[2].toFixed(3))),
+      )].sort((a, b) => a - b);
+
+    const L = makeConfig('regular').lengthFt;
+    expect(zOf('regular')).toEqual([0, L]);
+
+    const [front, back] = zOf('aframe');
+    expect(front).toBeLessThan(0);
+    expect(back).toBeGreaterThan(L);
+  });
+
+  it('puts the eave fascia on the roof edge, not behind it', () => {
+    // A regular roof wraps DOWN the wall, so its visible bottom edge is the end
+    // of that drop. Trim left at eave height would be buried behind the panel
+    // it is meant to finish.
+    const cfg = makeConfig('regular');
+    const eave = buildTrim(cfg).pieces.filter(p => p.category === 'eave');
+    expect(eave.length).toBeGreaterThan(0);
+    for (const p of eave) {
+      expect(p.position[1]).toBeLessThan(cfg.legHeightFt - 0.5);
+    }
+
+    // The A-frame's fascia stays up at eave height, where its roof edge is.
+    const afr = buildTrim(makeConfig('aframe')).pieces.filter(p => p.category === 'eave');
+    for (const p of afr) {
+      expect(p.position[1]).toBeGreaterThan(cfg.legHeightFt - 0.5);
+    }
+  });
 });

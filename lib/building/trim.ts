@@ -3,6 +3,7 @@
 
 import type { BuildingDimensions, WallId } from './types';
 import { ridgeRiseFt, roofSlopeAngle, roofSlopeLengthFt } from './geometry';
+import { REGULAR_EAVE_DROP_FT, REGULAR_EAVE_CLEARANCE_FT } from './roof';
 import { wallFrame, pointOnWall } from './wallFrame';
 
 // ─── Constants ─────────────────────────────────────────────
@@ -42,6 +43,12 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   const roofLen = L + ovh * 2; // total roof length along Z
 
   const pieces: TrimPiece[] = [];
+  // Regular ends flush with the walls on all four sides; the other two project.
+  // Trim has to follow the roof it is actually edging — placed at the overhang
+  // regardless, the rake pieces floated half a foot off each gable end of a
+  // regular roof (owner, 2026-08-30).
+  const isRegular = config.roofStyle === 'regular';
+  const gableOvh = isRegular ? 0 : ovh;
 
   // ── Ridge cap — VERTICAL only ──
   // Regular and Boxed Eave have none: their planes just meet at the peak. Only
@@ -75,8 +82,15 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
     const EAVE_WALLS: WallId[] = ['left', 'right'];
     for (const wall of EAVE_WALLS) {
       const f = wallFrame(wall, config);
-      const start = pointOnWall(f, 0, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
-      const end = pointOnWall(f, f.lengthFt, f.eaveHeightFt - T / 2, TRIM_PROUD_FT);
+      // On regular the panel wraps down the wall, so its visible bottom edge is
+      // the end of that drop — trim at eave height would be buried behind the
+      // roof it is meant to finish.
+      const edgeY = isRegular
+        ? f.eaveHeightFt - REGULAR_EAVE_DROP_FT - T / 2
+        : f.eaveHeightFt - T / 2;
+      const proud = isRegular ? TRIM_PROUD_FT + REGULAR_EAVE_CLEARANCE_FT : TRIM_PROUD_FT;
+      const start = pointOnWall(f, 0, edgeY, proud);
+      const end = pointOnWall(f, f.lengthFt, edgeY, proud);
       pieces.push({
         id: `eave-${wall}`,
         category: 'eave',
@@ -147,8 +161,8 @@ export function buildTrim(config: BuildingDimensions): TrimResult {
   // Trim" against all three.
   {
     const gableZPositions: [number, string][] = [
-      [-ovh, 'front'],
-      [L + ovh, 'back'],
+      [-gableOvh, 'front'],
+      [L + gableOvh, 'back'],
     ];
 
     gableZPositions.forEach(([z, face]) => {

@@ -16,7 +16,7 @@ const STANDARD_ROOF_PANEL_WIDTH_FT = 3; // 36" coverage
 // Three earlier models were wrong: a flat overhang with a rounded hem, a single
 // arch across the whole width, and a curl that bowed outward as it turned. The
 // shape is straight like an A-frame, then square down the frame.
-const REGULAR_EAVE_DROP_FT = 1.0;
+export const REGULAR_EAVE_DROP_FT = 1.0;
 // The turn happens AT the wall top corner (0, H). A fillet tangent to the wall
 // plane would be flush, but it pulls the panel's contact with the wall down
 // below H and leaves the top of the wall showing above the roof — the exposed
@@ -27,7 +27,7 @@ const REGULAR_EAVE_SEGMENTS = 4;
 // z-fight, and the wall colour flickered through the roof panel along the
 // sides (owner, 2026-08-29). A quarter of an inch is invisible at building
 // scale and is which side of the wall the panel really is anyway.
-const REGULAR_EAVE_CLEARANCE_FT = 0.02;
+export const REGULAR_EAVE_CLEARANCE_FT = 0.02;
 
 // ─── Types ─────────────────────────────────────────────────
 
