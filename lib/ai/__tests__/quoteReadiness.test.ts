@@ -32,6 +32,8 @@ describe('a field the customer did not state is a question, not a default', () =
       'lengthFt',
       'legHeightFt',
       'roofStyle',
+      // Only concrete anchors are free; asphalt and bare ground are $180-420.
+      'surface',
     ]);
   });
 

@@ -84,7 +84,7 @@ const DEALER = {
   pricing: { ...DEFAULT_PRICING_RULES, manufacturerKey: 'tejasmex' },
 } as unknown as DealerSettings;
 
-const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
+const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle', 'surface'];
 
 /**
  * An enclosed building is not quoted until it has doors -- we do not sell a

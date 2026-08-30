@@ -36,6 +36,7 @@ export const REQUIRED_FOR_QUOTE = [
   'lengthFt',
   'legHeightFt',
   'roofStyle',
+  'surface',
 ] as const;
 export type RequiredField = (typeof REQUIRED_FOR_QUOTE)[number];
 
@@ -52,6 +53,10 @@ const QUESTION: Record<RequiredField, string> = {
   // explaining; repeating it in text is a wall of sales copy in a chat window
   // (owner, 2026-08-29). The detail is there if they ask for it.
   roofStyle: 'What style roof would you like?',
+  // Only concrete is free. Asphalt and bare ground both need an anchor package
+  // at $180-420 depending on length, so assuming concrete under-quotes anyone
+  // putting one on dirt or gravel (owner, 2026-08-29).
+  surface: 'What are you setting it on — concrete, asphalt, or dirt/gravel?',
 };
 
 /**

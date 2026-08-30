@@ -23,8 +23,10 @@ const DUNRITE: DealerFacts = {
   serviceArea: 'Texas, Arkansas, Mississippi and Louisiana',
   offersRto: true,
   policies: [
-    'What the quoted price includes: delivery, installation and anchoring.',
-    'There is nothing extra for those.',
+    'What the quoted price includes: delivery, installation and anchoring —',
+    'everything except their local sales tax, which varies by where they are.',
+    'Do not work out a tax amount or a tax-inclusive total; just say tax is on',
+    'top and someone will confirm it for their area.',
     'Warranty: 90 day workmanship warranty covering any installation issues,',
     'and a 10 year manufacturer warranty on materials.',
     'Installation timing: 3 to 4 weeks from purchase, weather permitting.',

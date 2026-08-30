@@ -138,6 +138,13 @@ export function configFromAI(ai: AutoQuoteInput, dealerId: string = DEFAULT_DEAL
     c.certifications = { ...c.certifications, engineered: true };
   }
 
+  // Surface decides the anchor package, and the adapter reads it from options.
+  // Concrete is free; asphalt and bare ground are not.
+  const surfaceAsked = (sanitizeBuilding(ai.building) as Record<string, unknown>).surface;
+  if (surfaceAsked === 'concrete' || surfaceAsked === 'asphalt' || surfaceAsked === 'ground') {
+    c.options = { ...c.options, anchoring: surfaceAsked };
+  }
+
   // Wall siding lives under panelDirection, which is where the adapter reads it.
   // Horizontal is the standard build; vertical is an upgrade and costs more.
   const sidingAsked = (sanitizeBuilding(ai.building) as Record<string, unknown>).siding;

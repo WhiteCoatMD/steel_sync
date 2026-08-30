@@ -23,7 +23,7 @@ import type { DealerPricingRules } from '../../building/types';
  */
 
 const RULES: DealerPricingRules = { ...DEFAULT_PRICING_RULES, manufacturerKey: 'tejasmex' };
-const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
+const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle', 'surface'];
 
 const ai = (building: Record<string, unknown>, stated: unknown = ALL, rest: Partial<AutoQuoteInput> = {}): AutoQuoteInput =>
   ({ building, stated, ...rest });
