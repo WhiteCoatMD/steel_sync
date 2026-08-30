@@ -21,6 +21,20 @@ const PURLIN_SPACING = 3;
 const RIBS_PER_FOOT = 1.33; // 9" rib spacing, standard R-panel
 const WAINSCOT_HEIGHT = 3; // standard 36" wainscot band
 
+/**
+ * Painted steel, not bare metal.
+ *
+ * The panels used metalness 0.45 with no environment map in the scene, and a
+ * metallic surface takes almost all of its brightness from what it reflects —
+ * with nothing to reflect, it renders dark. That, not the lighting, is why the
+ * whole building looked dim (owner, 2026-08-30).
+ *
+ * Low metalness is also the truer description: these panels are painted, so
+ * they are mostly diffuse with a slight sheen, nothing like chrome.
+ */
+const STEEL_METALNESS = 0.15;
+const STEEL_ROUGHNESS = 0.55;
+
 // ─── Procedural Panel Normal Maps ────────────────────────────
 // Generates a tangent-space normal map with sinusoidal corrugation.
 // dir='v' → ribs run vertically (normal varies in U/X)
@@ -103,7 +117,7 @@ export function ThreeScene() {
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.1;
+          gl.toneMappingExposure = 1.25;
         }}
       >
         <SceneContents />
@@ -142,8 +156,9 @@ function SceneContents() {
 
   return (
     <>
-      <color attach="background" args={['#5a6878']} />
-      <ambientLight intensity={0.8} />
+      {/* A lighter backdrop lifts the whole scene; the old slate read as dusk. */}
+      <color attach="background" args={['#8291a3']} />
+      <ambientLight intensity={1.05} />
       <directionalLight
         position={[shadowSize * 0.5, shadowSize * 1.0, -shadowSize * 0.3]}
         intensity={1.2}
@@ -157,8 +172,10 @@ function SceneContents() {
         shadow-camera-bottom={-shadowSize}
         shadow-bias={-0.0005}
       />
-      <directionalLight position={[-shadowSize * 0.4, shadowSize * 0.5, -shadowSize * 0.6]} intensity={0.4} />
-      <hemisphereLight args={['#ffffff', '#d0ccc8', 0.3]} />
+      {/* Fill from the opposite side, so the shaded elevation is readable rather
+          than a silhouette — a customer is usually looking at two faces. */}
+      <directionalLight position={[-shadowSize * 0.4, shadowSize * 0.5, -shadowSize * 0.6]} intensity={0.55} />
+      <hemisphereLight args={['#ffffff', '#d0ccc8', 0.5]} />
 
       <BuildingModel />
 
@@ -310,7 +327,7 @@ function FrameBox({ pos, size, rot }: {
   return (
     <mesh position={pos} rotation={rot} castShadow>
       <boxGeometry args={size} />
-      <meshStandardMaterial color="#d8d8d4" metalness={0.5} roughness={0.4} />
+      <meshStandardMaterial color="#d8d8d4" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
     </mesh>
   );
 }
@@ -350,7 +367,7 @@ function PurlinMeshes({ result }: { result: BuildingResult }) {
           castShadow
         >
           <boxGeometry args={[RAFTER_T * 0.5, RAFTER_T * 0.5, L]} />
-          <meshStandardMaterial color="#d0d0cc" metalness={0.45} roughness={0.45} />
+          <meshStandardMaterial color="#d0d0cc" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       ))}
     </group>
@@ -379,13 +396,13 @@ function WallGirtMeshes({ result }: { result: BuildingResult }) {
       {girtYs.map((y, i) => (
         <mesh key={`girt-L-${i}`} position={[inset, y, L / 2]}>
           <boxGeometry args={[girtDepth, 0.075, L]} />
-          <meshStandardMaterial color="#d0d0cc" metalness={0.45} roughness={0.45} />
+          <meshStandardMaterial color="#d0d0cc" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       ))}
       {girtYs.map((y, i) => (
         <mesh key={`girt-R-${i}`} position={[W - inset, y, L / 2]}>
           <boxGeometry args={[girtDepth, 0.075, L]} />
-          <meshStandardMaterial color="#d0d0cc" metalness={0.45} roughness={0.45} />
+          <meshStandardMaterial color="#d0d0cc" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       ))}
     </group>
@@ -473,7 +490,7 @@ function GableTriangle({ width, height, rise, color, side }: {
 
   return (
     <mesh geometry={geometry} castShadow>
-      <meshStandardMaterial color={color} side={THREE.DoubleSide} metalness={0.3} roughness={0.6} />
+      <meshStandardMaterial color={color} side={THREE.DoubleSide} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
     </mesh>
   );
 }
@@ -510,8 +527,8 @@ function PanelPanel({ x, y, w, h, zOff, color, panelDir }: {
       <boxGeometry args={[w + 0.04, h + 0.02, WALL_THICKNESS]} />
       <meshStandardMaterial
         color={color}
-        metalness={0.45}
-        roughness={0.5}
+        metalness={STEEL_METALNESS}
+        roughness={STEEL_ROUGHNESS}
         normalMap={normalMap}
         normalScale={new THREE.Vector2(1, 1)}
       />
@@ -686,7 +703,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         {/* White window frame (outer) */}
         <mesh position={[0, 0, 0.01]}>
           <boxGeometry args={[ow + 0.1, oh + 0.1, 0.06]} />
-          <meshStandardMaterial color="#f0f0f0" metalness={0.3} roughness={0.5} />
+          <meshStandardMaterial color="#f0f0f0" metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
 
         {/* Glass panes in grid */}
@@ -706,19 +723,19 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         {/* Trim frame — pushed forward to sit on wall surface */}
         <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
         <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT * 2, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
         <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
         <mesh position={[0, -oh / 2 - trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       </group>
     );
@@ -745,15 +762,15 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
         {/* Trim frame — pushed forward */}
         <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
         <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
           <boxGeometry args={[trimT, oh + trimT, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
         <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
           <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
-          <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       </group>
     );
@@ -769,7 +786,7 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
       {/* Door panel */}
       <mesh castShadow>
         <boxGeometry args={[ow, oh, 0.08]} />
-        <meshStandardMaterial color="#f0f0f0" metalness={0.25} roughness={0.6} />
+        <meshStandardMaterial color="#f0f0f0" metalness={0.25} roughness={STEEL_ROUGHNESS} />
       </mesh>
       {/* Door knob */}
       <mesh position={[ow / 2 - 0.3, -0.2, 0.06]}>
@@ -779,15 +796,15 @@ function OpeningMesh({ opening, wallHeight, wallLength, zOff, wallColor, panelDi
       {/* Trim — pushed forward */}
       <mesh position={[-ow / 2 - trimT / 2, 0, 0.04]}>
         <boxGeometry args={[trimT, oh + trimT, trimD]} />
-        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+        <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
       </mesh>
       <mesh position={[ow / 2 + trimT / 2, 0, 0.04]}>
         <boxGeometry args={[trimT, oh + trimT, trimD]} />
-        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+        <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
       </mesh>
       <mesh position={[0, oh / 2 + trimT / 2, 0.04]}>
         <boxGeometry args={[ow + trimT * 2, trimT, trimD]} />
-        <meshStandardMaterial color={trimColor} metalness={0.3} roughness={0.6} />
+        <meshStandardMaterial color={trimColor} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
       </mesh>
     </group>
   );
@@ -835,8 +852,8 @@ function RoofMeshes({ result, color, panelDir, building }: {
     <mesh geometry={geometry} castShadow receiveShadow>
       <meshStandardMaterial
         color={color}
-        metalness={0.5}
-        roughness={0.45}
+        metalness={STEEL_METALNESS}
+        roughness={STEEL_ROUGHNESS}
         side={THREE.DoubleSide}
         normalMap={normalMap}
         normalScale={new THREE.Vector2(1, 1)}
@@ -859,7 +876,7 @@ function TrimMeshes({ result, color }: { result: BuildingResult; color: string }
       {filtered.map((piece) => (
         <mesh key={piece.id} position={piece.position} rotation={piece.rotation}>
           <boxGeometry args={piece.size} />
-          <meshStandardMaterial color={color} metalness={0.3} roughness={0.6} />
+          <meshStandardMaterial color={color} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
         </mesh>
       ))}
     </group>
@@ -872,7 +889,7 @@ function RidgeCapMesh({ result, color }: { result: BuildingResult; color: string
   return (
     <mesh position={ridgePiece.position} rotation={ridgePiece.rotation}>
       <boxGeometry args={ridgePiece.size} />
-      <meshStandardMaterial color={color} metalness={0.3} roughness={0.6} />
+      <meshStandardMaterial color={color} metalness={STEEL_METALNESS} roughness={STEEL_ROUGHNESS} />
     </mesh>
   );
 }
