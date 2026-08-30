@@ -26,6 +26,7 @@ import {
 } from '../ai/roofStyleHelp';
 import { insertQuote, lastQuotedConfig } from '../db/quotes';
 import { composeReply } from '../ai/composeReply';
+import { standardDoorPackage } from '../pricing/openingFit';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest } from '../notify/financing';
 import {
@@ -277,10 +278,20 @@ export async function handleInboundMessage(
   // the openings list being empty.
   // What the doors question literally offers. Named here so the question and
   // the thing "that's fine" applies are the same object.
-  const STANDARD_DOORS = [
-    { type: 'rollup', widthFt: 10, heightFt: 10, wall: 'front', positionFt: 7 },
-    { type: 'walkin', widthFt: 3, heightFt: 7, wall: 'front', positionFt: 19 },
-  ];
+  // Sized to the building, not a fixed 10x10: offering a door that will not fit
+  // the wall we are quoting, then rejecting the customer for accepting it, is
+  // the worst of both (owner, 2026-08-29).
+  const pb = (parsed.building ?? {}) as Record<string, unknown>;
+  const STANDARD_DOORS =
+    typeof pb.widthFt === 'number' &&
+    typeof pb.lengthFt === 'number' &&
+    typeof pb.legHeightFt === 'number'
+      ? standardDoorPackage({
+          widthFt: pb.widthFt,
+          lengthFt: pb.lengthFt,
+          legHeightFt: pb.legHeightFt,
+        })
+      : null;
 
   // They are agreeing to what we last suggested. Their own words carry none of
   // it -- only their turns are re-parsed -- so the proposal is merged back in
@@ -328,8 +339,11 @@ export async function handleInboundMessage(
             refusedDoors
               ? 'We do not build an enclosed one with no doors — you would not ' +
                 'be able to get into it. What roll-up and walk-in doors do you want?'
-              : 'What doors do you need? Most garages get one 10x10 roll-up ' +
-                'and a walk-in door, but tell me what suits you.',
+              : STANDARD_DOORS
+                ? `What doors do you need? Most garages this size get one ` +
+                  `${STANDARD_DOORS[0].widthFt}x${STANDARD_DOORS[0].heightFt} ` +
+                  `roll-up and a walk-in door, but tell me what suits you.`
+                : 'What doors do you need?',
           ],
         }
       : {}),
@@ -549,7 +563,7 @@ On paying monthly: ${lowerFirst(
       building: (parsed.building ?? {}) as Record<string, unknown>,
       stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
     };
-  } else if (needsDoors && !refusedDoors) {
+  } else if (needsDoors && !refusedDoors && STANDARD_DOORS) {
     proposed = { openings: STANDARD_DOORS };
   }
   if (proposed || conv.pendingProposal) await setPendingProposal(conv.id, proposed);

@@ -7,6 +7,7 @@ import type {
 import { createDefaultConfig } from '../building/defaultConfig';
 import { DEFAULT_DEALER_ID } from '../db/dealers';
 import { calculatePrice } from '../pricing/calculatePrice';
+import { checkOpeningFit } from '../pricing/openingFit';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
 import {
   normalizeLengthFt,
@@ -241,6 +242,21 @@ export function decideAutoQuote(
         `our guys to price this one properly rather than quote you off a table. ` +
         `Someone will follow up shortly with a firm number.` +
         signOff,
+    };
+  }
+
+  // The engine will total a spec that cannot be built -- it looks up a door,
+  // looks up a wall, and adds them. Two 10ft doors on a 24ft wall priced at
+  // $11,511 for a building nobody could put up (owner, 2026-08-29).
+  const fit = checkOpeningFit(config);
+  if (fit.length) {
+    return {
+      kind: 'clarify',
+      questions: fit.map(f => f.message),
+      understood: {},
+      message:
+        fit.map(f => `${f.message} ${f.suggestion}`).join(' ') +
+        (fit.length > 1 ? ' Which would you like?' : ' Want me to do that?'),
     };
   }
 

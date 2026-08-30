@@ -92,7 +92,9 @@ const ALL = ['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle'];
  * handoff, so they carry the doors a real request would.
  */
 const DOORS = [
-  { type: 'rollup', widthFt: 10, heightFt: 10, wall: 'front', positionFt: 7 },
+  // 9x8, not 10x10: these fixtures have 10ft walls, and a door needs a foot of
+  // wall above it. A 10ft door in a 10ft wall does not fit and is refused.
+  { type: 'rollup', widthFt: 9, heightFt: 8, wall: 'front', positionFt: 7 },
   { type: 'walkin', widthFt: 3, heightFt: 7, wall: 'front', positionFt: 19 },
 ];
 const parsed = (
