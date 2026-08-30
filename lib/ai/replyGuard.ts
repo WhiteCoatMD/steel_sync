@@ -98,3 +98,25 @@ export function guardReply(
 
   return { ok: true };
 }
+
+/**
+ * Numbers the CUSTOMER put in their own message.
+ *
+ * Echoing "the 8000 you mentioned" back at them is not a claim about our
+ * pricing, but the guard cannot tell those apart on its own -- it rejected a
+ * perfectly good budget reply for "writing $8000" (owner, 2026-08-29). Callers
+ * that have not priced anything can pass these as permitted.
+ *
+ * Handles the way people actually write money: 8000, $8,000, 8k, 5K.
+ */
+export function figuresInText(text: unknown): number[] {
+  if (typeof text !== 'string') return [];
+  const out: number[] = [];
+  for (const m of text.matchAll(/\$?\s?([\d,]+(?:\.\d{1,2})?)\s*([kK])?/g)) {
+    const n = Number(m[1].replace(/,/g, ''));
+    if (!Number.isFinite(n)) continue;
+    out.push(n);
+    if (m[2]) out.push(n * 1000);
+  }
+  return out;
+}

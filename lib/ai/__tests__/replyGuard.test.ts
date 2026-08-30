@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { guardReply, moneyFigures } from '../replyGuard';
+import { guardReply, moneyFigures, figuresInText } from '../replyGuard';
 
 /**
  * Letting a model phrase the reply means a model is producing text containing
@@ -110,5 +110,36 @@ describe('claims the dealer has actually given us terms for', () => {
   it('still rejects an invented price inside an allowed answer', () => {
     const mixed = 'That is $2,438 with a 10 year manufacturer warranty.';
     expect(guardReply(mixed, PRICED, [], ['warranty']).ok).toBe(false);
+  });
+});
+
+describe("numbers the customer typed themselves", () => {
+  /**
+   * The guard rejected a perfectly good budget reply for "writing $8000" --
+   * the customer's own figure, echoed back. Repeating their number is not a
+   * claim about our pricing, and the guard cannot tell those apart on its own
+   * (owner, 2026-08-29).
+   */
+  it('reads money the way people actually write it', () => {
+    expect(figuresInText('i got about 8000 to spend')).toContain(8000);
+    expect(figuresInText('my budget is $8,000')).toContain(8000);
+    expect(figuresInText('whats the most i can get for 5k')).toContain(5000);
+    expect(figuresInText('around 12K')).toContain(12000);
+  });
+
+  it('finds nothing in a message with no numbers', () => {
+    expect(figuresInText('what colors do yall have')).toEqual([]);
+    expect(figuresInText(undefined)).toEqual([]);
+  });
+
+  it('lets a reply echo the budget back', () => {
+    const draft = '$8,000 gives us something to work with. What are you looking to build?';
+    expect(guardReply(draft, figuresInText('i got about 8000 to spend')).ok).toBe(true);
+  });
+
+  it('still rejects a price we never quoted', () => {
+    // Their budget being allowed must not license a quote off the back of it.
+    const draft = 'For $8,000 I can do you a 24x30 carport at $4,411.';
+    expect(guardReply(draft, figuresInText('i got about 8000 to spend')).ok).toBe(false);
   });
 });

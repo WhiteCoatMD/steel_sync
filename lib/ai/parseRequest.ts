@@ -163,7 +163,8 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "isWrappingUp": false,
     "isReadyToBuy": false,
     "mentionsMultipleBuildings": false,
-    "wantsInvoice": false
+    "wantsInvoice": false,
+    "statesBudget": false
   }
 
 - asksFinancing: they are asking about rent-to-own, financing, monthly
@@ -199,6 +200,9 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "stated", and put the second in "secondBuilding" so we never have to ask them
   to repeat details they already gave. Do not blend the two into one spec. A single building with several
   openings, or a building plus a lean-to, is one building and not this.
+- statesBudget: they named an amount they have to spend, rather than a
+  building - "i got about 8000 to spend", "whats the most I can get for 5k",
+  "my budget is around 12000".
 - wantsInvoice: they have asked for an invoice, or chosen an invoice over a
   phone call, for their deposit. "send me an invoice", "email me the invoice",
   "invoice works".
@@ -321,6 +325,14 @@ export interface RequestIntents {
    * from the general "how do I pay" (owner, 2026-08-29).
    */
   wantsInvoice: boolean;
+  /**
+   * They led with a budget rather than a building -- "i got about 8000 to
+   * spend what can i get".
+   *
+   * A number to work within, not a search key: the answer is to ask what they
+   * want, not to guess a building that fits it (owner, 2026-08-29).
+   */
+  statesBudget: boolean;
 }
 
 /**
@@ -519,6 +531,7 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'isReadyToBuy',
     'mentionsMultipleBuildings',
     'wantsInvoice',
+    'statesBudget',
   ];
   // Anything not literally true is false: a string, a number or a missing key
   // must not read as intent.

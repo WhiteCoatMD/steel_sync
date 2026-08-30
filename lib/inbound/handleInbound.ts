@@ -26,6 +26,7 @@ import {
 } from '../ai/roofStyleHelp';
 import { insertQuote, lastQuotedConfig } from '../db/quotes';
 import { composeReply } from '../ai/composeReply';
+import { figuresInText } from '../ai/replyGuard';
 import { standardDoorPackage } from '../pricing/openingFit';
 import { STANDARD_COLORS } from '../building/defaultConfig';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
@@ -466,8 +467,13 @@ export async function handleInboundMessage(
   // an interrogation, not a reply (owner, 2026-08-29). Only when there is
   // nothing to quote: once a building is on the table, the composed quote reply
   // handles the question alongside the price.
+  // A budget belongs here too: it needs a reply, not a list of questions, and
+  // the answer is to ask what they want rather than guess what fits.
   const deferQuestion =
-    saysSomethingElse && outcome.kind === 'clarify' && !sizingSuggestion && !explainRoofs;
+    (saysSomethingElse || intents?.statesBudget === true) &&
+    outcome.kind === 'clarify' &&
+    !sizingSuggestion &&
+    !explainRoofs;
 
   // "hey" is not a quote request. Opening with five questions about width and
   // roof style is a form to fill in, not a conversation (owner, 2026-08-29).
@@ -518,12 +524,19 @@ On paying monthly: ${lowerFirst(
       ]
         .filter(Boolean)
         .join('\n'),
-      allowedFigures: [],
+      // Nothing has been priced, so no figure of OURS is allowed. Numbers the
+      // customer typed are, because repeating their own budget back to them is
+      // not a claim about our prices.
+      allowedFigures: figuresInText(text),
       fallback: templateReply,
       ...(dealer.policies && /warrant/i.test(dealer.policies)
         ? { allowClaims: ['warranty' as const] }
         : {}),
       guidance:
+        // A budget is a fact about them, not a search key.
+        'If they named a budget, acknowledge the number and ask what they are ' +
+        'looking to build. Never guess at a building that fits it, and never ' +
+        'quote a price. ' +
         'Answer their question from the facts if the facts cover it. If they ' +
         'do not, say someone will follow up with a proper answer — never guess ' +
         'at delivery, permits, site prep, warranties or timing. Then ask what ' +
@@ -593,6 +606,12 @@ On paying monthly: ${lowerFirst(
         // added here has drifted into the default reply until it was said
         // plainly, so this covers the whole class rather than naming them one
         // at a time.
+        // A budget is a fact about THEM, not a search key. Guessing at what
+        // fits it means picking a building nobody described (owner,
+        // 2026-08-29).
+        'If they name a budget, acknowledge it and ask what they are looking ' +
+          'to build. Do not go looking for something that fits the number, and ' +
+          'do not suggest a size off the budget alone.',
         'The warranty, the install lead time, and the colour list are REFERENCE ' +
           'facts. Use them to answer a question they actually asked, and leave ' +
           'them out otherwise — do not volunteer them, and do not close by ' +
