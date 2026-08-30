@@ -529,6 +529,36 @@ On paying monthly: ${lowerFirst(
     });
   }
 
+  // Compose the CLARIFY reply too. A template can only ever repeat itself, and
+  // "not sure what its going on yet" got the identical question fired back
+  // word for word (owner, 2026-08-29). The questions still come from
+  // quoteReadiness -- the model phrases them, it does not choose them.
+  if (outcome.kind === 'clarify' && !greeting && !deferQuestion && !explainRoofs &&
+      !comparingPastQuote && !sizingSuggestion) {
+    const asks = outcome.questions;
+    reply = await composeReply({
+      customerMessage: text,
+      facts: [
+        `Dealer: ${dealer.name}`,
+        ...(dealer.policies ? [dealer.policies] : []),
+        'Anchors: a concrete slab needs no extra anchor package, so concrete ' +
+          'costs nothing extra. Asphalt and bare ground (dirt, grass, gravel) ' +
+          'each need their own package, which is what makes them dearer.',
+        'Nothing has been priced yet — we still need these answers:',
+        ...asks.map(q => `  - ${q}`),
+      ].join('\n'),
+      allowedFigures: figuresInText(text),
+      fallback: templateReply,
+      guidance:
+        'Ask for everything still needed — all of it, in one short message. ' +
+        'If they have just said they do not know one of these, help them get ' +
+        'to an answer rather than repeating the question: for the surface, ask ' +
+        'whether there is already a slab there or whether it is going straight ' +
+        'onto the ground. Answer any question they asked first, from the facts. ' +
+        'No prices — nothing has been priced.',
+    });
+  }
+
   if (deferQuestion) {
     reply = await composeReply({
       customerMessage: text,
@@ -554,6 +584,9 @@ On paying monthly: ${lowerFirst(
         ? { allowClaims: ['warranty' as const] }
         : {}),
       guidance:
+        'If they are unsure what the building will sit on, ask whether there is ' +
+        'already a slab there or whether it is going straight onto the ground — ' +
+        'that is the same question in words people can answer. ' +
         // A budget is a fact about them, not a search key.
         'If they named a budget, acknowledge the number and ask what they are ' +
         'looking to build. Never guess at a building that fits it, and never ' +
@@ -650,6 +683,14 @@ On paying monthly: ${lowerFirst(
         'If they name a budget, acknowledge it and ask what they are looking ' +
           'to build. Do not go looking for something that fits the number, and ' +
           'do not suggest a size off the budget alone.',
+        // Why the surface changes the price, so "why is dirt more" gets an
+        // answer instead of a puzzled reply.
+        'Anchors: a concrete slab needs no extra anchor package, so concrete ' +
+          'costs nothing extra. Asphalt and bare ground (dirt, grass, gravel) ' +
+          'each need their own anchor package, which is what makes them dearer ' +
+          'than concrete. If they do not know what it is going on, ask the ' +
+          'simpler version — is there already a slab there, or is it going ' +
+          'straight onto the ground? Do not just repeat the question.',
         'The warranty, the install lead time, and the colour list are REFERENCE ' +
           'facts. Use them to answer a question they actually asked, and leave ' +
           'them out otherwise — do not volunteer them, and do not close by ' +
