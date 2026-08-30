@@ -61,7 +61,7 @@ export const SYSTEM_PROMPT = `You are a metal building configurator assistant. P
     }
   ],
   "colors": { "roof": color_id, "walls": color_id, "trim": color_id },
-  "contact": { "fullName", "address", "phone", "email" — ONLY fields the
+  "contact": { "fullName", "address", "phone", "email", "zipCode" — ONLY the
                customer actually typed, for an invoice. Never invent or
                complete one. }
 }
@@ -334,6 +334,9 @@ export interface ParsedContact {
   address?: string;
   phone?: string;
   email?: string;
+  /** Asked for on its own when someone wants concrete, which we only pour in
+   *  some areas. */
+  zipCode?: string;
 }
 
 export interface ParsedRequest {
@@ -529,7 +532,7 @@ export function shapeContact(raw: unknown): ParsedContact {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
   const out: ParsedContact = {};
-  for (const k of ['fullName', 'address', 'phone', 'email'] as const) {
+  for (const k of ['fullName', 'address', 'phone', 'email', 'zipCode'] as const) {
     const v = r[k];
     if (typeof v === 'string' && v.trim()) out[k] = v.trim().slice(0, 200);
   }
