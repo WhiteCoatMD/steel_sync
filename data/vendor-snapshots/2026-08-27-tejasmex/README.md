@@ -592,3 +592,31 @@ to the customer. `__tests__/leanTos.test.ts` pins exactly that.
 
 Option 1 stays open. The composition rule above is the expensive half of it and
 is already measured.
+
+## walls2-measured-horizontal.json (2026-08-29, 159 probes)
+
+Wall prices with HORIZONTAL siding, which is the standard build. Everything
+else in this snapshot was captured on vertical siding, and the engine was
+quoting every enclosed building off that column -- $1,500 over on a 24x30x11
+garage.
+
+Captured with the same harness, with two guards worth keeping:
+
+  - The sweep was gated at BOTH ends on reproducing a known building
+    (24x30x11 -> side 584, end 1553). A silent revert to vertical mid-sweep is
+    the failure this data could not survive, and it is invisible in the numbers
+    themselves.
+  - Afterwards, every one of the 100 overlapping rows was compared against its
+    vertical twin: 100 cheaper on both figures, 0 identical. An identical row
+    would have meant the setting slipped.
+
+Two traps, both of which cost real time:
+
+  - A HIDDEN TAB clamps setTimeout to roughly 1/sec, so readFor's 18 polls at
+    200ms became ~18s and every probe looked like a 60-second app stall. It is
+    not the app. Splitting the timing into gap-vs-read found it; MessageChannel
+    is not throttled and fixes it.
+  - Matching walls2-measured.json alone is NOT enough coverage: the vertical
+    table is built from walls-measured.json as well, and mirroring only the
+    former left 51 side-wall and 18 end-wall rows missing, including 24x30.
+    That shows up as ABSENT wall lines, not wrong ones.
