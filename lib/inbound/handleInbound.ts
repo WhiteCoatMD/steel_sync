@@ -508,6 +508,27 @@ On paying monthly: ${lowerFirst(
   // A deferred question still goes through the composer, so anything the dealer
   // HAS told us gets answered instead of punted. The guard allows no figures
   // here, because none were priced.
+  // An opener gets a composed reply too. The template greets, which is right
+  // for "hey" and wrong for "sorry wrong number" -- and pressing a building
+  // question on someone who has said they are not a customer is worse than
+  // saying nothing (owner, 2026-08-29).
+  if (greeting) {
+    reply = await composeReply({
+      customerMessage: text,
+      facts: [
+        `Dealer: ${dealer.name}`,
+        'They have not described a building or asked anything yet.',
+      ].join('\n'),
+      allowedFigures: [],
+      fallback: templateReply,
+      guidance:
+        'One short friendly line. If they are just saying hello or browsing, ' +
+        'invite them to say what they are looking to build. If the message is ' +
+        'not meant for us at all — a wrong number — say no problem and leave it ' +
+        'there: do not ask them anything. No prices.',
+    });
+  }
+
   if (deferQuestion) {
     reply = await composeReply({
       customerMessage: text,
@@ -585,8 +606,25 @@ On paying monthly: ${lowerFirst(
                 'details they have already sent.',
             ]
           : []),
-        ...(contactSoFar && Object.keys(contactSoFar).length
-          ? [`Already given: ${JSON.stringify(contactSoFar)}`]
+        // Spelling out what is STILL MISSING, not just what has been given:
+        // told only the latter, it thanked a customer for a name and phone
+        // number and never asked for the address and email the invoice needs.
+        ...(intents?.wantsInvoice || intents?.isReadyToBuy
+          ? (() => {
+              const need = { fullName: 'full name', address: 'installation address', phone: 'phone number', email: 'email' };
+              const missing = (Object.keys(need) as Array<keyof typeof need>).filter(
+                k => typeof contactSoFar[k] !== 'string' || !contactSoFar[k],
+              );
+              return [
+                Object.keys(contactSoFar).length
+                  ? `Already given: ${JSON.stringify(contactSoFar)}`
+                  : 'They have given no contact details yet.',
+                missing.length
+                  ? `STILL NEEDED for the invoice: ${missing.map(k => need[k]).join(', ')}. ` +
+                    'Thank them for what they sent and ask for exactly these.'
+                  : 'Everything needed for the invoice is in. Confirm it is on its way.',
+              ];
+            })()
           : []),
         // Everything here prices ONE building. Say which one this is, so the
         // other does not quietly disappear.

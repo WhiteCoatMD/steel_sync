@@ -190,10 +190,10 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "sounds good", "that works", "ok do that", "perfect", "sure". A message that
   states something concrete - "make it 30 wide", "two roll ups" - is NOT this,
   even if it also sounds agreeable.
-- isGreeting: a greeting or an "only looking" message that describes no
-  building and asks nothing - "hey", "hello", "just looking around for now",
-  "just browsing". A message naming ANY building detail, or asking anything at
-  all, is not this.
+- isGreeting: an opener that describes no building and asks nothing - "hey",
+  "hello", "just looking around for now", "just browsing" - or a message that
+  is not really for us at all, like "sorry wrong number". A message naming ANY
+  building detail, or asking anything at all, is not this.
 - mentionsMultipleBuildings: they described two or more SEPARATE buildings in
   one message - "a 20x30 carport and a 24x30 garage". When this is true, put
   the FIRST building they named in "building" and list only ITS fields in
