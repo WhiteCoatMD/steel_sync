@@ -53,6 +53,11 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  // The store is a module-level singleton shared by every test in this file, so
+  // a modal left open or a stale config carries into the next one. Put it back
+  // to a known state rather than relying on the next beforeEach to overwrite
+  // every field it touched.
+  useDesignerStore.setState({ isQuoteFormOpen: false, selectedOpeningId: null });
 });
 
 describe('BuildingDesigner root: quote modal visibility across a real submission', () => {

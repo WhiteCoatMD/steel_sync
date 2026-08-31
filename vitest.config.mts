@@ -14,6 +14,13 @@ export default defineConfig({
     // under test. CI never sees it (no worktree there), so it presents as
     // "passes in CI, fails locally".
     exclude: [...configDefaults.exclude, '.claude/**', '.superpowers/**'],
+    // The default 5s is tight for the jsdom integration tests, which render the
+    // whole designer, drive a form through the real store and await an async
+    // submit. Those passed alone and failed intermittently in the full run —
+    // both tests in a file timing out together, which is the shape of a machine
+    // under load rather than of a broken assertion.
+    testTimeout: 20000,
+    hookTimeout: 20000,
   },
   resolve: {
     alias: { '@': path.resolve(import.meta.dirname, '.') },
