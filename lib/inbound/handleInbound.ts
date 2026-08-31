@@ -699,8 +699,10 @@ On paying monthly: ${lowerFirst(
           'asking about colours.',
         'Do not suggest anything in that list still needs pricing, adding or ' +
           'confirming. If they just asked to change something, that list is ' +
-          'the building AFTER the change — confirm the new spec and price, and ' +
-          'do not tell them it was already that way.',
+          'the building AFTER the change — so confirm it as DONE ("added", ' +
+          '"now in there"), never as something that was already true. ' +
+          'Saying "it was already in there" about a change they just requested ' +
+          'reads as not having followed them.',
         ...(p.depositDue != null ? [`Due now to order it: ${money(p.depositDue)}`] : []),
         ...(p.balanceDue != null ? [`Due at delivery: ${money(p.balanceDue)}`] : []),
         ...(dealer.offersRto === true && (askedAboutFinancing || conv.wantsFinancing)
