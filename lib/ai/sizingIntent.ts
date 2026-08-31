@@ -121,6 +121,36 @@ const TALL_NEED_PATTERNS: RegExp[] = [
   /\bclearance\b/i,
 ];
 
+/**
+ * The height of the thing going INSIDE, when the customer names one — "13 feet
+ * tall", "12ft high".
+ *
+ * RVs are deliberately exempt from the ask-don't-guess height path, because most
+ * RV customers take 12ft walls (owner, 2026-08-29). That default is right until
+ * the customer says otherwise, and in rehearsal one did: "35 feet long and 13
+ * feet tall" still drew a 12ft suggestion — a cover the RV does not fit under,
+ * offered as though it were what they asked for (2026-08-31).
+ *
+ * Matches only a number followed by tall/high, so "12 foot wide lean to" and
+ * "20ft long" do not read as clearances.
+ */
+export function clearanceNeededFt(text: unknown): number | null {
+  if (typeof text !== 'string') return null;
+  let tallest: number | null = null;
+  const re = /(\d{1,2}(?:\.\d)?)\s*(?:ft\b|foot\b|feet\b|')?\s*(?:tall|high\b)/gi;
+  for (const m of text.matchAll(re)) {
+    const n = Number(m[1]);
+    // Two digits of feet; anything outside this is a typo or a different unit.
+    if (Number.isFinite(n) && n >= 6 && n <= 20 && (tallest === null || n > tallest)) {
+      tallest = n;
+    }
+  }
+  return tallest;
+}
+
+/** Headroom over the thing being covered. A 13ft RV does not fit 13ft walls. */
+export const CLEARANCE_HEADROOM_FT = 1;
+
 /** True when something in the message implies extra height is needed. */
 export function mentionsTallNeed(text: unknown): boolean {
   if (typeof text !== 'string') return false;

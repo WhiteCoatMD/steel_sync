@@ -52,7 +52,12 @@ const QUESTION: Record<RequiredField, string> = {
   // Short on purpose. The graphic goes with this question and does the
   // explaining; repeating it in text is a wall of sales copy in a chat window
   // (owner, 2026-08-29). The detail is there if they ask for it.
-  roofStyle: 'What style roof would you like?',
+  // Name the three, in the dealer's own sales words. Left open, the composer
+  // invented labels and drifted between them — "A-frame horizontal" in one
+  // reply and "A-frame boxed eave" in the next (rehearsal, 2026-08-31).
+  // "Horizontal" is not a roof style at all; it describes siding direction, so
+  // that phrasing invited a customer to answer the wrong question.
+  roofStyle: 'What style roof would you like — regular, A-frame (boxed eave), or vertical?',
   // Only concrete is free. Asphalt and bare ground both need an anchor package
   // at $180-420 depending on length, so assuming concrete under-quotes anyone
   // putting one on dirt or gravel (owner, 2026-08-29).

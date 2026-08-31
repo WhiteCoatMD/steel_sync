@@ -18,6 +18,8 @@ import {
   mentionsTallNeed,
   mentionsRv,
   isOpenSided,
+  clearanceNeededFt,
+  CLEARANCE_HEADROOM_FT,
 } from '../ai/sizingIntent';
 import {
   asksToExplainRoofStyles,
@@ -28,6 +30,7 @@ import { insertQuote, lastQuotedConfig } from '../db/quotes';
 import { composeReply } from '../ai/composeReply';
 import { figuresInText } from '../ai/replyGuard';
 import { standardDoorPackage } from '../pricing/openingFit';
+import { MAX_AUTO_QUOTE_LEG_HEIGHT_FT } from '../pricing/dimensions';
 import { STANDARD_COLORS } from '../building/defaultConfig';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest, notifyReadyToBuy } from '../notify/financing';
@@ -129,7 +132,28 @@ export async function handleInboundMessage(
   // Detected by the model further down when the parse succeeds; this regex
   // pass is the fallback for when it does not, and the fast path for a message
   // that is PURELY about paying and would otherwise be parsed as a building.
-  if (dealer.offersRto && looksLikeFinancingQuestion(text) && !mentionsDimensions(text)) {
+  // ...but only from a standing start. "whats the monthly on that", asked after
+  // the customer has already described a building, is not a cold open, and
+  // answering it with "What are you looking to build?" throws away everything
+  // they said — the worst version of the amnesia this path exists to prevent
+  // (rehearsal, 2026-08-31). Once a building is on the table the message goes
+  // to the parser like any other, which keeps the thread and lets the clarify
+  // reply answer the financing question alongside what is still missing.
+  const MID_QUOTE_OUTCOMES = new Set([
+    'clarify',
+    'clarify+financing',
+    'sizing-suggestion',
+    'question-for-dealer',
+  ]);
+  const buildingOnTheTable =
+    conv.transcript.length > 0 && MID_QUOTE_OUTCOMES.has(conv.lastOutcome ?? '');
+
+  if (
+    dealer.offersRto &&
+    looksLikeFinancingQuestion(text) &&
+    !mentionsDimensions(text) &&
+    !buildingOnTheTable
+  ) {
     // Answer, then keep going. Notifying the dealer HERE would hand them a
     // customer with no building and no price -- nothing to call back about. We
     // remember the interest instead and alert once there is a real quote
@@ -398,15 +422,33 @@ export async function handleInboundMessage(
     const b = (parsed.building ?? {}) as Record<string, unknown>;
     const { widthFt: w, lengthFt: l, legHeightFt: h } = b;
     if (typeof w === 'number' && typeof l === 'number' && typeof h === 'number') {
-      sizingSuggestion = sizingReply(
-        {
-          widthFt: w,
-          lengthFt: l,
-          legHeightFt: h,
-          type: typeof b.type === 'string' ? b.type : undefined,
-        },
-        needsHeight && !statedHeight,
-      );
+      // Never suggest a building shorter than what they said has to go in it.
+      // RVs skip the ask-don't-guess height path on purpose (12ft walls suit
+      // most of them), but that default has to yield to a customer who named a
+      // clearance: "35 feet long and 13 feet tall" drew a 12ft suggestion in
+      // rehearsal (2026-08-31).
+      const clears = clearanceNeededFt(text);
+      const floor = clears != null ? clears + CLEARANCE_HEADROOM_FT : 0;
+      const legHeightFt = Math.max(h, floor);
+
+      // Past what we auto-quote, so a person sizes it rather than us offering
+      // a building we cannot price.
+      if (legHeightFt > MAX_AUTO_QUOTE_LEG_HEIGHT_FT) {
+        sizingSuggestion =
+          `To clear something ${clears}ft tall you would want about ` +
+          `${legHeightFt}ft side walls, which is taller than I can price here. ` +
+          `Someone will follow up to get that sized properly for you.`;
+      } else {
+        sizingSuggestion = sizingReply(
+          {
+            widthFt: w,
+            lengthFt: l,
+            legHeightFt,
+            type: typeof b.type === 'string' ? b.type : undefined,
+          },
+          needsHeight && !statedHeight,
+        );
+      }
     }
   }
 
@@ -488,7 +530,12 @@ export async function handleInboundMessage(
       ? `Hey — happy to help. What are you looking to build?`
       : deferQuestion
       ? `Good question — let me have someone here get you a proper answer on ` +
-        `that. In the meantime, what are you looking to build?`
+        `that. ` +
+        // The composed reply is rejected often enough that this floor has to
+        // hold the context too, or a guard rejection reintroduces the amnesia.
+        (outcome.kind === 'clarify' && outcome.questions.length
+          ? `In the meantime, I still need: ${outcome.questions.join('; ')}.`
+          : `In the meantime, what are you looking to build?`)
       : explainRoofs || comparingPastQuote
       ? roofStyleExplanation(roofOptions)
       : sizingSuggestion
@@ -548,7 +595,17 @@ On paying monthly: ${lowerFirst(
           'each need their own package, which is what makes them dearer.',
         'Nothing has been priced yet — we still need these answers:',
         ...asks.map(q => `  - ${q}`),
-      ].join('\n'),
+        // They asked about paying mid-quote. Ignoring it to press on with the
+        // questions reads as dodging the one thing they wanted to know.
+        askedAboutFinancing
+          ? 'They also asked about financing. We DO offer rent-to-own. Say yes ' +
+            'to that plainly, and that someone will follow up with the details ' +
+            'once there is a price. We hold no rent-to-own terms here, so never ' +
+            'give a monthly figure, a term length, a rate or a deposit.'
+          : null,
+      ]
+        .filter(Boolean)
+        .join('\n'),
       allowedFigures: figuresInText(text),
       fallback: templateReply,
       guidance:
@@ -556,12 +613,25 @@ On paying monthly: ${lowerFirst(
         'If they have just said they do not know one of these, help them get ' +
         'to an answer rather than repeating the question: for the surface, ask ' +
         'whether there is already a slab there or whether it is going straight ' +
-        'onto the ground. Answer any question they asked first, from the facts. ' +
+        'onto the ground. Answer every question they asked first, from the ' +
+        // "whats the warranty and how long till its up" got the warranty and
+        // nothing about timing, though both facts were in front of it
+        // (rehearsal, 2026-08-31).
+        'facts — if they asked two things, answer both, not just the first. ' +
         'No prices — nothing has been priced.',
     });
   }
 
-  if (deferQuestion) {
+  if (deferQuestion && outcome.kind === 'clarify') {
+    // What they have ALREADY told us, carried onto this path deliberately.
+    //
+    // Without it the model was told only "nothing has been priced" and "ask
+    // what they are looking to build", so a customer who had just given a full
+    // spec and then asked about insulation got "In the meantime, what are you
+    // looking to build?" — the bot appearing to forget everything at the moment
+    // they engaged. It read as broken in rehearsal on every side question:
+    // warranty, self-install, lean-tos, concrete, financing (2026-08-31).
+    const stillNeeded = outcome.questions;
     reply = await composeReply({
       customerMessage: text,
       facts: [
@@ -574,6 +644,10 @@ On paying monthly: ${lowerFirst(
           'Those are the only ones — if they ask for a colour that is not on ' +
           'that list, say we do not carry it and name the closest we do.',
         'We have not priced anything for this customer yet.',
+        stillNeeded.length
+          ? ['They have already described a building. Still missing before we can price it:',
+             ...stillNeeded.map(q => `  - ${q}`)].join('\n')
+          : null,
       ]
         .filter(Boolean)
         .join('\n'),
@@ -586,6 +660,19 @@ On paying monthly: ${lowerFirst(
         ? { allowClaims: ['warranty' as const] }
         : {}),
       guidance:
+        // First, because it kept losing to everything after it. A two-part
+        // question ("whats the warranty and how long till its up") got the
+        // warranty and silence on timing, though both facts were in front of
+        // it and either one alone was answered fine (rehearsal, 2026-08-31).
+        'FIRST count the questions in their message. If there is more than ' +
+        'one, answer every one of them before anything else — a message with ' +
+        'two questions gets two answers. ' +
+        // Read as "how long does the warranty last" when it followed a
+        // warranty question, which is a fair reading of the words and the
+        // wrong one for a customer waiting on a building (2026-08-31).
+        '"How long till it is up", "when will it be up" and "how long does it ' +
+        'take" all ask about INSTALLATION TIMING, never about how long a ' +
+        'warranty lasts — answer them from the installation timing fact. ' +
         'If they are unsure what the building will sit on, ask whether there is ' +
         'already a slab there or whether it is going straight onto the ground — ' +
         'that is the same question in words people can answer. ' +
@@ -593,10 +680,18 @@ On paying monthly: ${lowerFirst(
         'If they named a budget, acknowledge the number and ask what they are ' +
         'looking to build. Never guess at a building that fits it, and never ' +
         'quote a price. ' +
-        'Answer their question from the facts if the facts cover it. If they ' +
-        'do not, say someone will follow up with a proper answer — never guess ' +
-        'at delivery, permits, site prep, warranties or timing. Then ask what ' +
-        'they are looking to build. Do not quote any price or number.',
+        'Answer every question they asked from the facts where the facts cover ' +
+        // Two questions in one message got one answer (rehearsal, 2026-08-31).
+        'it — if they asked two things, answer both, not just the first. Where ' +
+        'the facts do not cover it, say someone will follow up with a proper ' +
+        'answer — never guess at delivery, permits, site prep, warranties or ' +
+        'timing. ' +
+        // Never "what are you looking to build?" when they have already said.
+        'Then pick up where the quote left off: if anything is listed as still ' +
+        'missing, ask for exactly those and nothing else, and do not ask them ' +
+        'to describe the building again or repeat details they have given. ' +
+        'Only if nothing is listed as missing should you ask what they are ' +
+        'looking to build. Do not quote any price or number.',
     });
   }
 
