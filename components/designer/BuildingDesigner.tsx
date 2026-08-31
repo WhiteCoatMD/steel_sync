@@ -680,9 +680,9 @@ function OptionsSection() {
       </div>
 
       {/*
-        No Installation toggle: every quote is an installed price, so offering
-        DIY here produced a number nobody sells (owner, 2026-08-29). Self-install
-        is roughly 10% off and is quoted by a person.
+        No Installation toggle: every quote is an installed price. Self-install
+        is off the designer entirely for now (owner, 2026-08-31) — InstallOption
+        no longer has a 'diy' member, so there is nothing here to re-expose.
 
         No Wind Rating slider either. It reads like a priced option and is not
         one — the manufacturer's certification is a single fixed tier, which is

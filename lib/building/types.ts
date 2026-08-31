@@ -17,7 +17,14 @@ export type OpeningType = 'walkin' | 'rollup' | 'window' | 'frameout';
 
 export type AnchorType = 'ground' | 'concrete' | 'asphalt';
 
-export type InstallOption = 'included' | 'optional' | 'diy';
+/**
+ * No 'diy' member: self-install is not something the designer quotes (owner,
+ * 2026-08-31). Dropping it from the union means a config cannot express it at
+ * all, rather than the designer merely happening not to offer it — the vendor
+ * carries a self-install-diy option at -15% of subtotal, and nothing should be
+ * able to reach it by accident. Add the member back if that changes.
+ */
+export type InstallOption = 'included' | 'optional';
 
 export type Timeline = 'asap' | '1-3 months' | '3-6 months' | '6-12 months' | 'just-browsing';
 

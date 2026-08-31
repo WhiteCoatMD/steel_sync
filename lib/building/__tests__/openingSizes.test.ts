@@ -21,7 +21,7 @@ function configWithOpening(opening: Opening): BuildingConfig {
     leanTos: [],
     options: {
       insulation: { roof: false, walls: false }, anchoring: 'ground',
-      concrete: { included: false, thicknessIn: null }, installation: 'diy',
+      concrete: { included: false, thicknessIn: null }, installation: 'included',
       overhangs: { frontFt: 0, backFt: 0, leftFt: 0, rightFt: 0 },
     },
     certifications: { windSpeedMph: 110, snowLoadPsf: 20, engineered: false },
