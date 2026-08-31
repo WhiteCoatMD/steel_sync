@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
 import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
@@ -15,6 +16,26 @@ import { PROMPT_MAX_LENGTH } from '@/lib/ai/parseRequest';
  * The decision about whether a price may go out lives in
  * lib/inbound/handleInbound.ts, shared with every other channel.
  */
+
+/**
+ * Name of the cookie carrying the conversation id. HttpOnly, so the page's own
+ * scripts cannot read it and an injected script cannot exfiltrate it.
+ */
+const SITE_SESSION_COOKIE = 'ss_chat';
+
+/** A year — a quote conversation can reasonably pause for a season and resume. */
+const SESSION_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+/**
+ * Only accept a value we could have issued: a v4 UUID. Anything else is forged
+ * or corrupted, and earns a fresh conversation rather than someone else's.
+ */
+function isValidSessionId(v: string | undefined): v is string {
+  return (
+    typeof v === 'string' &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v)
+  );
+}
 
 /**
  * Lower than the designer's limit. A form submission is a deliberate act — a
@@ -57,12 +78,26 @@ export async function POST(req: NextRequest) {
 
   /**
    * Identifies the browser across turns so a follow-up answer lands in the same
-   * conversation. Client-supplied and therefore untrusted — it is only a
-   * conversation key, never an authorisation. Prefixed so a caller cannot pass
-   * a value that collides with a Facebook page-scoped sender id.
+   * conversation.
+   *
+   * SERVER-ISSUED, in an HttpOnly cookie. It used to be whatever the caller put
+   * in the body — a `Math.random()` value from the page, with a timestamp in
+   * it — and whoever supplied that string owned the conversation. Guessing one
+   * meant reading the quote it belonged to and continuing the thread, and once
+   * an invoice had been requested the conversation carries a name, address,
+   * phone and email (security review, 2026-08-30).
+   *
+   * Falling back to the IP is worse than useless here: two customers behind one
+   * office or carrier NAT would share a thread and have their buildings parsed
+   * together. A per-request id is the safer failure — they lose multi-turn
+   * context, nobody merges.
+   *
+   * Keyed per dealer as well, so one browser talking to two dealer sites keeps
+   * two conversations rather than colliding into one.
    */
-  const rawSession = typeof body?.sessionId === 'string' ? body.sessionId : '';
-  const externalId = `web:${(rawSession || clientKey(req.headers)).slice(0, 64)}`;
+  const existing = req.cookies.get(SITE_SESSION_COOKIE)?.value;
+  const sessionId = isValidSessionId(existing) ? existing! : randomUUID();
+  const externalId = `web:${dealerId}:${sessionId}`;
 
   const contact = {
     ...(typeof body?.name === 'string' ? { name: body.name.slice(0, MAX_FIELD) } : {}),
@@ -89,7 +124,7 @@ export async function POST(req: NextRequest) {
       contact,
     });
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       kind: result.kind,
       reply: result.reply,
       quoted: result.quoted,
@@ -107,6 +142,15 @@ export async function POST(req: NextRequest) {
         : {}),
       ...(result.outcome?.kind === 'clarify' ? { questions: result.outcome.questions } : {}),
     });
+
+    res.cookies.set(SITE_SESSION_COOKIE, sessionId, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: SESSION_COOKIE_MAX_AGE,
+    });
+    return res;
   } catch (err) {
     // Generic to the caller — this endpoint is public. The log carries the detail.
     console.error('[inbound/web] handling failed', err);

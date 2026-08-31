@@ -31,24 +31,11 @@ interface Reply {
 }
 
 /**
- * Keeps the thread together across turns so a follow-up answer lands in the
- * same conversation. Only a conversation key, never an authorisation — the
- * server treats it as untrusted.
+ * The conversation is identified by an HttpOnly cookie the server sets on the
+ * first reply, so there is nothing to generate or store here. The page used to
+ * mint its own id in localStorage; that made the conversation key a value any
+ * caller could supply, and guessing one reached someone else's quote.
  */
-function sessionId(): string {
-  const KEY = 'steelsync_site_session';
-  try {
-    const existing = window.localStorage.getItem(KEY);
-    if (existing) return existing;
-    const fresh = `s_${Math.random().toString(36).slice(2)}_${Date.now()}`;
-    window.localStorage.setItem(KEY, fresh);
-    return fresh;
-  } catch {
-    // Private mode, or storage disabled. A per-load id still works for a
-    // single-sitting exchange, which is the common case.
-    return `s_${Math.random().toString(36).slice(2)}_${Date.now()}`;
-  }
-}
 
 export default function QuoteRequestForm({
   dealerId,
@@ -75,10 +62,12 @@ export default function QuoteRequestForm({
       const res = await fetch('/api/inbound/web', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // Carries the conversation cookie. Same-origin is fetch's default, but
+        // saying so keeps the dependency visible to anyone editing this call.
+        credentials: 'same-origin',
         body: JSON.stringify({
           dealerId,
           message: message.trim(),
-          sessionId: sessionId(),
           name,
           email,
           phone,
