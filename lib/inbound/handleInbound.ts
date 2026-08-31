@@ -724,6 +724,12 @@ On paying monthly: ${lowerFirst(
         // them. Someone winding down wants an acknowledgement, not a recap.
         'If they are wrapping up or going away to think, keep it to a short ' +
         'friendly acknowledgement and do not restate the whole quote. ' +
+        // Restating the real number without acknowledging theirs reads as
+        // evasive. But do NOT repeat their figure back: on a quote the only
+        // amounts allowed are the ones we priced, and loosening that so a
+        // wrong number could be echoed would also let it be agreed with.
+        'If they misremember the price, correct it without repeating their ' +
+        'number — say what the figure actually is and that it has not changed. ' +
         // Insulation is not in the price file at all, so there is no figure to
         // give and no way to check one. It goes to a person (owner,
         // 2026-08-29).
