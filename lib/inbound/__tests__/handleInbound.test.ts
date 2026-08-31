@@ -321,3 +321,74 @@ describe('accepting a suggestion we made', () => {
     expect(r.reply).toMatch(/doors/i);
   });
 });
+
+describe('two buildings in one message', () => {
+  /**
+   * The second building is held as a pending proposal and priced when they say
+   * yes, so nobody has to describe a building twice. What it must NOT do is
+   * claim they stated fields they never gave.
+   *
+   * `stated` used to be hardcoded to the whole required set for the second
+   * building. Surface is not cosmetic — concrete needs no anchor package while
+   * asphalt and bare ground cost $180-420 — so asserting it was stated
+   * defaulted the answer and underquoted anyone whose second building goes on
+   * dirt (rehearsal, 2026-08-31).
+   */
+  const twoBuildings = (second: Record<string, unknown>) => ({
+    ...parsed(
+      { type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical' },
+      ALL,
+    ),
+    secondBuilding: second,
+    intents: {
+      asksFinancing: false,
+      asksRoofComparison: false,
+      asksWhatSize: false,
+      needsExtraHeight: false,
+      isRvUse: false,
+      mentionedDoors: true,
+      acceptsSuggestion: false,
+      mentionsMultipleBuildings: true,
+    },
+  });
+
+  const proposalFor = (id: string) => store.get(id)?.pendingProposal as
+    | { stated?: string[]; building?: Record<string, unknown> }
+    | null
+    | undefined;
+
+  it('records only the fields given for the second building', async () => {
+    parseMock.mockResolvedValueOnce(
+      // No surface on the second one: they never said what it sits on.
+      twoBuildings({ type: 'carport', widthFt: 20, lengthFt: 20, legHeightFt: 7, roofStyle: 'regular' }),
+    );
+    await send('a 24x25x9 carport and also a 20x20x7 carport', 'web:two-a');
+    const p = proposalFor('conv_web_web:two-a');
+    expect(p?.stated).not.toContain('surface');
+    expect(p?.stated).toEqual(
+      expect.arrayContaining(['type', 'widthFt', 'lengthFt', 'legHeightFt', 'roofStyle']),
+    );
+  });
+
+  it('keeps the surface when they did give it', async () => {
+    parseMock.mockResolvedValueOnce(
+      twoBuildings({
+        type: 'carport', widthFt: 20, lengthFt: 20, legHeightFt: 7,
+        roofStyle: 'regular', surface: 'ground',
+      }),
+    );
+    await send('a 24x25x9 carport and a 20x20x7 carport on dirt', 'web:two-b');
+    const p = proposalFor('conv_web_web:two-b');
+    expect(p?.stated).toContain('surface');
+    expect(p?.building?.surface).toBe('ground');
+  });
+
+  it('still holds the second building rather than losing it', async () => {
+    parseMock.mockResolvedValueOnce(
+      twoBuildings({ type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 11 }),
+    );
+    const r = await send('a 24x25x9 carport and a 24x30x11 garage', 'web:two-c');
+    expect(r.kind).toBe('quote');
+    expect(proposalFor('conv_web_web:two-c')?.building).toMatchObject({ type: 'garage', widthFt: 24 });
+  });
+});

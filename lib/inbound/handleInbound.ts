@@ -971,7 +971,14 @@ On paying monthly: ${lowerFirst(
       ...(Array.isArray(secondOpenings) && secondOpenings.length
         ? { openings: secondOpenings }
         : {}),
-      stated: [...REQUIRED_FOR_QUOTE],
+      // Only what they actually gave for THIS building. Claiming the whole
+      // required set meant the second building was quoted even when the
+      // customer had never said what it sits on, and surface is not cosmetic:
+      // concrete needs no anchor package, asphalt and bare ground each cost
+      // $180-420. Asserting it was stated defaulted the answer and underquoted
+      // anyone whose second building goes on dirt. Now a field they did not
+      // give is asked for, exactly as it would be on a first building.
+      stated: REQUIRED_FOR_QUOTE.filter(f => secondBuilding[f] != null),
     };
   } else if (needsDoors && !refusedDoors && STANDARD_DOORS) {
     proposed = { openings: STANDARD_DOORS };

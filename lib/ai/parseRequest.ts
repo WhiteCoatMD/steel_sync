@@ -205,6 +205,12 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "stated", and put the second in "secondBuilding" so we never have to ask them
   to repeat details they already gave. Do not blend the two into one spec. A single building with several
   openings, or a building plus a lean-to, is one building and not this.
+  "secondBuilding" takes the SAME fields as "building" - including surface and
+  roofStyle, and its own nested "openings". Carry across anything they said
+  that applies to it: "both on concrete" means surface concrete on BOTH, and
+  "a 20x20 carport on dirt" means surface ground on the second one. Leave a
+  field out only when they truly did not say it for that building, because a
+  field you omit is one we go back and ask them about.
 - statesBudget: they named an amount they have to spend, rather than a
   building - "i got about 8000 to spend", "whats the most I can get for 5k",
   "my budget is around 12000".
