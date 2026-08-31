@@ -21,8 +21,18 @@ const body = (over: any = {}) => ({
               zipCode: '75001', timeline: 'asap', notes: '' },
   ...over,
 });
-const req = (b: any) => new Request('http://x/api/quote', {
-  method: 'POST', body: JSON.stringify(b), headers: { 'Content-Type': 'application/json' },
+// Each call gets its own caller identity. The route rate-limits per client, and
+// a shared key would make every test after the fifth fail on a 429 that has
+// nothing to do with what it is asserting. A test that WANTS the limiter passes
+// an explicit ip — see the rate-limiting block at the bottom.
+let ipSeq = 0;
+const req = (b: any, ip?: string) => new Request('http://x/api/quote', {
+  method: 'POST',
+  body: JSON.stringify(b),
+  headers: {
+    'Content-Type': 'application/json',
+    'x-forwarded-for': ip ?? `10.0.0.${++ipSeq % 250}-${ipSeq}`,
+  },
 });
 
 beforeEach(() => {
@@ -211,5 +221,43 @@ describe('POST /api/quote field length caps', () => {
     expect(insertQuote).toHaveBeenCalledOnce();
     expect(notifyNewLead).not.toHaveBeenCalled();
     expect(markNotifyFailed).not.toHaveBeenCalled();
+  });
+});
+
+describe('rate limiting', () => {
+  /**
+   * This endpoint writes a quote row and emails the dealer, with nothing
+   * authenticating the caller. Without a limit one script fills their inbox
+   * (security review, 2026-08-30).
+   */
+  it('cuts off a caller that floods it, and says when to retry', async () => {
+    const ip = '203.0.113.99';
+    const codes: number[] = [];
+    for (let i = 0; i < 7; i++) {
+      codes.push((await POST(req(body(), ip) as never)).status);
+    }
+    expect(codes.filter(c => c === 429).length).toBeGreaterThan(0);
+
+    const limited = await POST(req(body(), ip) as never);
+    expect(limited.status).toBe(429);
+    expect(limited.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('does not punish a different caller', async () => {
+    const flooder = '203.0.113.100';
+    for (let i = 0; i < 8; i++) await POST(req(body(), flooder) as never);
+    const other = await POST(req(body(), '203.0.113.101') as never);
+    expect(other.status).not.toBe(429);
+  });
+
+  it('refuses before doing any work', async () => {
+    // The point of limiting here is the database write and the email, so the
+    // 429 has to come first.
+    const ip = '203.0.113.102';
+    for (let i = 0; i < 6; i++) await POST(req(body(), ip) as never);
+    insertQuote.mockClear();
+    const blocked = await POST(req(body(), ip) as never);
+    expect(blocked.status).toBe(429);
+    expect(insertQuote).not.toHaveBeenCalled();
   });
 });

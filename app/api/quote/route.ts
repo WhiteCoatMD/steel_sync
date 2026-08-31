@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDealer } from '@/lib/db/dealers';
 import { insertQuote, markNotifyFailed } from '@/lib/db/quotes';
 import { notifyNewLead } from '@/lib/notify';
+import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { calculatePrice } from '@/lib/pricing/calculatePrice';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
 
@@ -117,7 +118,22 @@ function quoteId(): string {
   return `qt_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 }
 
+/** Quote submissions are a human action; 5 a minute is generous. */
+const limiter = createRateLimiter(5, 60_000);
+
 export async function POST(req: NextRequest) {
+  // This endpoint writes a row and emails the dealer, with no authentication in
+  // front of it — so without a limit one script can fill their inbox and the
+  // quotes table (security review, 2026-08-30). Same shape as the limiter on
+  // the inbound routes.
+  const gate = limiter.check(clientKey(req.headers));
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests, please try again shortly' },
+      { status: 429, headers: { 'Retry-After': String(gate.retryAfterSec) } },
+    );
+  }
+
   let body: any;
   try {
     body = await req.json();
