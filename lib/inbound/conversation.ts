@@ -42,6 +42,13 @@ export interface PendingProposal {
   openings?: Array<Record<string, unknown>>;
   /** Which required fields the proposal would satisfy. */
   stated?: string[];
+  /**
+   * Buildings queued behind this one, when the customer named three or more in
+   * a single message. Each is priced in turn as they accept, so the queue is
+   * what stops the third building being dropped on the floor after the second
+   * is quoted (rehearsal, 2026-08-31).
+   */
+  rest?: Array<Record<string, unknown>>;
 }
 
 /** How many turns back we keep. Long enough for a real clarification exchange. */

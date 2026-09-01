@@ -26,7 +26,13 @@ import {
  */
 let client: Anthropic | null = null;
 export function getClient(): Anthropic {
-  if (!client) client = new Anthropic();
+  // maxRetries above the SDK default of 2. The API returns 529 (Overloaded)
+  // in bursts, and every one that gets through to the customer reads as
+  // "Sorry — I couldn't work that out", which looks like a broken bot rather
+  // than a busy upstream. Retries are backed off by the SDK. A parse costs one
+  // short low-effort call, so spending a few more on a bad minute is cheap
+  // beside losing the lead (2026-08-31).
+  if (!client) client = new Anthropic({ maxRetries: 5 });
   return client;
 }
 
@@ -166,6 +172,7 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
     "asksSomethingElse": false,
     "isGreeting": false,
     "isWrappingUp": false,
+    "declinesSuggestion": false,
     "isReadyToBuy": false,
     "mentionsMultipleBuildings": false,
     "wantsInvoice": false,
@@ -202,10 +209,13 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
 - mentionsMultipleBuildings: they described two or more SEPARATE buildings in
   one message - "a 20x30 carport and a 24x30 garage". When this is true, put
   the FIRST building they named in "building" and list only ITS fields in
-  "stated", and put the second in "secondBuilding" so we never have to ask them
-  to repeat details they already gave. Do not blend the two into one spec. A single building with several
+  "stated", and put EVERY OTHER building they named in "otherBuildings", an
+  array, in the order they said them - two more buildings means two entries, not
+  one. Nothing is dropped: we price them one at a time and a building missing
+  from this list is one the customer never hears about again.
+  Do not blend them into one spec. A single building with several
   openings, or a building plus a lean-to, is one building and not this.
-  "secondBuilding" takes the SAME fields as "building" - including surface and
+  Each entry in "otherBuildings" takes the SAME fields as "building" - including surface and
   roofStyle, and its own nested "openings". Carry across anything they said
   that applies to it: "both on concrete" means surface concrete on BOTH, and
   "a 20x20 carport on dirt" means surface ground on the second one. Leave a
@@ -221,6 +231,10 @@ ago. Judge meaning, not wording; people ask these a hundred different ways.
   "sign me up", "how do I pay", "when can you install", "I'll take it", "put me
   down for that". Agreeing to a SUGGESTION we made ("that's fine" about doors)
   is not this; that is acceptsSuggestion.
+- declinesSuggestion: they are turning down something WE just offered - "no
+  thanks", "just the first one", "skip the carport", "dont need that one". This
+  is about our offer, not about ending the conversation, and it is the opposite
+  of acceptsSuggestion. Only true when we actually offered something.
 - isWrappingUp: they are ending the conversation for now - "ok thanks ill think
   about it", "sounds good", "let me talk to my wife", "ill get back to you".
   Accepting a suggestion ("that's fine", "yes do that") is NOT this: that moves
@@ -311,6 +325,7 @@ export interface RequestIntents {
    * nobody asked for (owner, 2026-08-29).
    */
   isWrappingUp: boolean;
+  declinesSuggestion: boolean;
   /**
    * They are saying YES -- "lets do it", "how do I pay", "sign me up", "when
    * can you start".
@@ -367,11 +382,16 @@ export interface ParsedRequest {
   openings: Array<Record<string, unknown>>;
   colors?: Record<string, unknown>;
   /**
-   * The SECOND building, when they described more than one. Held so the reply
-   * can name it back and price it next, rather than asking the customer to
-   * repeat details they already gave (owner, 2026-08-29).
+   * Every building AFTER the first, in the order the customer named them.
+   *
+   * Held so the reply can name the next one back and price it, rather than
+   * asking the customer to repeat details they already gave (owner,
+   * 2026-08-29). A list rather than a single slot because there was only ever
+   * room for one: a customer naming three buildings had the third silently
+   * dropped, and the "price the last one" turn re-quoted the second and
+   * presented it as the third (rehearsal, 2026-08-31).
    */
-  secondBuilding?: Record<string, unknown>;
+  otherBuildings?: Array<Record<string, unknown>>;
   /** Contact details the customer typed, for an invoice. */
   contact?: ParsedContact;
   stated: RequiredField[];
@@ -513,9 +533,21 @@ export function shapeParsed(raw: Record<string, unknown>): ParsedRequest {
     building: sanitizeBuilding(raw?.building) as Record<string, unknown>,
     openings: Array.isArray(raw?.openings) ? (raw.openings as Array<Record<string, unknown>>) : [],
     ...(raw?.colors ? { colors: raw.colors as Record<string, unknown> } : {}),
-    ...(raw?.secondBuilding && typeof raw.secondBuilding === 'object'
-      ? { secondBuilding: sanitizeBuilding(raw.secondBuilding) as Record<string, unknown> }
-      : {}),
+    // `secondBuilding` is the shape this used to take. Still read, because a
+    // model that has seen the old instruction may answer in the old shape and
+    // dropping it would lose the building entirely.
+    ...(() => {
+      const list = Array.isArray(raw?.otherBuildings)
+        ? (raw.otherBuildings as unknown[])
+        : raw?.secondBuilding
+          ? [raw.secondBuilding]
+          : [];
+      const shaped = list
+        .filter((b): b is Record<string, unknown> => !!b && typeof b === 'object')
+        .map(b => sanitizeBuilding(b) as Record<string, unknown>)
+        .filter(b => Object.keys(b).length > 0);
+      return shaped.length ? { otherBuildings: shaped } : {};
+    })(),
     ...(raw?.contact && typeof raw.contact === 'object'
       ? { contact: shapeContact(raw.contact) }
       : {}),
@@ -548,6 +580,7 @@ export function shapeIntents(raw: unknown): RequestIntents | null {
     'asksSomethingElse',
     'isGreeting',
     'isWrappingUp',
+    'declinesSuggestion',
     'isReadyToBuy',
     'mentionsMultipleBuildings',
     'wantsInvoice',

@@ -335,6 +335,9 @@ export async function handleInboundMessage(
         })
       : null;
 
+  // Buildings still waiting behind the one being handled this turn.
+  let carriedQueue: Array<Record<string, unknown>> = [];
+
   // They are agreeing to what we last suggested. Their own words carry none of
   // it -- only their turns are re-parsed -- so the proposal is merged back in
   // (owner, 2026-08-29).
@@ -356,7 +359,27 @@ export async function handleInboundMessage(
       parsed.missing = REQUIRED_FOR_QUOTE.filter(f => !merged.has(f));
       parsed.autoQuotable = parsed.missing.length === 0;
     }
+    // Whatever was queued behind this one is carried to the end of the turn and
+    // re-proposed there, so a third building survives the second being priced.
+    carriedQueue = prop.rest ?? [];
     await setPendingProposal(conv.id, null);
+  }
+
+  // They said no to what we offered. Clearing it and acknowledging is the whole
+  // job: re-parsing "no thanks, just the first one" as a fresh request finds no
+  // building and fires the entire list of quoting questions back at someone who
+  // has just told us they are done (rehearsal, 2026-08-31).
+  if (intents?.declinesSuggestion && conv.pendingProposal) {
+    await setPendingProposal(conv.id, null);
+    await recordTurn(conv.id, transcript, 'declined-suggestion');
+    return {
+      kind: 'handoff',
+      reply:
+        'No problem — I will leave that one off. If you change your mind or ' +
+        'need anything else, just say the word.',
+      conversationId: conv.id,
+      quoted: false,
+    };
   }
 
   // Anything they have typed for an invoice, merged across turns -- people
@@ -761,11 +784,13 @@ On paying monthly: ${lowerFirst(
         ...(intents?.mentionsMultipleBuildings
           ? [
               'They described more than one building and this price covers only ' +
-                'the FIRST one.' +
-                (parsed.secondBuilding
-                  ? ` The other one they mentioned: ${JSON.stringify(parsed.secondBuilding)}. ` +
-                    'Name it back to them and offer to price it next. Do NOT ask ' +
-                    'them to repeat details they have already given.'
+                'ONE of them.' +
+                (parsed.otherBuildings?.length
+                  ? ` Still to price, in order: ${JSON.stringify(parsed.otherBuildings)}. ` +
+                    'Name the NEXT one back to them and offer to price it. If ' +
+                    'more than one is left, say how many are still to come so ' +
+                    'none of them looks forgotten. Do NOT ask them to repeat ' +
+                    'details they have already given.'
                   : ' Ask for the details of the other one.'),
             ]
           : []),
@@ -956,14 +981,15 @@ On paying monthly: ${lowerFirst(
       building: (parsed.building ?? {}) as Record<string, unknown>,
       stated: ['type', 'widthFt', 'lengthFt', 'legHeightFt'],
     };
-  } else if (intents?.mentionsMultipleBuildings && parsed.secondBuilding) {
+  } else if (intents?.mentionsMultipleBuildings && parsed.otherBuildings?.length) {
     // "yes, price the garage too" then applies it, instead of making them
     // describe a building they already described.
     //
     // Openings arrive NESTED inside the second building, and everything
     // downstream expects them alongside it -- left nested, the doors are
     // invisible and an enclosed building is refused for having none.
-    const { openings: secondOpenings, ...secondBuilding } = parsed.secondBuilding as {
+    const [next, ...queued] = parsed.otherBuildings;
+    const { openings: secondOpenings, ...secondBuilding } = next as {
       openings?: Array<Record<string, unknown>>;
     } & Record<string, unknown>;
     proposed = {
@@ -979,10 +1005,27 @@ On paying monthly: ${lowerFirst(
       // anyone whose second building goes on dirt. Now a field they did not
       // give is asked for, exactly as it would be on a first building.
       stated: REQUIRED_FOR_QUOTE.filter(f => secondBuilding[f] != null),
+      ...(queued.length ? { rest: queued } : {}),
     };
   } else if (needsDoors && !refusedDoors && STANDARD_DOORS) {
     proposed = { openings: STANDARD_DOORS };
   }
+
+  // Nothing new to propose, but buildings are still queued from an earlier
+  // message: offer the next one instead of letting the queue die here.
+  if (!proposed && carriedQueue.length) {
+    const [next, ...queued] = carriedQueue;
+    const { openings: nextOpenings, ...nextBuilding } = next as {
+      openings?: Array<Record<string, unknown>>;
+    } & Record<string, unknown>;
+    proposed = {
+      building: nextBuilding,
+      ...(Array.isArray(nextOpenings) && nextOpenings.length ? { openings: nextOpenings } : {}),
+      stated: REQUIRED_FOR_QUOTE.filter(f => nextBuilding[f] != null),
+      ...(queued.length ? { rest: queued } : {}),
+    };
+  }
+
   if (proposed || conv.pendingProposal) await setPendingProposal(conv.id, proposed);
 
   await recordTurn(conv.id, transcript, recorded, quoteId);

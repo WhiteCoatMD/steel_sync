@@ -334,12 +334,12 @@ describe('two buildings in one message', () => {
    * defaulted the answer and underquoted anyone whose second building goes on
    * dirt (rehearsal, 2026-08-31).
    */
-  const twoBuildings = (second: Record<string, unknown>) => ({
+  const twoBuildings = (...others: Array<Record<string, unknown>>) => ({
     ...parsed(
       { type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical' },
       ALL,
     ),
-    secondBuilding: second,
+    otherBuildings: others,
     intents: {
       asksFinancing: false,
       asksRoofComparison: false,
@@ -390,5 +390,77 @@ describe('two buildings in one message', () => {
     const r = await send('a 24x25x9 carport and a 24x30x11 garage', 'web:two-c');
     expect(r.kind).toBe('quote');
     expect(proposalFor('conv_web_web:two-c')?.building).toMatchObject({ type: 'garage', widthFt: 24 });
+  });
+});
+
+describe('three buildings in one message', () => {
+  /**
+   * There used to be exactly one slot for "the other building", so a customer
+   * naming three had the third dropped — and worse, "price the last one"
+   * re-quoted the second and presented it as the third. A wrong price, offered
+   * confidently, for a building they never asked about (rehearsal, 2026-08-31).
+   */
+  const three = () => ({
+    ...parsed(
+      { type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical' },
+      ALL,
+    ),
+    otherBuildings: [
+      { type: 'carport', widthFt: 20, lengthFt: 20, legHeightFt: 7, roofStyle: 'regular', surface: 'concrete' },
+      { type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 11, roofStyle: 'vertical', surface: 'concrete' },
+    ],
+    intents: {
+      asksFinancing: false, asksRoofComparison: false, asksWhatSize: false,
+      needsExtraHeight: false, isRvUse: false, mentionedDoors: true,
+      acceptsSuggestion: false, mentionsMultipleBuildings: true,
+    },
+  });
+
+  const proposal = (id: string) =>
+    store.get(id)?.pendingProposal as
+      | { building?: Record<string, unknown>; rest?: Array<Record<string, unknown>> }
+      | null
+      | undefined;
+
+  it('queues the third behind the second instead of dropping it', async () => {
+    parseMock.mockResolvedValueOnce(three());
+    await send('a 24x25x9 carport, a 20x20x7 carport and a 24x30x11 garage', 'web:three');
+    const p = proposal('conv_web_web:three');
+    // Next up is the SECOND building...
+    expect(p?.building).toMatchObject({ type: 'carport', widthFt: 20 });
+    // ...and the third is still on the books behind it.
+    expect(p?.rest).toHaveLength(1);
+    expect(p?.rest?.[0]).toMatchObject({ type: 'garage', widthFt: 24, lengthFt: 30 });
+  });
+});
+
+describe('turning down a building we offered', () => {
+  /**
+   * "no thanks, just the first one" used to be re-parsed as a fresh request,
+   * find no building, and fire the whole list of quoting questions back at
+   * someone who had just said they were finished (rehearsal, 2026-08-31).
+   */
+  const declining = () => ({
+    ...parsed({}, []),
+    intents: {
+      asksFinancing: false, asksRoofComparison: false, asksWhatSize: false,
+      needsExtraHeight: false, isRvUse: false, mentionedDoors: true,
+      acceptsSuggestion: false, declinesSuggestion: true,
+    },
+  });
+
+  it('lets it go instead of re-interrogating them', async () => {
+    store.set('conv_web_web:no', {
+      transcript: ['a 24x25x9 carport and a 20x20x7 carport'],
+      lastOutcome: 'quote',
+      pendingProposal: { building: { type: 'carport', widthFt: 20 }, stated: ['type', 'widthFt'] },
+    });
+    parseMock.mockResolvedValueOnce(declining());
+    const r = await send('no thanks, just the first one', 'web:no');
+
+    expect(r.reply).not.toMatch(/how wide|how long|what style roof|carport or/i);
+    expect(r.quoted).toBe(false);
+    // And the offer is gone, so a later "yes" cannot resurrect it.
+    expect(store.get('conv_web_web:no')?.pendingProposal).toBeNull();
   });
 });
