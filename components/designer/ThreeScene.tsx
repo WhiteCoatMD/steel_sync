@@ -166,7 +166,25 @@ function useRollupSlatTexture(heightFt: number): THREE.Texture {
 
 export function ThreeScene() {
   return (
-    <div className="h-full w-full">
+    // The wrapper carries the scene's own background, and a spinner sits behind
+    // the canvas until it paints.
+    //
+    // The sidebar mounts as soon as the designer chunk lands, but three.js still
+    // has to compile shaders and build the geometry, and this area used to be
+    // stark white for the whole of that — a blank panel next to a working
+    // sidebar, which reads as broken rather than loading. Measured at several
+    // seconds on a cold dev load; a production build is far quicker, but the
+    // first paint is never instant (2026-08-31). The canvas is opaque
+    // (alpha: false) and drawn after this, so it covers the placeholder the
+    // moment it has a frame.
+    <div className="relative h-full w-full bg-[#8291a3]">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        <div
+          className="h-10 w-10 animate-spin rounded-full border-4 border-white/40 border-t-white/90"
+          role="status"
+          aria-label="Preparing the 3D view"
+        />
+      </div>
       <Canvas
         camera={{ position: [30, 25, -40], fov: 40, near: 0.1, far: 1000 }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
