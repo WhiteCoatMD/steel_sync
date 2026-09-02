@@ -185,24 +185,35 @@ unapproved or lapsed, `starter` is a paying dealer without AI — and only `pro`
 differs in what it can do. Keeping the distinction now means a future paid
 capability has a tier to land on without a data migration.
 
-The gate is enforced in exactly two places, both of them the point where the
-money is actually spent:
+The gate is enforced in **one** place: `handleInboundMessage()` in
+`lib/inbound/handleInbound.ts`, before any model call.
 
-1. **Facebook** — `dealerForPage()` in `lib/db/messaging.ts` ANDs the plan into
-   the existing flag:
-   `autoReply: row.auto_reply === true && planAllows(row.plan, 'aiAutoReply')`.
-   Every consumer of `DealerMessaging` inherits it; there is no second site to
-   forget.
+That file already owns the rule about when a price may go out, and every channel
+passes through it. `handleInboundMessage` takes a third argument,
+`opts?: { ai?: boolean }`, defaulting to `true`. When `ai` is `false` it finds or
+creates the conversation, records the customer's turn, and returns a
+`kind: 'handoff'` acknowledgement — without calling the model.
 
-2. **The website form** — `app/api/inbound/web/route.ts` today answers with AI
-   for everyone; `auto_reply` gates only Facebook. Without a gate here, an
-   approved free-plan dealer spends platform tokens on every form submission.
-   When the plan does not include AI, the form accepts the message, records the
-   conversation, notifies the dealer, and returns a plain acknowledgement
-   instead of a generated quote.
+Both channels pass `planAllows(dealer.plan, 'aiAutoReply')`, which means `plan`
+must be selected by `getDealer()` and carried on `DealerSettings`.
 
-The distinction is deliberate: the customer's message is never dropped. Only the
-*automated answer* is withheld, and the dealer is still told a lead came in.
+**Why not `dealerForPage()`, as an earlier draft of this spec said.** The
+Facebook webhook calls `handleInboundMessage` unconditionally and `auto_reply`
+gates only *sending*, inside `sendFacebookReply`. Gating the flag there would
+keep an unpaid dealer silent while still spending platform tokens on every
+message they receive — which is the entire cost this is meant to stop. The gate
+must sit before the model call, not before the send.
+
+**`auto_reply` and the plan gate stay separate concerns.** `auto_reply` is the
+dealer's own switch and keeps its listen-only meaning: process the message, log
+what the bot would have said, do not speak. The plan gate is stronger — it
+declines to think at all. A paying dealer can still run listen-only; a
+free-plan dealer costs nothing.
+
+The customer's message is never dropped. It is recorded on the conversation and
+appears on the dealer's dashboard and in `/admin`; only the *generated answer*
+is withheld. No new per-message notification is sent — inbound has never
+notified per message, and adding one here would be noise nobody asked for.
 
 ## Super-admin controls
 
@@ -234,9 +245,12 @@ Test-driven throughout. The tests that carry real weight:
 - No dealer route accepts a dealer id from the request.
 
 **The gate**
-- `auto_reply = true` with `plan = 'none'` yields no Facebook reply.
+- `auto_reply = true` with `plan = 'none'` sends the plain acknowledgement, not
+  a generated answer. The two switches compose rather than override: the plan
+  decides what is said, `auto_reply` decides whether anything is said at all.
 - The website form returns a plain acknowledgement, not a quote, on a plan
-  without AI — and still records the conversation and notifies the dealer.
+  without AI — and still records the conversation and the customer's turn.
+- No model call is made at all when the plan denies AI, on either channel.
 - An unknown plan string denies the capability.
 
 **Signup**
