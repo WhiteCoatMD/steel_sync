@@ -103,9 +103,32 @@ export interface InboundMessage {
 const ERROR_REPLY =
   "Sorry — I couldn't work that out just now. Someone will follow up with you shortly.";
 
+export interface InboundOptions {
+  /**
+   * Whether this dealer's plan pays for an AI answer. Default true.
+   *
+   * Enforced HERE, not at the send, because the Facebook webhook runs this
+   * pipeline for every message and only decides afterwards whether to speak.
+   * A gate on sending would keep an unpaid dealer silent while still spending
+   * platform tokens on every message they receive.
+   */
+  ai?: boolean;
+}
+
+/**
+ * What a customer hears when the dealer's plan does not include AI answers.
+ *
+ * Says nothing about plans, prices or why. The customer is not the one who
+ * chose the plan, and "your dealer has not paid for this" is not their problem.
+ * Their message IS kept and shows on the dealer's dashboard.
+ */
+const NO_AI_REPLY =
+  "Thanks — we've got your message and someone will get back to you shortly.";
+
 export async function handleInboundMessage(
   dealer: DealerSettings,
   msg: InboundMessage,
+  opts: InboundOptions = {},
 ): Promise<InboundResult> {
   const text = (msg.text ?? '').trim();
   const conv = await findOrCreateConversation(
@@ -119,6 +142,17 @@ export async function handleInboundMessage(
     return {
       kind: 'error',
       reply: 'Tell me roughly what you need — size, and whether you want it open or enclosed.',
+      conversationId: conv.id,
+      quoted: false,
+    };
+  }
+
+  // The plan gate. Before the parser, before anything that costs money.
+  if (opts.ai === false) {
+    await recordTurn(conv.id, [...conv.transcript, text], 'no-ai-plan');
+    return {
+      kind: 'handoff',
+      reply: NO_AI_REPLY,
       conversationId: conv.id,
       quoted: false,
     };
