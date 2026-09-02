@@ -61,7 +61,10 @@ export default async function DealerDashboard() {
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-5 py-8">
-        {account && !account.active && (
+        {/* Pending, not merely switched off. A suspended dealer never reaches
+            this page at all — requireDealer() redirects them — so keying the
+            banner on `active` would only ever have mislabelled someone. */}
+        {account && account.approvedAt === null && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <strong className="font-semibold">Your account is awaiting approval.</strong> Your
             public site and automated replies stay switched off until it is approved.

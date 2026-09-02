@@ -114,10 +114,20 @@ export async function dealerForLogin(email: string): Promise<string | null> {
  * the point of this query is that deactivating a dealer locks them out now
  * rather than whenever their cookie happens to expire.
  *
- * Deliberately does NOT filter on d.active — a pending dealer (just signed up,
- * not yet approved) must still be able to sign in and see their own empty
- * dashboard. Deactivation is handled by the login guard, which reads `active`
- * separately and routes accordingly.
+ * A dealer is in one of three states, and only one of them is locked out:
+ *
+ *   pending   — approved_at IS NULL. Signed up, nobody has looked at them yet.
+ *               ALLOWED in: they must be able to see their own empty dashboard
+ *               while they wait. They are dark everywhere public regardless,
+ *               because getDealer() and dealerForPage() filter active = true.
+ *   active    — active = true. Allowed in, obviously.
+ *   suspended — active = false with approved_at set. The super-admin switched
+ *               them off after approving them. LOCKED OUT here and now, which
+ *               is the entire reason this query runs on every request rather
+ *               than waiting for a week-long cookie to expire.
+ *
+ * `active` alone cannot tell pending from suspended — it is false for both —
+ * so the timestamp is what makes the distinction possible.
  */
 export async function activeDealerForSession(
   dealerId: string,
@@ -130,6 +140,7 @@ export async function activeDealerForSession(
       JOIN dealers d ON d.id = u.dealer_id
      WHERE u.email = ${email.trim().toLowerCase()}
        AND u.dealer_id = ${dealerId}
+       AND (d.approved_at IS NULL OR d.active = true)
      LIMIT 1
   `) as any[];
   return rows.length > 0;
@@ -140,7 +151,28 @@ export async function setDealerPlan(dealerId: string, plan: Plan): Promise<void>
   await sql`UPDATE dealers SET plan = ${plan}, updated_at = now() WHERE id = ${dealerId}`;
 }
 
+/**
+ * Approve or suspend a dealer.
+ *
+ * Approving stamps approved_at the FIRST time only — COALESCE, not a plain
+ * assignment, so re-approving someone who was suspended keeps the date they
+ * were originally let in.
+ *
+ * Suspending deliberately leaves approved_at alone. Clearing it would put a
+ * suspended dealer back into the pending state, and pending dealers are allowed
+ * to sign in — the suspension would undo itself. See activeDealerForSession.
+ */
 export async function setDealerActive(dealerId: string, active: boolean): Promise<void> {
   const sql = getSql();
-  await sql`UPDATE dealers SET active = ${active}, updated_at = now() WHERE id = ${dealerId}`;
+  if (active) {
+    await sql`
+      UPDATE dealers
+         SET active      = true,
+             approved_at = COALESCE(approved_at, now()),
+             updated_at  = now()
+       WHERE id = ${dealerId}
+    `;
+    return;
+  }
+  await sql`UPDATE dealers SET active = false, updated_at = now() WHERE id = ${dealerId}`;
 }

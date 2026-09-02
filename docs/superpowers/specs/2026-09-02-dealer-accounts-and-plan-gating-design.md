@@ -63,12 +63,31 @@ Dealer identity is a second, weaker identity that can never become the first:
 
 Admin tokens are fully stateless because the environment allowlist is re-checked
 on every use. A dealer has no environment allowlist, so `requireDealer()` reads
-the database on each request to confirm the dealer still exists, is still
-`active`, and that the email is still attached to it.
+the database on each request to confirm the dealer still exists, has not been
+suspended, and that the email is still attached to it.
 
-That is a query per request. It buys immediate revocation: deactivating a dealer
+That is a query per request. It buys immediate revocation: suspending a dealer
 locks them out now rather than up to seven days from now, when their session
 would otherwise expire. Dealer pages query the database anyway.
+
+**A dealer is in one of three states, and `active` alone cannot name them.**
+`active = false` means both "nobody has approved this signup yet" and "the
+super-admin switched this dealer off", and those two must be treated
+differently: the first may sign in, the second must not. `dealers.approved_at`
+is what separates them.
+
+| State | Row | May sign in | Public site |
+| --- | --- | --- | --- |
+| Pending | `approved_at IS NULL` | yes — their own empty dashboard | dark |
+| Active | `active = true` | yes | live |
+| Suspended | `active = false`, `approved_at` set | **no** | dark |
+
+`activeDealerForSession()` therefore filters on
+`(approved_at IS NULL OR active = true)`, and approving stamps
+`approved_at = COALESCE(approved_at, now())` so the date survives a
+suspend-and-reapprove. Suspending never clears it — clearing it would return
+the dealer to Pending, which is a state that may sign in, and the suspension
+would silently undo itself.
 
 ### The dangerous edit
 
@@ -101,6 +120,11 @@ CREATE INDEX IF NOT EXISTS dealer_users_dealer_idx ON dealer_users (dealer_id);
 -- label, and the capabilities it implies live in code where they can be read
 -- next to the gate that enforces them.
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
+
+-- When this dealer was approved. NULL means nobody has looked at them yet,
+-- which is what distinguishes a pending signup from a suspended dealer -- both
+-- have active = false. See the three states in the Trust model above.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
 ```
 
 Emails are stored lowercased. `PRIMARY KEY` on email means one address belongs to
@@ -110,16 +134,26 @@ right default and avoids a "which dealer am I acting as" selector.
 ### A pending signup is inert by construction
 
 A verified signup — one where the emailed link has been clicked — creates a
-`dealers` row with `active = false`.
+`dealers` row with `active = false` and `approved_at` left NULL.
 
-`active` is *already* the kill switch on every dealer-facing path:
+`active` is *already* the kill switch on every PUBLIC dealer-facing path:
 `getDealer()` filters `active = true`, so the public site 404s, and
 `dealerForPage()` filters it too, so Facebook will not route to them. A pending
-dealer is therefore dark everywhere without a single new "is this dealer
+dealer is therefore dark everywhere public without a single new "is this dealer
 approved" check that some future path could forget.
 
 They can sign in and see their own empty dashboard. That is all, until the
-super-admin approves them.
+super-admin approves them — and the dashboard says so, keyed on
+`approved_at IS NULL` rather than on `active`, because a suspended dealer is
+not awaiting anything.
+
+That deliberate exception is exactly why `active` cannot also carry the
+suspension. If `requireDealer()` let every `active = false` dealer through it
+would let suspended dealers through too, and if it turned them all away a
+pending dealer could never see their own dashboard. Hence `approved_at`, and
+the three states in the Trust model above. `dealer_users` rows are not deleted
+on suspension either, so the session check — not the absence of a login
+identity — is what has to hold the line.
 
 ## Signup and login flow
 
@@ -220,7 +254,8 @@ notified per message, and adding one here would be noise nobody asked for.
 `/admin` gains:
 
 - A **Pending signups** panel listing dealers with `active = false`, with
-  Approve, which sets `active = true` and a chosen plan.
+  Approve, which sets `active = true`, stamps `approved_at`, and sets a chosen
+  plan.
 - A plan dropdown on each dealer row.
 - Deactivate.
 

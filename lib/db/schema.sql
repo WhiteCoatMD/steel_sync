@@ -148,3 +148,21 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
 -- tier that matches what they are already doing. Runs once and is a no-op
 -- afterwards because it only touches rows still on the default.
 UPDATE dealers SET plan = 'pro' WHERE auto_reply = true AND plan = 'none';
+
+-- When this dealer was approved.
+--
+-- `active` alone cannot say whether a switched-off dealer was ever approved.
+-- It is false for a fresh signup nobody has looked at yet AND false for a
+-- dealer the super-admin suspended, and those two must be treated differently:
+-- a pending dealer may still sign in and see their own empty dashboard, a
+-- suspended one must be locked out at once. Stamping the approval gives three
+-- readable states -- pending is approved_at IS NULL, active is active = true,
+-- suspended is active = false with approved_at set.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
+
+-- Backfill the dealers who predate the column.
+--
+-- Every dealer already active was approved at some point and the nearest
+-- honest timestamp on hand is when their row was created. Self-excluding, so
+-- re-running the migration touches nothing.
+UPDATE dealers SET approved_at = created_at WHERE active = true AND approved_at IS NULL;

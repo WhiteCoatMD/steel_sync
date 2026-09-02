@@ -92,12 +92,15 @@ export interface DealerAccount {
   offersRto: boolean;
   plan: string;
   active: boolean;
+  /** null while nobody has approved them yet. See lib/db/dealerUsers.ts. */
+  approvedAt: string | null;
 }
 
 export async function dealerAccount(dealerId: string): Promise<DealerAccount | null> {
   const sql = getSql();
   const rows = (await sql`
-    SELECT id, name, email, phone, website, service_area, policies, offers_rto, plan, active
+    SELECT id, name, email, phone, website, service_area, policies, offers_rto, plan,
+           active, approved_at
       FROM dealers WHERE id = ${dealerId} LIMIT 1
   `) as any[];
   if (!rows.length) return null;
@@ -113,6 +116,7 @@ export async function dealerAccount(dealerId: string): Promise<DealerAccount | n
     offersRto: r.offers_rto === true,
     plan: r.plan,
     active: r.active === true,
+    approvedAt: r.approved_at ? new Date(r.approved_at).toISOString() : null,
   };
 }
 

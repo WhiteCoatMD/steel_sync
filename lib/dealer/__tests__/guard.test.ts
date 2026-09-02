@@ -58,6 +58,26 @@ describe('requireDealer', () => {
     await expect(requireDealer()).rejects.toThrow('REDIRECT:/dealer/login');
   });
 
+  // The super-admin's Deactivate button has to bite NOW, not whenever the
+  // cookie expires. activeDealerForSession answers false for a dealer who was
+  // approved and then switched off, and the guard must act on that.
+  it('locks out a suspended dealer', async () => {
+    activeDealerForSession.mockResolvedValue(false);
+    withCookie(createDealerToken('dunrite', 'owner@dunrite.com'));
+    await expect(requireDealer()).rejects.toThrow('REDIRECT:/dealer/login');
+  });
+
+  // The other side of the same coin: not-yet-approved is NOT suspended. A
+  // dealer waiting on approval still gets their own empty dashboard.
+  it('lets a pending dealer through to their own dashboard', async () => {
+    activeDealerForSession.mockResolvedValue(true);
+    withCookie(createDealerToken('bob-buildings', 'bob@x.com'));
+    await expect(requireDealer()).resolves.toEqual({
+      dealerId: 'bob-buildings',
+      email: 'bob@x.com',
+    });
+  });
+
   it('treats a database failure as signed out, never as signed in', async () => {
     activeDealerForSession.mockRejectedValue(new Error('neon is down'));
     withCookie(createDealerToken('dunrite', 'owner@dunrite.com'));

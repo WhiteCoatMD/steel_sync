@@ -38,3 +38,58 @@ describe('allocateDealerId', () => {
     vi.doUnmock('../index');
   });
 });
+
+/**
+ * The three dealer states, asserted on the SQL itself.
+ *
+ * There is no Postgres in the unit suite, so these check the shape of the
+ * statement rather than its result. That is still worth having: the bug this
+ * covers was a WHERE clause that simply did not mention the column, which
+ * typechecks and passes every behavioural test that mocks the layer above.
+ */
+const captureSql = () => {
+  const seen: string[] = [];
+  vi.doMock('../index', () => ({
+    getSql:
+      () =>
+      (strings: TemplateStringsArray, ..._params: unknown[]) => {
+        seen.push(strings.join(' ? ').replace(/\s+/g, ' ').trim());
+        return Promise.resolve([]);
+      },
+  }));
+  return seen;
+};
+
+describe('activeDealerForSession', () => {
+  it('lets a pending dealer in and keeps a suspended one out', async () => {
+    const seen = captureSql();
+    vi.resetModules();
+    const { activeDealerForSession } = await import('../dealerUsers');
+    await activeDealerForSession('dunrite', 'owner@dunrite.com');
+    vi.doUnmock('../index');
+    // approved_at IS NULL is pending (allowed), active = true is approved
+    // (allowed); everything else — approved then switched off — is suspended.
+    expect(seen[0]).toContain('(d.approved_at IS NULL OR d.active = true)');
+  });
+});
+
+describe('setDealerActive', () => {
+  it('stamps approved_at the first time a dealer is approved, and only then', async () => {
+    const seen = captureSql();
+    vi.resetModules();
+    const { setDealerActive } = await import('../dealerUsers');
+    await setDealerActive('bob-buildings', true);
+    vi.doUnmock('../index');
+    expect(seen[0]).toContain('approved_at = COALESCE(approved_at, now())');
+  });
+
+  it('never clears approved_at on suspension, which would re-open the door', async () => {
+    const seen = captureSql();
+    vi.resetModules();
+    const { setDealerActive } = await import('../dealerUsers');
+    await setDealerActive('bob-buildings', false);
+    vi.doUnmock('../index');
+    expect(seen[0]).toContain('active = false');
+    expect(seen[0]).not.toContain('approved_at');
+  });
+});
