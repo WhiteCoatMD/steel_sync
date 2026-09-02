@@ -1,6 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const send = vi.fn(async () => ({ error: null }));
+// Typed explicitly so `send.mock.calls[0][0]` and `mockResolvedValue` below
+// both typecheck: an untyped `vi.fn(async () => ({ error: null }))` infers
+// its argument tuple as `[]` and its resolved `error` as the literal `null`,
+// which is narrower than what the real Resend SDK's `emails.send` accepts
+// and returns.
+type SendArgs = { from: string; to: string; subject: string; text: string };
+type SendResult = { error: { name: string; message: string } | null };
+
+const send = vi.fn<(args: SendArgs) => Promise<SendResult>>(async () => ({ error: null }));
 vi.mock('resend', () => ({ Resend: class { emails = { send }; } }));
 
 process.env.ADMIN_SESSION_SECRET = 'x'.repeat(48);
