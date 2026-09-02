@@ -82,13 +82,37 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(ab, bb);
 }
 
+export const DEALER_COOKIE = 'steelsync_dealer';
+
+export interface SignupPayload {
+  businessName: string;
+  email: string;
+  phone: string;
+}
+
+type TokenKind = 'magic' | 'session' | 'dealer' | 'signup';
+
+/**
+ * Kinds that identify a SUPER-ADMIN, and so must be re-checked against
+ * SUPER_ADMIN_EMAILS on every use.
+ *
+ * This set is the security boundary of this file. A kind added here that is not
+ * an admin kind locks a dealer out; a kind LEFT OUT that is an admin kind is an
+ * admin bypass. It is written as an explicit set rather than an early return so
+ * that adding a kind forces a decision about which side it falls on.
+ */
+const ADMIN_KINDS: ReadonlySet<TokenKind> = new Set(['magic', 'session']);
+
 interface TokenBody {
   email: string;
   exp: number;
-  /** Distinguishes a sign-in link from a session, so one cannot be used as the other. */
-  kind: 'magic' | 'session';
+  kind: TokenKind;
   /** Random, so two tokens for the same email at the same ms are still distinct. */
   jti: string;
+  /** Present on 'dealer' tokens only. */
+  dealerId?: string;
+  /** Present on 'signup' tokens only. */
+  signup?: SignupPayload;
 }
 
 function encode(body: TokenBody): string {
@@ -96,7 +120,7 @@ function encode(body: TokenBody): string {
   return `${json}.${sign(json)}`;
 }
 
-function decode(token: unknown, kind: TokenBody['kind'], now: number): string | null {
+function decode(token: unknown, kind: TokenKind, now: number): TokenBody | null {
   if (typeof token !== 'string' || !token.includes('.')) return null;
   const idx = token.lastIndexOf('.');
   const json = token.slice(0, idx);
@@ -116,12 +140,14 @@ function decode(token: unknown, kind: TokenBody['kind'], now: number): string | 
   if (body.kind !== kind) return null;
   if (typeof body.exp !== 'number' || body.exp <= now) return null;
 
-  // Re-check the allowlist on every use. A signed token issued to someone since
-  // removed from SUPER_ADMIN_EMAILS must stop working immediately rather than
-  // lasting until it expires.
-  if (!isAllowedAdmin(body.email)) return null;
+  // Re-check the allowlist on every use of an ADMIN token. A signed token
+  // issued to someone since removed from SUPER_ADMIN_EMAILS must stop working
+  // immediately rather than lasting until it expires. Dealer and signup tokens
+  // are not admin identities and are not in that allowlist — they are checked
+  // against the database by their own guard instead.
+  if (ADMIN_KINDS.has(kind) && !isAllowedAdmin(body.email)) return null;
 
-  return body.email.trim().toLowerCase();
+  return body;
 }
 
 export function createMagicToken(email: string, now: number = Date.now()): string {
@@ -135,7 +161,7 @@ export function createMagicToken(email: string, now: number = Date.now()): strin
 
 /** Returns the verified email, or null. Never throws on bad input. */
 export function verifyMagicToken(token: unknown, now: number = Date.now()): string | null {
-  return decode(token, 'magic', now);
+  return decode(token, 'magic', now)?.email?.trim().toLowerCase() ?? null;
 }
 
 export function createSessionToken(email: string, now: number = Date.now()): string {
@@ -148,7 +174,71 @@ export function createSessionToken(email: string, now: number = Date.now()): str
 }
 
 export function verifySessionToken(token: unknown, now: number = Date.now()): string | null {
-  return decode(token, 'session', now);
+  return decode(token, 'session', now)?.email?.trim().toLowerCase() ?? null;
+}
+
+/**
+ * A dealer's session.
+ *
+ * Carries the dealer id so no route ever has to take one from the request. This
+ * token proves WHO is asking; whether that dealer is still active is a database
+ * question, answered by requireDealer() on every request.
+ */
+export function createDealerToken(
+  dealerId: string,
+  email: string,
+  now: number = Date.now(),
+): string {
+  return encode({
+    email: email.trim().toLowerCase(),
+    dealerId: dealerId.trim().toLowerCase(),
+    exp: now + SESSION_TTL_MS,
+    kind: 'dealer',
+    jti: randomBytes(9).toString('base64url'),
+  });
+}
+
+export function verifyDealerToken(
+  token: unknown,
+  now: number = Date.now(),
+): { dealerId: string; email: string } | null {
+  const body = decode(token, 'dealer', now);
+  if (!body || typeof body.dealerId !== 'string' || !body.dealerId) return null;
+  return { dealerId: body.dealerId, email: body.email.trim().toLowerCase() };
+}
+
+/**
+ * Carries a pending signup through the email round-trip.
+ *
+ * The payload travels IN the token rather than in a row, so no dealer exists
+ * until a real mailbox has proven itself — which is what stops anyone squatting
+ * a slug or filling the table from addresses that do not exist.
+ */
+export function createSignupToken(payload: SignupPayload, now: number = Date.now()): string {
+  const email = payload.email.trim().toLowerCase();
+  return encode({
+    email,
+    signup: {
+      businessName: payload.businessName.trim(),
+      email,
+      phone: payload.phone.trim(),
+    },
+    exp: now + MAGIC_LINK_TTL_MS,
+    kind: 'signup',
+    jti: randomBytes(9).toString('base64url'),
+  });
+}
+
+export function verifySignupToken(token: unknown, now: number = Date.now()): SignupPayload | null {
+  const body = decode(token, 'signup', now);
+  const s = body?.signup;
+  if (!s || typeof s.businessName !== 'string' || typeof s.email !== 'string') return null;
+  return { businessName: s.businessName, email: s.email, phone: s.phone ?? '' };
+}
+
+/** Cookie attributes for a dealer session. Same hardening as the admin one. */
+export function dealerCookieOptions() {
+  return sessionCookieOptions();
 }
 
 /** Cookie attributes for the admin session. */

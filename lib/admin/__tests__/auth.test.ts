@@ -12,6 +12,13 @@ import {
   adminUrl,
   DEFAULT_SUPER_ADMIN,
   TTL,
+  SESSION_COOKIE,
+  DEALER_COOKIE,
+  createDealerToken,
+  verifyDealerToken,
+  createSignupToken,
+  verifySignupToken,
+  dealerCookieOptions,
 } from '../auth';
 
 /**
@@ -249,5 +256,99 @@ describe('admin links never trust the request Host', () => {
     process.env.ADMIN_ORIGIN = 'https://steel-sync.vercel.app';
     // Even if a path were ever built from input, the origin stays ours.
     expect(adminUrl('/admin/login?error=expired', spoofed)).toContain('steel-sync.vercel.app');
+  });
+});
+
+describe('dealer tokens are a weaker identity than admin', () => {
+  it('round-trips a dealer id and email', () => {
+    const t = createDealerToken('dunrite', '  Owner@Dunrite.com ');
+    expect(verifyDealerToken(t)).toEqual({ dealerId: 'dunrite', email: 'owner@dunrite.com' });
+  });
+
+  // The whole point. A dealer must never be able to present their token to the
+  // admin guard and be let in.
+  it('is rejected by the admin session verifier', () => {
+    const t = createDealerToken('dunrite', 'owner@dunrite.com');
+    expect(verifySessionToken(t)).toBeNull();
+    expect(verifyMagicToken(t)).toBeNull();
+  });
+
+  it('does not accept an admin session token as a dealer', () => {
+    const t = createSessionToken(DEFAULT_SUPER_ADMIN);
+    expect(verifyDealerToken(t)).toBeNull();
+  });
+
+  it('does not accept a signup token as a dealer session', () => {
+    const t = createSignupToken({ businessName: 'X', email: 'a@b.com', phone: '' });
+    expect(verifyDealerToken(t)).toBeNull();
+  });
+
+  it('expires', () => {
+    const now = Date.now();
+    const t = createDealerToken('dunrite', 'owner@dunrite.com', now);
+    expect(verifyDealerToken(t, now + TTL.SESSION_TTL_MS - 1000)).not.toBeNull();
+    expect(verifyDealerToken(t, now + TTL.SESSION_TTL_MS + 1000)).toBeNull();
+  });
+
+  it('rejects a tampered payload', () => {
+    const t = createDealerToken('dunrite', 'owner@dunrite.com');
+    const [json, sig] = [t.slice(0, t.lastIndexOf('.')), t.slice(t.lastIndexOf('.') + 1)];
+    const forged = Buffer.from(
+      JSON.stringify({ ...JSON.parse(Buffer.from(json, 'base64url').toString()), dealerId: 'other' }),
+    ).toString('base64url');
+    expect(verifyDealerToken(`${forged}.${sig}`)).toBeNull();
+  });
+
+  it('uses its own cookie so both sessions can coexist', () => {
+    expect(DEALER_COOKIE).not.toBe(SESSION_COOKIE);
+    expect(dealerCookieOptions().httpOnly).toBe(true);
+  });
+});
+
+describe('the admin allowlist survives the dealer-token change', () => {
+  // The regression guard. decode() must keep applying isAllowedAdmin to admin
+  // kinds, and must NOT apply it to dealer kinds.
+  it('still rejects an admin token for an address no longer allowed', () => {
+    process.env.SUPER_ADMIN_EMAILS = 'someone@else.com';
+    const t = createSessionToken('someone@else.com');
+    expect(verifySessionToken(t)).toBe('someone@else.com');
+    process.env.SUPER_ADMIN_EMAILS = 'nobody@nowhere.com';
+    expect(verifySessionToken(t)).toBeNull();
+  });
+
+  it('still rejects a magic token for an address no longer allowed', () => {
+    process.env.SUPER_ADMIN_EMAILS = 'someone@else.com';
+    const t = createMagicToken('someone@else.com');
+    process.env.SUPER_ADMIN_EMAILS = 'nobody@nowhere.com';
+    expect(verifyMagicToken(t)).toBeNull();
+  });
+
+  it('does not apply the admin allowlist to dealer tokens', () => {
+    process.env.SUPER_ADMIN_EMAILS = 'nobody@nowhere.com';
+    const t = createDealerToken('dunrite', 'owner@dunrite.com');
+    expect(verifyDealerToken(t)).toEqual({ dealerId: 'dunrite', email: 'owner@dunrite.com' });
+  });
+});
+
+describe('signup tokens', () => {
+  it('round-trips the signup payload', () => {
+    const t = createSignupToken({ businessName: '  Bob Buildings ', email: 'BOB@x.com', phone: '5551234567' });
+    expect(verifySignupToken(t)).toEqual({
+      businessName: 'Bob Buildings',
+      email: 'bob@x.com',
+      phone: '5551234567',
+    });
+  });
+
+  it('expires on the magic-link clock, not the session one', () => {
+    const now = Date.now();
+    const t = createSignupToken({ businessName: 'X', email: 'a@b.com', phone: '' }, now);
+    expect(verifySignupToken(t, now + TTL.MAGIC_LINK_TTL_MS + 1000)).toBeNull();
+  });
+
+  it('is not usable as a magic link or an admin session', () => {
+    const t = createSignupToken({ businessName: 'X', email: 'a@b.com', phone: '' });
+    expect(verifyMagicToken(t)).toBeNull();
+    expect(verifySessionToken(t)).toBeNull();
   });
 });
