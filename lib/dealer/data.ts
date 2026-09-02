@@ -65,13 +65,17 @@ export async function dealerConversations(
      LIMIT ${limit}
   `) as any[];
   return rows.map(r => {
-    const transcript: string[] = Array.isArray(r.transcript) ? r.transcript : [];
+    // Guarded the same way the array itself is: a hand-edited or malformed
+    // transcript row can contain a non-string entry, and rendering that
+    // straight through would show "[object Object]" on the dashboard.
+    const transcript: unknown[] = Array.isArray(r.transcript) ? r.transcript : [];
+    const last = transcript.length ? transcript[transcript.length - 1] : undefined;
     return {
       id: r.id,
       channel: r.channel,
       lastOutcome: r.last_outcome,
       turns: transcript.length,
-      lastMessage: transcript.length ? transcript[transcript.length - 1] : null,
+      lastMessage: typeof last === 'string' ? last : null,
       updatedAt: new Date(r.updated_at).toISOString(),
     };
   });
