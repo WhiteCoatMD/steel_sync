@@ -52,10 +52,22 @@ async function main() {
   const rules = manufacturerKey
     ? { ...DEFAULT_PRICING_RULES, manufacturerKey }
     : { ...DEFAULT_PRICING_RULES, _placeholder: true };
+  // approved_at is stamped HERE, not left to the column default.
+  //
+  // A dealer added from this script is approved by definition — someone ran it
+  // deliberately. Leaving approved_at NULL would file them under "pending",
+  // which is the one state activeDealerForSession lets through with
+  // active = false. Suspending such a dealer would then do nothing: they would
+  // read as merely-not-yet-approved and keep their dashboard, their leads and
+  // their profile-edit route until the next migration's backfill happened to
+  // close it. See the three-state note in lib/db/dealerUsers.ts.
+  //
+  // Self-signup is the opposite case and correctly leaves it NULL — nobody has
+  // looked at those yet.
   await sql`
-    INSERT INTO dealers (id, name, phone, email, website, pricing_rules, show_pricing)
+    INSERT INTO dealers (id, name, phone, email, website, pricing_rules, show_pricing, approved_at)
     VALUES (${id}, ${name}, ${phone}, ${email}, ${website},
-            ${JSON.stringify(rules)}::jsonb, true)
+            ${JSON.stringify(rules)}::jsonb, true, now())
     -- Repair a row whose contact fields are blank, but never clobber details
     -- that were set out-of-band: the live tejasmex row's real phone/email were
     -- entered directly against the database, not through this script.
@@ -64,6 +76,9 @@ async function main() {
                    THEN EXCLUDED.phone ELSE dealers.phone END,
       email = CASE WHEN NULLIF(dealers.email, '') IS NULL
                    THEN EXCLUDED.email ELSE dealers.email END,
+      -- Repairs a pre-existing row that predates the column, for the same
+      -- reason. COALESCE so a dealer's original approval date is never reset.
+      approved_at = COALESCE(dealers.approved_at, EXCLUDED.approved_at),
       updated_at = now()
   `;
   console.log(`seeded dealer: ${id}`);
