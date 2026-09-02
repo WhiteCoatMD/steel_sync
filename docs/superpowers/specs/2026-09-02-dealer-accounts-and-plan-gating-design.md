@@ -127,6 +127,13 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
 ```
 
+`lib/db/schema.sql` is re-executed in full on every migration, so every
+statement in it has to be idempotent — additive and self-excluding. That rules
+out data backfills whose WHERE clause tests a value an admin can legitimately
+set by hand: `UPDATE dealers SET plan = 'pro' WHERE plan = 'none'` would undo
+every deliberate downgrade on the next deploy. A backfill of that shape is run
+once and then replaced by a comment recording that it ran.
+
 Emails are stored lowercased. `PRIMARY KEY` on email means one address belongs to
 one dealer; the same person cannot hold accounts at two dealers, which is the
 right default and avoids a "which dealer am I acting as" selector.
@@ -255,7 +262,8 @@ notified per message, and adding one here would be noise nobody asked for.
 
 - A **Pending signups** panel listing dealers with `active = false`, with
   Approve, which sets `active = true`, stamps `approved_at`, and sets a chosen
-  plan.
+  plan. The main Dealers table lists only active dealers, so no dealer gets two
+  independent sets of controls that can disagree.
 - A plan dropdown on each dealer row.
 - Deactivate.
 

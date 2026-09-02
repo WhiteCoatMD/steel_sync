@@ -141,13 +141,18 @@ CREATE INDEX IF NOT EXISTS dealer_users_dealer_idx ON dealer_users (dealer_id);
 -- lib/plans.ts next to the gate that enforces it.
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
 
--- Preserve today's behaviour on deploy.
+-- NOT a statement, on purpose. On 2026-09-02 a one-off
+-- `UPDATE dealers SET plan = 'pro' WHERE auto_reply = true AND plan = 'none'`
+-- ran here to stop dealers who were already auto-replying going silent when
+-- the plan gate shipped. It moved 1 dealer and is deliberately not kept.
 --
--- plan defaults to 'none', which denies AI. Any dealer already answering
--- customers would go silent the moment this ships, so they are moved to the
--- tier that matches what they are already doing. Runs once and is a no-op
--- afterwards because it only touches rows still on the default.
-UPDATE dealers SET plan = 'pro' WHERE auto_reply = true AND plan = 'none';
+-- This file is re-executed in full on every migration, and that statement is
+-- not idempotent in the way it looks. 'none' is both the fresh default AND the
+-- deliberate downgrade target, so a dealer the super-admin downgrades while
+-- their auto_reply switch is still on would be silently restored to 'pro' on
+-- the next migration and resume spending model tokens. Any future plan
+-- backfill needs a marker that says "this already ran", not a WHERE clause on
+-- a value an admin can legitimately set by hand.
 
 -- When this dealer was approved.
 --

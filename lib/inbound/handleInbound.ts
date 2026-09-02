@@ -105,14 +105,15 @@ const ERROR_REPLY =
 
 export interface InboundOptions {
   /**
-   * Whether this dealer's plan pays for an AI answer. Default true.
+   * Whether this dealer's plan pays for an AI answer. No default -- every
+   * caller must decide, see handleInboundMessage below.
    *
    * Enforced HERE, not at the send, because the Facebook webhook runs this
    * pipeline for every message and only decides afterwards whether to speak.
    * A gate on sending would keep an unpaid dealer silent while still spending
    * platform tokens on every message they receive.
    */
-  ai?: boolean;
+  ai: boolean;
 }
 
 /**
@@ -125,10 +126,19 @@ export interface InboundOptions {
 const NO_AI_REPLY =
   "Thanks — we've got your message and someone will get back to you shortly.";
 
+/**
+ * `opts` is REQUIRED, and so is `opts.ai`.
+ *
+ * It used to default to `{}`, i.e. to running the model. A new channel — or a
+ * refactor that dropped the argument — would then compile clean, pass every
+ * test, and quietly resume spending model tokens for dealers whose plan does
+ * not include them. Making the caller say so out loud is the only version of
+ * this that a future channel cannot forget.
+ */
 export async function handleInboundMessage(
   dealer: DealerSettings,
   msg: InboundMessage,
-  opts: InboundOptions = {},
+  opts: InboundOptions,
 ): Promise<InboundResult> {
   const text = (msg.text ?? '').trim();
   const conv = await findOrCreateConversation(
@@ -148,7 +158,7 @@ export async function handleInboundMessage(
   }
 
   // The plan gate. Before the parser, before anything that costs money.
-  if (opts.ai === false) {
+  if (!opts.ai) {
     await recordTurn(conv.id, [...conv.transcript, text], 'no-ai-plan');
     return {
       kind: 'handoff',

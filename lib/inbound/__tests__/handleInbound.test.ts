@@ -123,7 +123,7 @@ const parsed = (
 });
 
 const send = (text: string, externalId = 'web:tester') =>
-  handleInboundMessage(DEALER, { channel: 'web', externalId, text });
+  handleInboundMessage(DEALER, { channel: 'web', externalId, text }, { ai: true });
 
 beforeEach(() => {
   store.clear();

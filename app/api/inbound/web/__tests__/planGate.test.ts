@@ -13,7 +13,7 @@ import type {
  * to typecheck once a test indexes `mock.calls[0][2]`.
  */
 const handleInboundMessage = vi.fn<
-  (dealer: DealerSettings, msg: InboundMessage, opts?: InboundOptions) => Promise<InboundResult>
+  (dealer: DealerSettings, msg: InboundMessage, opts: InboundOptions) => Promise<InboundResult>
 >(async () => ({
   kind: 'handoff', reply: 'ok', conversationId: 'c1', quoted: false,
 }));

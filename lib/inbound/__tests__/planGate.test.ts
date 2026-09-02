@@ -85,7 +85,10 @@ describe('the plan gate', () => {
     expect(reply).not.toMatch(/\$|plan|subscription|upgrade/i);
   });
 
-  it('defaults to running the model when no options are given', async () => {
+  // `opts` is required, so there is no "forgot to pass it" case left to test.
+  // What remains worth asserting is that ai:true is honoured — the gate must
+  // not have grown into a blanket refusal.
+  it('runs the model when ai is true', async () => {
     parseBuildingRequest.mockResolvedValueOnce({
       building: {},
       openings: [],
@@ -94,7 +97,7 @@ describe('the plan gate', () => {
       questions: [],
       autoQuotable: false,
     });
-    await handleInboundMessage(dealer('pro'), msg).catch(() => {});
+    await handleInboundMessage(dealer('pro'), msg, { ai: true }).catch(() => {});
     expect(parseBuildingRequest).toHaveBeenCalled();
   });
 });

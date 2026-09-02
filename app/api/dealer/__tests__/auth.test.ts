@@ -79,6 +79,44 @@ describe('POST /api/dealer/signup', () => {
     expect(res.status).toBe(400);
     expect(sendDealerSignupLink).not.toHaveBeenCalled();
   });
+
+  /**
+   * The email regex backtracks quadratically, so an unbounded address is a CPU
+   * bomb on an endpoint nobody has to sign in to reach. 64 KB measured at
+   * ~945 ms before the input was capped; a generous budget here still fails by
+   * a wide margin if the cap is ever removed.
+   */
+  it('rejects an over-long address without grinding on it', async () => {
+    const started = Date.now();
+    const res = await signup(
+      post('http://x/api/dealer/signup', {
+        businessName: 'B',
+        email: 'a'.repeat(64 * 1024),
+      }) as any,
+    );
+    expect(res.status).toBe(400);
+    expect(Date.now() - started).toBeLessThan(500);
+    expect(sendDealerSignupLink).not.toHaveBeenCalled();
+  });
+
+  /**
+   * The opposite of the login rule below. Login must answer identically to
+   * avoid revealing who has an account; signup has nothing to hide and telling
+   * someone to check an inbox no mail was sent to is simply a lie. It also hid
+   * a missing ADMIN_ORIGIN, which makes signup impossible rather than slow.
+   */
+  it('says so when the link could not be sent, instead of claiming success', async () => {
+    sendDealerSignupLink.mockRejectedValueOnce(new Error('resend down'));
+    const res = await signup(
+      post('http://x/api/dealer/signup', {
+        businessName: 'Bob Buildings',
+        email: 'bob@x.com',
+        phone: '5551234567',
+      }) as any,
+    );
+    expect(res.status).toBe(503);
+    expect((await res.json()).error).toMatch(/try again/i);
+  });
 });
 
 describe('POST /api/dealer/login', () => {

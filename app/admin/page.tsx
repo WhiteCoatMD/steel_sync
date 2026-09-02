@@ -37,6 +37,11 @@ export default async function AdminPage() {
     }),
   ]);
 
+  // Split once, so no dealer can appear in both panels. The Stat above still
+  // counts every dealer, approved or not.
+  const pendingDealers = dealers.filter(d => !d.active);
+  const activeDealers = dealers.filter(d => d.active);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white">
@@ -65,10 +70,10 @@ export default async function AdminPage() {
           <Stat label="Conversations" value={String(conversations.length)} />
         </section>
 
-        {dealers.some(d => !d.active) && (
+        {pendingDealers.length > 0 && (
           <Panel title="Awaiting approval">
             <Table head={['Dealer', 'Contact', 'Signed up', 'Plan']}>
-              {dealers.filter(d => !d.active).map(d => (
+              {pendingDealers.map(d => (
                 <tr key={d.id} className="border-t border-gray-100">
                   <td className="py-2.5 pr-4">
                     <div className="font-medium text-gray-900">{d.name}</div>
@@ -85,9 +90,14 @@ export default async function AdminPage() {
           </Panel>
         )}
 
+        {/* Active only. An inactive dealer already has a row, and its own
+            DealerControls, in "Awaiting approval" above. Rendering them twice
+            gave one dealer two independent controls with the same
+            aria-label — changing either left the other showing stale
+            values. */}
         <Panel title="Dealers">
           <Table head={['Dealer', 'Contact', 'Quotes', 'Last quote', 'Plan', 'Site']}>
-            {dealers.map(d => (
+            {activeDealers.map(d => (
               <tr key={d.id} className="border-t border-gray-100">
                 <td className="py-2.5 pr-4">
                   <div className="font-medium text-gray-900">{d.name}</div>
@@ -106,7 +116,7 @@ export default async function AdminPage() {
                 </td>
               </tr>
             ))}
-            {!dealers.length && <Empty colSpan={6}>No dealers yet.</Empty>}
+            {!activeDealers.length && <Empty colSpan={6}>No active dealers yet.</Empty>}
           </Table>
         </Panel>
 

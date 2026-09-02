@@ -18,7 +18,14 @@ const limiter = createRateLimiter(5, 15 * 60_000);
 
 const MAX_FIELD = 120;
 
-/** Deliberately loose. Real validation is that the link has to arrive. */
+/**
+ * Deliberately loose. Real validation is that the link has to arrive.
+ *
+ * Only ever tested against a string already cut to MAX_FIELD. The two `+`
+ * groups either side of the `@` backtrack quadratically on a long run of
+ * non-space non-@ characters with no dot, so an unbounded input is a CPU bomb
+ * on an endpoint nobody has to sign in to reach: 64 KB measured at ~945 ms.
+ */
 const LOOKS_LIKE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: NextRequest) {
@@ -38,7 +45,14 @@ export async function POST(req: NextRequest) {
   }
 
   const businessName = typeof body?.businessName === 'string' ? body.businessName.trim() : '';
-  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
+  // Capped like phone, and before the regex sees it. An oversized address is
+  // also a problem past the regex: it becomes the dealer_users PRIMARY KEY and
+  // rides in a session cookie browsers silently drop past ~4 KB, which would
+  // create an account that can never sign in.
+  const email =
+    typeof body?.email === 'string'
+      ? body.email.trim().toLowerCase().slice(0, MAX_FIELD)
+      : '';
   const phone = typeof body?.phone === 'string' ? body.phone.trim().slice(0, MAX_FIELD) : '';
 
   if (!businessName) {
@@ -48,6 +62,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'That does not look like an email address' }, { status: 400 });
   }
 
+  // Unlike /api/dealer/login, a failure here is reported honestly. Login
+  // answers identically whether or not the address is known, so that nobody
+  // can enumerate accounts; signup has nothing to hide, because the caller is
+  // the one who supplied the address. Swallowing it told someone whose link
+  // never arrived to go and check their email — and adminOrigin() throws in
+  // production when ADMIN_ORIGIN is unset, so one missing variable made signup
+  // silently impossible with a cheerful 200 on every attempt.
   try {
     await sendDealerSignupLink(
       { businessName: businessName.slice(0, MAX_FIELD), email, phone },
@@ -55,6 +76,10 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error('[dealer/signup] failed to send link', err);
+    return NextResponse.json(
+      { error: "We couldn't send that right now — please try again." },
+      { status: 503 },
+    );
   }
 
   return NextResponse.json({
