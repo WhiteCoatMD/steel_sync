@@ -119,3 +119,32 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS service_area TEXT;
 -- repeats, not values anything computes with, and a dealer adding a new policy
 -- should not need a migration (owner, 2026-08-29).
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS policies TEXT;
+
+-- Who may sign in to a dealer account.
+--
+-- Separate from dealers.email, which is a NOTIFICATION address: it is where
+-- quote alerts go. Conflating the two means changing where alerts are sent
+-- silently changes who can sign in.
+--
+-- PRIMARY KEY on email: one address belongs to one dealer, so signing in never
+-- needs a "which dealer am I acting as" selector. Several rows may point at the
+-- same dealer, so staff can be added later without a migration.
+CREATE TABLE IF NOT EXISTS dealer_users (
+  email      TEXT PRIMARY KEY,
+  dealer_id  TEXT NOT NULL REFERENCES dealers(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS dealer_users_dealer_idx ON dealer_users (dealer_id);
+
+-- What this dealer is paying for. The label lives here, what it MEANS lives in
+-- lib/plans.ts next to the gate that enforces it.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
+
+-- Preserve today's behaviour on deploy.
+--
+-- plan defaults to 'none', which denies AI. Any dealer already answering
+-- customers would go silent the moment this ships, so they are moved to the
+-- tier that matches what they are already doing. Runs once and is a no-op
+-- afterwards because it only touches rows still on the default.
+UPDATE dealers SET plan = 'pro' WHERE auto_reply = true AND plan = 'none';
