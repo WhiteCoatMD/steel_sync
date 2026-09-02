@@ -7,6 +7,7 @@ import {
 import { sendFacebookReply, sendFacebookImage } from '@/lib/inbound/facebookSend';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
 import { dealerForPage } from '@/lib/db/messaging';
+import { planAllows } from '@/lib/plans';
 
 /**
  * Facebook Messenger webhook — multi-dealer.
@@ -80,13 +81,20 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      const result = await handleInboundMessage(target.dealer, {
-        channel: 'facebook',
-        // Page-scoped and stable per user per page, so it keys the conversation
-        // without storing anything identifying.
-        externalId: msg.senderId,
-        text: msg.text,
-      });
+      const result = await handleInboundMessage(
+        target.dealer,
+        {
+          channel: 'facebook',
+          // Page-scoped and stable per user per page, so it keys the
+          // conversation without storing anything identifying.
+          externalId: msg.senderId,
+          text: msg.text,
+        },
+        // Separate from target.autoReply, which is the dealer's own listen-only
+        // switch and gates SENDING. This gates THINKING: a plan without AI must
+        // not reach the model at all.
+        { ai: planAllows(target.dealer.plan, 'aiAutoReply') },
+      );
 
       console.log(
         `[facebook] ${target.dealer.id} <- ${msg.senderId}: ${result.kind}`,
