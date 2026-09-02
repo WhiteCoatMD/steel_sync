@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin/guard';
 import { listDealers, recentQuotes, recentConversations } from '@/lib/admin/data';
+import DealerControls from '@/components/admin/DealerControls';
 
 /**
  * Super-admin dashboard.
@@ -64,8 +65,28 @@ export default async function AdminPage() {
           <Stat label="Conversations" value={String(conversations.length)} />
         </section>
 
+        {dealers.some(d => !d.active) && (
+          <Panel title="Awaiting approval">
+            <Table head={['Dealer', 'Contact', 'Signed up', 'Plan']}>
+              {dealers.filter(d => !d.active).map(d => (
+                <tr key={d.id} className="border-t border-gray-100">
+                  <td className="py-2.5 pr-4">
+                    <div className="font-medium text-gray-900">{d.name}</div>
+                    <div className="text-xs text-gray-500">{d.id}</div>
+                  </td>
+                  <td className="py-2.5 pr-4 text-gray-600">{d.email || d.phone || '—'}</td>
+                  <td className="py-2.5 pr-4 text-gray-600">{when(d.createdAt)}</td>
+                  <td className="py-2.5">
+                    <DealerControls dealerId={d.id} plan={d.plan} active={d.active} />
+                  </td>
+                </tr>
+              ))}
+            </Table>
+          </Panel>
+        )}
+
         <Panel title="Dealers">
-          <Table head={['Dealer', 'Contact', 'Quotes', 'Last quote', 'Site']}>
+          <Table head={['Dealer', 'Contact', 'Quotes', 'Last quote', 'Plan', 'Site']}>
             {dealers.map(d => (
               <tr key={d.id} className="border-t border-gray-100">
                 <td className="py-2.5 pr-4">
@@ -75,6 +96,9 @@ export default async function AdminPage() {
                 <td className="py-2.5 pr-4 text-gray-600">{d.email || d.phone || '—'}</td>
                 <td className="py-2.5 pr-4 text-gray-600">{d.quoteCount}</td>
                 <td className="py-2.5 pr-4 text-gray-600">{when(d.lastQuoteAt)}</td>
+                <td className="py-2.5 pr-4">
+                  <DealerControls dealerId={d.id} plan={d.plan} active={d.active} />
+                </td>
                 <td className="py-2.5">
                   <Link href={`/site/${d.id}`} className="text-blue-600 hover:underline">
                     View
@@ -82,7 +106,7 @@ export default async function AdminPage() {
                 </td>
               </tr>
             ))}
-            {!dealers.length && <Empty colSpan={5}>No dealers yet.</Empty>}
+            {!dealers.length && <Empty colSpan={6}>No dealers yet.</Empty>}
           </Table>
         </Panel>
 

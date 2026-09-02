@@ -8,6 +8,8 @@ export interface DealerRow {
   email: string | null;
   phone: string | null;
   active: boolean;
+  plan: string;
+  createdAt: string;
   quoteCount: number;
   lastQuoteAt: string | null;
 }
@@ -15,13 +17,13 @@ export interface DealerRow {
 export async function listDealers(): Promise<DealerRow[]> {
   const sql = getSql();
   const rows = (await sql`
-    SELECT d.id, d.name, d.email, d.phone, d.active,
+    SELECT d.id, d.name, d.email, d.phone, d.active, d.plan, d.created_at,
            COUNT(q.id)::int AS quote_count,
            MAX(q.created_at) AS last_quote_at
       FROM dealers d
       LEFT JOIN quotes q ON q.dealer_id = d.id
-     GROUP BY d.id, d.name, d.email, d.phone, d.active
-     ORDER BY d.name
+     GROUP BY d.id, d.name, d.email, d.phone, d.active, d.plan, d.created_at
+     ORDER BY d.active, d.name
   `) as any[];
   return rows.map(r => ({
     id: r.id,
@@ -29,6 +31,8 @@ export async function listDealers(): Promise<DealerRow[]> {
     email: r.email,
     phone: r.phone,
     active: r.active,
+    plan: r.plan ?? 'none',
+    createdAt: new Date(r.created_at).toISOString(),
     quoteCount: r.quote_count ?? 0,
     lastQuoteAt: r.last_quote_at ? new Date(r.last_quote_at).toISOString() : null,
   }));
