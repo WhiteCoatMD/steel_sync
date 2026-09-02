@@ -1,0 +1,16 @@
+{
+  // Vitest (vite/oxc) resolves the NEAREST tsconfig per file and honours its
+  // `jsx` setting. The root config must keep `"jsx": "preserve"` for Next.js,
+  // which means a .tsx file imported by a test is parsed with JSX left intact
+  // and fails to parse ("Unexpected JSX expression"). This override — the same
+  // one components/designer/tsconfig.json and app/designer/tsconfig.json
+  // already carry, for the same reason — makes AuthForm.tsx importable from
+  // its test.
+  //
+  // Next.js and `tsc --noEmit` both read the ROOT tsconfig and ignore this
+  // file, so it affects the test runner only.
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}
