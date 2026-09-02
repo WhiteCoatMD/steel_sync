@@ -119,3 +119,55 @@ ALTER TABLE dealers ADD COLUMN IF NOT EXISTS service_area TEXT;
 -- repeats, not values anything computes with, and a dealer adding a new policy
 -- should not need a migration (owner, 2026-08-29).
 ALTER TABLE dealers ADD COLUMN IF NOT EXISTS policies TEXT;
+
+-- Who may sign in to a dealer account.
+--
+-- Separate from dealers.email, which is a NOTIFICATION address: it is where
+-- quote alerts go. Conflating the two means changing where alerts are sent
+-- silently changes who can sign in.
+--
+-- PRIMARY KEY on email: one address belongs to one dealer, so signing in never
+-- needs a "which dealer am I acting as" selector. Several rows may point at the
+-- same dealer, so staff can be added later without a migration.
+CREATE TABLE IF NOT EXISTS dealer_users (
+  email      TEXT PRIMARY KEY,
+  dealer_id  TEXT NOT NULL REFERENCES dealers(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS dealer_users_dealer_idx ON dealer_users (dealer_id);
+
+-- What this dealer is paying for. The label lives here, what it MEANS lives in
+-- lib/plans.ts next to the gate that enforces it.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS plan TEXT NOT NULL DEFAULT 'none';
+
+-- NOT a statement, on purpose. On 2026-09-02 a one-off
+-- `UPDATE dealers SET plan = 'pro' WHERE auto_reply = true AND plan = 'none'`
+-- ran here to stop dealers who were already auto-replying going silent when
+-- the plan gate shipped. It moved 1 dealer and is deliberately not kept.
+--
+-- This file is re-executed in full on every migration, and that statement is
+-- not idempotent in the way it looks. 'none' is both the fresh default AND the
+-- deliberate downgrade target, so a dealer the super-admin downgrades while
+-- their auto_reply switch is still on would be silently restored to 'pro' on
+-- the next migration and resume spending model tokens. Any future plan
+-- backfill needs a marker that says "this already ran", not a WHERE clause on
+-- a value an admin can legitimately set by hand.
+
+-- When this dealer was approved.
+--
+-- `active` alone cannot say whether a switched-off dealer was ever approved.
+-- It is false for a fresh signup nobody has looked at yet AND false for a
+-- dealer the super-admin suspended, and those two must be treated differently:
+-- a pending dealer may still sign in and see their own empty dashboard, a
+-- suspended one must be locked out at once. Stamping the approval gives three
+-- readable states -- pending is approved_at IS NULL, active is active = true,
+-- suspended is active = false with approved_at set.
+ALTER TABLE dealers ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
+
+-- Backfill the dealers who predate the column.
+--
+-- Every dealer already active was approved at some point and the nearest
+-- honest timestamp on hand is when their row was created. Self-excluding, so
+-- re-running the migration touches nothing.
+UPDATE dealers SET approved_at = created_at WHERE active = true AND approved_at IS NULL;

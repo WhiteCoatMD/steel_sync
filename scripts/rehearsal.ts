@@ -141,11 +141,12 @@ async function runScenario(dealer: unknown, s: Scenario, idx: number): Promise<s
   for (const turn of s.turns) {
     lines.push(`\n  CUSTOMER: ${turn}`);
     try {
-      const r: any = await handleInboundMessage(dealer as any, {
-        channel: 'web',
-        externalId,
-        text: turn,
-      });
+      const r: any = await handleInboundMessage(
+        dealer as any,
+        { channel: 'web', externalId, text: turn },
+        // The rehearsal exists to exercise the model, so it always asks for it.
+        { ai: true },
+      );
       const price =
         r.outcome?.kind === 'quote' ? `  [$${r.outcome.pricing.total.toLocaleString()}]` : '';
       lines.push(`  BOT:${price}\n${r.reply.split('\n').map((l: string) => '    ' + l).join('\n')}`);

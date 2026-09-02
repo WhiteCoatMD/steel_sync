@@ -253,6 +253,12 @@ export interface DealerSettings {
    * Prose, not fields: it repeats these, it does not compute with them.
    */
   policies?: string | null;
+  /**
+   * What this dealer is paying for. The label only; lib/plans.ts says what it
+   * means. Optional because fixtures and tests build dealers without one, and
+   * planAllows() denies an absent plan the same as an unknown one.
+   */
+  plan?: string;
 }
 
 // ─── Pricing Rules ──────────────────────────────────────────

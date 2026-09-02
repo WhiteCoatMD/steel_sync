@@ -4,6 +4,7 @@ import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
 import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
 import { PROMPT_MAX_LENGTH } from '@/lib/ai/parseRequest';
+import { planAllows } from '@/lib/plans';
 
 /**
  * Website contact form -> automated quote.
@@ -117,12 +118,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await handleInboundMessage(dealer, {
-      channel: 'web',
-      externalId,
-      text: message,
-      contact,
-    });
+    const result = await handleInboundMessage(
+      dealer,
+      { channel: 'web', externalId, text: message, contact },
+      // The dealer's plan decides whether we think about this message at all.
+      { ai: planAllows(dealer.plan, 'aiAutoReply') },
+    );
 
     const res = NextResponse.json({
       kind: result.kind,
