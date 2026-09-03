@@ -1,0 +1,46 @@
+/*
+ * The landing page's one orchestrated moment: the 9pm message arrives, a beat
+ * passes, the price comes back. That exchange IS the product, so it gets the
+ * page's only animation and everything else stays still.
+ *
+ * Scoped to this page as a CSS module rather than globals.css — the designer,
+ * the admin dashboard and every dealer site share that stylesheet and none of
+ * them want these keyframes.
+ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.msg {
+  opacity: 0;
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+/* The customer types first. The pause before the reply is the point being
+   made — it is the dealer being asleep, and the software not being. */
+.msgIn {
+  animation-delay: 0.25s;
+}
+
+.msgOut {
+  animation-delay: 1.15s;
+}
+
+.msgTail {
+  animation-delay: 1.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msg {
+    opacity: 1;
+    animation: none;
+  }
+}
