@@ -48,6 +48,18 @@ export default async function DealerDashboard() {
           </span>
           <div className="flex items-center gap-4">
             <span className="hidden text-xs text-gray-500 sm:block">{email}</span>
+            {/* Only once they are live. A pending dealer's site 404s — getDealer
+                filters on `active` — so linking them to it would send them
+                somewhere broken and contradict the banner below. */}
+            {account && account.active && (
+              <Link
+                href={`/site/${account.id}`}
+                target="_blank"
+                className="text-xs text-blue-600 hover:underline"
+              >
+                View your site
+              </Link>
+            )}
             <Link href="/dealer/settings" className="text-xs text-blue-600 hover:underline">
               Settings
             </Link>
@@ -68,6 +80,24 @@ export default async function DealerDashboard() {
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <strong className="font-semibold">Your account is awaiting approval.</strong> Your
             public site and automated replies stay switched off until it is approved.
+          </div>
+        )}
+
+        {/* The address they give customers. A link alone is not enough — a
+            dealer needs the text of it for a business card, a Facebook page or
+            a van, and there was previously nowhere in the product it appeared.
+            ADMIN_ORIGIN is the canonical origin and is set in production;
+            without it the path alone is still the useful half. */}
+        {account && account.active && (
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border border-gray-200 bg-white px-4 py-3">
+            <span className="text-xs font-medium text-gray-500">Your website</span>
+            <Link
+              href={`/site/${account.id}`}
+              target="_blank"
+              className="select-all font-mono text-sm text-blue-600 hover:underline"
+            >
+              {`${process.env.ADMIN_ORIGIN ?? ''}/site/${account.id}`}
+            </Link>
           </div>
         )}
 
