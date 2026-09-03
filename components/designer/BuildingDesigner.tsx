@@ -10,6 +10,7 @@ import { availableSizes, defaultOpeningSize } from '@/lib/building/openingSizes'
 import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 import { formatQuoteTotal, isQuoteIncomplete, incompleteReasons } from '@/lib/pricing/quoteDisplay';
+import { canShowPrice } from '@/lib/pricing/canQuote';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
@@ -84,6 +85,7 @@ export default function BuildingDesigner({ dealerId, dealer }: BuildingDesignerP
 function Header() {
   const building = useDesignerStore((s) => s.config?.building);
   const pricing = useDesignerStore((s) => s.config?.pricing);
+  const showPrice = canShowPrice(useDesignerStore((s) => s.dealerSettings));
   const openQuoteForm = useDesignerStore((s) => s.openQuoteForm);
   const saveDesign = useDesignerStore((s) => s.saveDesign);
   const [shareMsg, setShareMsg] = useState('');
@@ -104,7 +106,7 @@ function Header() {
     <header className="flex h-13 shrink-0 items-center justify-between border-b bg-gray-900 px-4 py-2">
       <div className="flex items-center gap-3">
         <h1 className="text-base font-bold text-white">Steel Sync</h1>
-        {pricing && (
+        {pricing && showPrice && (
           <>
             <span className="text-gray-500">|</span>
             <span className="text-sm text-gray-300">
@@ -707,6 +709,7 @@ function OptionsSection() {
 
 function PriceSummary() {
   const pricing = useDesignerStore((s) => s.config?.pricing);
+  const showPrice = canShowPrice(useDesignerStore((s) => s.dealerSettings));
   const openQuoteForm = useDesignerStore((s) => s.openQuoteForm);
 
   return (
@@ -715,7 +718,21 @@ function PriceSummary() {
         Price Estimate
       </h2>
 
-      {pricing ? (
+      {/* Either the dealer's numbers are the invented placeholder set, or they
+          have switched pricing off. Both mean no figure goes on screen — but
+          the configurator still works and the quote button still does its job,
+          which is the same bargain the incomplete-quote panel below strikes. */}
+      {!showPrice ? (
+        <div className="flex-1">
+          <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2">
+            <p className="text-xs font-medium text-amber-900">Pricing by request</p>
+            <p className="mt-1 text-[11px] leading-snug text-amber-800">
+              Build exactly what you want, then request a quote and we&rsquo;ll send you
+              the price for it.
+            </p>
+          </div>
+        </div>
+      ) : pricing ? (
         <div className="flex-1 space-y-1.5">
           {pricing.lineItems.map((item, i) => (
             <div key={i} className="flex justify-between text-xs">

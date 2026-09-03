@@ -10,6 +10,7 @@ import { calculatePrice } from '../pricing/calculatePrice';
 import { checkOpeningFit } from '../pricing/openingFit';
 import { checkBuildable } from '../pricing/dimensions';
 import { isQuoteIncomplete, incompleteReasons } from '../pricing/quoteDisplay';
+import { hasRealPricing } from '../pricing/canQuote';
 import {
   normalizeLengthFt,
   normalizeWidthFt,
@@ -203,6 +204,29 @@ export function decideAutoQuote(
   opts: AutoQuoteOptions = {},
 ): AutoQuoteOutcome {
   const signOff = opts.signOff ? `\n\n${opts.signOff}` : '';
+
+  // ── 0a. Do we have real prices for this dealer at all? ────
+  // Before the size check, before the parser's fields, before anything: a
+  // dealer with no price file carries DEFAULT_PRICING_RULES marked
+  // `_placeholder`, and those per-sqft figures are invented. Quoting from them
+  // sends a confidently wrong number to a customer in writing, unattended,
+  // with nobody reading it first — the one failure this whole path must not
+  // have. A human takes it instead.
+  //
+  // The reason given is deliberately about US, not about the dealer's setup.
+  // "They haven't entered their pricing" is true and is nobody's business but
+  // the dealer's.
+  if (!hasRealPricing(rules)) {
+    const reason =
+      'I want to get you an exact figure on that rather than a rough one, ' +
+      'so let me have someone confirm it and come straight back to you.';
+    return {
+      kind: 'handoff',
+      reasons: [reason],
+      config: configFromAI(ai, opts.dealerId),
+      message: reason + signOff,
+    };
+  }
 
   // ── 0. Is this a size we build at all? ────────────────────
   // Before asking anything: collecting a roof style and door sizes for a

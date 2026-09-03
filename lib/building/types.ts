@@ -280,6 +280,17 @@ export interface PromotionalDiscount {
 
 export interface DealerPricingRules {
   /**
+   * These numbers are INVENTED and must never reach a customer.
+   *
+   * Set on a dealer seeded with no captured price file — see
+   * scripts/seed-dealer.ts and lib/db/dealerUsers.ts. It lived only in an
+   * intersection type while nothing read it, which is exactly how an approved
+   * dealer's assistant came to quote made-up figures to real customers. It is
+   * part of the contract now: lib/pricing/canQuote.ts reads it, the assistant
+   * hands off instead of quoting, and the designer shows no price.
+   */
+  _placeholder?: boolean;
+  /**
    * Opt in to a captured manufacturer price file, e.g. 'tejasmex'.
    *
    * When set and known, the manufacturer table is authoritative and every

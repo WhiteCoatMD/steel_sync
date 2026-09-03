@@ -333,3 +333,51 @@ describe('an automated quote must equal what the designer would show', () => {
     expect(c.options.anchoring).toBe(fresh.options.anchoring);
   });
 });
+
+/**
+ * Placeholder pricing must never reach a customer.
+ *
+ * A dealer with no captured price file carries DEFAULT_PRICING_RULES marked
+ * `_placeholder`. Those per-sqft figures are invented. Before this guard the
+ * marker was written, threaded through mergePricingRules, and then read by
+ * nothing — so an approved dealer's assistant quoted made-up numbers to real
+ * customers, unattended and in writing.
+ */
+describe('a dealer on placeholder pricing does not get quoted', () => {
+  const PLACEHOLDER: DealerPricingRules = { ...DEFAULT_PRICING_RULES, _placeholder: true };
+  const stated = ai({ type: 'carport', widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical' });
+
+  it('hands off instead of quoting, on a request that would otherwise price', () => {
+    // The same request against real rules quotes — proving the handoff is the
+    // pricing marker talking, not an incidentally unquotable request.
+    expect(decideAutoQuote(stated, RULES).kind).toBe('quote');
+
+    const out = decideAutoQuote(stated, PLACEHOLDER);
+    expect(out.kind).toBe('handoff');
+    expect(canSendPrice(out as never)).toBe(false);
+  });
+
+  it('puts no number in front of the customer', () => {
+    const out = decideAutoQuote(stated, PLACEHOLDER);
+    expect(out.message).not.toMatch(/\$|\d{3,}/);
+  });
+
+  // The customer did not choose their dealer's billing or setup state, and
+  // "they haven't entered their pricing" is the dealer's business.
+  it('does not tell the customer the dealer has no pricing', () => {
+    const out = decideAutoQuote(stated, PLACEHOLDER);
+    expect(out.message).not.toMatch(/placeholder|pricing.*not set|no pricing|plan|subscription/i);
+  });
+
+  it('still carries the parsed config, so a human picks it up with context', () => {
+    const out = decideAutoQuote(stated, PLACEHOLDER);
+    if (out.kind !== 'handoff') throw new Error('expected a handoff');
+    expect(out.config.building.widthFt).toBe(24);
+    expect(out.config.building.lengthFt).toBe(25);
+  });
+
+  it('keeps the sign-off, like every other handoff', () => {
+    const out = decideAutoQuote(stated, PLACEHOLDER, { signOff: 'Call us on 555.' });
+    expect(out.message).toContain('Call us on 555.');
+  });
+});
