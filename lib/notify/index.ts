@@ -1,6 +1,7 @@
 import type { BuildingConfig, CustomerInfo, DealerSettings, PricingResult } from '../building/types';
 import { sendLeadEmail } from './email';
 import { sendLeadSms } from './sms';
+import { reportError } from '../rollbar';
 
 export interface Lead {
   id: string;
@@ -44,7 +45,9 @@ export async function notifyNewLead(dealer: DealerSettings, lead: Lead): Promise
 
   for (const r of results) {
     if (r.status === 'rejected') {
-      console.error('[notify] channel failed', r.reason);
+      // Every lead alert funnels through here. A dealer whose SMS or email
+      // quietly stopped working looks identical to a quiet week.
+      reportError(r.reason, { where: 'notify/channel', dealerId: dealer.id });
       problems.push(`failed: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`);
       continue;
     }

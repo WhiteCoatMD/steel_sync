@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
+import { reportError } from '@/lib/rollbar';
 import { getDealer, DEFAULT_DEALER_ID } from '@/lib/db/dealers';
 import { PROMPT_MAX_LENGTH } from '@/lib/ai/parseRequest';
 import { planAllows } from '@/lib/plans';
@@ -154,7 +155,7 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (err) {
     // Generic to the caller — this endpoint is public. The log carries the detail.
-    console.error('[inbound/web] handling failed', err);
+    reportError(err, { where: 'inbound/web', dealerId });
     return NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 503 });
   }
 }

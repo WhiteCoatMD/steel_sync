@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDealer } from '@/lib/db/dealers';
 import { insertQuote, markNotifyFailed } from '@/lib/db/quotes';
 import { notifyNewLead } from '@/lib/notify';
+import { reportError } from '@/lib/rollbar';
 import { createRateLimiter, clientKey } from '@/lib/rateLimit';
 import { calculatePrice } from '@/lib/pricing/calculatePrice';
 import { DIMENSION_CONSTRAINTS } from '@/lib/building/types';
@@ -231,7 +232,10 @@ export async function POST(req: NextRequest) {
   try {
     await notifyNewLead(dealer, { id, pricing, customer, config: body });
   } catch (err) {
-    console.error('[quote] notification failed', err);
+    // The row is saved and the customer has been told it worked, so this can
+    // never become an error response — which is exactly why it has to be
+    // reported. Silently, the dealer simply never learns a lead came in.
+    reportError(err, { where: 'quote/notify', quoteId: id });
     await markNotifyFailed(id).catch(() => {});
   }
 

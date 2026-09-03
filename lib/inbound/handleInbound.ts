@@ -34,6 +34,7 @@ import { MAX_AUTO_QUOTE_LEG_HEIGHT_FT } from '../pricing/dimensions';
 import { STANDARD_COLORS } from '../building/defaultConfig';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest, notifyReadyToBuy } from '../notify/financing';
+import { reportError } from '../rollbar';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -932,7 +933,7 @@ On paying monthly: ${lowerFirst(
     } catch (err) {
       // A quote that cannot be filed is still a quote worth sending. Log loudly
       // rather than failing the customer's reply over bookkeeping.
-      console.error(`[inbound] could not save quote for ${conv.id}`, err);
+      reportError(err, { where: 'inbound/saveQuote', conversationId: conv.id });
     }
   }
 
@@ -969,7 +970,7 @@ On paying monthly: ${lowerFirst(
         );
       }
     } catch (err) {
-      console.error(`[inbound] invoice alert failed for ${conv.id}`, err);
+      reportError(err, { where: 'inbound/invoiceAlert', conversationId: conv.id });
     }
   }
 
@@ -990,7 +991,7 @@ On paying monthly: ${lowerFirst(
         );
       }
     } catch (err) {
-      console.error(`[inbound] ready-to-buy alert failed for ${conv.id}`, err);
+      reportError(err, { where: 'inbound/readyToBuyAlert', conversationId: conv.id });
     }
   }
 
@@ -1125,7 +1126,7 @@ async function alertDealerToFinancing(
       );
     }
   } catch (err) {
-    console.error(`[inbound] RTO alert failed for ${conv.id}`, err);
+    reportError(err, { where: 'inbound/rtoAlert', conversationId: conv.id });
   }
 }
 

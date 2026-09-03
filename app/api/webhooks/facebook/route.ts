@@ -6,6 +6,7 @@ import {
 } from '@/lib/inbound/facebookVerify';
 import { sendFacebookReply, sendFacebookImage } from '@/lib/inbound/facebookSend';
 import { handleInboundMessage } from '@/lib/inbound/handleInbound';
+import { reportError } from '@/lib/rollbar';
 import { dealerForPage } from '@/lib/db/messaging';
 import { planAllows } from '@/lib/plans';
 
@@ -128,7 +129,10 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     // Never surface detail, and never fail the webhook: Meta retries a non-200,
     // which would re-run the model call and re-append the same customer turn.
-    console.error('[facebook] handling failed', err);
+    // This webhook answers 200 no matter what, so Meta does not retry into a
+    // duplicate model call. That makes a failure here completely silent: the
+    // customer is left without a reply and nothing else records it.
+    reportError(err, { where: 'webhooks/facebook' });
   }
 
   return NextResponse.json({ ok: true });

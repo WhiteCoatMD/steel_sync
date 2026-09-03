@@ -1,3 +1,4 @@
+import { reportError } from '../rollbar';
 /**
  * Sending a reply back to a Messenger thread.
  *
@@ -91,7 +92,7 @@ export async function sendFacebookImage(
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
-    console.error(`[facebook] image send failed ${res.status}: ${detail.slice(0, 300)}`);
+    reportError(new Error(`facebook image send failed ${res.status}: ${detail.slice(0, 300)}`), { where: 'facebook/sendImage', dealerId: ctx.dealerId });
     return { sent: false, reason: `graph ${res.status}` };
   }
   return { sent: true };
@@ -149,7 +150,9 @@ export async function sendFacebookReply(
     if (!res.ok) {
       // Log the status and Meta's own message, never the token.
       const detail = await res.text().catch(() => '');
-      console.error(`[facebook] send failed ${res.status}: ${detail.slice(0, 300)}`);
+        // The customer is waiting on this reply and will never see it. The
+      // webhook still answers 200, so nothing else records that it was lost.
+      reportError(new Error(`facebook send failed ${res.status}: ${detail.slice(0, 300)}`), { where: 'facebook/send', dealerId: ctx.dealerId });
       return { sent: false, reason: `graph ${res.status}` };
     }
   }

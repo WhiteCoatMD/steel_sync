@@ -19,3 +19,4 @@ freecad-mcp/
 .agents/
 .claude/skills/
 skills-lock.json
+.env*
