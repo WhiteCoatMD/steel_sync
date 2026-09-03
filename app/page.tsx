@@ -55,7 +55,7 @@ export default function HomePage() {
     >
       {/* ── Top bar ─────────────────────────────────────────── */}
       <header className="border-b border-[#B2BEB5]">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <span
             className="whitespace-nowrap text-lg font-bold tracking-tight"
             style={{ fontFamily: 'var(--font-display)' }}
@@ -81,18 +81,18 @@ export default function HomePage() {
 
       <main>
         {/* ── Hero ──────────────────────────────────────────── */}
-        <section className="mx-auto max-w-5xl px-5 pb-16 pt-14 sm:pt-20">
-          <div className="grid gap-12 lg:grid-cols-[1fr_26rem] lg:gap-16">
+        <section className="mx-auto max-w-6xl px-5 pb-16 pt-14 sm:pt-20">
+          <div className="grid gap-12 lg:grid-cols-[1fr_28rem] lg:gap-16">
             <div>
               <h1
-                className="text-[2.75rem] font-bold leading-[0.95] tracking-tight sm:text-6xl"
+                className="text-[2.75rem] font-bold leading-[0.95] tracking-tight sm:text-6xl xl:text-7xl"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 Your lot answers
                 <br />
                 at 9pm.
               </h1>
-              <p className="mt-6 max-w-md text-[1.0625rem] leading-relaxed text-[#36454F]">
+              <p className="mt-6 max-w-lg text-[1.0625rem] leading-relaxed text-[#36454F]">
                 Steel Sync replies to your Facebook and website messages with real prices
                 from your price book, then texts you the lead. You pick it up in the
                 morning knowing the size and the number.
@@ -155,7 +155,7 @@ export default function HomePage() {
 
         {/* ── What it does ──────────────────────────────────── */}
         <section className="border-y border-[#B2BEB5] bg-white">
-          <div className="mx-auto grid max-w-5xl gap-px bg-[#B2BEB5] sm:grid-cols-3">
+          <div className="mx-auto grid max-w-6xl divide-y divide-[#B2BEB5] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             <Point title="It answers, with your prices">
               Facebook Messenger and your website, from the price book you actually sell
               from. It asks what it needs to and quotes when it can.
@@ -172,7 +172,7 @@ export default function HomePage() {
         </section>
 
         {/* ── The color chart ──────────────────────────────── */}
-        <section className="mx-auto max-w-5xl px-5 py-16">
+        <section className="mx-auto max-w-6xl px-5 py-16">
           <div className="grid gap-10 lg:grid-cols-[22rem_1fr] lg:items-center lg:gap-16">
             <div>
               <h2
@@ -212,7 +212,7 @@ export default function HomePage() {
 
         {/* ── Close ─────────────────────────────────────────── */}
         <section className="border-t border-[#B2BEB5] bg-[#C0C5C1]">
-          <div className="mx-auto max-w-5xl px-5 py-14 text-center">
+          <div className="mx-auto max-w-6xl px-5 py-14 text-center">
             <h2
               className="text-3xl font-bold tracking-tight sm:text-4xl"
               style={{ fontFamily: 'var(--font-display)' }}
@@ -234,7 +234,7 @@ export default function HomePage() {
       </main>
 
       <footer className="border-t border-[#B2BEB5]">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-[#36454F]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-[#36454F]">
           <span className="font-semibold tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
             STEEL SYNC
           </span>
