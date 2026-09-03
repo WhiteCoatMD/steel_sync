@@ -24,7 +24,15 @@ export function buildSmsBody(lead: Lead): string {
          `$${lead.pricing.total.toLocaleString()}.${incomplete} ${c.phone}`;
 }
 
-export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<NotifyResult> {
+/**
+ * Send one SMS to the dealer.
+ *
+ * Split out from sendLeadSms so the inbound alert can reuse the mechanics —
+ * the Telnyx call, the skip reasons, and the rule that the API key never
+ * reaches a log line — without inheriting the designer-lead message shape.
+ * The CALLER owns the text, and owns keeping it GSM-7 safe (see buildSmsBody).
+ */
+export async function sendSms(dealer: DealerSettings, text: string): Promise<NotifyResult> {
   const key = process.env.TELNYX_API_KEY;
   const from = process.env.TELNYX_FROM_NUMBER;
   if (!key || !from) {
@@ -42,7 +50,7 @@ export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<N
       Authorization: `Bearer ${key}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ from, to: dealer.phone, text: buildSmsBody(lead) }),
+    body: JSON.stringify({ from, to: dealer.phone, text }),
   });
 
   if (!res.ok) {
@@ -52,4 +60,9 @@ export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<N
   }
 
   return { channel: 'sms', status: 'sent' };
+}
+
+/** The designer-form lead alert. */
+export async function sendLeadSms(dealer: DealerSettings, lead: Lead): Promise<NotifyResult> {
+  return sendSms(dealer, buildSmsBody(lead));
 }

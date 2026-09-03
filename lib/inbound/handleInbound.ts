@@ -35,6 +35,7 @@ import { STANDARD_COLORS } from '../building/defaultConfig';
 import { REQUIRED_FOR_QUOTE } from '../ai/quoteReadiness';
 import { notifyFinancingRequest, notifyReadyToBuy } from '../notify/financing';
 import { reportError } from '../rollbar';
+import { notifyInboundLead } from '../notify/inbound';
 import {
   findOrCreateConversation,
   recordTurn,
@@ -128,26 +129,82 @@ const NO_AI_REPLY =
   "Thanks — we've got your message and someone will get back to you shortly.";
 
 /**
- * `opts` is REQUIRED, and so is `opts.ai`.
+ * The public entry point: decide what to say, then tell the dealer if this is
+ * someone new.
  *
- * It used to default to `{}`, i.e. to running the model. A new channel — or a
- * refactor that dropped the argument — would then compile clean, pass every
- * test, and quietly resume spending model tokens for dealers whose plan does
- * not include them. Making the caller say so out loud is the only version of
- * this that a future channel cannot forget.
+ * `opts` is REQUIRED, and so is `opts.ai`. It used to default to `{}`, i.e. to
+ * running the model. A new channel — or a refactor that dropped the argument —
+ * would then compile clean, pass every test, and quietly resume spending model
+ * tokens for dealers whose plan does not include them. Making the caller say so
+ * out loud is the only version of this that a future channel cannot forget.
+ *
+ * The alert is deliberately OUT here rather than threaded through the decision
+ * below, which has a dozen return points and would need the call repeated at
+ * every one of them. Wrapping instead means a return path added later cannot
+ * silently skip it.
+ *
+ * "New" is an empty transcript. resetConversation clears it once a quote has
+ * gone out, so a customer coming back weeks later with a fresh question counts
+ * as a new lead — which is right, because they are one.
  */
 export async function handleInboundMessage(
   dealer: DealerSettings,
   msg: InboundMessage,
   opts: InboundOptions,
 ): Promise<InboundResult> {
-  const text = (msg.text ?? '').trim();
   const conv = await findOrCreateConversation(
     dealer.id,
     msg.channel,
     msg.externalId,
     msg.contact ?? {},
   );
+  const isNewEnquiry = conv.transcript.length === 0;
+
+  const result = await decideInbound(dealer, msg, opts, conv);
+
+  if (isNewEnquiry && (msg.text ?? '').trim()) {
+    try {
+      await notifyInboundLead(dealer, {
+        channel: msg.channel,
+        externalId: msg.externalId,
+        message: (msg.text ?? '').trim(),
+        status: describeOutcome(result, opts),
+        // Nobody has given them a real answer when we handed off, errored, or
+        // the plan does not pay for the assistant to think at all.
+        needsReply: result.kind === 'handoff' || result.kind === 'error' || opts.ai === false,
+        ...(result.outcome?.kind === 'quote'
+          ? { quoted: `$${result.outcome.pricing.total.toLocaleString()}` }
+          : {}),
+        contact: msg.contact,
+      });
+    } catch (err) {
+      // The customer's reply is already decided and must go out regardless. A
+      // failed alert is exactly the kind of silent loss worth reporting.
+      reportError(err, { where: 'inbound/newLeadAlert', conversationId: conv.id });
+    }
+  }
+
+  return result;
+}
+
+/** How the dealer sees what the assistant did. Short enough for an SMS. */
+function describeOutcome(result: InboundResult, opts: InboundOptions): string {
+  if (opts.ai === false) return 'No reply sent';
+  switch (result.kind) {
+    case 'quote': return 'Quoted';
+    case 'clarify': return 'Asked for details';
+    case 'handoff': return 'Needs you';
+    default: return 'Not answered';
+  }
+}
+
+async function decideInbound(
+  dealer: DealerSettings,
+  msg: InboundMessage,
+  opts: InboundOptions,
+  conv: Awaited<ReturnType<typeof findOrCreateConversation>>,
+): Promise<InboundResult> {
+  const text = (msg.text ?? '').trim();
 
   if (!text) {
     return {

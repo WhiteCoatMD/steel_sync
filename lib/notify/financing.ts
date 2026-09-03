@@ -24,49 +24,59 @@ export interface FinancingRequest {
   lastQuote?: string;
 }
 
-export async function notifyFinancingRequest(
+/**
+ * Email the dealer an alert about a live conversation.
+ *
+ * notifyFinancingRequest and notifyReadyToBuy were near-identical copies of
+ * this, and the inbound-lead alert would have been a third. The shared parts
+ * are the ones worth having in one place: Resend RESOLVES on a rejected send,
+ * so a non-null `error` is a failure and must be rethrown rather than reported
+ * as success — a silently undelivered alert is the exact failure these exist to
+ * prevent.
+ */
+export async function sendDealerAlert(
   dealer: DealerSettings,
-  req: FinancingRequest,
+  subject: string,
+  lines: string[],
 ): Promise<NotifyResult> {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.LEAD_FROM_EMAIL;
   if (!key || !from) {
-    console.warn('[notify] financing alert not configured; skipping');
+    console.warn('[notify] dealer alert not configured; skipping');
     return { channel: 'email', status: 'skipped', reason: 'RESEND_API_KEY / LEAD_FROM_EMAIL not set' };
   }
   if (!dealer.email) {
     return { channel: 'email', status: 'skipped', reason: 'dealer has no email address' };
   }
 
-  const resend = new Resend(key);
-  const { error } = await resend.emails.send({
+  const { error } = await new Resend(key).emails.send({
     from,
     to: dealer.email,
-    subject: `Rent-to-own request waiting - ${req.channel} customer`,
-    text: [
-      `A customer asked about rent-to-own and has been told you will follow up`,
-      `with the details. Nothing further was sent, and no terms were quoted.`,
-      ``,
-      `Channel:  ${req.channel}`,
-      `Customer: ${req.externalId}`,
-      req.lastQuote ? `Quoted:   ${req.lastQuote}` : `Quoted:   (no price yet)`,
-      ``,
-      `What they said:`,
-      ...req.transcript.map(t => `  - ${t}`),
-      ``,
-      `Reply to them in ${req.channel === 'facebook' ? 'Messenger' : 'the website thread'}.`,
-    ]
-      .filter(Boolean)
-      .join('\n'),
+    subject,
+    text: lines.filter(Boolean).join('\n'),
   });
 
-  if (error) {
-    // Rethrow rather than report success: an unverified domain or a suppressed
-    // recipient lands here on a RESOLVED promise, and a silently undelivered
-    // alert is exactly the failure this exists to prevent.
-    throw new Error(`resend: ${error.message ?? String(error)}`);
-  }
+  if (error) throw new Error(`resend: ${error.message ?? String(error)}`);
   return { channel: 'email', status: 'sent' };
+}
+
+export async function notifyFinancingRequest(
+  dealer: DealerSettings,
+  req: FinancingRequest,
+): Promise<NotifyResult> {
+  return sendDealerAlert(dealer, `Rent-to-own request waiting - ${req.channel} customer`, [
+    `A customer asked about rent-to-own and has been told you will follow up`,
+    `with the details. Nothing further was sent, and no terms were quoted.`,
+    ``,
+    `Channel:  ${req.channel}`,
+    `Customer: ${req.externalId}`,
+    req.lastQuote ? `Quoted:   ${req.lastQuote}` : `Quoted:   (no price yet)`,
+    ``,
+    `What they said:`,
+    ...req.transcript.map(t => `  - ${t}`),
+    ``,
+    `Reply to them in ${req.channel === 'facebook' ? 'Messenger' : 'the website thread'}.`,
+  ]);
 }
 
 /**
@@ -80,22 +90,10 @@ export async function notifyReadyToBuy(
   dealer: DealerSettings,
   req: FinancingRequest,
 ): Promise<NotifyResult> {
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.LEAD_FROM_EMAIL;
-  if (!key || !from) {
-    console.warn('[notify] ready-to-buy alert not configured; skipping');
-    return { channel: 'email', status: 'skipped', reason: 'RESEND_API_KEY / LEAD_FROM_EMAIL not set' };
-  }
-  if (!dealer.email) {
-    return { channel: 'email', status: 'skipped', reason: 'dealer has no email address' };
-  }
-
-  const resend = new Resend(key);
-  const { error } = await resend.emails.send({
-    from,
-    to: dealer.email,
-    subject: `READY TO BUY - ${req.channel} customer${req.lastQuote ? ` - ${req.lastQuote}` : ''}`,
-    text: [
+  return sendDealerAlert(
+    dealer,
+    `READY TO BUY - ${req.channel} customer${req.lastQuote ? ` - ${req.lastQuote}` : ''}`,
+    [
       `A customer has said yes and been told someone will reach out to start`,
       `the paperwork. Nobody else has been told.`,
       ``,
@@ -107,9 +105,6 @@ export async function notifyReadyToBuy(
       ...req.transcript.map(t => `  - ${t}`),
       ``,
       `Reply to them in ${req.channel === 'facebook' ? 'Messenger' : 'the website thread'}.`,
-    ].join('\n'),
-  });
-
-  if (error) throw new Error(`resend: ${error.message ?? String(error)}`);
-  return { channel: 'email', status: 'sent' };
+    ],
+  );
 }
