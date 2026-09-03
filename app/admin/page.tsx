@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin/guard';
 import { listDealers, recentQuotes, recentConversations } from '@/lib/admin/data';
 import DealerControls from '@/components/admin/DealerControls';
+import DealerSetup from '@/components/admin/DealerSetup';
+import { listManufacturers } from '@/lib/pricing/manufacturer';
 
 /**
  * Super-admin dashboard.
@@ -22,6 +24,11 @@ export default async function AdminPage() {
   const email = await requireAdmin();
 
   // One failing panel must not take the whole dashboard down.
+  // Resolved on the SERVER and passed down as a plain string array. Calling
+  // listManufacturers() inside the client component would import the captured
+  // price tables with it — tejasmex.json alone is 245 KB of price book.
+  const manufacturers = listManufacturers();
+
   const [dealers, quotes, conversations] = await Promise.all([
     listDealers().catch(e => {
       console.error('[admin] dealers query failed', e);
@@ -69,6 +76,33 @@ export default async function AdminPage() {
           <Stat label="Recent quotes" value={String(quotes.length)} />
           <Stat label="Conversations" value={String(conversations.length)} />
         </section>
+
+        {dealers.length > 0 && (
+          <Panel title="Dealer setup">
+            {/* The three steps that used to need a terminal. A dealer can sign
+                themselves up, but until these are set they have no prices, no
+                Facebook page and a silent bot — so self-signup stopped being
+                self-serve at exactly the point they became usable. */}
+            <div className="space-y-3 py-2">
+              {dealers.map(d => (
+                <DealerSetup
+                  key={d.id}
+                  dealer={{
+                    id: d.id,
+                    name: d.name,
+                    plan: d.plan,
+                    manufacturerKey: d.manufacturerKey,
+                    placeholderPricing: d.placeholderPricing,
+                    facebookPageId: d.facebookPageId,
+                    hasFacebookToken: d.hasFacebookToken,
+                    autoReply: d.autoReply,
+                  }}
+                  manufacturers={manufacturers}
+                />
+              ))}
+            </div>
+          </Panel>
+        )}
 
         {pendingDealers.length > 0 && (
           <Panel title="Awaiting approval">

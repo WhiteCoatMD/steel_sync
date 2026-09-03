@@ -176,3 +176,43 @@ export async function setDealerActive(dealerId: string, active: boolean): Promis
   }
   await sql`UPDATE dealers SET active = false, updated_at = now() WHERE id = ${dealerId}`;
 }
+
+/**
+ * Point a dealer at a captured manufacturer price file, or take them off one.
+ *
+ * This is the step that actually switches a dealer onto real prices, and the
+ * `_placeholder` marker is the whole reason it is not a plain column write:
+ * setting a key WITHOUT dropping the marker would leave lib/pricing/canQuote.ts
+ * still refusing to quote, so the dealer would look configured and stay mute.
+ *
+ * The per-sqft fields are deliberately left in place. They are ignored while a
+ * key resolves, and keeping them means clearing the key reverts cleanly — which
+ * is what `null` does here, restoring the marker so nothing quotes invented
+ * numbers in the gap.
+ *
+ * Mirrors scripts/set-dealer-manufacturer.mjs, which remains the way to do this
+ * against a database the admin UI cannot reach.
+ */
+export async function setDealerManufacturer(
+  dealerId: string,
+  key: string | null,
+): Promise<void> {
+  const sql = getSql();
+  if (key) {
+    await sql`
+      UPDATE dealers
+         SET pricing_rules = (pricing_rules - '_placeholder')
+                               || jsonb_build_object('manufacturerKey', ${key}::text),
+             updated_at = now()
+       WHERE id = ${dealerId}
+    `;
+    return;
+  }
+  await sql`
+    UPDATE dealers
+       SET pricing_rules = (pricing_rules - 'manufacturerKey')
+                             || jsonb_build_object('_placeholder', true),
+           updated_at = now()
+     WHERE id = ${dealerId}
+  `;
+}
