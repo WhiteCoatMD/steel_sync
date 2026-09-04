@@ -28,10 +28,10 @@ name, and because `availableBuildingTypes` gates what each dealer offers.
 In scope:
 
 - `'end-combo'` and `'combo-garage'` as building types.
-- A split: which end is enclosed, and how much of the length.
+- A split: which end is enclosed, and how deep the enclosed area runs.
 - Pricing, from the existing captured price table.
 - Geometry, so the 3D designer draws it.
-- The designer control for setting the split.
+- The designer control for setting the depth.
 
 Out of scope, deliberately:
 
@@ -78,42 +78,51 @@ export type BuildingType =
 export interface BuildingDimensions {
   // ... unchanged ...
   /**
-   * The enclosed share of a combo. Absent on every other type.
+   * How deep the enclosed area runs. Absent on every other type.
    *
    * The building stays ONE box: this says where the dividing wall falls, not
    * that there are two buildings.
    *
    * `end` is which gable end the enclosure is anchored to, and the enclosed
-   * section runs `enclosedLengthFt` INWARD from it. `{ end: 'front',
-   * enclosedLengthFt: 12 }` on a 30ft building encloses 0-12ft measured from
-   * the front, leaving 12-30ft open.
+   * section runs `enclosedDepthFt` INWARD from it. `{ end: 'front',
+   * enclosedDepthFt: 10 }` on a 30ft building encloses 0-10ft measured from
+   * the front, leaving 10-30ft open.
+   *
+   * "Depth" rather than "length" because that is what a dealer calls it, and
+   * the building already has a lengthFt that this is not.
    */
-  combo?: { enclosedLengthFt: number; end: 'front' | 'back' };
+  combo?: { enclosedDepthFt: number; end: 'front' | 'back' };
 }
 ```
 
 `combo` is optional, so every existing config, fixture and test stays valid.
 
-**Validation.** `enclosedLengthFt` must be greater than zero and less than
-`lengthFt`. Equal to `lengthFt` is a garage and should be built as one; zero is
-a carport. The designer constrains the control, and the pricing path treats an
-out-of-range value as unpriceable rather than quoting a guess.
+**Validation.** `enclosedDepthFt` must be a multiple of 5 greater than zero and
+less than `lengthFt`. Equal to `lengthFt` is a garage and should be built as
+one; zero is a carport. The designer constrains the control, and the pricing
+path treats an out-of-range value as unpriceable rather than quoting a guess.
+
+**It clamps when the building shrinks.** Shortening a 30ft building with a 25ft
+enclosed depth to 20ft would otherwise leave a depth longer than the building —
+priced as unpriceable, drawn as nonsense. The store clamps the depth to one step
+short of the new length whenever `lengthFt` changes, the same way it already
+clamps a lean-to that would overrun its wall.
 
 ## Pricing
 
 `ManufacturerQuoteInput.enclosed?: boolean` becomes
-`enclosedLengthFt: number`:
+`enclosedDepthFt: number`:
 
-| Type | `enclosedLengthFt` |
+| Type | `enclosedDepthFt` |
 |---|---|
 | carport, rv-cover | `0` |
 | garage, barn, shop, warehouse | `lengthFt` |
-| end-combo, combo-garage | `combo.enclosedLengthFt` |
+| end-combo, combo-garage | `combo.enclosedDepthFt` |
 
-`enclosed` becomes `enclosedLengthFt > 0`. Every existing case produces exactly
+`enclosed` becomes `enclosedDepthFt > 0`. Every existing case produces exactly
 the number it produces today, so no existing quote changes.
 
-The wall block then brackets the side-wall lookup on `enclosedLengthFt` instead
+The wall block then brackets the side-wall lookup on `enclosedDepthFt` instead
 of `lengthFt`. The two end walls are unchanged: on a fully enclosed building
 they are the front and back; on a combo one is the outer closed end and the
 other is the interior dividing wall.
@@ -138,7 +147,7 @@ cases must be handled:
 
 - **Left and right walls** run along the length, so `positionFt` is a distance
   along it and decides the section directly. On `{ end: 'front',
-  enclosedLengthFt: 12 }`, a walk-in door at 4ft is on the enclosed part and one
+  enclosedDepthFt: 12 }`, a walk-in door at 4ft is on the enclosed part and one
   at 20ft is not.
 - **Front and back walls** are the gable ends and `positionFt` runs across the
   width, which says nothing about the section. The wall itself does: the front
@@ -151,9 +160,14 @@ drawn at the split with the same gable profile.
 
 ## Designer
 
-Two new entries in the building-type picker. Choosing either reveals one control
-for the enclosed length, constrained to the frame length, and the price moves as
-it is dragged like every other control.
+Two new entries in the building-type picker. Choosing either reveals a row of
+depth buttons — 5, 10, 15, 20 and so on in the same 5ft step `length` already
+uses, stopping one step short of the building length. Tapping one moves the
+price, like every other control.
+
+Buttons rather than a slider because a dealer picks a depth, they do not dial one
+in. On a very long building the row wraps to two or three lines, which is
+accepted: buildings that long are rare and a wrapped row still reads.
 
 The existing `showPricing` and placeholder-pricing gates apply unchanged — a
 dealer on invented pricing sees no combo price either, for the same reason they
@@ -161,12 +175,14 @@ see no other price.
 
 ## Testing
 
-- The split prices the side walls at the enclosed length, not the building
-  length, and a full-length combo prices identically to the equivalent garage.
+- The split prices the side walls at the enclosed depth, not the building
+  length, and a combo whose depth equals its length prices identically to the
+  equivalent garage.
 - Every existing building type prices exactly as it does today — the
   boolean-to-length change is provably behaviour-preserving.
-- An `enclosedLengthFt` of zero, of the full length, or beyond it is refused as
+- An `enclosedDepthFt` of zero, of the full length, or beyond it is refused as
   unpriceable rather than quoted.
+- Shortening the building clamps the depth rather than leaving it overhanging.
 - Geometry: walls exist over the enclosed span and nowhere else, and a dividing
   wall is present at the split.
 - An opening is assigned to the section its `positionFt` puts it in.
