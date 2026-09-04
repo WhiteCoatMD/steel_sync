@@ -9,7 +9,8 @@ It has no way to express a building that is partly enclosed and partly open,
 which is what a combo is — and combos are a product the dealer sells.
 
 TejasMex lists three: **Combo Garage**, **End Combo** and **Side Combo** (styles
-5, 6 and 7 in their own configurator). This work covers the first two.
+5, 6 and 7 in their own configurator). This work covers End Combo and Combo Garage, which collapse into a single
+type — see below. Side Combo is out of scope.
 
 ## What a combo is
 
@@ -18,16 +19,21 @@ section on one side of it is enclosed, the rest stays open carport. The
 enclosure runs the **full width** of the building — the only variable is where
 the dividing wall falls.
 
-End Combo and Combo Garage are the same machine. They differ in the typical
-share enclosed and in the name the dealer sells them under, not in geometry or
-pricing. They are modelled as two building types because a dealer picks them by
-name, and because `availableBuildingTypes` gates what each dealer offers.
+**There is one type, `'combo'`.** TejasMex lists End Combo and Combo Garage
+separately, but they are the same machine: same frame, same geometry, same
+pricing, differing only in how much is enclosed — which is the depth control,
+not a product line. Two types would have been two names for one thing and two
+places to keep in step. Owner's call, and it is the right one.
+
+The depth is what makes a combo read as one or the other in conversation: a
+shallow enclosure on a long building is what a customer calls an end combo, a
+deep one is what they call a combo garage. Neither needs the software to know.
 
 ## Scope
 
 In scope:
 
-- `'end-combo'` and `'combo-garage'` as building types.
+- `'combo'` as a building type.
 - A split: which end is enclosed, and how deep the enclosed area runs.
 - Pricing, from the existing captured price table.
 - Geometry, so the 3D designer draws it.
@@ -73,7 +79,7 @@ The walls are too:
 ```ts
 export type BuildingType =
   | 'carport' | 'garage' | 'barn' | 'shop' | 'warehouse' | 'rv-cover'
-  | 'end-combo' | 'combo-garage';
+  | 'combo';
 
 export interface BuildingDimensions {
   // ... unchanged ...
@@ -117,7 +123,7 @@ clamps a lean-to that would overrun its wall.
 |---|---|
 | carport, rv-cover | `0` |
 | garage, barn, shop, warehouse | `lengthFt` |
-| end-combo, combo-garage | `combo.enclosedDepthFt` |
+| combo | `combo.enclosedDepthFt` |
 
 `enclosed` becomes `enclosedDepthFt > 0`. Every existing case produces exactly
 the number it produces today, so no existing quote changes.
@@ -160,8 +166,8 @@ drawn at the split with the same gable profile.
 
 ## Designer
 
-Two new entries in the building-type picker. Choosing either reveals a row of
-depth buttons — 5, 10, 15, 20 and so on in the same 5ft step `length` already
+One new entry in the building-type picker, **Combo**. Choosing it reveals a row
+of depth buttons — 5, 10, 15, 20 and so on in the same 5ft step `length` already
 uses, stopping one step short of the building length. Tapping one moves the
 price, like every other control.
 
