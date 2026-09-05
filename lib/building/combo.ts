@@ -29,6 +29,12 @@ function validDepth(depthFt: unknown, lengthFt: number): depthFt is number {
   );
 }
 
+export interface ComboSpan {
+  startFt: number;
+  endFt: number;
+  depthFt: number;
+}
+
 /**
  * The enclosed span, measured from the FRONT of the building regardless of
  * which end the enclosure is anchored to.
@@ -38,9 +44,7 @@ function validDepth(depthFt: unknown, lengthFt: number): depthFt is number {
  * configured combo" — which is not the same as an error, because a garage is
  * also not a combo.
  */
-export function comboSpan(
-  b: BuildingDimensions,
-): { startFt: number; endFt: number; depthFt: number } | null {
+export function comboSpan(b: BuildingDimensions): ComboSpan | null {
   if (!isComboType(b.type)) return null;
   const c = b.combo;
   if (!c || !validDepth(c.enclosedDepthFt, b.lengthFt)) return null;
@@ -48,6 +52,73 @@ export function comboSpan(
   return c.end === 'back'
     ? { startFt: b.lengthFt - depthFt, endFt: b.lengthFt, depthFt }
     : { startFt: 0, endFt: depthFt, depthFt };
+}
+
+/**
+ * The two long walls (renderer's `SideWalls`).
+ *
+ * The building's Z axis runs front (0) to back (L). The LEFT wall's group
+ * sits at z=0 and runs +Z, so its local u=0 is the span's front edge
+ * (`startFt`). The RIGHT wall's group sits at z=L and runs -Z (mirrored —
+ * see `wallFrame.ts`), so ITS local u=0 is the span's BACK edge (`endFt`),
+ * not its front edge. Sharing one "start" between both walls, as if they
+ * ran the same direction, silently drops or mis-shifts every right-wall
+ * opening in a combo — the two must be computed separately.
+ *
+ * `span == null` (not a combo) degenerates to the wall's full original run,
+ * so callers do not need a separate non-combo code path.
+ */
+export type SideWallId = 'left' | 'right';
+
+export interface SideWallRun {
+  /** Z coordinate, in building space, of the wall's local u=0 origin — i.e. where its render group is positioned. */
+  originZFt: number;
+  /** Length of the wall's run, in feet. */
+  runLengthFt: number;
+}
+
+export function sideWallRun(wall: SideWallId, span: ComboSpan | null, lengthFt: number): SideWallRun {
+  if (wall === 'left') {
+    return { originZFt: span?.startFt ?? 0, runLengthFt: span?.depthFt ?? lengthFt };
+  }
+  return { originZFt: span?.endFt ?? lengthFt, runLengthFt: span?.depthFt ?? lengthFt };
+}
+
+/**
+ * Where one side-wall opening lands, or null if it falls outside the
+ * enclosed span (in the open carport part, where there is no wall for it to
+ * sit in).
+ *
+ * `positionFt` is the opening's authored position on its own wall — for
+ * `left` that already runs front-to-back in building-Z, but for `right` it
+ * runs back-to-front (mirrored, per `wallFrame.ts`), so it must be converted
+ * to building-Z (`L - positionFt`) before it can be tested against the span
+ * or re-based onto the shortened wall's own origin.
+ */
+export function sideWallOpeningPositionFt(
+  wall: SideWallId,
+  positionFt: number,
+  span: ComboSpan | null,
+  lengthFt: number,
+): number | null {
+  if (span == null) return positionFt;
+  const buildingZFt = wall === 'left' ? positionFt : lengthFt - positionFt;
+  if (buildingZFt < span.startFt || buildingZFt >= span.endFt) return null;
+  const { originZFt } = sideWallRun(wall, span, lengthFt);
+  return wall === 'left' ? positionFt - originZFt : positionFt - (lengthFt - originZFt);
+}
+
+/**
+ * Where the dividing wall sits, in building-Z — null for anything that is
+ * not a combo.
+ *
+ * The divider closes the inner face of the enclosure: for a front-anchored
+ * enclosure that is the span's back edge (`endFt`); for a back-anchored one
+ * it is the span's front edge (`startFt`).
+ */
+export function dividerZFt(span: ComboSpan | null, end: 'front' | 'back' | null): number | null {
+  if (span == null) return null;
+  return end === 'back' ? span.startFt : span.endFt;
 }
 
 /**

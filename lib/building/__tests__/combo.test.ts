@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   isComboType, enclosedDepthFt, comboSpan, comboDepthOptions, clampComboDepth,
-  COMBO_DEPTH_STEP_FT,
+  COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, dividerZFt,
 } from '../combo';
 import type { BuildingDimensions } from '../types';
 
@@ -97,5 +97,109 @@ describe('clampComboDepth', () => {
 
   it('never returns less than one step', () => {
     expect(clampComboDepth(25, 5)).toBe(COMBO_DEPTH_STEP_FT);
+  });
+});
+
+// L=30, depth=10 throughout.
+const L = 30;
+const frontSpan = comboSpan(dims({ combo: { enclosedDepthFt: 10, end: 'front' } }))!; // {0,10,10}
+const backSpan = comboSpan(dims({ combo: { enclosedDepthFt: 10, end: 'back' } }))!;   // {20,30,10}
+
+describe('sideWallRun', () => {
+  it('is the full wall when there is no span', () => {
+    expect(sideWallRun('left', null, L)).toEqual({ originZFt: 0, runLengthFt: L });
+    expect(sideWallRun('right', null, L)).toEqual({ originZFt: L, runLengthFt: L });
+  });
+
+  it('for a front-anchored combo, runs from the front on both walls', () => {
+    // Left's u=0 sits at the span's front edge; right's u=0 sits at the
+    // span's BACK edge, because the right wall's group runs -Z (mirrored).
+    expect(sideWallRun('left', frontSpan, L)).toEqual({ originZFt: 0, runLengthFt: 10 });
+    expect(sideWallRun('right', frontSpan, L)).toEqual({ originZFt: 10, runLengthFt: 10 });
+  });
+
+  it('for a back-anchored combo, the right wall keeps its original origin', () => {
+    expect(sideWallRun('left', backSpan, L)).toEqual({ originZFt: 20, runLengthFt: 10 });
+    expect(sideWallRun('right', backSpan, L)).toEqual({ originZFt: 30, runLengthFt: 10 });
+  });
+});
+
+describe('sideWallOpeningPositionFt', () => {
+  it('passes every opening through unchanged when there is no span', () => {
+    expect(sideWallOpeningPositionFt('left', 12, null, L)).toBe(12);
+    expect(sideWallOpeningPositionFt('right', 12, null, L)).toBe(12);
+  });
+
+  it('left wall: keeps an opening inside a front-anchored span, shifted to the wall origin', () => {
+    expect(sideWallOpeningPositionFt('left', 3, frontSpan, L)).toBe(3);
+  });
+
+  it('left wall: drops an opening outside a front-anchored span', () => {
+    expect(sideWallOpeningPositionFt('left', 15, frontSpan, L)).toBeNull();
+  });
+
+  it('left wall: keeps and re-bases an opening inside a back-anchored span', () => {
+    expect(sideWallOpeningPositionFt('left', 25, backSpan, L)).toBe(5);
+  });
+
+  it('left wall: drops an opening outside a back-anchored span', () => {
+    expect(sideWallOpeningPositionFt('left', 5, backSpan, L)).toBeNull();
+  });
+
+  // Right wall: positionFt is authored back-to-front (wallFrame's `right` runs
+  // -Z from z=L), so it must be converted to building-Z before being tested
+  // against the span or re-based. This is the mirroring the brief's shared
+  // `inSpan`/`shift` gets wrong.
+  it('right wall: keeps an opening inside a front-anchored span, mirrored onto the wall origin', () => {
+    // positionFt=25 on the right wall is building-Z = 30-25 = 5, inside [0,10).
+    expect(sideWallOpeningPositionFt('right', 25, frontSpan, L)).toBe(5);
+  });
+
+  it('right wall: drops an opening outside a front-anchored span', () => {
+    // positionFt=10 on the right wall is building-Z = 30-10 = 20, outside [0,10).
+    expect(sideWallOpeningPositionFt('right', 10, frontSpan, L)).toBeNull();
+  });
+
+  it('right wall: keeps an opening inside a back-anchored span unshifted (its origin does not move)', () => {
+    // positionFt=5 on the right wall is building-Z = 30-5 = 25, inside [20,30).
+    expect(sideWallOpeningPositionFt('right', 5, backSpan, L)).toBe(5);
+  });
+
+  it('right wall: drops an opening outside a back-anchored span', () => {
+    // positionFt=25 on the right wall is building-Z = 30-25 = 5, outside [20,30).
+    expect(sideWallOpeningPositionFt('right', 25, backSpan, L)).toBeNull();
+  });
+
+  // The brief's own approach — one `inSpan`/`shift` pair applied to both
+  // walls, testing `positionFt` directly against the span instead of
+  // converting the right wall to building-Z first — silently drops a
+  // right-wall opening that should be visible. This test fails against that
+  // version and passes against `sideWallOpeningPositionFt`.
+  it('is not the brief\'s buggy shared filter (right wall, front-anchored)', () => {
+    const start = frontSpan.startFt;
+    const end = frontSpan.endFt;
+    const buggyInSpan = (positionFt: number) => positionFt >= start && positionFt < end;
+    const buggyShift = (positionFt: number) => positionFt - start;
+
+    const positionFt = 25; // visible: building-Z = 5, inside the enclosed span
+    const buggyResult = buggyInSpan(positionFt) ? buggyShift(positionFt) : null;
+    expect(buggyResult).toBeNull(); // the bug: wrongly dropped
+
+    expect(sideWallOpeningPositionFt('right', positionFt, frontSpan, L)).toBe(5); // correct: kept
+  });
+});
+
+describe('dividerZFt', () => {
+  it('is null when there is no span', () => {
+    expect(dividerZFt(null, 'front')).toBeNull();
+    expect(dividerZFt(null, 'back')).toBeNull();
+  });
+
+  it('sits at the span\'s back edge for a front-anchored enclosure', () => {
+    expect(dividerZFt(frontSpan, 'front')).toBe(10);
+  });
+
+  it('sits at the span\'s front edge for a back-anchored enclosure', () => {
+    expect(dividerZFt(backSpan, 'back')).toBe(20);
   });
 });
