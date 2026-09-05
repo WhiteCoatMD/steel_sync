@@ -31,6 +31,46 @@ the `fully-enclosed-wall` tables.
 That is the closest thing the captured data can express. It is not what the
 vendor does. Their line is "storage, N ft deep"; ours is "four walls".
 
+## MEASURED 2026-09-05 — and we are under by about a thousand dollars
+
+Read off `design.tejasmex.com/?dealer=Columbia`, **End Combo, 24 x 30 x 9**,
+changing only the storage depth in one pass so the rest of the configuration is
+held constant.
+
+| Storage depth | TejasMex | Ours | We are under by | Their step | Our step |
+|---|---|---|---|---|---|
+| 5ft | $8,321 | $7,414 | $907 | — | — |
+| 10ft | $8,477 | $7,414 | $1,063 | +$156 | $0 |
+| 15ft | $8,613 | $7,414 | $1,199 | +$136 | $0 |
+| 20ft | $8,719 | $7,414 | $1,305 | +$106 | $0 |
+| 25ft | $8,823 | $7,518 | $1,305 | +$104 | +$104 |
+
+**Their depth options are exactly 5 / 10 / 15 / 20 / 25 on a 30ft building** —
+the same 5ft steps stopping one short of the length that `comboDepthOptions`
+already produces. The control is right. The price is not.
+
+### The shape is wrong, not just the level
+
+Ours is **flat** from 5ft to 20ft. That is the `sideWalls` length brackets
+showing through: `[0,20]` covers every depth up to 20, so four visibly different
+buildings price identically. Theirs rises at every step.
+
+So this is not an offset we could correct with a constant. The rule has a
+different form.
+
+### A caution about method
+
+An earlier reading of the 10ft case gave $9,482, and the same configuration
+later gave $8,477. The difference was the door package: changing the width
+carried over a roll-up door that the later pass did not have. **Any further
+measurement has to hold doors and windows constant**, and cross-style
+comparisons (carport vs combo vs garage) are only meaningful if the openings
+match. The five rows above are one uninterrupted pass and are internally
+consistent; the anchors are not yet measured because the style control needs its
+accordion open and the attempt silently did nothing.
+
+## What is still needed
+
 ## The seven numbers that would settle it
 
 One building, one axis. In `https://design.tejasmex.com/?dealer=Columbia`:
