@@ -1,4 +1,4 @@
-import type { BuildingConfig, BuildingDimensions, Opening, LeanTo, RoofStyle } from '../building/types';
+import type { BuildingConfig, BuildingDimensions, BuildingType, Opening, LeanTo, RoofStyle } from '../building/types';
 import { createDefaultConfig } from '../building/defaultConfig';
 
 // ─── Types ──────────────────────────────────────────────────
@@ -34,7 +34,7 @@ VALID RANGES:
 - Length: 20–100 ft (multiples of 5 only)
 - Leg height: 6–16 ft (whole numbers only)
 - Roof styles: "regular", "aframe", "vertical"
-- Building types: "carport", "garage", "barn", "shop", "warehouse", "rv-cover"
+- Building types: "carport", "garage", "barn", "shop", "rv-cover"
 - Opening types: "walkin" (3×7), "rollup" (8×8, 9×8, 10×10, 12×12), "window" (3×3, 3×4)
 - Walls: "front", "back", "left", "right"
 - Lean-to width: 6–12 ft
@@ -71,6 +71,25 @@ const ROOF_STYLE_PATTERN = /\b(vertical|a[\s-]?frame|boxed[\s-]?eave|regular|sta
 const TYPE_PATTERN = /\b(carport|garage|barn|shop|warehouse|rv[\s-]?cover|workshop)\b/i;
 
 /**
+ * Map a phrase to the BuildingType it describes, or null if none is
+ * mentioned. "shop", "workshop" and "warehouse" are all folded into 'garage'
+ * — see the comment on BuildingType for why there is no 'warehouse' member to
+ * map to. Customers still say the word, so it stays recognised here even
+ * though the catalogue no longer has an entry for it.
+ */
+export function classifyType(text: string): BuildingType | null {
+  const match = text.toLowerCase().match(TYPE_PATTERN);
+  if (!match) return null;
+  const raw = match[1].replace(/[\s-]/g, '-');
+  const typeMap: Record<string, BuildingType> = {
+    carport: 'carport', garage: 'garage', barn: 'barn',
+    shop: 'garage', warehouse: 'garage', workshop: 'garage',
+    'rv-cover': 'rv-cover',
+  };
+  return typeMap[raw] ?? null;
+}
+
+/**
  * Parse a natural language building description into a structured config.
  * This is the local fast-path parser. For complex/ambiguous prompts,
  * call the Claude API with SYSTEM_PROMPT instead.
@@ -85,13 +104,9 @@ export function configFromPrompt(
   const clarifications: string[] = [];
 
   // ── Building type ──
-  if (intent.type) {
-    const typeMap: Record<string, BuildingDimensions['type']> = {
-      carport: 'carport', garage: 'garage', barn: 'barn',
-      shop: 'garage', warehouse: 'warehouse', workshop: 'garage',
-      'rv-cover': 'rv-cover', 'rv cover': 'rv-cover',
-    };
-    config.building.type = typeMap[intent.type.toLowerCase()] ?? 'garage';
+  const classifiedType = classifyType(prompt);
+  if (classifiedType) {
+    config.building.type = classifiedType;
   } else {
     inferred.push('building.type (defaulted to garage)');
   }

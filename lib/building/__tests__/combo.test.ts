@@ -18,7 +18,7 @@ const dims = (over: Partial<BuildingDimensions> = {}): BuildingDimensions =>
 describe('isComboType', () => {
   it('is true only for a combo', () => {
     expect(isComboType('combo')).toBe(true);
-    for (const t of ['carport', 'garage', 'barn', 'shop', 'warehouse', 'rv-cover'] as const) {
+    for (const t of ['carport', 'garage', 'barn', 'shop', 'rv-cover'] as const) {
       expect(isComboType(t)).toBe(false);
     }
   });
@@ -32,7 +32,7 @@ describe('enclosedDepthFt', () => {
   });
 
   it('is the full length for enclosed types', () => {
-    for (const t of ['garage', 'barn', 'shop', 'warehouse'] as const) {
+    for (const t of ['garage', 'barn', 'shop'] as const) {
       expect(enclosedDepthFt(dims({ type: t, combo: undefined }))).toBe(30);
     }
   });

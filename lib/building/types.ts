@@ -3,8 +3,17 @@
 
 // ─── Enums & Literals ───────────────────────────────────────
 
+/**
+ * No 'warehouse' member: it was one of four labels over the same product.
+ * Garage, barn, shop and warehouse are priced and drawn identically — type
+ * feeds only "is it enclosed" and "does it get walls" — and none of them was
+ * sold as its own thing (owner, 2026-09-04). Dropping it from the union means
+ * a config cannot express it at all, rather than the designer merely happening
+ * not to offer it. The parser still understands the WORD and maps it to a
+ * garage, because customers say it regardless.
+ */
 export type BuildingType =
-  | 'carport' | 'garage' | 'barn' | 'shop' | 'warehouse' | 'rv-cover'
+  | 'carport' | 'garage' | 'barn' | 'shop' | 'rv-cover'
   | 'combo';
 
 export type RoofStyle = 'regular' | 'aframe' | 'vertical';

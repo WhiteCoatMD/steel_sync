@@ -224,7 +224,6 @@ const BUILDING_TYPES: { value: BuildingType; label: string; icon: string }[] = [
   { value: 'carport', label: 'Carport', icon: 'M4 18V16H6V10L12 5L18 10V16H20V18ZM9 16H15V10.5L12 8L9 10.5Z' },
   { value: 'barn', label: 'Barn', icon: 'M4 20V10L8 6L12 4L16 6L20 10V20H14V14H10V20Z' },
   { value: 'shop', label: 'Shop', icon: 'M3 20V9L12 3L21 9V20H15V13H9V20ZM10 9H14V7H10Z' },
-  { value: 'warehouse', label: 'Warehouse', icon: 'M2 20V10L12 4L22 10V20ZM6 16H10V12H6ZM14 16H18V12H14Z' },
   { value: 'rv-cover', label: 'RV Cover', icon: 'M3 18V16H5V10L12 5L19 10V16H21V18ZM8 16H16V11L12 8L8 11Z' },
   { value: 'combo', label: 'Combo', icon: 'M3 20V10L12 4L21 10V20H12V13H7V20ZM14 18H19V12H14Z' },
 ];
