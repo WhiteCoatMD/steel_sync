@@ -8,7 +8,7 @@ import { useDesignerStore } from '@/lib/store/designerStore';
 import { buildBuilding, type BuildingResult } from '@/lib/building/buildBuilding';
 import type { Opening, BuildingConfig, BuildingDimensions } from '@/lib/building/types';
 import { buildRoofProfile } from '@/lib/building/roof';
-import { comboSpan, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt, dividerZFt, type ComboSpan } from '@/lib/building/combo';
+import { comboSpan, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt, dividerZFt, type ComboSpan, COMBO_DEFAULT_END } from '@/lib/building/combo';
 
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -560,10 +560,15 @@ function GableWalls({ result, color, openings, panelDir, wainscotColor, span, en
   const frontOps = useMemo(() => openings.filter(o => o.wall === 'front'), [openings]);
   const backOps = useMemo(() => openings.filter(o => o.wall === 'back'), [openings]);
 
+  // Resolve the anchor end ONCE. comboSpan and dividerZFt both fall back to
+  // COMBO_DEFAULT_END for a missing one, so comparing `end` raw here would put
+  // the walls at a different end from the span they are drawn against.
+  const enclosedAtBack = (end ?? COMBO_DEFAULT_END) === 'back';
+
   // Not a combo: both ends, exactly as before. A combo walls only the
   // enclosed end — the other end is open carport with no gable wall.
-  const showFront = span == null || end === 'front';
-  const showBack = span == null || end === 'back';
+  const showFront = span == null || !enclosedAtBack;
+  const showBack = span == null || enclosedAtBack;
   const dividerAt = dividerZFt(span, end);
 
   return (
@@ -583,11 +588,24 @@ function GableWalls({ result, color, openings, panelDir, wainscotColor, span, en
       {/* The divider closes the inner face of the enclosure. It carries no
           openings: a door in the wall between a garage and its own carport
           is not a product. */}
+      {/* The divider closes the enclosure's INNER face, and which face that is
+          depends on the anchor end. A rear-anchored enclosure — the default —
+          is closed on its front face, so the divider takes the front wall's
+          frame: unrotated, with the panel offset and the gable pitched the
+          other way. Drawn in the back wall's frame regardless, it sat an inch
+          on the open side of the line with its gable facing into the garage. */}
       {dividerAt != null && (
-        <group position={[W, 0, dividerAt]} rotation={[0, Math.PI, 0]}>
-          <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={[]} zOff={WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
-          <GableTriangle width={W} height={H} rise={rise} color={color} side="back" />
-        </group>
+        enclosedAtBack ? (
+          <group position={[0, 0, dividerAt]}>
+            <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={[]} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+            <GableTriangle width={W} height={H} rise={rise} color={color} side="front" />
+          </group>
+        ) : (
+          <group position={[W, 0, dividerAt]} rotation={[0, Math.PI, 0]}>
+            <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={[]} zOff={WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+            <GableTriangle width={W} height={H} rise={rise} color={color} side="back" />
+          </group>
+        )
       )}
     </group>
   );

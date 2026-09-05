@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isComboType, enclosedDepthFt, comboSpan, comboDepthOptions, clampComboDepth,
   COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt,
-  dividerZFt, sideWallAuthoredRun,
+  dividerZFt, sideWallAuthoredRun, COMBO_DEFAULT_END,
 } from '../combo';
 import type { BuildingDimensions } from '../types';
 
@@ -321,5 +321,55 @@ describe('sideWallAuthoredRun', () => {
         expect(sideWallOpeningPositionFt(wall, p, span, L) != null).toBe(inRun);
       }
     }
+  });
+});
+
+/**
+ * The enclosure sits at the REAR.
+ *
+ * A customer backs up to the closed end to load it and leaves the open bay
+ * facing the road, so a combo whose garage faced the street would be the wrong
+ * building (owner, 2026-09-05). The `end` field stays in the model because the
+ * geometry handles both ends and is tested for both — but nothing in the
+ * product sets it to 'front', so 'back' is what an unset one must mean.
+ */
+describe('the default anchor end', () => {
+  const dims30 = (combo: BuildingDimensions['combo']): BuildingDimensions =>
+    ({
+      type: 'combo', widthFt: 24, lengthFt: 30, legHeightFt: 9,
+      roofStyle: 'vertical', roofPitch: '4:12', orientation: 'length-facing-front',
+      panelDirection: { walls: 'horizontal', roof: 'vertical' },
+      combo,
+    }) as BuildingDimensions;
+
+  it('is the rear', () => {
+    expect(COMBO_DEFAULT_END).toBe('back');
+  });
+
+  // An `end` that never made it onto the object must not silently mean the
+  // front — that is the combination that would face a garage at the road.
+  it('resolves a missing end to the rear, not the front', () => {
+    const span = comboSpan(dims30({ enclosedDepthFt: 10 } as BuildingDimensions['combo']));
+    expect(span).toEqual({ startFt: 20, endFt: 30, depthFt: 10 });
+  });
+
+  it('still honours an explicit front, since the geometry supports it', () => {
+    expect(comboSpan(dims30({ enclosedDepthFt: 10, end: 'front' })))
+      .toEqual({ startFt: 0, endFt: 10, depthFt: 10 });
+  });
+
+  // The divider closes the enclosure's INNER face, which is the front edge
+  // when the enclosure is at the back. Getting this backwards put the wall on
+  // the open side of the line.
+  it('puts the divider on the enclosure inner face for each end', () => {
+    const back = comboSpan(dims30({ enclosedDepthFt: 10, end: 'back' }));
+    const front = comboSpan(dims30({ enclosedDepthFt: 10, end: 'front' }));
+    expect(dividerZFt(back, 'back')).toBe(20);
+    expect(dividerZFt(front, 'front')).toBe(10);
+  });
+
+  it('resolves a null end the same way comboSpan does', () => {
+    const span = comboSpan(dims30({ enclosedDepthFt: 10 } as BuildingDimensions['combo']));
+    expect(dividerZFt(span, null)).toBe(20);
   });
 });

@@ -26,6 +26,7 @@ import {
   isComboType,
   sideWallAuthoredRun,
   COMBO_DEPTH_STEP_FT,
+  COMBO_DEFAULT_END,
 } from '../building/combo';
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -164,7 +165,7 @@ function normaliseCombo(b: BuildingDimensions): BuildingDimensions {
   return {
     ...b,
     combo: {
-      end: b.combo?.end ?? 'front',
+      end: b.combo?.end ?? COMBO_DEFAULT_END,
       enclosedDepthFt:
         typeof current === 'number' ? clampComboDepth(current, b.lengthFt) : fallback,
     },

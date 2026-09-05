@@ -11,7 +11,7 @@ import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 import { formatQuoteTotal, isQuoteIncomplete, incompleteReasons } from '@/lib/pricing/quoteDisplay';
 import { canShowPrice } from '@/lib/pricing/canQuote';
-import { comboDepthOptions, isComboType } from '@/lib/building/combo';
+import { comboDepthOptions, isComboType, COMBO_DEFAULT_END } from '@/lib/building/combo';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
@@ -306,7 +306,7 @@ function ComboDepthControl() {
             key={d}
             type="button"
             aria-pressed={d === current}
-            onClick={() => update({ combo: { enclosedDepthFt: d, end: building.combo?.end ?? 'front' } })}
+            onClick={() => update({ combo: { enclosedDepthFt: d, end: building.combo?.end ?? COMBO_DEFAULT_END } })}
             className={
               d === current
                 ? 'rounded border border-blue-500 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700'

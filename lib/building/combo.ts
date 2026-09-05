@@ -12,6 +12,18 @@ import type { BuildingDimensions, BuildingType } from './types';
 /** Depth moves in the same 5ft step the building's own length does. */
 export const COMBO_DEPTH_STEP_FT = 5;
 
+/**
+ * Which gable end a combo's enclosure is anchored to when nothing says.
+ *
+ * The rear, always. A customer backs up to the closed end to load it and
+ * leaves the open bay facing the road, so a combo whose garage faced the
+ * street would be the wrong building (owner, 2026-09-05). Nothing in the
+ * product sets this to 'front' today; the field stays because the geometry
+ * already handles both ends and is tested for both, so offering the choice
+ * later is a control rather than a rewrite.
+ */
+export const COMBO_DEFAULT_END: 'front' | 'back' = 'back';
+
 /** Types with no walls at all. */
 const OPEN_TYPES: ReadonlySet<BuildingType> = new Set(['carport', 'rv-cover']);
 
@@ -57,7 +69,7 @@ export function comboSpan(b: BuildingDimensions): ComboSpan | null {
   const c = b.combo;
   if (!c || !validDepth(c.enclosedDepthFt, b.lengthFt)) return null;
   const depthFt = c.enclosedDepthFt;
-  return c.end === 'back'
+  return (c.end ?? COMBO_DEFAULT_END) === 'back'
     ? { startFt: b.lengthFt - depthFt, endFt: b.lengthFt, depthFt }
     : { startFt: 0, endFt: depthFt, depthFt };
 }
@@ -180,7 +192,7 @@ export function sideWallOpeningAuthoredPositionFt(
  */
 export function dividerZFt(span: ComboSpan | null, end: 'front' | 'back' | null): number | null {
   if (span == null) return null;
-  return end === 'back' ? span.startFt : span.endFt;
+  return (end ?? COMBO_DEFAULT_END) === 'back' ? span.startFt : span.endFt;
 }
 
 /**

@@ -14,7 +14,9 @@ describe('switching to a combo', () => {
     expect(c).toBeDefined();
     expect(c!.enclosedDepthFt).toBeGreaterThan(0);
     expect(c!.enclosedDepthFt).toBeLessThan(building().lengthFt);
-    expect(c!.end).toBe('front');
+    // The rear, always: a customer backs up to the closed end and leaves the
+    // open bay facing the road (owner, 2026-09-05).
+    expect(c!.end).toBe('back');
   });
 
   it('prices, rather than sitting unpriceable, the moment it is chosen', () => {

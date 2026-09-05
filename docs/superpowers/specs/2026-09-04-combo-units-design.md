@@ -34,7 +34,8 @@ deep one is what they call a combo garage. Neither needs the software to know.
 In scope:
 
 - `'combo'` as a building type.
-- A split: which end is enclosed, and how deep the enclosed area runs.
+- How deep the enclosed area runs. **Which end is not a choice: it is always
+  the rear** — see below.
 - Pricing, from the existing captured price table.
 - Geometry, so the 3D designer draws it.
 - The designer control for setting the depth.
@@ -90,9 +91,9 @@ export interface BuildingDimensions {
    * that there are two buildings.
    *
    * `end` is which gable end the enclosure is anchored to, and the enclosed
-   * section runs `enclosedDepthFt` INWARD from it. `{ end: 'front',
-   * enclosedDepthFt: 10 }` on a 30ft building encloses 0-10ft measured from
-   * the front, leaving 10-30ft open.
+   * section runs `enclosedDepthFt` INWARD from it. `{ end: 'back',
+   * enclosedDepthFt: 10 }` on a 30ft building encloses 20-30ft measured from
+   * the front, leaving 0-20ft of open carport at the road.
    *
    * "Depth" rather than "length" because that is what a dealer calls it, and
    * the building already has a lengthFt that this is not.
@@ -102,6 +103,18 @@ export interface BuildingDimensions {
 ```
 
 `combo` is optional, so every existing config, fixture and test stays valid.
+
+**The enclosure is always at the rear.** A customer backs up to the closed end
+to load it and leaves the open bay facing the road, so a combo whose garage
+faced the street would be the wrong building (owner, 2026-09-05). One named
+constant, `COMBO_DEFAULT_END`, says so once, and everything that resolves a
+missing `end` reads it.
+
+The `end` field stays in the model rather than being removed. The geometry
+handles both ends and is tested for both — including which face the dividing
+wall closes, which is the front face of a rear-anchored enclosure and the back
+face of a front-anchored one. Keeping it means offering the choice later is a
+control, not a rewrite. Nothing in the product sets it to `'front'` today.
 
 **Validation.** `enclosedDepthFt` must be a multiple of 5 greater than zero and
 less than `lengthFt`. Equal to `lengthFt` is a garage and should be built as
