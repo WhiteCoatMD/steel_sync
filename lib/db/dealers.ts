@@ -3,7 +3,7 @@ import { DEFAULT_PRICING_RULES, STANDARD_COLORS } from '../building/defaultConfi
 import type { BuildingType, DealerPricingRules, DealerSettings } from '../building/types';
 
 const ALL_BUILDING_TYPES: BuildingType[] =
-  ['carport', 'garage', 'barn', 'shop', 'warehouse', 'rv-cover'];
+  ['carport', 'garage', 'barn', 'shop', 'warehouse', 'rv-cover', 'combo'];
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);

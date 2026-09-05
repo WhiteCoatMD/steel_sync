@@ -3,7 +3,9 @@
 
 // ─── Enums & Literals ───────────────────────────────────────
 
-export type BuildingType = 'carport' | 'garage' | 'barn' | 'shop' | 'warehouse' | 'rv-cover';
+export type BuildingType =
+  | 'carport' | 'garage' | 'barn' | 'shop' | 'warehouse' | 'rv-cover'
+  | 'combo';
 
 export type RoofStyle = 'regular' | 'aframe' | 'vertical';
 
@@ -52,6 +54,19 @@ export interface BuildingDimensions {
     walls: PanelDirection;
     roof: PanelDirection;
   };
+  /**
+   * How deep the enclosed area runs. Present only on a combo.
+   *
+   * The building stays ONE box: this says where the dividing wall falls, not
+   * that there are two buildings. `end` is the gable end the enclosure is
+   * anchored to and the enclosure runs INWARD from it, so
+   * `{ end: 'front', enclosedDepthFt: 10 }` on a 30ft building encloses 0-10ft
+   * measured from the front and leaves 10-30ft open.
+   *
+   * "Depth" rather than "length" because that is what a dealer calls it, and
+   * the building already has a lengthFt that this is not.
+   */
+  combo?: { enclosedDepthFt: number; end: 'front' | 'back' };
 }
 
 // ─── Colors ─────────────────────────────────────────────────
