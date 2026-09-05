@@ -28,7 +28,7 @@ const build = (r: Row, siding: 'horizontal' | 'vertical' = 'horizontal') => ({
   roofStyle: 'vertical' as const,
   surface: 'concrete' as const,
   engineered: true,
-  enclosed: true,
+  enclosedDepthFt: r.l,
   siding,
 });
 
@@ -56,7 +56,7 @@ describe('the building that started this', () => {
   const garage = {
     widthFt: 24, lengthFt: 30, legHeightFt: 11,
     roofStyle: 'vertical' as const, surface: 'concrete' as const,
-    engineered: false, enclosed: true,
+    engineered: false, enclosedDepthFt: 30,
     componentKeys: ['garage-door-6-gable', 'walk-in-door-36-80-res'],
   };
 

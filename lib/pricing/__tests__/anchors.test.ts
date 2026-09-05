@@ -22,7 +22,7 @@ const base = {
   legHeightFt: 11,
   roofStyle: 'vertical' as const,
   engineered: false,
-  enclosed: true,
+  enclosedDepthFt: 30,
   siding: 'horizontal' as const,
 };
 
@@ -50,8 +50,8 @@ describe('the surface changes what the anchors cost', () => {
   });
 
   it('scales the package with length, like the vendor does', () => {
-    const short = quoteFromTable({ ...base, lengthFt: 25, surface: 'asphalt' }, table);
-    const long = quoteFromTable({ ...base, lengthFt: 60, surface: 'asphalt' }, table);
+    const short = quoteFromTable({ ...base, lengthFt: 25, enclosedDepthFt: 25, surface: 'asphalt' }, table);
+    const long = quoteFromTable({ ...base, lengthFt: 60, enclosedDepthFt: 60, surface: 'asphalt' }, table);
     expect(anchorLine(long)).toBeGreaterThan(anchorLine(short));
   });
 });

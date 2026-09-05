@@ -47,7 +47,7 @@ describe('enclosed walls reproduce every measured configuration', () => {
           surface: 'concrete',
           engineered: r.cert != null,
           legType: r.legType,
-          enclosed: true,
+          enclosedDepthFt: r.l,
           // walls-measured.json was captured with VERTICAL siding; horizontal
           // is the engine default now (owner, 2026-08-29).
           siding: 'vertical',
@@ -71,7 +71,7 @@ describe('enclosed walls reproduce every measured configuration', () => {
 describe('walls are charged at face value, not surcharged', () => {
   it('a measured wall price passes through unchanged', () => {
     const q = quoteFromTable(
-      { widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', engineered: true, enclosed: true, siding: 'vertical' },
+      { widthFt: 24, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', engineered: true, enclosedDepthFt: 25, siding: 'vertical' },
       table,
     );
     const side = q.lines.find(l => /^Left Side/.test(l.label))!;
@@ -83,7 +83,7 @@ describe('walls are charged at face value, not surcharged', () => {
 describe('outside the measured envelope it refuses rather than interpolating', () => {
   it('refuses a height that was never measured', () => {
     const q = quoteFromTable(
-      { widthFt: 24, lengthFt: 25, legHeightFt: 14, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
+      { widthFt: 24, lengthFt: 25, legHeightFt: 14, roofStyle: 'vertical', surface: 'concrete', enclosedDepthFt: 25 },
       table,
     );
     expect(q.unpriceable?.some(u => /wall/.test(u))).toBe(true);
@@ -94,7 +94,7 @@ describe('outside the measured envelope it refuses rather than interpolating', (
     // out past 30 where no band was captured. (22ft, the old case here, prices
     // fine now — see __tests__/walls2.test.ts.)
     const q = quoteFromTable(
-      { widthFt: 32, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
+      { widthFt: 32, lengthFt: 25, legHeightFt: 9, roofStyle: 'vertical', surface: 'concrete', enclosedDepthFt: 25 },
       table,
     );
     expect(q.unpriceable?.some(u => /end-wall/.test(u))).toBe(true);
@@ -102,7 +102,7 @@ describe('outside the measured envelope it refuses rather than interpolating', (
 
   it('refuses an enclosed height past the measured 12ft ceiling', () => {
     const q = quoteFromTable(
-      { widthFt: 24, lengthFt: 25, legHeightFt: 13, roofStyle: 'vertical', surface: 'concrete', enclosed: true },
+      { widthFt: 24, lengthFt: 25, legHeightFt: 13, roofStyle: 'vertical', surface: 'concrete', enclosedDepthFt: 25 },
       table,
     );
     expect(q.unpriceable?.some(u => /wall/.test(u))).toBe(true);
@@ -160,7 +160,7 @@ describe('enclosed walls are style-independent but siding-scoped', () => {
 
   for (const roofStyle of ['vertical', 'regular', 'aframe'] as const) {
     it(`prices an enclosed ${roofStyle} build - walls do not key on roof style`, () => {
-      const q = quoteFromTable({ ...base, roofStyle, enclosed: true, siding: 'vertical' }, table);
+      const q = quoteFromTable({ ...base, roofStyle, enclosedDepthFt: 25, siding: 'vertical' }, table);
       expect(q.unpriceable).toBeUndefined();
       expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(578);
       expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1606);
@@ -173,21 +173,21 @@ describe('enclosed walls are style-independent but siding-scoped', () => {
    * $1,500 over on a 24x30x11 garage (owner, 2026-08-29).
    */
   it('prices horizontal siding, which is the standard build', () => {
-    const q = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
+    const q = quoteFromTable({ ...base, roofStyle: 'vertical', enclosedDepthFt: 25, siding: 'horizontal' }, table);
     expect(q.unpriceable).toBeUndefined();
     expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(398);
     expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1214);
   });
 
   it('defaults to horizontal when siding is not stated', () => {
-    const stated = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
-    const omitted = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true }, table);
+    const stated = quoteFromTable({ ...base, roofStyle: 'vertical', enclosedDepthFt: 25, siding: 'horizontal' }, table);
+    const omitted = quoteFromTable({ ...base, roofStyle: 'vertical', enclosedDepthFt: 25 }, table);
     expect(omitted.subtotal).toBe(stated.subtotal);
   });
 
   it('charges more for vertical siding, in that direction', () => {
-    const h = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'horizontal' }, table);
-    const v = quoteFromTable({ ...base, roofStyle: 'vertical', enclosed: true, siding: 'vertical' }, table);
+    const h = quoteFromTable({ ...base, roofStyle: 'vertical', enclosedDepthFt: 25, siding: 'horizontal' }, table);
+    const v = quoteFromTable({ ...base, roofStyle: 'vertical', enclosedDepthFt: 25, siding: 'vertical' }, table);
     expect(v.subtotal).toBeGreaterThan(h.subtotal);
   });
 });

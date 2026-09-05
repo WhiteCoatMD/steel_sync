@@ -128,10 +128,13 @@ export function toQuoteInput(
       siding: b.panelDirection?.walls ?? 'horizontal',
       componentKeys,
       ...(declaredOverhang != null ? { roofOverhangFtPerEnd: declaredOverhang } : {}),
-      // Enclosed types are now priced from the measured wall tables. Outside the
-      // measured envelope the engine reports it rather than quoting the (much
-      // lower) open-carport price.
-      enclosed: !OPEN_BUILDING_TYPES.has(b.type),
+      // Enclosed types are now priced from the measured wall tables, over the
+      // enclosed DEPTH rather than a yes/no. Every current type is still either
+      // fully open (0) or fully enclosed (its whole length) -- a combo, which
+      // encloses part of its length, is a config shape this adapter does not
+      // build yet. Outside the measured envelope the engine reports it rather
+      // than quoting the (much lower) open-carport price.
+      enclosedDepthFt: OPEN_BUILDING_TYPES.has(b.type) ? 0 : b.lengthFt,
       // Dimensions, not just a count: the refusal names what a human must price.
       leanTos: (config.leanTos ?? []).map(lt => ({
         wall: lt.wall,

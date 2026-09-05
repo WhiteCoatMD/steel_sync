@@ -40,8 +40,16 @@ export interface ManufacturerQuoteInput {
   componentKeys?: string[];
   /** Overrides the manufacturer's standard overhang. Per END, in feet. */
   roofOverhangFtPerEnd?: number;
-  /** Any wall enclosure. Priced from the measured wall tables. */
-  enclosed?: boolean;
+  /**
+   * How many feet of the building are enclosed. Walls are priced over this
+   * length, not the building's.
+   *
+   * This was a boolean, which could only say "all of it" or "none of it" and so
+   * could not express a combo — one frame with a dividing wall part way along
+   * it. As a number every type is the same case: an open building encloses 0,
+   * a garage encloses its whole length, a combo encloses some of it.
+   */
+  enclosedDepthFt?: number;
   /**
    * Wall panel orientation. This, not roof style, is what moves the wall price:
    * the vendor's wall rows carry a horizontal and a vertical price column and no
@@ -176,7 +184,7 @@ export function quoteFromTable(
     engineered = false,
     legType = 'standard-legs',
     componentKeys = [],
-    enclosed = false,
+    enclosedDepthFt = 0,
     siding = 'horizontal',
     leanTos = [],
     leanToCount = leanTos.length,
@@ -366,6 +374,7 @@ export function quoteFromTable(
   //
   // Prices are already CHARGED amounts (the surcharge does not touch walls), so
   // they bypass push() and go in at face value.
+  const enclosed = enclosedDepthFt > 0;
   if (enclosed) {
     // Wall price does NOT vary with roof style - the vendor's own wall rows carry
     // no style key at all, only a horizontal and a vertical price column. What it
@@ -378,7 +387,10 @@ export function quoteFromTable(
       r =>
         r.siding === siding &&
         inBracket(widthFt, r.widthBand) &&
-        inBracket(lengthFt, r.length) &&
+        // The DEPTH, not the building length: a combo's side walls only run the
+        // enclosed part. For every other type this is the length, so nothing
+        // about their price changes.
+        inBracket(enclosedDepthFt, r.length) &&
         r.heightFt === legHeightFt,
     );
     const end = table.endWalls?.find(
@@ -396,7 +408,7 @@ export function quoteFromTable(
     } else {
       if (!side) {
         unpriceable.push(
-          `no measured side-wall price for width ${widthFt} x length ${lengthFt} at ${legHeightFt}ft`,
+          `no measured side-wall price for width ${widthFt} x enclosed depth ${enclosedDepthFt} at ${legHeightFt}ft`,
         );
       }
       if (!end) {
