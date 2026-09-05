@@ -11,10 +11,25 @@
  * a config cannot express it at all, rather than the designer merely happening
  * not to offer it. The parser still understands the WORD and maps it to a
  * garage, because customers say it regardless.
+ *
+ * Declared as a VALUE, not just a type. Anything crossing into the app from
+ * outside — an LLM parse, a saved design, a request body — has to be checked
+ * against the list at runtime, and a hand-maintained second copy of it is a
+ * copy that drifts (which is how a retired 'warehouse' could still arrive from
+ * a model and be copied straight through). The type is derived from this array
+ * so the two cannot disagree.
  */
-export type BuildingType =
-  | 'carport' | 'garage' | 'barn' | 'shop' | 'rv-cover'
-  | 'combo';
+export const BUILDING_TYPES = [
+  'carport', 'garage', 'barn', 'shop', 'rv-cover',
+  'combo',
+] as const;
+
+export type BuildingType = (typeof BUILDING_TYPES)[number];
+
+/** Runtime guard for the union above. */
+export function isBuildingType(v: unknown): v is BuildingType {
+  return typeof v === 'string' && (BUILDING_TYPES as readonly string[]).includes(v);
+}
 
 export type RoofStyle = 'regular' | 'aframe' | 'vertical';
 
