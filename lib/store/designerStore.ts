@@ -18,6 +18,7 @@ import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../buildi
 import { calculatePrice } from '../pricing/calculatePrice';
 import { wallFrame } from '../building/wallFrame';
 import { largestFittingSize } from '../building/openingSizes';
+import { clampComboDepth, comboDepthOptions, isComboType, COMBO_DEPTH_STEP_FT } from '../building/combo';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -101,6 +102,36 @@ function resizeOpeningToFit(opening: Opening, building: BuildingDimensions, rule
 /** Compose the size-fit and position clamps applied after any opening write. */
 function clampOpening(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
   return clampOpeningPosition(resizeOpeningToFit(opening, building, rules), building);
+}
+
+/**
+ * Keep the combo split consistent with the building it sits in.
+ *
+ * Three things go wrong without this. Choosing "combo" leaves no split at all,
+ * so the building prices as unpriceable the moment it is picked. Shortening a
+ * 30ft building with a 25ft enclosure to 20ft leaves an enclosure longer than
+ * the building. And switching away to a garage leaves a dividing wall behind on
+ * a type that has no business carrying one.
+ */
+function normaliseCombo(b: BuildingDimensions): BuildingDimensions {
+  if (!isComboType(b.type)) {
+    if (!b.combo) return b;
+    const { combo: _dropped, ...rest } = b;
+    return rest as BuildingDimensions;
+  }
+  const options = comboDepthOptions(b.lengthFt);
+  const fallback = options.length
+    ? options[Math.max(0, Math.floor(options.length / 2))]
+    : COMBO_DEPTH_STEP_FT;
+  const current = b.combo?.enclosedDepthFt;
+  return {
+    ...b,
+    combo: {
+      end: b.combo?.end ?? 'front',
+      enclosedDepthFt:
+        typeof current === 'number' ? clampComboDepth(current, b.lengthFt) : fallback,
+    },
+  };
 }
 
 /**
@@ -203,7 +234,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     }
 
     const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
-    const nextBuilding = { ...config.building, ...updates };
+    const nextBuilding = normaliseCombo({ ...config.building, ...updates });
     const next: BuildingConfig = {
       ...config,
       building: nextBuilding,
