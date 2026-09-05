@@ -109,6 +109,30 @@ export function sideWallOpeningPositionFt(
 }
 
 /**
+ * The inverse of `sideWallOpeningPositionFt`: given a position local to the
+ * (possibly shortened, possibly re-based) wall — the frame a mouse drag over
+ * that wall's mesh reports in — returns the authored `positionFt` to store
+ * on the opening.
+ *
+ * A drag can only ever produce a position on the wall that is being dragged,
+ * so unlike the forward function this never has an "outside the span" case
+ * to report — every wall-local position is somewhere on that wall.
+ *
+ * `span == null` degenerates to the identity, matching
+ * `sideWallOpeningPositionFt`'s non-combo case.
+ */
+export function sideWallOpeningAuthoredPositionFt(
+  wall: SideWallId,
+  wallLocalPositionFt: number,
+  span: ComboSpan | null,
+  lengthFt: number,
+): number {
+  const { originZFt } = sideWallRun(wall, span, lengthFt);
+  const offsetFt = wall === 'left' ? originZFt : lengthFt - originZFt;
+  return wallLocalPositionFt + offsetFt;
+}
+
+/**
  * Where the dividing wall sits, in building-Z — null for anything that is
  * not a combo.
  *

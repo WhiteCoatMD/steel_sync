@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
   isComboType, enclosedDepthFt, comboSpan, comboDepthOptions, clampComboDepth,
-  COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, dividerZFt,
+  COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt,
+  dividerZFt,
 } from '../combo';
 import type { BuildingDimensions } from '../types';
 
@@ -201,5 +202,57 @@ describe('dividerZFt', () => {
 
   it('sits at the span\'s front edge for a back-anchored enclosure', () => {
     expect(dividerZFt(backSpan, 'back')).toBe(20);
+  });
+});
+
+describe('sideWallOpeningAuthoredPositionFt', () => {
+  // The identity a drag relies on: a drag never sees a position outside its
+  // own wall, so a round trip through the forward conversion and back must
+  // return exactly what went in. Written out for left and right explicitly —
+  // a round trip that only holds for the left wall is the exact failure this
+  // guards against (Fix round 1, finding 2).
+
+  it('is the identity when there is no span (left)', () => {
+    expect(sideWallOpeningAuthoredPositionFt('left', 12, null, L)).toBe(12);
+  });
+
+  it('is the identity when there is no span (right)', () => {
+    expect(sideWallOpeningAuthoredPositionFt('right', 12, null, L)).toBe(12);
+  });
+
+  it('round-trips a left-wall opening, front-anchored', () => {
+    const authored = 3;
+    const local = sideWallOpeningPositionFt('left', authored, frontSpan, L);
+    expect(local).not.toBeNull();
+    expect(sideWallOpeningAuthoredPositionFt('left', local!, frontSpan, L)).toBe(authored);
+  });
+
+  it('round-trips a right-wall opening, front-anchored', () => {
+    const authored = 25;
+    const local = sideWallOpeningPositionFt('right', authored, frontSpan, L);
+    expect(local).not.toBeNull();
+    expect(sideWallOpeningAuthoredPositionFt('right', local!, frontSpan, L)).toBe(authored);
+  });
+
+  it('round-trips a left-wall opening, back-anchored', () => {
+    const authored = 25;
+    const local = sideWallOpeningPositionFt('left', authored, backSpan, L);
+    expect(local).not.toBeNull();
+    expect(sideWallOpeningAuthoredPositionFt('left', local!, backSpan, L)).toBe(authored);
+  });
+
+  it('round-trips a right-wall opening, back-anchored', () => {
+    const authored = 5;
+    const local = sideWallOpeningPositionFt('right', authored, backSpan, L);
+    expect(local).not.toBeNull();
+    expect(sideWallOpeningAuthoredPositionFt('right', local!, backSpan, L)).toBe(authored);
+  });
+
+  // This is the failure mode the reviewer traced by hand: a right-wall,
+  // front-anchored opening dragged to wall-local 5 must be stored as 25 (so
+  // it reads back as building-Z 5, inside the span) — NOT stored as 5, which
+  // would read back as building-Z 25, outside the span, and vanish.
+  it('recovers the correct authored position for a right-wall drag (front-anchored)', () => {
+    expect(sideWallOpeningAuthoredPositionFt('right', 5, frontSpan, L)).toBe(25);
   });
 });
