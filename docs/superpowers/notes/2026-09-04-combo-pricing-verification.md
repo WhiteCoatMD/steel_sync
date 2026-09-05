@@ -28,9 +28,9 @@ inputs `lib/db/__tests__/dealerPricingLive.test.ts` uses for the live
 
 | Building | Our total | Our base price | Our wall lines | TejasMex total | Difference (ours − theirs) |
 |---|---|---|---|---|---|
-| 24x30x9 combo, 10ft enclosed | **$7,819** | $3,941 | Left Side: $346<br>Right Side: $346<br>Front End: $1,214<br>Back End: $1,214 | _____ | _____ |
-| 24x30x9 combo, 20ft enclosed | **$7,819** | $3,941 | Left Side: $346<br>Right Side: $346<br>Front End: $1,214<br>Back End: $1,214 | _____ | _____ |
-| 20x40x10 combo, 15ft enclosed | **$8,318** | $4,202 | Left Side: $385<br>Right Side: $385<br>Front End: $1,090<br>Back End: $1,090 | _____ | _____ |
+| 24x30x9 combo, 10ft enclosed | **$7,819** | $3,941 | Left Side: $346<br>Right Side: $346<br>Closed End: $1,214<br>Dividing Wall: $1,214 | _____ | _____ |
+| 24x30x9 combo, 20ft enclosed | **$7,819** | $3,941 | Left Side: $346<br>Right Side: $346<br>Closed End: $1,214<br>Dividing Wall: $1,214 | _____ | _____ |
+| 20x40x10 combo, 15ft enclosed | **$8,318** | $4,202 | Left Side: $385<br>Right Side: $385<br>Closed End: $1,090<br>Dividing Wall: $1,090 | _____ | _____ |
 
 The 10ft and 20ft enclosures on the 24x30x9 combo price identically. That is
 not a bug — it's the captured side-wall table doing its job: TejasMex's
@@ -39,11 +39,13 @@ side-wall price is banded by length, and both 10ft and 20ft fall in the same
 land in the next band, `[21, 25]`, and cost more — see
 `comboPricing.test.ts`, "prices the side walls from the depth bracket.")
 
-"Front End" and "Back End" above are the two full-price end-wall lines the
-engine charges on a combo: one is the outer gable end, the other is the
-interior divider. They are priced identically because the engine currently
-treats the divider as an ordinary end wall — that is the assumption under
-test.
+"Closed End" and "Dividing Wall" above are the two full-price end-wall lines
+the engine charges on a combo: the outer gable end, and the interior divider.
+They are priced identically because the engine currently treats the divider as
+an ordinary end wall — that is the assumption under test. The quote itself now
+says so, in the divider's own line ("Dividing Wall: Interior, priced as an end
+wall"), so a dealer reading a combo quote can see which of its four wall lines
+is the assumption rather than a measured figure.
 
 ## Comparison anchors (24x30x9 only)
 
@@ -89,7 +91,7 @@ price" assertion.)
   assumption held: TejasMex prices the interior divider the same as a full
   end wall. Nothing in `engine.ts` changes.
 - **Their total is exactly one end-wall price lower than ours** (i.e. the
-  difference matches the "Front End"/"Back End" line amount for that
+  difference matches the "Closed End"/"Dividing Wall" line amount for that
   building — $1,214 for the 24x30x9 rows, $1,090 for the 20x40x10 row). The
   divider is not charged at all. Fix: in `lib/pricing/manufacturer/engine.ts`,
   push only **one** end-wall line (the outer gable end) when the enclosure is
@@ -109,12 +111,14 @@ price" assertion.)
 ## Where the code lives
 
 `lib/pricing/manufacturer/engine.ts`, the wall block starting around the
-`enclosedDepthFt` handling (the two `push(..., 'wall', ...)` calls for
-`Front End: Fully Enclosed` / `Back End: Fully Enclosed`, currently ~line
-403-406). That's the only place a fix from this checkpoint would land. No
-pricing code was changed to produce this note — the assumption can't be
-settled without the manufacturer's numbers above, and guessing at it would
-defeat the point of the checkpoint.
+`enclosedDepthFt` handling (the two end-wall `lines.push(..., 'wall', ...)`
+calls, labelled `Closed End: Fully Enclosed` / `Dividing Wall: Interior,
+priced as an end wall` when only part of the length is enclosed). That's the
+only place a fix from this checkpoint would land. No pricing code was changed
+to produce this note, and none has been since — the labels above were made
+honest, the amounts behind them are untouched. The assumption can't be settled
+without the manufacturer's numbers above, and guessing at it would defeat the
+point of the checkpoint.
 
 ## How the "our" figures were computed
 

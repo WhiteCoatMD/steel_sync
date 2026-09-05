@@ -398,12 +398,39 @@ export function quoteFromTable(
     );
 
     if (side && end) {
-      // Two of each: left/right run the length, front/back close the ends.
+      // Four walls either way, but they are not the same four.
+      //
+      // Fully enclosed: left/right run the length, front/back close the ends.
+      //
+      // A combo (only part of the length enclosed): the side walls run the
+      // ENCLOSURE, not the building, and of the two end walls one is the
+      // closed outer gable end and the other is the interior dividing wall.
+      // These lines are what a dealer reads in the designer's breakdown and in
+      // the quote reply, so labelling all four "Fully Enclosed" told them a
+      // 10ft wall was a 30ft one and called the divider a back end.
+      //
+      // Compared against the REQUESTED length, not the normalised one: a
+      // genuinely full-length 18ft garage encloses 18 of a length normalised
+      // up to 20, and is not a combo.
+      //
+      // Whether the divider really costs a full end wall is the one open
+      // assumption in combo pricing, and it is named in the line so a dealer
+      // can see it -- see
+      // docs/superpowers/notes/2026-09-04-combo-pricing-verification.md.
+      const partiallyEnclosed = enclosedDepthFt < requestedLengthFt;
+
+      const sideLabel = partiallyEnclosed
+        ? `Enclosed ${enclosedDepthFt}ft of ${requestedLengthFt}ft`
+        : 'Fully Enclosed';
       for (const label of ['Left Side', 'Right Side']) {
-        lines.push({ label: `${label}: Fully Enclosed`, category: 'wall', listAmount: side.price, amount: side.price });
+        lines.push({ label: `${label}: ${sideLabel}`, category: 'wall', listAmount: side.price, amount: side.price });
       }
-      for (const label of ['Front End', 'Back End']) {
-        lines.push({ label: `${label}: Fully Enclosed`, category: 'wall', listAmount: end.price, amount: end.price });
+
+      const endLabels = partiallyEnclosed
+        ? ['Closed End: Fully Enclosed', 'Dividing Wall: Interior, priced as an end wall']
+        : ['Front End: Fully Enclosed', 'Back End: Fully Enclosed'];
+      for (const label of endLabels) {
+        lines.push({ label, category: 'wall', listAmount: end.price, amount: end.price });
       }
     } else {
       if (!side) {

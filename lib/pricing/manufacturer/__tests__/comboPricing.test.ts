@@ -66,3 +66,64 @@ describe('a combo prices its side walls at the enclosed depth', () => {
     expect(q.unpriceable?.length ?? 0).toBeGreaterThan(0);
   });
 });
+
+/**
+ * The wall lines are read by a human — they render in the designer's price
+ * breakdown and in the quote reply the dealer sends. All four used to read
+ * "Fully Enclosed", so on a 30ft combo with a 10ft enclosure the dealer was
+ * shown "Left Side: Fully Enclosed" for a 10ft wall and "Back End: Fully
+ * Enclosed" for what is actually the interior divider: four settled-looking
+ * facts, two of them false, over the one number on this branch that is still
+ * an assumption.
+ */
+describe('a combo\'s wall lines say what they are', () => {
+  const wallLabels = (enclosedDepthFt: number) =>
+    quoteFromTable({ ...base, enclosedDepthFt }, T)
+      .lines.filter(l => l.category === 'wall').map(l => l.label);
+
+  it('gives the side walls the depth they actually cover', () => {
+    const labels = wallLabels(10);
+    expect(labels).toContain('Left Side: Enclosed 10ft of 30ft');
+    expect(labels).toContain('Right Side: Enclosed 10ft of 30ft');
+    // Never the claim that a 10ft wall runs the whole building.
+    expect(labels).not.toContain('Left Side: Fully Enclosed');
+  });
+
+  it('names the divider for what it is, and says how it is priced', () => {
+    const labels = wallLabels(10);
+    expect(labels).toContain('Closed End: Fully Enclosed');
+    expect(labels.some(l => /^Dividing Wall:/.test(l))).toBe(true);
+    // The open assumption is visible to the dealer reading the quote, not
+    // only to someone who opens the verification note.
+    expect(labels.find(l => /^Dividing Wall:/.test(l))).toMatch(/end wall/i);
+    // A combo has no "Back End" — that is the divider, and calling it one is
+    // the specific thing that misread as a settled fact.
+    expect(labels.some(l => /^Back End/.test(l))).toBe(false);
+  });
+
+  /**
+   * Every other type's labels are unchanged. They appear in customer-facing
+   * quotes and other tests match on them by prefix.
+   */
+  it('leaves a fully enclosed building\'s four labels exactly as they were', () => {
+    expect(wallLabels(30)).toEqual([
+      'Left Side: Fully Enclosed',
+      'Right Side: Fully Enclosed',
+      'Front End: Fully Enclosed',
+      'Back End: Fully Enclosed',
+    ]);
+  });
+
+  /**
+   * A building shorter than the 20ft minimum is BUILT as a 20, so its length
+   * normalises up while its enclosed depth does not. That is a full-length
+   * garage, not a combo, and must not be relabelled as one.
+   */
+  it('does not mistake a short garage for a combo', () => {
+    const labels = quoteFromTable(
+      { ...base, lengthFt: 18, enclosedDepthFt: 18 }, T,
+    ).lines.filter(l => l.category === 'wall').map(l => l.label);
+    expect(labels).toContain('Left Side: Fully Enclosed');
+    expect(labels).toContain('Back End: Fully Enclosed');
+  });
+});
