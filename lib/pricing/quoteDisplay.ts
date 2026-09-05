@@ -41,10 +41,6 @@ export function incompleteReasons(pricing?: PricingResult | null): string[] {
   const out = new Set<string>();
   for (const u of raw) {
     if (/lean-to/i.test(u)) out.add('lean-to sections');
-    // Before the generic wall rule below, which would otherwise call a combo's
-    // enclosed end "enclosed walls at this size" — true of the words, wrong
-    // about what the customer chose.
-    else if (/combo enclosure/i.test(u)) out.add('the enclosed end of a combo');
     else if (/component key/i.test(u)) out.add('one or more doors or windows');
     else if (/wall/i.test(u)) out.add('enclosed walls at this size');
     else if (/certification/i.test(u)) out.add('engineer certification at this size');
