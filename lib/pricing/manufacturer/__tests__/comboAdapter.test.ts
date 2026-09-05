@@ -65,11 +65,14 @@ describe('a combo we cannot place the dividing wall on refuses to price', () => 
     expect(q.unpriceable ?? []).not.toHaveLength(0);
   });
 
-  // The refusal must be narrow: a combo we CAN place the divider on prices.
-  it('does not touch a validly split combo', () => {
-    const q = priced({ type: 'combo', combo: { enclosedDepthFt: 10, end: 'front' } });
-    expect(q.unpriceable).toBeUndefined();
-    expect(q.total).toBeGreaterThan(0);
+  // A validly split combo is still refused, but for a DIFFERENT reason: the
+  // divider can be placed, the manufacturer's storage rule just is not in our
+  // table. Both refusals are real; only their wording separates them.
+  it('refuses a validly split combo on the pricing rule, not the split', () => {
+    const q = priced({ type: 'combo', combo: { enclosedDepthFt: 10, end: 'back' } });
+    const why = (q.unpriceable ?? []).join(' ');
+    expect(why).toMatch(/combo enclosure/i);
+    expect(why).not.toMatch(/no valid dividing wall position/i);
   });
 
   it('does not touch any other building type', () => {

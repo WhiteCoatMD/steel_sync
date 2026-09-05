@@ -28,78 +28,57 @@ describe('enclosedDepthFt replaces the enclosed boolean', () => {
   });
 });
 
-describe('a combo prices its side walls at the enclosed depth', () => {
-  it('costs less than the same building fully enclosed', () => {
-    const full = quoteFromTable({ ...base, enclosedDepthFt: 30 }, T);
-    const combo = quoteFromTable({ ...base, enclosedDepthFt: 10 }, T);
-    expect(wallTotal(combo)).toBeLessThan(wallTotal(full));
+/**
+ * A combo is REFUSED, not estimated.
+ *
+ * The vendor sells storage at a depth, not a building with shorter walls, and
+ * that rule is not in the captured table: options.raw.json carries
+ * `5-deep-storage` and friends with `hasExpr` and no price, and the capture's
+ * own notModelled list names storage outright. Pricing a combo from the
+ * fully-enclosed wall rows was the closest the data could get, and it is a
+ * different rule from the manufacturer's.
+ *
+ * See docs/superpowers/notes/2026-09-04-combo-pricing-verification.md for the
+ * seven measurements that would decode it.
+ */
+describe('a combo refuses to price rather than guessing', () => {
+  const combo = (enclosedDepthFt: number) => quoteFromTable({ ...base, enclosedDepthFt }, T);
+
+  it('reports the enclosure as unpriceable', () => {
+    const q = combo(10);
+    expect(q.unpriceable ?? []).not.toHaveLength(0);
+    expect((q.unpriceable ?? []).join(' ')).toMatch(/combo enclosure/i);
   });
 
-  // The frame is the same building either way — only the walls change.
-  it('does not change the base price', () => {
-    const sum = (q: { lines: { category: string; amount: number }[] }, c: string) =>
-      q.lines.filter(l => l.category === c).reduce((n, l) => n + l.amount, 0);
-    const full = quoteFromTable({ ...base, enclosedDepthFt: 30 }, T);
-    const combo = quoteFromTable({ ...base, enclosedDepthFt: 10 }, T);
-    expect(sum(combo, 'base-price')).toBe(sum(full, 'base-price'));
+  it('prices no wall lines, so the total cannot read as a complete price', () => {
+    expect(combo(10).lines.filter(l => l.category === 'wall')).toHaveLength(0);
   });
 
-  // Two side walls at the depth, plus the closed outer end and the divider.
-  it('still prices four walls — two sides, the outer end and the divider', () => {
-    const q = quoteFromTable({ ...base, enclosedDepthFt: 10 }, T);
-    expect(q.lines.filter(l => l.category === 'wall')).toHaveLength(4);
+  it('refuses at every depth, not merely some', () => {
+    for (const d of [5, 10, 15, 20, 25]) {
+      expect(combo(d).unpriceable ?? []).not.toHaveLength(0);
+    }
   });
 
-  it('prices the side walls from the depth bracket, so a deeper combo costs more', () => {
-    const shallow = quoteFromTable({ ...base, enclosedDepthFt: 10 }, T);
-    const deep = quoteFromTable({ ...base, enclosedDepthFt: 25 }, T);
-    expect(wallTotal(deep)).toBeGreaterThan(wallTotal(shallow));
+  // The frame is a real building and stays priced. Only the enclosure is
+  // unknown; the refusal is what stops the total being shown as a quote.
+  it('still prices the frame', () => {
+    const base_ = combo(10).lines.filter(l => l.category === 'base-price');
+    expect(base_.reduce((n, l) => n + l.amount, 0)).toBeGreaterThan(0);
   });
 
-  // Outside the measured envelope it refuses rather than falling back to the
-  // much lower open-carport price. 16ft legs are outside the captured wall
-  // table (no leg-height, side-wall or end-wall row reaches that height), so
-  // this is pinned unconditionally rather than left as an if-branch.
-  it('reports unpriceable rather than guessing when no wall row covers it', () => {
-    const q = quoteFromTable({ ...base, legHeightFt: 16, enclosedDepthFt: 10 }, T);
-    expect(wallTotal(q)).toBe(0);
-    expect(q.unpriceable?.length ?? 0).toBeGreaterThan(0);
+  // The two ends of the range are not combos and must be untouched.
+  it('does not refuse a fully enclosed building or an open one', () => {
+    expect(quoteFromTable({ ...base, enclosedDepthFt: 30 }, T).unpriceable ?? []).toHaveLength(0);
+    expect(quoteFromTable({ ...base, enclosedDepthFt: 0 }, T).unpriceable ?? []).toHaveLength(0);
   });
 });
 
-/**
- * The wall lines are read by a human — they render in the designer's price
- * breakdown and in the quote reply the dealer sends. All four used to read
- * "Fully Enclosed", so on a 30ft combo with a 10ft enclosure the dealer was
- * shown "Left Side: Fully Enclosed" for a 10ft wall and "Back End: Fully
- * Enclosed" for what is actually the interior divider: four settled-looking
- * facts, two of them false, over the one number on this branch that is still
- * an assumption.
- */
-describe('a combo\'s wall lines say what they are', () => {
+describe('a fully enclosed building is unchanged', () => {
   const wallLabels = (enclosedDepthFt: number) =>
     quoteFromTable({ ...base, enclosedDepthFt }, T)
-      .lines.filter(l => l.category === 'wall').map(l => l.label);
-
-  it('gives the side walls the depth they actually cover', () => {
-    const labels = wallLabels(10);
-    expect(labels).toContain('Left Side: Enclosed 10ft of 30ft');
-    expect(labels).toContain('Right Side: Enclosed 10ft of 30ft');
-    // Never the claim that a 10ft wall runs the whole building.
-    expect(labels).not.toContain('Left Side: Fully Enclosed');
-  });
-
-  it('names the divider for what it is, and says how it is priced', () => {
-    const labels = wallLabels(10);
-    expect(labels).toContain('Closed End: Fully Enclosed');
-    expect(labels.some(l => /^Dividing Wall:/.test(l))).toBe(true);
-    // The open assumption is visible to the dealer reading the quote, not
-    // only to someone who opens the verification note.
-    expect(labels.find(l => /^Dividing Wall:/.test(l))).toMatch(/end wall/i);
-    // A combo has no "Back End" — that is the divider, and calling it one is
-    // the specific thing that misread as a settled fact.
-    expect(labels.some(l => /^Back End/.test(l))).toBe(false);
-  });
+      .lines.filter(l => l.category === 'wall')
+      .map(l => l.label);
 
   /**
    * Every other type's labels are unchanged. They appear in customer-facing

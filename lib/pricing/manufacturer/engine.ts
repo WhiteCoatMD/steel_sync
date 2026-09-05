@@ -374,7 +374,35 @@ export function quoteFromTable(
   //
   // Prices are already CHARGED amounts (the surcharge does not touch walls), so
   // they bypass push() and go in at face value.
-  const enclosed = enclosedDepthFt > 0;
+  /**
+   * A PARTIAL enclosure — a combo — is refused rather than estimated.
+   *
+   * The vendor does not sell "a building with shorter walls". They sell
+   * STORAGE at a given depth: `options.raw.json` carries `5-deep-storage`,
+   * `10-deep-storage` and the rest, every one marked `hasExpr` with no price,
+   * computed client-side. The 2026-08-27 capture's own `notModelled` list names
+   * storage as never decoded, and `walls.raw.json` holds exactly one wall type
+   * across all 1020 rows — `fully-enclosed-wall`. There is no partial-wall or
+   * dividing-wall price in our data at all.
+   *
+   * Pricing a combo from the fully-enclosed rows was the closest the captured
+   * data could get, and it is a different rule from the vendor's — a structural
+   * guess, not an assumption worth spot-checking. Everything else here refuses
+   * to put a figure in front of a customer that it did not derive from a real
+   * price book, and this now meets the same bar.
+   *
+   * docs/superpowers/notes/2026-09-04-combo-pricing-verification.md names the
+   * seven measurements that would decode the rule. Once they exist, the real
+   * table goes in tejasmex.json and this branch reads it.
+   */
+  const partiallyEnclosed = enclosedDepthFt > 0 && enclosedDepthFt < requestedLengthFt;
+  if (partiallyEnclosed) {
+    unpriceable.push(
+      `combo enclosure (${enclosedDepthFt}ft of ${requestedLengthFt}ft): the manufacturer prices this as storage at depth, and that rule is not in the captured table`,
+    );
+  }
+
+  const enclosed = enclosedDepthFt > 0 && !partiallyEnclosed;
   if (enclosed) {
     // Wall price does NOT vary with roof style - the vendor's own wall rows carry
     // no style key at all, only a horizontal and a vertical price column. What it
