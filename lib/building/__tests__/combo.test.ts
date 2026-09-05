@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isComboType, enclosedDepthFt, comboSpan, comboDepthOptions, clampComboDepth,
   COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt,
-  dividerZFt, sideWallAuthoredRun, COMBO_DEFAULT_END,
+  dividerZFt, sideWallAuthoredRun, COMBO_DEFAULT_END, isMisconfiguredCombo,
 } from '../combo';
 import type { BuildingDimensions } from '../types';
 
@@ -371,5 +371,45 @@ describe('the default anchor end', () => {
   it('resolves a null end the same way comboSpan does', () => {
     const span = comboSpan(dims30({ enclosedDepthFt: 10 } as BuildingDimensions['combo']));
     expect(dividerZFt(span, null)).toBe(20);
+  });
+});
+
+describe('isMisconfiguredCombo', () => {
+  const b = (over: Partial<BuildingDimensions>): BuildingDimensions =>
+    ({
+      type: 'combo', widthFt: 24, lengthFt: 30, legHeightFt: 9,
+      roofStyle: 'vertical', roofPitch: '4:12', orientation: 'length-facing-front',
+      panelDirection: { walls: 'horizontal', roof: 'vertical' },
+      combo: { enclosedDepthFt: 10, end: 'back' },
+      ...over,
+    }) as BuildingDimensions;
+
+  it('is false for a combo we can place the dividing wall on', () => {
+    expect(isMisconfiguredCombo(b({}))).toBe(false);
+  });
+
+  // The distinction the name exists for: a garage is not a combo, so it is not
+  // a BROKEN combo either, and the renderer must keep drawing its four walls.
+  it('is false for every type that is not a combo', () => {
+    for (const type of ['carport', 'garage', 'barn', 'shop', 'rv-cover'] as const) {
+      expect(isMisconfiguredCombo(b({ type, combo: undefined }))).toBe(false);
+    }
+  });
+
+  it('is true for every way a split can fail', () => {
+    expect(isMisconfiguredCombo(b({ combo: undefined }))).toBe(true);
+    expect(isMisconfiguredCombo(b({ combo: { enclosedDepthFt: 0, end: 'back' } }))).toBe(true);
+    expect(isMisconfiguredCombo(b({ combo: { enclosedDepthFt: 30, end: 'back' } }))).toBe(true);
+    expect(isMisconfiguredCombo(b({ combo: { enclosedDepthFt: 45, end: 'back' } }))).toBe(true);
+    expect(isMisconfiguredCombo(b({ combo: { enclosedDepthFt: 12, end: 'back' } }))).toBe(true);
+  });
+
+  // It must agree with what the pricing engine does, or the screen and the
+  // quote go back to disagreeing.
+  it('is true exactly when the building encloses nothing despite being a combo', () => {
+    expect(enclosedDepthFt(b({ combo: undefined }))).toBe(0);
+    expect(isMisconfiguredCombo(b({ combo: undefined }))).toBe(true);
+    expect(enclosedDepthFt(b({}))).toBe(10);
+    expect(isMisconfiguredCombo(b({}))).toBe(false);
   });
 });

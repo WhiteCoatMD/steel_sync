@@ -191,3 +191,72 @@ describe('a garage and a carport are untouched by the combo clamp', () => {
     expect(found('op1').positionFt).toBe(27);
   });
 });
+
+/**
+ * A restored design is the last door into the store, and it was the last one
+ * left unclamped.
+ *
+ * Every other write path — updateBuilding, applyAIConfig, addOpening — now
+ * constrains a side-wall opening to the enclosed run. A share link made before
+ * combos existed, or edited by hand, could still carry one sitting in the open
+ * carport half: the adapter prices its component key, the renderer has no wall
+ * to draw it in, and the customer is charged for a door that is not on the
+ * building. The lean-to on the very next line was already clamped for the
+ * analogous reason.
+ */
+describe('restoring a shared design', () => {
+  const encode = (payload: unknown) =>
+    Buffer.from(JSON.stringify(payload)).toString('base64');
+
+  it('pulls a side-wall opening out of the carport half and into the enclosure', () => {
+    const ok = useDesignerStore.getState().loadDesign(
+      encode({
+        dealerId: 'tejasmex',
+        building: { type: 'combo', widthFt: 24, lengthFt: 30, legHeightFt: 9,
+                    combo: { enclosedDepthFt: 10, end: 'back' } },
+        openings: [{
+          id: 'op_restored', type: 'rollup', widthFt: 8, heightFt: 7,
+          wall: 'left', positionFt: 2, color: null,
+        }],
+      }),
+    );
+    expect(ok).toBe(true);
+
+    const o = useDesignerStore.getState().config!.openings.find(x => x.id === 'op_restored')!;
+    // Rear-anchored on a 30ft building: the enclosure is 20-30ft, so a door
+    // authored at 2ft was in the open half and must have moved.
+    expect(o.positionFt).toBeGreaterThanOrEqual(20);
+    expect(o.positionFt + o.widthFt).toBeLessThanOrEqual(30);
+  });
+
+  it('leaves an opening that was already inside the enclosure alone', () => {
+    useDesignerStore.getState().loadDesign(
+      encode({
+        dealerId: 'tejasmex',
+        building: { type: 'combo', widthFt: 24, lengthFt: 30, legHeightFt: 9,
+                    combo: { enclosedDepthFt: 10, end: 'back' } },
+        openings: [{
+          id: 'op_inside', type: 'walkin', widthFt: 3, heightFt: 7,
+          wall: 'left', positionFt: 22, color: null,
+        }],
+      }),
+    );
+    expect(useDesignerStore.getState().config!.openings.find(x => x.id === 'op_inside')!.positionFt)
+      .toBe(22);
+  });
+
+  it('does not disturb a garage, which has no enclosed run to speak of', () => {
+    useDesignerStore.getState().loadDesign(
+      encode({
+        dealerId: 'tejasmex',
+        building: { type: 'garage', widthFt: 24, lengthFt: 30, legHeightFt: 9 },
+        openings: [{
+          id: 'op_garage', type: 'walkin', widthFt: 3, heightFt: 7,
+          wall: 'left', positionFt: 20, color: null,
+        }],
+      }),
+    );
+    expect(useDesignerStore.getState().config!.openings.find(x => x.id === 'op_garage')!.positionFt)
+      .toBe(20);
+  });
+});

@@ -482,11 +482,20 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       // `combo` field off a non-combo type.
       const building = normaliseCombo({ ...base.building, ...parsed.building });
       const leanTos: LeanTo[] = Array.isArray(parsed.leanTos) ? parsed.leanTos : base.leanTos;
+      const openings: Opening[] = Array.isArray(parsed.openings) ? parsed.openings : base.openings;
+      const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
       const restored: BuildingConfig = {
         ...base,
         building,
         colors: { ...base.colors, ...parsed.colors },
-        openings: Array.isArray(parsed.openings) ? parsed.openings : base.openings,
+        // Clamped for the same reason the lean-tos below are, and for one more
+        // that arrived with combos: a side-wall opening restored verbatim can
+        // sit in the open carport half, where the adapter still prices its
+        // component key but the renderer has no wall to draw it in. The
+        // customer is then charged for a door that is not on the building.
+        // Every other write path clamps; a link made before combos existed, or
+        // edited by hand, is the only way one still gets in.
+        openings: openings.map(o => clampOpening(o, building, rules)),
         // Restored verbatim, an encoded lean-to could overrun its wall and
         // reopen the quote/geometry mismatch a6d0c8c closed — buildLeanTo()
         // renders the clamped extent while the config (and therefore the

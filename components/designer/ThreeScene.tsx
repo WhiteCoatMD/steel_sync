@@ -8,7 +8,7 @@ import { useDesignerStore } from '@/lib/store/designerStore';
 import { buildBuilding, type BuildingResult } from '@/lib/building/buildBuilding';
 import type { Opening, BuildingConfig, BuildingDimensions } from '@/lib/building/types';
 import { buildRoofProfile } from '@/lib/building/roof';
-import { comboSpan, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt, dividerZFt, type ComboSpan, COMBO_DEFAULT_END } from '@/lib/building/combo';
+import { comboSpan, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt, dividerZFt, type ComboSpan, COMBO_DEFAULT_END, isMisconfiguredCombo } from '@/lib/building/combo';
 
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -339,7 +339,23 @@ function BuildingModel() {
   // length. comboSpan is null for every other type, so they behave exactly
   // as before — a garage still gets four walls, a carport still gets none.
   const span = useMemo(() => comboSpan(config.building), [config.building]);
-  const isOpen = config.building.type === 'carport' || config.building.type === 'rv-cover';
+  /**
+   * A combo we cannot place the dividing wall on draws as a bare frame, not as
+   * a garage.
+   *
+   * comboSpan returns null for two different things — "not a combo" and "a
+   * combo with no usable split" — and this file used to read both as the
+   * first, so a configuration the pricing engine refuses to put a number on
+   * appeared on screen as a finished four-walled building. The screen and the
+   * quote now say the same thing: we do not know what this is.
+   *
+   * Unreachable through the designer, which guarantees a valid split on every
+   * path. It takes a hand-edited share link — which is exactly when the picture
+   * should not look confident.
+   */
+  const broken = useMemo(() => isMisconfiguredCombo(config.building), [config.building]);
+  const isOpen =
+    config.building.type === 'carport' || config.building.type === 'rv-cover' || broken;
   // The frame runs the full length whatever is bolted to it. A carport draws
   // it because there is nothing else to draw; a combo draws it for the same
   // reason over its open half — the walls cover it where they exist. A

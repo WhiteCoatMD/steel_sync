@@ -204,6 +204,26 @@ export function dividerZFt(span: ComboSpan | null, end: 'front' | 'back' | null)
  * some. An invalid combo encloses none, so it prices as unpriceable rather than
  * quietly as a carport.
  */
+/**
+ * A combo whose split cannot be placed.
+ *
+ * `comboSpan` returns null for two different things — "this is not a combo"
+ * and "this is a combo we cannot place the dividing wall on" — and its two
+ * consumers were resolving that the opposite way from each other. Pricing read
+ * the null as zero enclosed feet and refused; the renderer read it as "not a
+ * combo" and drew all four walls, so a configuration the engine would not put a
+ * price on appeared on screen as a finished garage.
+ *
+ * Neither reading is wrong on its own. What was wrong was that the same null
+ * meant two things, so this names the case they need to tell apart. The store
+ * guarantees a valid split on every path it owns, so reaching this takes a
+ * hand-edited share link or a forged payload — which is exactly when the screen
+ * should not be claiming the building is fine.
+ */
+export function isMisconfiguredCombo(b: BuildingDimensions): boolean {
+  return isComboType(b.type) && comboSpan(b) == null;
+}
+
 export function enclosedDepthFt(b: BuildingDimensions): number {
   if (OPEN_TYPES.has(b.type)) return 0;
   if (isComboType(b.type)) return comboSpan(b)?.depthFt ?? 0;
