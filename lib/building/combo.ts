@@ -85,15 +85,48 @@ export function sideWallRun(wall: SideWallId, span: ComboSpan | null, lengthFt: 
 }
 
 /**
+ * The stretch of a side wall that actually exists, expressed in the SAME
+ * coordinates an opening's `positionFt` is authored in (front-to-back for
+ * `left`, back-to-front for `right`).
+ *
+ * `sideWallRun` answers the renderer's question — where to put the wall's mesh
+ * in building-Z. This answers the store's: which authored positions an opening
+ * on that wall may take. They are not the same number on the right wall, whose
+ * authored axis runs the other way.
+ *
+ * `span == null` degenerates to the wall's whole original run starting at 0,
+ * which is exactly the non-combo case, so callers need no separate branch.
+ */
+export function sideWallAuthoredRun(
+  wall: SideWallId,
+  span: ComboSpan | null,
+  lengthFt: number,
+): { startFt: number; runLengthFt: number } {
+  const { originZFt, runLengthFt } = sideWallRun(wall, span, lengthFt);
+  return { startFt: wall === 'left' ? originZFt : lengthFt - originZFt, runLengthFt };
+}
+
+/**
  * Where one side-wall opening lands, or null if it falls outside the
  * enclosed span (in the open carport part, where there is no wall for it to
  * sit in).
  *
  * `positionFt` is the opening's authored position on its own wall — for
  * `left` that already runs front-to-back in building-Z, but for `right` it
- * runs back-to-front (mirrored, per `wallFrame.ts`), so it must be converted
- * to building-Z (`L - positionFt`) before it can be tested against the span
- * or re-based onto the shortened wall's own origin.
+ * runs back-to-front (mirrored, per `wallFrame.ts`). Both are tested against
+ * `sideWallAuthoredRun`, which is that same wall's run in that same authored
+ * frame, so the two walls are compared like with like without either one
+ * having to be converted to building-Z here.
+ *
+ * Tested as the half-open interval `[start, start + run)` in the wall's OWN
+ * direction, which is the only convention that means the same thing on both
+ * walls. Comparing the right wall's converted building-Z against the span's
+ * `[startFt, endFt)` instead — as this did — silently reflected the open end
+ * of the interval onto the wrong side of that wall: an opening flush against
+ * the dividing wall was dropped (priced, never drawn) while one starting off
+ * the far end of the building was kept. The store's clamp and this test must
+ * agree exactly, or the clamp parks openings on the one position that will
+ * not render.
  */
 export function sideWallOpeningPositionFt(
   wall: SideWallId,
@@ -102,10 +135,9 @@ export function sideWallOpeningPositionFt(
   lengthFt: number,
 ): number | null {
   if (span == null) return positionFt;
-  const buildingZFt = wall === 'left' ? positionFt : lengthFt - positionFt;
-  if (buildingZFt < span.startFt || buildingZFt >= span.endFt) return null;
-  const { originZFt } = sideWallRun(wall, span, lengthFt);
-  return wall === 'left' ? positionFt - originZFt : positionFt - (lengthFt - originZFt);
+  const { startFt, runLengthFt } = sideWallAuthoredRun(wall, span, lengthFt);
+  if (positionFt < startFt || positionFt >= startFt + runLengthFt) return null;
+  return positionFt - startFt;
 }
 
 /**
@@ -127,9 +159,7 @@ export function sideWallOpeningAuthoredPositionFt(
   span: ComboSpan | null,
   lengthFt: number,
 ): number {
-  const { originZFt } = sideWallRun(wall, span, lengthFt);
-  const offsetFt = wall === 'left' ? originZFt : lengthFt - originZFt;
-  return wallLocalPositionFt + offsetFt;
+  return wallLocalPositionFt + sideWallAuthoredRun(wall, span, lengthFt).startFt;
 }
 
 /**

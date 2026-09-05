@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isComboType, enclosedDepthFt, comboSpan, comboDepthOptions, clampComboDepth,
   COMBO_DEPTH_STEP_FT, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt,
-  dividerZFt,
+  dividerZFt, sideWallAuthoredRun,
 } from '../combo';
 import type { BuildingDimensions } from '../types';
 
@@ -188,6 +188,33 @@ describe('sideWallOpeningPositionFt', () => {
 
     expect(sideWallOpeningPositionFt('right', positionFt, frontSpan, L)).toBe(5); // correct: kept
   });
+
+  /**
+   * The boundary, on the wall where it is easy to get backwards.
+   *
+   * The run is half-open in each wall's OWN direction: flush against the
+   * dividing wall is ON the wall, one past the far end is not. Testing the
+   * right wall's converted building-Z against `[startFt, endFt)` reflects that
+   * open end onto the wrong side, which drops the flush opening (the store
+   * clamps openings to exactly that position, so it would be priced and never
+   * drawn) and keeps one that starts off the end of the building.
+   */
+  it('right wall: keeps an opening flush against the dividing wall', () => {
+    // positionFt=20 is building-Z 10..7 for a 3ft door — inside the 0-10 span,
+    // with its origin corner exactly on the divider.
+    expect(sideWallOpeningPositionFt('right', 20, frontSpan, L)).toBe(0);
+  });
+
+  it('right wall: drops an opening starting past the far end of the wall', () => {
+    // positionFt=30 is building-Z 0 — the very front corner, where the right
+    // wall's shortened run has already ended.
+    expect(sideWallOpeningPositionFt('right', 30, frontSpan, L)).toBeNull();
+  });
+
+  it('left wall: the same boundary, the same way round', () => {
+    expect(sideWallOpeningPositionFt('left', 0, frontSpan, L)).toBe(0);
+    expect(sideWallOpeningPositionFt('left', 10, frontSpan, L)).toBeNull();
+  });
 });
 
 describe('dividerZFt', () => {
@@ -254,5 +281,45 @@ describe('sideWallOpeningAuthoredPositionFt', () => {
   // would read back as building-Z 25, outside the span, and vanish.
   it('recovers the correct authored position for a right-wall drag (front-anchored)', () => {
     expect(sideWallOpeningAuthoredPositionFt('right', 5, frontSpan, L)).toBe(25);
+  });
+});
+
+/**
+ * The store's question, which is not the renderer's: which authored positions
+ * may an opening on this wall take? On the right wall that is a different
+ * number from `sideWallRun`'s origin, because the authored axis runs the
+ * other way — and treating the two as one is how a right-wall opening ends up
+ * clamped to the wrong half of the building.
+ */
+describe('sideWallAuthoredRun', () => {
+  it('is the whole wall, from zero, when there is no span', () => {
+    expect(sideWallAuthoredRun('left', null, L)).toEqual({ startFt: 0, runLengthFt: L });
+    expect(sideWallAuthoredRun('right', null, L)).toEqual({ startFt: 0, runLengthFt: L });
+  });
+
+  it('puts the two walls at OPPOSITE ends of their own axes', () => {
+    // Front-anchored: enclosed is buildingZ 0-10. The left wall measures from
+    // the front, so that is 0-10 for it; the right measures from the back, so
+    // the same feet are 20-30 for it.
+    expect(sideWallAuthoredRun('left', frontSpan, L)).toEqual({ startFt: 0, runLengthFt: 10 });
+    expect(sideWallAuthoredRun('right', frontSpan, L)).toEqual({ startFt: 20, runLengthFt: 10 });
+  });
+
+  it('swaps them for a back-anchored enclosure', () => {
+    expect(sideWallAuthoredRun('left', backSpan, L)).toEqual({ startFt: 20, runLengthFt: 10 });
+    expect(sideWallAuthoredRun('right', backSpan, L)).toEqual({ startFt: 0, runLengthFt: 10 });
+  });
+
+  // The two functions have to agree, or an opening the store considers legal
+  // is one the renderer refuses to draw.
+  it('spans exactly the positions sideWallOpeningPositionFt accepts', () => {
+    for (const [wall, span] of [['left', frontSpan], ['right', frontSpan],
+                                ['left', backSpan], ['right', backSpan]] as const) {
+      const { startFt, runLengthFt } = sideWallAuthoredRun(wall, span, L);
+      for (let p = 0; p <= L; p++) {
+        const inRun = p >= startFt && p < startFt + runLengthFt;
+        expect(sideWallOpeningPositionFt(wall, p, span, L) != null).toBe(inRun);
+      }
+    }
   });
 });

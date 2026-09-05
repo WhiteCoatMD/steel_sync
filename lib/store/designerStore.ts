@@ -12,13 +12,21 @@ import type {
   LeanTo,
   Opening,
   RoofStyle,
+  WallId,
 } from '../building/types';
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
 import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { wallFrame } from '../building/wallFrame';
 import { largestFittingSize } from '../building/openingSizes';
-import { clampComboDepth, comboDepthOptions, isComboType, COMBO_DEPTH_STEP_FT } from '../building/combo';
+import {
+  clampComboDepth,
+  comboDepthOptions,
+  comboSpan,
+  isComboType,
+  sideWallAuthoredRun,
+  COMBO_DEPTH_STEP_FT,
+} from '../building/combo';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -42,6 +50,31 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
 }
 
 /**
+ * The stretch of wall an opening may occupy, in the coordinates its
+ * `positionFt` is authored in.
+ *
+ * `wallFrame` still reports a combo's left/right walls as running the whole
+ * building — it describes the FRAME, and changing that is a bigger decision
+ * than this clamp. But on a combo only part of that frame carries a wall: the
+ * rest is the open carport half. An opening placed out there is priced (the
+ * adapter pushes its componentKey like any other) and then never drawn
+ * (`sideWallOpeningPositionFt` returns null for it), so the customer is
+ * charged for a door that is not on the building. Reachable straight from the
+ * UI: 30ft combo, 10ft enclosure, drag a roll-up down the left wall.
+ *
+ * Consulting `comboSpan` here fixes it for both writes — position and size —
+ * because both go through this one function. A garage or a carport has no
+ * span, and degenerates to the wall's full run at 0, exactly as before.
+ */
+function openingRun(wall: WallId, building: BuildingDimensions): { startFt: number; runLengthFt: number } {
+  const wallLengthFt = wallFrame(wall, building).lengthFt;
+  if (wall !== 'left' && wall !== 'right') return { startFt: 0, runLengthFt: wallLengthFt };
+  const span = comboSpan(building);
+  if (span == null) return { startFt: 0, runLengthFt: wallLengthFt };
+  return sideWallAuthoredRun(wall, span, building.lengthFt);
+}
+
+/**
  * Clamp an opening's positionFt to its wall's extent, mirroring
  * clampLeanToLength above. Applied on every write (position, size, or wall
  * change) so the stored config never holds an opening hanging off the end of
@@ -58,9 +91,9 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
  * concept of "clamped") never got checked post-clamp.
  */
 function clampOpeningPosition(opening: Opening, building: BuildingDimensions): Opening {
-  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
-  const maxPositionFt = Math.max(0, wallLengthFt - opening.widthFt);
-  const positionFt = Math.min(Math.max(opening.positionFt, 0), maxPositionFt);
+  const { startFt, runLengthFt } = openingRun(opening.wall, building);
+  const maxPositionFt = Math.max(startFt, startFt + runLengthFt - opening.widthFt);
+  const positionFt = Math.min(Math.max(opening.positionFt, startFt), maxPositionFt);
   if (positionFt === opening.positionFt) return opening;
   return { ...opening, positionFt };
 }
@@ -75,7 +108,11 @@ function clampOpeningPosition(opening: Opening, building: BuildingDimensions): O
  * quoting an estimate.
  */
 function resizeOpeningToFit(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
-  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
+  // The RUN, not the frame's length: on a combo a 12ft door does not fit a
+  // 10ft enclosure just because the frame it hangs on is 30ft long. This also
+  // covers the previously-deferred case of a door rendering past the end of
+  // the wall it is on.
+  const wallLengthFt = openingRun(opening.wall, building).runLengthFt;
   const fitsAlready = opening.heightFt <= building.legHeightFt && opening.widthFt <= wallLengthFt;
   if (fitsAlready) return opening;
 
@@ -281,9 +318,14 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   addOpening: (opening) => {
     const { config, dealerSettings } = get();
     if (!config) return;
+    const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
     const next: BuildingConfig = {
       ...config,
-      openings: [...config.openings, opening],
+      // Clamped on the way IN as well as on every later write. The sidebar's
+      // "add a window" places one 10ft down the left wall, which on a combo
+      // with a 10ft enclosure is already out over the open half — priced and
+      // never drawn — before the customer touches it.
+      openings: [...config.openings, clampOpening(opening, config.building, rules)],
     };
     set({ config: withPricing(next, dealerSettings) });
   },
