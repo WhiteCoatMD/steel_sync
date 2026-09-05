@@ -1105,3 +1105,117 @@ git commit -m "Check combo prices against the manufacturer's own configurator"
 **The boolean-to-depth change must not move any existing number.** `lib/db/__tests__/dealerPricingLive.test.ts` pins the live dealer's quote at exact figures and is the canary. If it moves, you have a bug, not a test to update.
 
 **The assistant is out of scope.** No changes to `lib/ai/**` or `lib/inbound/**`. A combo the engine cannot price is already handled: it comes back unpriceable and the bot hands off.
+
+---
+
+### Task 8: Retire the warehouse type
+
+**Files:**
+- Modify: `lib/building/types.ts` (the `BuildingType` union)
+- Modify: `lib/db/dealers.ts` (`ALL_BUILDING_TYPES`)
+- Modify: `components/designer/BuildingDesigner.tsx` (the `BUILDING_TYPES` picker entry)
+- Modify: `lib/ai/configFromPrompt.ts` (the prompt's type list, `TYPE_PATTERN`, the type map)
+- Modify: `lib/ai/parseRequest.ts` (the JSON shape shown to the model)
+- Modify: `lib/building/__tests__/combo.test.ts` (two loops that enumerate the old types)
+- Test: `lib/building/__tests__/buildingTypes.test.ts`
+
+**Interfaces:**
+- Consumes: nothing.
+- Produces: `BuildingType` loses `'warehouse'`.
+
+Added mid-plan at the owner's request. **This task is authorised to change `lib/ai/**`** despite the plan's global constraint, which exists to keep *combo* away from the assistant until its pricing is verified — a different concern. Leaving `parseRequest.ts` telling the model to emit `"warehouse"` after the union drops it would have the parser produce configs that no longer typecheck.
+
+**Why this is safe.** Type feeds exactly two decisions: whether the building is enclosed (pricing) and whether walls are drawn (geometry). Garage, barn, shop and warehouse are identical on both counts — four labels over one product. Removing one changes no price and no geometry.
+
+**Follow the `InstallOption` precedent** in `lib/building/types.ts`, which dropped `'diy'` from a union and left a comment saying why: dropping a member means a config *cannot express it at all*, rather than the app merely happening not to offer it.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `lib/building/__tests__/buildingTypes.test.ts`:
+
+```ts
+import { describe, it, expect } from 'vitest';
+import { STANDARD_COLORS } from '../defaultConfig';
+import { classifyType } from '../../ai/configFromPrompt';
+
+/**
+ * Warehouse was one of four labels over the same product — garage, barn, shop
+ * and warehouse are priced and drawn identically — and nobody sold it as its
+ * own thing. It is gone from the union so a config cannot express it at all.
+ *
+ * The WORD stays understood, because customers say it whatever the catalogue
+ * calls it, exactly as "shop" and "workshop" already map to a garage.
+ */
+describe('the warehouse type is retired', () => {
+  it('a customer asking for a warehouse still gets understood', () => {
+    expect(classifyType('i need a 40x60 warehouse')).toBe('garage');
+  });
+
+  it('the words that already mapped to a garage still do', () => {
+    expect(classifyType('a shop building')).toBe('garage');
+    expect(classifyType('workshop please')).toBe('garage');
+  });
+
+  it('still recognises the types that remain', () => {
+    expect(classifyType('24x30 carport')).toBe('carport');
+    expect(classifyType('a barn')).toBe('barn');
+    expect(classifyType('rv cover')).toBe('rv-cover');
+  });
+
+  // Guards the whole point: the colour list is untouched, so this is a
+  // canary that the type removal did not disturb unrelated catalogue data.
+  it('leaves the colour catalogue alone', () => {
+    expect(STANDARD_COLORS.length).toBeGreaterThan(10);
+  });
+});
+```
+
+If `configFromPrompt.ts` does not already export a function that maps a phrase to a `BuildingType`, extract the existing `TYPE_PATTERN` match and its type map into one — named `classifyType(text: string): BuildingType | null` — and use it from wherever that logic currently sits. Do not duplicate the mapping.
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `npx vitest run lib/building/__tests__/buildingTypes.test.ts`
+Expected: FAIL — either `classifyType` does not exist, or it returns `'warehouse'`.
+
+- [ ] **Step 3: Drop it from the union**
+
+In `lib/building/types.ts`:
+
+```ts
+/**
+ * No 'warehouse' member: it was one of four labels over the same product.
+ * Garage, barn, shop and warehouse are priced and drawn identically — type
+ * feeds only "is it enclosed" and "does it get walls" — and none of them was
+ * sold as its own thing (owner, 2026-09-04). Dropping it from the union means
+ * a config cannot express it at all, rather than the designer merely happening
+ * not to offer it. The parser still understands the WORD and maps it to a
+ * garage, because customers say it regardless.
+ */
+export type BuildingType =
+  | 'carport' | 'garage' | 'barn' | 'shop' | 'rv-cover'
+  | 'combo';
+```
+
+- [ ] **Step 4: Follow it through every enumeration**
+
+`lib/db/dealers.ts` — drop `'warehouse'` from `ALL_BUILDING_TYPES`.
+
+`components/designer/BuildingDesigner.tsx` — delete the `warehouse` entry from `BUILDING_TYPES`.
+
+`lib/ai/configFromPrompt.ts` — remove `warehouse` from the prompt's type list (line ~37), keep it in `TYPE_PATTERN` so the word is still recognised, and map it to `'garage'` in the type map alongside `shop` and `workshop`.
+
+`lib/ai/parseRequest.ts` — remove `"warehouse"` from the JSON shape shown to the model (line ~52).
+
+`lib/building/__tests__/combo.test.ts` — drop `'warehouse'` from the two loops that enumerate types, at lines ~20 and ~34.
+
+- [ ] **Step 5: Run the test, the suite and the typecheck**
+
+Run: `npx vitest run lib/building/__tests__/buildingTypes.test.ts`, then `npm test`, then `npx tsc --noEmit`.
+Expected: PASS, PASS, no output. The typecheck is what proves you found every enumeration — a missed one will not compile.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add lib/building lib/db/dealers.ts components/designer/BuildingDesigner.tsx lib/ai
+git commit -m "Retire the warehouse type"
+```
