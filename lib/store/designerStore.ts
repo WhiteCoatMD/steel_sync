@@ -346,7 +346,13 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
     // Apply building dimensions/type
     if (ai.building) {
-      next.building = { ...next.building, ...ai.building };
+      // Same normalisation updateBuilding applies: this merge can turn a
+      // building into a combo with no split, shrink it below an existing
+      // enclosed depth, or leave a dividing wall behind after switching away
+      // from combo. Without this, "make it 20ft long" on a 30ft combo with a
+      // 25ft enclosure leaves a 25ft enclosure inside a 20ft building —
+      // unpriceable and nonsense to draw.
+      next.building = normaliseCombo({ ...next.building, ...ai.building });
       // Same re-clamp updateBuilding does: an AI result can shrink widthFt or
       // lengthFt below an existing lean-to's stored length, and this path is
       // live via /api/ai-config. Without it the config quotes a lean-to
@@ -426,7 +432,12 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       const dealerId = config?.dealerId ?? dealerSettings?.id ?? 'default';
 
       const base = createDefaultConfig(dealerId);
-      const building = { ...base.building, ...parsed.building };
+      // A share link may predate the combo feature or be hand-edited, so
+      // normalise the restored building the same way updateBuilding and
+      // applyAIConfig do: give a combo with no split a usable one, clamp an
+      // enclosed depth back inside a shorter building, and strip a stray
+      // `combo` field off a non-combo type.
+      const building = normaliseCombo({ ...base.building, ...parsed.building });
       const leanTos: LeanTo[] = Array.isArray(parsed.leanTos) ? parsed.leanTos : base.leanTos;
       const restored: BuildingConfig = {
         ...base,
