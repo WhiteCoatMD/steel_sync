@@ -162,3 +162,80 @@ kept in step by hand. The frame now answers: `lengthFt` stays the full frame
 wall. `openingFitsOnWall`, `validateOpening`, `findOpenSlot`, `buildWallPanels`
 and the sidebar all read the run; the store's workaround is a two-line
 delegation. Covered by `lib/building/__tests__/wallFrameCombo.test.ts`.
+
+## Measurement session, 2026-09-05
+
+Re-measured on `design.tejasmex.com/?dealer=Columbia` with a scripted driver
+(set width/length/height by typing into the labelled inputs, read the estimate
+off the header). Recorded here so the next pass does not start from scratch.
+
+### The earlier 5-point curve is confirmed clean
+
+The previous session's worry that a stray roll-up door had contaminated the
+readings was wrong. Clearing every wall on both sections (`Center Section` and
+`Center Inner Storage`, four walls each) on a 24x30x9 End Combo at depth 15
+gives **$8,613** — exactly the earlier reading. The doors visible in the
+earlier screenshot were a stale render, not a priced item. So this stands:
+
+| Depth | TejasMex | Ours |
+|-------|---------:|-----:|
+| 5ft  | $8,321 | $7,414 |
+| 10ft | $8,477 | $7,414 |
+| 15ft | $8,613 | $7,414 |
+| 20ft | $8,719 | $7,414 |
+| 25ft | $8,823 | $7,518 |
+
+Steps of +156, +136, +106, +104 per 5ft — climbing and decelerating. Ours is
+flat across 5-20 and steps once at 25. Both the level and the shape are wrong.
+
+Wainscot appears on the enclosed part by default and is a colour choice, not a
+priced line (it is absent from `Materials`, which carries every priced
+upgrade).
+
+### Carport and garage anchors, 24 wide, 9ft legs
+
+| Length | Standard Carport | Garage | Difference |
+|--------|-----------------:|-------:|-----------:|
+| 20ft | $3,128 | $9,398 | $6,270 |
+| 25ft | $3,760 | $9,634 | $5,874 |
+| 30ft | $4,699 | $11,177 | $6,478 |
+
+**The difference is not monotonic in length**, which rules out the tempting
+hypothesis that a garage is a carport plus walls and that storage could
+therefore be priced as the wall cost of a WxD box. They are different base
+products with different base prices. Do not build the storage rule on that
+assumption.
+
+### Why the snapshot cannot answer this
+
+Checked again directly. Every one of the 1020 rows in `walls.raw.json` carries
+the key `fully-enclosed-wall` and no other wall type exists in the file. The
+storage prices live in `options.raw.json` under `t: "wall-footprint"` —
+`front-storage-wall-footprint`, `back-storage-wall-footprint` and friends —
+and every one of them is `hasExpr: 1` with no price recorded. The capture
+stored the fact that an expression exists and dropped the expression. No
+amount of re-reading the snapshot will produce the rule.
+
+### Why a short wall cannot be observed any other way
+
+Our `sideWalls` table brackets on `[0,20]` because **no building is shorter
+than 20ft**, so a whole-building measurement can never produce a 5ft or 10ft
+side wall. A combo's storage is the only configuration in the product that
+exposes one. That is why the bracket is flat, and why the flatness was
+invisible until combos existed.
+
+### What is still needed
+
+The curve above is one width, one length, one leg height. Generalising it to
+other widths and heights would be a guess. Either:
+
+1. **A measurement grid** across widths and leg heights. Practical but slow:
+   the configurator collapses its panel on most interactions and the CDP
+   bridge stalls whenever the 3D view re-renders, so it runs at roughly one
+   reading per two calls with verification.
+2. **Ask TejasMex for the storage expression.** They have it — it is the
+   `*-storage-wall-footprint` expression the capture dropped. One answer
+   replaces the whole grid.
+
+Until one of those lands, a combo quotes a confident number that is $900-$1,300
+low at 24x30x9 and of unknown accuracy elsewhere.
