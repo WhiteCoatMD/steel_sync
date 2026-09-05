@@ -40,9 +40,17 @@ export interface ComboSpan {
  * which end the enclosure is anchored to.
  *
  * One coordinate system for every consumer: geometry places walls in it, and a
- * side-wall opening's positionFt is already in it. Null means "not a validly
- * configured combo" — which is not the same as an error, because a garage is
- * also not a combo.
+ * LEFT-wall opening's positionFt is already in it. A RIGHT-wall opening's is
+ * NOT — that one is measured from the back, because the wall is mirrored (see
+ * `sideWallRun`), so it has to be converted before it can be compared against
+ * this span at all. Reading this sentence as though it covered both walls is
+ * what produced a real right-wall bug earlier in this branch, in the one file
+ * whose whole job is stating this correctly. `sideWallAuthoredRun` and the
+ * helpers below do the conversion, so callers should go through them rather
+ * than testing `positionFt` against a span directly.
+ *
+ * Null means "not a validly configured combo" — which is not the same as an
+ * error, because a garage is also not a combo.
  */
 export function comboSpan(b: BuildingDimensions): ComboSpan | null {
   if (!isComboType(b.type)) return null;
