@@ -121,3 +121,44 @@ A combo produces a confident number that is an approximation of unknown
 accuracy. Everything else in this product refuses to show a customer a figure it
 did not derive from a real price book, and by that standard this does not yet
 qualify.
+
+---
+
+## Geometry check — done, 2026-09-05
+
+The pricing above is still open. The geometry is not: it was checked by eye in
+the running designer at `localhost:3001/designer`, which had been blocked all
+of the previous session by two browser MCP servers being down.
+
+Verified on a 24x30x10 combo:
+
+- The enclosure renders at the **rear**. The camera sits at `[30, 25, -40]`
+  looking at a group centred on `-L/2`, so screen-right is the building's
+  front; the walled block is on screen-left.
+- The dividing wall draws with its gable pitched into the enclosure, and the
+  open half is framed rather than empty — the defect where `FrameMeshes` gated
+  on `isOpen` and left the carport half as bare ground is gone.
+- The roof runs the full length over both halves.
+- Cycling the depth buttons 5 -> 25 moves the divider and both side-wall runs
+  together, and the hint text tracks it exactly (`5` -> "25ft open" ...
+  `25` -> "5ft open").
+- The depth control appears for `combo` and for no other type. `warehouse` is
+  gone from the picker.
+- Garage, Barn and Shop all still quote $9,818; Carport and RV Cover both
+  $6,086. Combo at $9,584 sits between them, as it should.
+
+The estimate readings also reproduce the pricing defect this note is about,
+from the UI rather than from a test: depths 5, 10, 15 and 20 all quote
+**$9,584** — one flat `[0,20]` sideWalls bracket — and only 25 moves, to
+$9,702. TejasMex's own curve over the same range climbs on every step.
+
+## wallFrame is combo-aware — done, 2026-09-05
+
+`wallFrame` used to report a combo's side walls as running the whole building,
+so `lib/store/designerStore.ts` asked `comboSpan` itself and the two had to be
+kept in step by hand. The frame now answers: `lengthFt` stays the full frame
+(the roofline, eave trim and lean-tos genuinely do run it) and new
+`runStartFt` / `runLengthFt` fields carry the stretch that actually carries
+wall. `openingFitsOnWall`, `validateOpening`, `findOpenSlot`, `buildWallPanels`
+and the sidebar all read the run; the store's workaround is a two-line
+delegation. Covered by `lib/building/__tests__/wallFrameCombo.test.ts`.

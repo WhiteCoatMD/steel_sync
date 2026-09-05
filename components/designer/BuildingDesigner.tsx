@@ -503,18 +503,30 @@ function OpeningSection() {
     // the sizes the size <select> itself offers, and never prices as
     // 'Estimated' for a dealer whose openingPrices omits these historical
     // literal sizes.
-    const placement: Record<Opening['type'], Pick<Opening, 'wall' | 'positionFt'>> = {
-      rollup:   { wall: 'front', positionFt: 3 },
-      walkin:   { wall: 'front', positionFt: 2 },
-      window:   { wall: 'left',  positionFt: 10 },
-      frameout: { wall: 'front', positionFt: 3 },
+    // Position is an INSET from where the wall starts, not an absolute
+    // building coordinate. On a combo the left wall begins at the divider, so
+    // a literal 10ft would land out in the open half; the store would then
+    // clamp it and the sidebar would show a different number from the one it
+    // just wrote. Both the offset and the size come off the wall's run for
+    // the same reason — a 12ft door must not be offered for a 10ft enclosure
+    // and then silently shrunk.
+    const placement: Record<Opening['type'], { wall: WallId; insetFt: number }> = {
+      rollup:   { wall: 'front', insetFt: 3 },
+      walkin:   { wall: 'front', insetFt: 2 },
+      window:   { wall: 'left',  insetFt: 10 },
+      frameout: { wall: 'front', insetFt: 3 },
     };
-    const wallLengthFt = wallFrame(placement[type].wall, building).lengthFt;
+    const { wall, insetFt } = placement[type];
+    const { runStartFt, runLengthFt } = wallFrame(wall, building);
     const { widthFt, heightFt } = defaultOpeningSize(type, pricingRules, {
       legHeightFt: building.legHeightFt,
-      wallLengthFt,
+      wallLengthFt: runLengthFt,
     });
-    addOpening({ id, type, widthFt, heightFt, color: null, ...placement[type] });
+    const positionFt = Math.min(
+      runStartFt + insetFt,
+      Math.max(runStartFt, runStartFt + runLengthFt - widthFt),
+    );
+    addOpening({ id, type, widthFt, heightFt, color: null, wall, positionFt });
   }, [addOpening, pricingRules, building]);
 
   return (
@@ -524,7 +536,9 @@ function OpeningSection() {
         <p className="mb-2 text-xs text-gray-400">No openings added yet.</p>
       )}
       {openings.map(op => {
-        const wallLengthFt = wallFrame(op.wall, building).lengthFt;
+        // The run again, so the size <select> and the position input agree
+        // with what the store will accept on a combo's shortened side wall.
+        const { runStartFt, runLengthFt: wallLengthFt } = wallFrame(op.wall, building);
         return (
         <div key={op.id} onClick={() => selectOpening(op.id)}
           className={`mb-2 flex cursor-pointer items-center gap-2 rounded-md border p-2 transition ${
@@ -568,8 +582,8 @@ function OpeningSection() {
                   value={op.positionFt}
                   onChange={e => updateOpening(op.id, { positionFt: Number(e.target.value) })}
                   className="w-10 bg-transparent text-[10px]"
-                  min={0}
-                  max={Math.max(0, wallLengthFt - op.widthFt)}
+                  min={runStartFt}
+                  max={Math.max(runStartFt, runStartFt + wallLengthFt - op.widthFt)}
                   step={1}
                 />
                 ft

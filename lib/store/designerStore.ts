@@ -22,9 +22,7 @@ import { largestFittingSize } from '../building/openingSizes';
 import {
   clampComboDepth,
   comboDepthOptions,
-  comboSpan,
   isComboType,
-  sideWallAuthoredRun,
   COMBO_DEPTH_STEP_FT,
   COMBO_DEFAULT_END,
 } from '../building/combo';
@@ -54,25 +52,21 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
  * The stretch of wall an opening may occupy, in the coordinates its
  * `positionFt` is authored in.
  *
- * `wallFrame` still reports a combo's left/right walls as running the whole
- * building — it describes the FRAME, and changing that is a bigger decision
- * than this clamp. But on a combo only part of that frame carries a wall: the
- * rest is the open carport half. An opening placed out there is priced (the
- * adapter pushes its componentKey like any other) and then never drawn
- * (`sideWallOpeningPositionFt` returns null for it), so the customer is
- * charged for a door that is not on the building. Reachable straight from the
- * UI: 30ft combo, 10ft enclosure, drag a roll-up down the left wall.
+ * `wallFrame` answers this now — see the combo note there. It used to report a
+ * combo's side walls as running the whole building, so this function asked
+ * `comboSpan` itself; the two then had to be kept in step by hand. On a combo
+ * only part of the frame carries a wall, and an opening placed out in the open
+ * carport half is priced (the adapter pushes its componentKey like any other)
+ * and then never drawn, so the customer is charged for a door that is not on
+ * the building. Reachable straight from the UI: 30ft combo, 10ft enclosure,
+ * drag a roll-up down the left wall.
  *
- * Consulting `comboSpan` here fixes it for both writes — position and size —
- * because both go through this one function. A garage or a carport has no
- * span, and degenerates to the wall's full run at 0, exactly as before.
+ * Both writes — position and size — go through this one function, and a
+ * garage or carport's run is its whole wall at 0, exactly as before.
  */
 function openingRun(wall: WallId, building: BuildingDimensions): { startFt: number; runLengthFt: number } {
-  const wallLengthFt = wallFrame(wall, building).lengthFt;
-  if (wall !== 'left' && wall !== 'right') return { startFt: 0, runLengthFt: wallLengthFt };
-  const span = comboSpan(building);
-  if (span == null) return { startFt: 0, runLengthFt: wallLengthFt };
-  return sideWallAuthoredRun(wall, span, building.lengthFt);
+  const f = wallFrame(wall, building);
+  return { startFt: f.runStartFt, runLengthFt: f.runLengthFt };
 }
 
 /**
