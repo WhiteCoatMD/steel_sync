@@ -11,6 +11,7 @@ import { ThreeScene } from './ThreeScene';
 import type { BuildingType, ColorOption, CustomerInfo, DealerSettings, Opening, RoofPitch, RoofStyle, WallId } from '@/lib/building/types';
 import { formatQuoteTotal, isQuoteIncomplete, incompleteReasons } from '@/lib/pricing/quoteDisplay';
 import { canShowPrice } from '@/lib/pricing/canQuote';
+import { comboDepthOptions, isComboType } from '@/lib/building/combo';
 
 // ═══════════════════════════════════════════════════════════════
 // ROOT COMPONENT
@@ -225,6 +226,7 @@ const BUILDING_TYPES: { value: BuildingType; label: string; icon: string }[] = [
   { value: 'shop', label: 'Shop', icon: 'M3 20V9L12 3L21 9V20H15V13H9V20ZM10 9H14V7H10Z' },
   { value: 'warehouse', label: 'Warehouse', icon: 'M2 20V10L12 4L22 10V20ZM6 16H10V12H6ZM14 16H18V12H14Z' },
   { value: 'rv-cover', label: 'RV Cover', icon: 'M3 18V16H5V10L12 5L19 10V16H21V18ZM8 16H16V11L12 8L8 11Z' },
+  { value: 'combo', label: 'Combo', icon: 'M3 20V10L12 4L21 10V20H12V13H7V20ZM14 18H19V12H14Z' },
 ];
 
 function BuildingTypeSection() {
@@ -268,8 +270,55 @@ function DimensionSection() {
     <Section title="Dimensions" defaultOpen>
       <Slider label="Width" value={b.widthFt} {...c.width} unit="ft" onChange={v => update({ widthFt: v })} />
       <Slider label="Length" value={b.lengthFt} {...c.length} unit="ft" onChange={v => update({ lengthFt: v })} />
+      <ComboDepthControl />
       <Slider label="Leg Height" value={b.legHeightFt} {...c.legHeight} unit="ft" onChange={v => update({ legHeightFt: v })} />
     </Section>
+  );
+}
+
+/**
+ * How deep the enclosed end runs.
+ *
+ * Buttons rather than a slider because a dealer picks a depth, they do not dial
+ * one in. The steps are the same 5ft the building's own length uses, and the
+ * row stops one step short of the length because a combo enclosed end to end is
+ * a garage. On a very long building the row wraps, which is fine.
+ */
+function ComboDepthControl() {
+  const building = useDesignerStore((s) => s.config!.building);
+  const update = useDesignerStore((s) => s.updateBuilding);
+
+  if (!isComboType(building.type)) return null;
+
+  const options = comboDepthOptions(building.lengthFt);
+  const current = building.combo?.enclosedDepthFt;
+
+  return (
+    <div className="mt-4">
+      <div className="mb-1.5 flex items-baseline justify-between">
+        <label className="text-xs font-medium text-gray-700">Enclosed depth</label>
+        <span className="text-[11px] text-gray-500">
+          {current != null ? `${building.lengthFt - current}ft open` : ''}
+        </span>
+      </div>
+      <div role="group" aria-label="Enclosed depth in feet" className="flex flex-wrap gap-1.5">
+        {options.map(d => (
+          <button
+            key={d}
+            type="button"
+            aria-pressed={d === current}
+            onClick={() => update({ combo: { enclosedDepthFt: d, end: building.combo?.end ?? 'front' } })}
+            className={
+              d === current
+                ? 'rounded border border-blue-500 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700'
+                : 'rounded border border-gray-300 px-2.5 py-1 text-xs text-gray-700 hover:border-gray-400'
+            }
+          >
+            {d}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
