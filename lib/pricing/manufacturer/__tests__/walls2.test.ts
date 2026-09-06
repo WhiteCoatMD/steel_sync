@@ -21,6 +21,38 @@ import walls2 from '../../../../data/vendor-snapshots/2026-08-27-tejasmex/walls2
 interface Row { w: number; h: number; l: number; side: number; end: number }
 const rows = walls2 as unknown as Row[];
 
+/**
+ * THE VENDOR RAISED VERTICAL SIDING PRICES AFTER THIS FILE WAS CAPTURED.
+ *
+ * walls2-measured.json is left exactly as taken on 2026-08-28 -- it was right
+ * on the day. Re-measured on 2026-09-06, a 20x25x9 vertical garage is $8,354
+ * where the first capture says $7,004. Horizontal did not move.
+ *
+ * The change is a per-bracket side correction and a per-width end correction,
+ * both measured on 2026-09-06 and applied here rather than edited into the
+ * snapshot. lib/pricing/__tests__/vendorParity.test.ts checks them
+ * independently against 284 totals read off the vendor that day.
+ *
+ * Note the end correction is per EXACT WIDTH, not per band: 20 and 24 sit in
+ * the same band and differ (630 vs 675). That was caught by re-measuring two
+ * 24-wide buildings from the first capture, which came out 90 short under a
+ * band-wide assumption.
+ */
+const SIDE_CORRECTION: Record<string, number> = {
+  '0-20': 0, '21-25': 45, '26-30': 90, '31-35': 135, '36-40': 180,
+  '41-45': 225, '46-50': 270, '51-55': 450, '56-60': 495,
+};
+const END_CORRECTION: Record<number, number> = {
+  12: 630, 14: 630, 16: 630, 18: 630, 20: 630, 22: 675, 24: 675, 26: 720, 28: 720, 30: 720,
+};
+const BRACKETS: Array<[number, number]> = [
+  [0, 20], [21, 25], [26, 30], [31, 35], [36, 40], [41, 45], [46, 50], [51, 55], [56, 60],
+];
+/** Today's wall money for a row captured before the rise. */
+const wallsNow = (r: Row) =>
+  2 * (r.side + SIDE_CORRECTION[BRACKETS.find(b => r.l >= b[0] && r.l <= b[1])!.join('-')]) +
+  2 * (r.end + END_CORRECTION[r.w]);
+
 const RULES: DealerPricingRules = { ...DEFAULT_PRICING_RULES, manufacturerKey: 'tejasmex' };
 
 function enclosed(widthFt: number, lengthFt: number, legHeightFt: number): BuildingConfig {
@@ -38,7 +70,7 @@ const wallTotal = (p: ReturnType<typeof calculatePrice>) =>
   (p.lineItems ?? []).filter(x => /Side|End/.test(x.label)).reduce((n, x) => n + x.amount, 0);
 
 describe('every measured wall configuration reproduces the app', () => {
-  it.each(rows.map(r => [r.w, r.l, r.h, 2 * r.side + 2 * r.end] as const))(
+  it.each(rows.map(r => [r.w, r.l, r.h, wallsNow(r)] as const))(
     '%ix%i at %ift charges $%i of walls',
     (w, l, h, walls) => {
       const p = calculatePrice(enclosed(w, l, h), RULES);
@@ -48,7 +80,8 @@ describe('every measured wall configuration reproduces the app', () => {
   );
 
   it('leaves the live-measured enclosed reference untouched', () => {
-    expect(calculatePrice(enclosed(24, 25, 9), RULES).total).toBe(8128);
+    // 8128 when captured; +2x45 side +2x675 end after the 2026-09-06 rise.
+    expect(calculatePrice(enclosed(24, 25, 9), RULES).total).toBe(9568);
   });
 });
 
@@ -74,9 +107,12 @@ describe('side walls are band-wide across 26-30', () => {
       (calculatePrice(enclosed(w, 45, 9), RULES).lineItems ?? [])
         .filter(x => /Left Side/.test(x.label))
         .reduce((n, x) => n + x.amount, 0);
-    // Measured directly: both 1188.
+    // Measured directly: both 1188 when captured, both 1413 now (+225 for the
+    // [41,45] bracket). The point of the test is the equality, which the rise
+    // leaves untouched -- the correction is per bracket, so it moves 26 and 28
+    // by the same amount.
     expect(side(26)).toBe(side(28));
-    expect(side(26)).toBe(1188);
+    expect(side(26)).toBe(1188 + 225);
   });
 });
 

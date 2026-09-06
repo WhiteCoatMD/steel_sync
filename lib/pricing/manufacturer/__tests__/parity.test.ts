@@ -140,7 +140,9 @@ describe('refuses to invent a price', () => {
     // Measured with VERTICAL siding; horizontal is the default now.
     const q = quoteFromTable({ ...BASE, enclosedDepthFt: 25, siding: 'vertical' }, table);
     expect(q.unpriceable).toBeUndefined();
-    expect(q.subtotal).toBe(8128); // live estimate for 24x25x9 fully enclosed
+    // Live estimate for 24x25x9 fully enclosed: 8128 on 2026-08-27, 9568 after
+    // the vendor raised vertical siding on 2026-09-06.
+    expect(q.subtotal).toBe(9568);
   });
 
   it('reports enclosed walls outside the measured envelope rather than guessing', () => {

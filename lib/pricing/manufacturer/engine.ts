@@ -432,6 +432,37 @@ export function quoteFromTable(
       for (const label of endLabels) {
         lines.push({ label, category: 'wall', listAmount: end.price, amount: end.price });
       }
+      // An enclosed building can carry a charge that our four walls cannot
+      // express, because it scales with the FRAME rather than the enclosure. At
+      // 12ft legs a 30ft combo is short by the same amount with 5ft of storage
+      // as with 25ft, and that amount is exactly what a 30ft GARAGE is short by
+      // -- so it follows the building's length, and is looked up with
+      // lengthFt, never enclosedDepthFt.
+      //
+      // Measured at every length and both width bands. Nothing exists below
+      // 12ft legs, where the walls alone already reproduce the vendor to the
+      // dollar, so most buildings never touch this.
+      const surcharge = table.enclosedSurcharge?.find(
+        r =>
+          inBracket(widthFt, r.widthBand) &&
+          inBracket(lengthFt, r.length) &&
+          r.heightFt === legHeightFt,
+      );
+      if (surcharge && !surcharge.measuredLegTypes.includes(legType)) {
+        // Measured on standard legs only. A double-legged frame is a different
+        // building, so its surcharge is unknown rather than zero — and quoting
+        // it without one would under-charge by several hundred dollars.
+        unpriceable.push(
+          `tall-wall surcharge is unmeasured for ${legType} at ${widthFt}x${lengthFt}x${legHeightFt}ft`,
+        );
+      } else if (surcharge) {
+        lines.push({
+          label: `Tall Wall Surcharge: ${legHeightFt}ft legs on a ${lengthFt}ft enclosed building`,
+          category: 'wall',
+          listAmount: surcharge.price,
+          amount: surcharge.price,
+        });
+      }
     } else {
       if (!side) {
         unpriceable.push(

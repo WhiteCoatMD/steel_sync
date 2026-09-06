@@ -102,6 +102,37 @@ export interface SideWallRow {
   price: number;
 }
 
+/**
+ * An extra charge that lands on any ENCLOSED building, keyed by the length of
+ * the FRAME rather than by how much of it is enclosed.
+ *
+ * Measured, not invented. At 12ft legs every enclosed building came in short by
+ * an amount our four wall prices could not express: a 30ft combo was short by
+ * the same figure at 5ft of storage as at 25ft, and that figure was exactly the
+ * shortfall of a 30ft GARAGE. Whatever the vendor is charging for scales with
+ * the building, not with the enclosure, so it cannot live in sideWalls -- a
+ * combo looks those up by its enclosed depth.
+ *
+ * Empty at every leg height where the walls already reproduce the vendor
+ * exactly, which is 6ft through 11ft: verified against measured garages at all
+ * nine lengths and both width bands.
+ */
+export interface EnclosedSurchargeRow {
+  widthBand: Bracket;
+  /** Matched against the building's LENGTH, not its enclosed depth. */
+  length: Bracket;
+  heightFt: number;
+  price: number;
+  /**
+   * Which leg types this was measured under. Everything here was measured on
+   * standard legs, and a double-legged building is a different frame, so
+   * applying this price to one would be a guess. Same treatment the Skytrack
+   * fee already gets: outside the measured set the build is refused, not
+   * quoted at a number nobody checked.
+   */
+  measuredLegTypes: string[];
+}
+
 /** A fully-enclosed end wall (spans the WIDTH). Varies by exact width, not band. */
 export interface EndWallRow {
   siding: Siding;
@@ -128,6 +159,8 @@ export interface ManufacturerTable {
   deposit: { tiers: Array<{ minSubtotal: number; percent: number }> };
   sideWalls: SideWallRow[];
   endWalls: EndWallRow[];
+  /** See EnclosedSurchargeRow. Absent or empty means nothing extra is charged. */
+  enclosedSurcharge?: EnclosedSurchargeRow[];
   /**
    * Measured leg-height prices (already CHARGED) filling holes the derived
    * ladder does not cover. Each carries the leg type it was measured under.

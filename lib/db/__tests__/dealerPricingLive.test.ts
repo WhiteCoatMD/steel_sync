@@ -44,6 +44,8 @@ describe('the live dealer row shape prices from the captured table', () => {
     cfg.building = { ...cfg.building, type: 'garage' };
     const p = calculatePrice(cfg, mergePricingRules(liveRow));
     expect(p.unpriceable).toBeUndefined();
-    expect(p.total).toBe(8128);
+    // 8128 when measured 2026-08-27; 9568 since the vendor raised vertical
+    // siding on 2026-09-06 (+2x45 side, +2x675 end). See walls.test.ts.
+    expect(p.total).toBe(9568);
   });
 });

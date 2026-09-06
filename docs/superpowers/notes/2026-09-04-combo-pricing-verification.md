@@ -697,3 +697,109 @@ run it is in this note and in `walls.mjs` / `anchors.mjs`.
 Until then the vertical rows are left exactly as they were. They are wrong by
 $1,400 on a plain garage, which is bad, but they are wrong in a way that is now
 measured, understood and written down rather than silently approximated.
+
+---
+
+# Vertical siding and 12ft legs, both fixed — 2026-09-06
+
+Both defects named above are now measured and closed. `vendorParity.test.ts`
+asserts **287 totals read off the vendor**, every one to the dollar: both
+sidings, all seven leg heights, all ten sellable widths, carports, garages at
+all nine lengths, and combos at every depth.
+
+## The vendor raised vertical siding prices
+
+Not a modelling error and not the certification fee. The 2026-08-27 capture was
+right on the day; the vendor has since put vertical up.
+
+| 20x25x9 vertical garage | total |
+|---|---:|
+| measured 2026-08-27 | 7004 |
+| measured 2026-09-06 | 8354 |
+
+The old row itemises `cert: 315` and its parts sum to 7004, and the new reading
+carries the same certified line, so the $1,350 is entirely walls. Horizontal did
+not move at all — 161 of 163 rows in `wallsHorizontal.test.ts` still pass
+untouched, and the two that do not are vertical assertions living in that file.
+
+## How it was measured, and why premiums
+
+Deriving wall prices from `total - carport` needs the carport baseline to be
+right, and it is verified at only four sizes -- at 25ft with 12ft legs it is
+demonstrably 64 low. So everything here comes from a **premium**: a vertical
+total minus a horizontal total at the identical size. Base price, leg height and
+certification are identical between the two and cancel exactly. Nothing
+unverified is left in the arithmetic.
+
+The split between `side` and `end` is unobservable -- every enclosed
+configuration in the product uses two of each, so moving money between them
+cancels everywhere. It is pinned by a measured fact rather than a preference:
+**the vertical premium is flat in enclosure depth below 15ft**, which can only
+mean a short storage side wall costs the same in either siding. Confirmed at 6,
+7 and 8ft legs and at both widths.
+
+## The two corrections
+
+| side bracket | 0-20 | 21-25 | 26-30 | 31-35 | 36-40 | 41-45 | 46-50 | 51-55 | 56-60 |
+|---|---|---|---|---|---|---|---|---|---|
+| correction | +0 | +45 | +90 | +135 | +180 | +225 | +270 | +450 | +495 |
+
+Depends only on the length bracket -- identical at every leg height and in both
+width bands. Checked at [21,25] across all seven heights in both bands, and
+across the long brackets at 6, 7 and 12ft legs.
+
+| end width | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 | 28 | 30 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| correction | +630 | +630 | +630 | +630 | +630 | +675 | +675 | +720 | +720 | +720 |
+
+Constant across all seven leg heights for a given width, verified at widths 20
+and 30 at every height.
+
+**Do not fill this by band.** Widths 12 through 20 all give +630, which made a
+band-wide value look safe. Width 24 is in that same band and is +675. The
+2026-08-27 dataset caught it: two 24-wide buildings came out exactly 90 short.
+`endWalls` is keyed by exact width precisely because the price varies inside a
+band, and the correction does too. The merge now refuses outright if any
+sellable width lacks its own measurement.
+
+## 12ft legs: a surcharge on the FRAME, not the enclosure
+
+The 12ft shortfall was never a wall price. Its size follows the **building's
+length**, not how much of it is enclosed:
+
+- a 30ft combo is short by the same amount at 5ft of storage as at 25ft
+- and that amount is exactly what a 30ft GARAGE is short by
+- 20 wide and 24 wide are short by identical amounts, so it is band-keyed
+
+That cannot live in `sideWalls`, which a combo looks up by depth, so
+`enclosedSurcharge` is a new table keyed by `(widthBand, length, heightFt)` and
+looked up with the frame length. Measured at every length in both bands; nothing
+exists below 12ft legs, where the walls alone already reproduce the vendor.
+
+It is scoped to `standard-legs`, the only frame it was measured on. A
+double-legged 12ft enclosed build is refused rather than quoted -- the same
+treatment the Skytrack fee already gets, and the reason the five double-leg rows
+in `walls-measured.json` now assert a refusal instead of a total.
+
+## The non-certified path is verified too
+
+Every parity point was certified, because the vendor page defaults that way and
+a like-for-like comparison has to match it. But the product defaults the other
+way, so three configurations were re-measured with certification switched off:
+
+| not certified | vendor | ours |
+|---|---:|---:|
+| 24x30x9 garage, horizontal | 7622 | 7622 |
+| 20x30x9 carport | 3381 | 3381 |
+| 20x25x9 garage, vertical | 8039 | 8039 |
+
+The path customers actually get is now measured rather than assumed.
+
+## The historical snapshots are left alone
+
+`walls-measured.json` and `walls2-measured.json` are 2026-08-27/28 captures and
+stay exactly as taken. Their tests apply the 2026-09-06 correction in the test
+file, where the provenance is visible, rather than editing today's prices into a
+file whose name says 2026-08-27. Four of their own rows were re-measured
+directly to confirm the correction reproduces them exactly: 20x25x9, 24x30x9,
+30x35x8 and 24x60x6.
