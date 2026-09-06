@@ -320,3 +320,70 @@ heightFt)` and the combo path already looks the wall up with
 building is shorter than 20ft, so a whole-building measurement can never
 produce a side wall under 20ft — a combo's storage is the only configuration
 that exposes one.
+
+## The actual source of the noise: clearing is flaky, not the pricing
+
+Everything above about "path dependence" was chasing a symptom. The decisive
+test: the SAME config, same code, two consecutive fresh pages.
+
+```
+20x30x8, 20ft enclosure  ->  $6,067
+20x30x8, 20ft enclosure  ->  $6,967
+```
+
+$900 apart, which is exactly the roll-up door. Clearing a wall means clicking
+its tab and then its Clear button; when the tab has not re-rendered yet the
+Clear lookup misses, that wall keeps its openings, and the build silently
+carries the door. It fails intermittently, so runs disagreed with each other
+and with themselves.
+
+That single bug explains every earlier contradiction — the "hidden state that
+accumulates as sizes change", the sweep that would not return to its starting
+value, the three runs that produced three different level sets. There is no
+mysterious hysteresis in the vendor's app. There was a flaky clear.
+
+**The fix** is `clearVerified()`: repeat the whole clearing pass until a pass
+changes nothing. Only a no-op pass proves every wall is actually empty. Every
+config now converges in 2 passes and is reproducible:
+
+| Config | Result |
+|---|---|
+| 20x30x8 d20, twice | $6,067 both times |
+| 20x30x9 d10 | $6,194 |
+| 24x30x9 d10 | $7,577 |
+
+The two anchors are unchanged from the values derived independently, so those
+two readings were clean by luck rather than by construction.
+
+**Standing rule for this rig:** never trust a single clearing pass, and never
+accept a measurement run whose repeat of one config disagrees with the
+original.
+
+## The decomposition is confirmed
+
+Only the two side walls vary with enclosure depth, so
+
+```
+sideWall(d) = sideWall(20) + [ total(d) - total(20) ] / 2
+```
+
+with `sideWall(20)` the existing `[0,20]` bracket price. The model predicts the
+d20->d25 step as `2 x ([21,25] - [0,20])`, and that matches the measured step
+at every leg height tested:
+
+| Legs | predicted | measured |
+|---|---:|---:|
+| 8ft  | 2 x (362-320) = 84  | 84 |
+| 9ft  | 2 x (398-346) = 104 | 104 |
+| 10ft | 2 x (444-385) = 118 | 118 |
+| 12ft | 2 x (522-486) = 72  | 72 |
+
+So the grid of totals converts directly into `sideWalls` rows, anchored on
+prices already in the table.
+
+## Scope limit worth stating
+
+`endWalls` covers widths 0-30 only and `sideWalls` has bands [12,24] and
+[26,30]. Widths of 32ft and up have no enclosed-wall price at all today, for
+garages as much as combos. Extending past 30ft needs its own end-wall
+measurement pass and is not part of this work.
