@@ -12820,7 +12820,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 6,
@@ -12833,7 +12833,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 7,
@@ -12846,7 +12846,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 10,
@@ -12859,7 +12859,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 11,
@@ -12872,7 +12872,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 12,
@@ -13405,7 +13405,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 9,
@@ -13574,7 +13574,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 6,
@@ -13587,7 +13587,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 7,
@@ -13600,7 +13600,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 8,
@@ -13613,7 +13613,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 9,
@@ -13626,7 +13626,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 10,
@@ -13639,7 +13639,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 11,
@@ -13652,7 +13652,7 @@
     24
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 12,
@@ -14172,7 +14172,7 @@
     30
    ],
    "length": [
-    0,
+    16,
     20
    ],
    "heightFt": 8,
@@ -14229,6 +14229,552 @@
    ],
    "heightFt": 8,
    "price": 552
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 6,
+   "price": 75
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 6,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 6,
+   "price": 212
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 7,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 7,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 7,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 8,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 8,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 8,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 9,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 9,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 9,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 10,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 10,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 10,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 11,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 11,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 11,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 12,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 12,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    12,
+    24
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 12,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 6,
+   "price": 75
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 6,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 6,
+   "price": 212
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 7,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 7,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 7,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 8,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 8,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 8,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 9,
+   "price": 147
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 9,
+   "price": 225
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 9,
+   "price": 293
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 10,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 10,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 10,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 11,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 11,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 11,
+   "price": 444
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    1,
+    5
+   ],
+   "heightFt": 12,
+   "price": 173
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    6,
+    10
+   ],
+   "heightFt": 12,
+   "price": 297
+  },
+  {
+   "siding": "horizontal",
+   "widthBand": [
+    26,
+    30
+   ],
+   "length": [
+    11,
+    15
+   ],
+   "heightFt": 12,
+   "price": 444
   }
  ],
  "endWalls": [

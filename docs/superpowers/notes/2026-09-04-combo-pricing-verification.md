@@ -409,3 +409,206 @@ prices already in the table.
 [26,30]. Widths of 32ft and up have no enclosed-wall price at all today, for
 garages as much as combos. Extending past 30ft needs its own end-wall
 measurement pass and is not part of this work.
+
+---
+
+# The grid is measured, and the combo fix is in — 2026-09-06
+
+## The method is settled
+
+The one-page depth sweep, which the path-dependence scare had ruled out, is
+sound once the clear is verified by counting components. It reproduces the
+one-config-at-a-time readings exactly, checked four separate times:
+
+| Config | one at a time | swept in one page |
+|---|---|---|
+| 20x30x9, all five depths | 6038 6194 6330 6436 6540 | identical |
+| 20x30x8, all five depths | 5721 5877 6013 6067 6151 | identical |
+| 24x30x9 d10 | 7577 | 7577 |
+| 20x30x6 vertical, all five | — | repeated a second run exactly |
+
+So a (width, leg height) group is one fresh page and one depth sweep, which is
+what made a 14-group grid affordable at all.
+
+## The $405 that was never there
+
+Every combo, every garage AND a plain carport all came out $405 under the
+vendor. A carport has no walls, so it could not be a wall price — that is the
+only reason it was caught before being folded into one.
+
+`$405 = $450 x 0.9`: the 27-31ft certification with the vendor's -10% width
+surcharge on it. **The vendor page defaults to certified**
+(`certified-140mph-30-20`, confirmed by reading the Materials control), and the
+comparison was passing `engineered: false`. The engine was right and the
+harness was wrong.
+
+Anything comparing against this vendor must pass `engineered: true`, and that is
+now written into the parity test rather than into anyone's memory.
+
+## The measured curves
+
+Fourteen groups, lengths fixed at 30ft, every reading on a build cleared to zero
+opening components, each sweep re-reading a depth at the end to prove it did not
+drift.
+
+| Legs | 20 wide: 5 / 10 / 15 / 20 / 25 | 30 wide: 5 / 10 / 15 / 20 / 25 |
+|---|---|---|
+| 6ft  | 5109 5253 5383 5429 5493 | 9318 9462 9592 9658 9718 |
+| 7ft  | 5511 5667 5803 5767 5857 | 9835 9991 10127 10075 10195 |
+| 8ft  | 5721 5877 6013 6067 6151 | 10207 10363 10499 10499 10683 |
+| 9ft  | 6038 6194 6330 6436 6540 | 10592 10748 10884 10976 11146 |
+| 10ft | 6429 6677 6971 6853 6971 | 11120 11368 11662 11524 11792 |
+| 11ft | 6821 7069 7363 7355 7487 | 11499 11747 12041 12001 12277 |
+| 12ft | 7499 7747 8041 8125 8197 | 15021 15269 15563 15641 15915 |
+
+24x30x9 was measured as a band check: 7421 7577 7713 7819 7923.
+
+**Their curve really is non-monotonic.** At 10ft and 11ft legs, both widths, a
+20ft enclosure prices BELOW a 15ft one. It reproduced on every run. The table
+reproduces it rather than smoothing it, and that is deliberate.
+
+## The rows, and why they can be trusted
+
+`sideWall(d) = sideWall(20) + [total(d) - total(20)] / 2`, anchored on the
+existing `[0,20]` price. The check is d25, which is measured AND already in the
+table from the original wall measurement: the model has to reproduce `[21,25]`
+without being told it. **It does, for all 14 curves.** A curve failing that
+check emits no rows at all.
+
+| Legs | 1-5ft | 6-10ft | 11-15ft |
+|---|---:|---:|---:|
+| 6ft | 75 | 147 | 212 |
+| 7, 8, 9ft | 147 | 225 | 293 |
+| 10, 11, 12ft | 173 | 297 | 444 |
+
+Identical across BOTH width bands, and 24-wide independently reproduces
+20-wide's row. The short-wall price turns out to depend only on a coarse height
+tier, which is why one width per band was enough.
+
+## What changed in the data
+
+42 rows added, and the 14 matching horizontal `[0,20]` rows narrowed to
+`[16,20]`.
+
+The narrowing is not cosmetic. `inBracket(5, [0,20])` is true, so leaving
+`[0,20]` in place makes a 5ft enclosure match two rows and lets `Array.find`
+take whichever is listed first. Narrowing makes the brackets disjoint. (The
+engine has a `mostSpecific` helper for the vendor's own catch-all rows, but this
+catch-all was ours, so it was removed rather than tolerated.)
+
+Nothing is stranded: the 28 `[0,20]` rows are 2 sidings x 2 bands x 7 heights,
+and the merge refuses to run if a narrowing would leave a depth unpriceable.
+
+## Where we now stand against the manufacturer
+
+`lib/pricing/__tests__/vendorParity.test.ts` asserts our total equals the
+vendor's **to the dollar** at 77 measured points — combos at every depth,
+carports, and garages. 67 pass exactly. The 10 that do not are all 12ft legs,
+and are described below.
+
+Before this change, a 24x30x9 combo with a 10ft enclosure quoted $7,819 against
+the vendor's $7,577. It now quotes $7,577.
+
+## Open: 12ft legs, and it is not a combo bug
+
+Every enclosed building at 12ft legs is short by a constant that does not move
+with enclosure depth: **$287 at 20 wide, $692 at 30 wide** (length 30).
+
+It is not the combo, and this change did not cause it. A plain **garage** at
+12ft — priced entirely from rows this change never touched — is short by the
+same amount:
+
+| 12ft legs | vendor | ours | short by |
+|---|---:|---:|---:|
+| carport 20x20 | 2802 | 2802 | — |
+| carport 20x30 | 4112 | 4112 | — |
+| carport 20x40 | 5682 | 5682 | — |
+| carport 30x30 | 6885 | 6885 | — |
+| garage 20x20 | 6789 | 6528 | 261 |
+| garage 20x30 | 8393 | 8106 | 287 |
+| garage 20x40 | 10477 | 10034 | 443 |
+| combo 20x30 d5..d25 | — | — | 287 at every depth |
+
+Carports at 12ft are exact at four sizes, so base price, certification and the
+leg-height charge are all correct. The gap is entirely in the walls.
+
+**But it cannot be a merely wrong wall price.** With base/cert/leg exact, the
+wall money the vendor charges is 3987 / 4281 / 4795 at lengths 20 / 30 / 40 —
+all **odd** — while `2 x side + 2 x end` is even for any integer wall prices.
+No set of four integer walls can produce those totals. Checked and ruled out:
+
+- Not a forced material upgrade. Read the vendor's Materials selections for a
+  carport and a garage at 20x30x12: both `14-gauge-framing`,
+  `certified-140mph-30-20`, `29-gauge-sheet-metal`, `colored-screws-none`,
+  `none-im`. The only difference is that the garage has a siding control at all.
+- Not leftover openings. Every reading is on a build cleared to zero components.
+- Not the Skytrack fee, which we already apply at 30 wide and which leaves the
+  30-wide gap at $692 regardless.
+
+The likely explanation is in this note already: the vendor computes wall prices
+from an **expression** (every wall option is `hasExpr` with no price attached),
+and our table is a measured integer approximation of it. At 6-11ft legs those
+integers reproduce the expression exactly, at 12ft they stop.
+
+Fixing it is a wall-price measurement pass — the same shape of work as vertical
+siding below — not a combo change. The 12ft points are `it.skip` in
+`vendorParity.test.ts` with their measured values kept, so they turn green on
+their own when the wall prices are fixed.
+
+**One honest consequence of landing the rows at 12ft.** The derived 12ft rows
+are anchored on the same wrong `[0,20]` price, so they inherit its error
+uniformly. A 20x30x12 combo used to be +$339 at d5 and +$91 at d10; it is now
+-$287 at every depth. d10 is numerically worse. That is deliberate: the shape is
+now right and the residual is a single constant that one fix removes, rather
+than an error that changes sign with depth.
+
+## Vertical siding is wrong at the source
+
+Vertical siding was measured too, and it does not survive the d25 check at any
+height. It is not a combo problem either:
+
+| 20x30x6 vertical | vendor | ours | short by |
+|---|---:|---:|---:|
+| combo d5 | 7023 | 6377 | 646 |
+| combo d10 | 7167 | 6377 | 790 |
+| combo d15 | 7297 | 6377 | 920 |
+| combo d20 | 7637 | 6377 | 1260 |
+| combo d25 | 7857 | 6507 | 1350 |
+| **garage (full)** | **8089** | **6649** | **1440** |
+
+A plain vertical **garage** is $1,440 under. There is no combo logic in that
+number at all. For comparison the horizontal equivalents match to the dollar.
+
+The stored vertical rows are only ~11% above horizontal, while the vendor
+charges roughly 40% more for vertical siding on the same building. So
+**every vertical-sided enclosed building we quote is over a thousand dollars
+light** — garages included, and that predates combos entirely.
+
+No vertical short-depth rows were added. Adding them would paper over a bigger
+defect with numbers derived from a broken anchor, so the vertical `[0,20]` rows
+are left exactly as they were: no new failure mode, and the real problem stays
+visible. Fixing it means re-measuring vertical wall prices from garages across
+lengths, which is its own pass.
+
+Measured vertical curves, kept so that pass does not start from scratch:
+
+| Legs | 20 wide: 5 / 10 / 15 / 20 / 25 | 30 wide: 5 / 10 / 15 / 20 / 25 |
+|---|---|---|
+| 6ft | 7023 7167 7297 7637 7857 | 11934 12078 12208 12664 12878 |
+| 7ft | 7423 7579 7715 7971 8219 | 12449 12605 12741 13083 13353 |
+| 8ft | 7633 7789 7925 8271 8513 | — |
+
+## The rig, for whoever picks this up
+
+`scripts/probe-tejasmex.js` plus a small driver. Three things that cost real
+time to learn:
+
+- **Panels toggle.** `P.tab('Size')` on an already-open panel COLLAPSES it, and
+  a collapsed panel is unmounted, so `sizeControl` returns null and every read
+  comes back as nulls. Retry the toggle until the control is actually there
+  rather than tracking panel state.
+- **Read the size back before leaving the Size tab**, for the same reason.
+- **Do not run two probe browsers at once.** The clearing pass is driven by
+  wall-clock sleeps, so CPU contention makes it miss walls and report "clear
+  unstable". A grid at CONC=2 is fine on its own; adding a third browser broke
+  four groups in a row.
