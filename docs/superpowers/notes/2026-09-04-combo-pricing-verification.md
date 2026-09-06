@@ -342,22 +342,44 @@ accumulates as sizes change", the sweep that would not return to its starting
 value, the three runs that produced three different level sets. There is no
 mysterious hysteresis in the vendor's app. There was a flaky clear.
 
-**The fix** is `clearVerified()`: repeat the whole clearing pass until a pass
-changes nothing. Only a no-op pass proves every wall is actually empty. Every
-config now converges in 2 passes and is reproducible:
+**First fix, and why it was not enough.** Repeating the clearing pass until the
+TOTAL stopped changing still let contaminated rows through: two passes that
+both miss the same wall agree with each other and look perfectly stable while
+the door is still on the building. A run under that rule produced
+`20x30x8 d25 = 7051`, which is $900 above its neighbours and was reported
+`passes=2 OK`.
+
+**The real fix is a positive check.** Openings live in
+`options.present.selections` -- PLURAL, not the `selection` the probe harness
+reads -- as paths carrying a `component` step:
+
+```
+section:center-section > storage:back-storage > position:front >
+  position:slot-1 > component:walk-in-door-36-80-res
+```
+
+`clearVerified()` now repeats until that count is zero, which is the only
+evidence the build is actually empty. Confirmed on the config that was
+flapping: `20x30x8 d25` needed 1 pass one time and 3 the next, and returned
+$6,151 both times. Under the old rule the 3-pass case would have been recorded
+as $7,051.
+
+Reproducible results:
 
 | Config | Result |
 |---|---|
 | 20x30x8 d20, twice | $6,067 both times |
-| 20x30x9 d10 | $6,194 |
+| 20x30x8 d25, twice (1 and 3 passes) | $6,151 both times |
+| 20x30x9 d10, twice | $6,194 both times |
 | 24x30x9 d10 | $7,577 |
 
 The two anchors are unchanged from the values derived independently, so those
 two readings were clean by luck rather than by construction.
 
-**Standing rule for this rig:** never trust a single clearing pass, and never
-accept a measurement run whose repeat of one config disagrees with the
-original.
+**Standing rule for this rig:** verify emptiness by COUNTING the components in
+`options.present.selections`, never by watching the total settle. A stable
+total only proves two passes failed the same way. And never accept a run whose
+repeat of one config disagrees with the original.
 
 ## The decomposition is confirmed
 
