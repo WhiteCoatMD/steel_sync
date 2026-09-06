@@ -612,3 +612,88 @@ time to learn:
   wall-clock sleeps, so CPU contention makes it miss walls and report "clear
   unstable". A grid at CONC=2 is fine on its own; adding a third browser broke
   four groups in a row.
+
+---
+
+# Vertical siding, measured properly — 2026-09-06
+
+Following the defect above. The headline: **the vertical premium is real, large,
+and structured — but it is NOT height-independent, and the cheap fix does not
+exist.** Recorded in detail so the next pass starts from evidence.
+
+## Individual wall prices cannot be measured, and do not need to be
+
+The Sides & Ends tab has a Walls control taking `fully-enclosed` / `gable` /
+`none`, which looks like it decomposes a building into its walls. It does not
+give our table's split:
+
+| 20x30x9 horizontal | total |
+|---|---:|
+| Walls: none | 3786 (equals the carport exactly) |
+| Walls: gable | 5136 |
+| Walls: fully-enclosed | 6644 |
+
+That implies 675 per end and 754 per side. Our table uses 979 per end and 450
+per side. **Both partitions sum to the same 2858 of wall money**, and the vendor
+total is all that is observable.
+
+This is the important structural point: every enclosed configuration in this
+product — garage, barn, shop, combo — uses exactly two side walls and two end
+walls, so moving money between `side` and `end` cancels everywhere. The split is
+unobservable and arbitrary. Only `walls = garage - carport` is real.
+
+**Do not cycle the Walls control on one page.** Setting none -> gable ->
+fully-enclosed left `fully-enclosed` at 7720 where a fresh page gives 6644.
+One mode per boot.
+
+## The vertical premium, and how far it generalises
+
+`premium = vertical total - horizontal total` at the same size. From the combo
+curves (which hold the base constant), the premium is **flat in enclosure depth
+up to 15ft** and then climbs:
+
+| 20 wide, 30 long | d5 | d10 | d15 | d20 | d25 | full 30 |
+|---|---:|---:|---:|---:|---:|---:|
+| premium | 1914 | 1914 | 1914 | 2208 | 2364 | 2516 |
+
+Flat below 15ft means the vendor charges nothing extra for vertical siding on a
+short storage SIDE wall; the whole premium there is the two end walls. It is the
+same story at 7ft and 8ft legs (1912, flat) and at 30 wide (2616 flat at 6ft,
+2614 at 7ft).
+
+That suggested the premium might not depend on leg height at all, which would
+have collapsed 126 vertical rows into 18 numbers. It predicted a vertical garage
+at 20x30x9 of 9158 — **measured 9160**, and at h6 it predicts 8089 —
+**measured 8089, exact**.
+
+**Then it failed.** At 11ft legs it predicts 10159 and the real answer is
+**10453**, a miss of 294 (= 2 x 147). So:
+
+| 20x30 garage premium | 6ft | 9ft | 11ft |
+|---|---:|---:|---:|
+| | 2516 | 2516 | **2810** |
+
+There is height structure, it is weak, and it steps somewhere between 9ft and
+11ft. A single premium constant is wrong.
+
+## What a real fix costs
+
+`walls_v(L, W, h) = garage_v - carport`, with the carport side already verified
+exact. Because the side/end split is free, rows can be written as
+`end_v(W,h) = end_h + a(W,h)` and `side_v(L,band,h) = side_h + b(L,band,h)`.
+
+The measurement is bounded but not small:
+
+- `endWalls` is keyed by EXACT width (0..30), not by band, so `a` needs a width
+  sweep, not one width per band.
+- `sideWalls` has 9 length brackets x 2 bands.
+- Both need enough leg heights to pin the step found above — at minimum 6, 9,
+  10, 11, 12.
+
+Call it 40-60 fresh-page garage measurements at roughly 4 minutes each: 3-4
+hours of machine time, unattended, one browser at a time. Everything needed to
+run it is in this note and in `walls.mjs` / `anchors.mjs`.
+
+Until then the vertical rows are left exactly as they were. They are wrong by
+$1,400 on a plain garage, which is bad, but they are wrong in a way that is now
+measured, understood and written down rather than silently approximated.
