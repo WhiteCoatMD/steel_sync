@@ -239,3 +239,84 @@ other widths and heights would be a guess. Either:
 
 Until one of those lands, a combo quotes a confident number that is $900-$1,300
 low at 24x30x9 and of unknown accuracy elsewhere.
+
+---
+
+## Everything measured before 2026-09-05 is void
+
+Two independent contaminations, both found only once the measurement moved off
+the live browser.
+
+**A $900 roll-up door was in every reading.** The End Combo ships with doors,
+windows and a roll-up. Clearing them is per-wall AND per-section: `Center
+Section` has four walls, `Center Inner Storage` has two more (its front wall is
+the divider, its back wall the closed gable end). In the live browser the panel
+collapsed under automation often enough that the storage section's back wall
+was never actually cleared — the bottom reachable there was $7,094 on a
+20x30x9 d10, where a fully cleared build is **$6,194**. So the
+$8,321/$8,477/$8,613/$8,719/$8,823 curve recorded twice as "clean" carried a
+$900 door throughout. Discard it.
+
+**The vendor's price is path-dependent.** The same building configured two ways
+quotes two different numbers:
+
+| Path to 24x30x9, 10ft enclosure | Quote |
+|---|---:|
+| Fresh page, configured directly | **$7,577** |
+| Same config, reached after stepping through other sizes | $8,007 |
+
+The Redux `options.present.selection` is byte-for-byte identical between the
+two — compared as the full nested structure, not a flattened first-wins map —
+and re-clearing every wall afterwards moves neither number. Some state outside
+the option selection accumulates as sizes change. $7,577 is the trustworthy
+figure: it is what a customer configuring from defaults sees, and it equals the
+old live reading of $8,477 minus exactly the $900 door found above.
+
+**Consequence for method:** a long sweep through many sizes in one page cannot
+be trusted. Each (width, leg height) group gets a FRESH PAGE, and a depth-only
+sweep inside it, with the first depth re-measured at the end as an integrity
+check.
+
+## The vendor's own curve is not monotonic
+
+Reproduced with two independent confirmations per reading, on a 20ft-wide
+building with 10ft legs at length 30:
+
+| Depth | 15ft | 20ft |
+|---|---:|---:|
+| Quote | $6,971 | **$6,853** |
+
+A deeper enclosure costs less. This is in their price book, not in the
+measurement — the table we build has to reproduce it rather than smooth it out.
+
+## Measurement rig
+
+`scripts/probe-tejasmex.js` is the right tool and was written for exactly this.
+Two things make it work where hand-driving the DOM did not:
+
+- `hideGL()` shrinks the WebGL canvases to 1x1. A config change goes from ~40s
+  to ~500ms. Pricing is computed from the Redux store, not the renderer.
+- Controls are driven through their React fiber `onOptionSelected` handlers
+  using real option keys (`24-wide`, `30-deep`, `9-tall`, `5-deep-storage`),
+  so none of the MUI dropdown handling matters.
+
+Style keys come from the snapshot: `metal-endcombo` is End Combo. The style
+picker is card-based and is NOT an options list, so `controlByKey` cannot find
+it — click the card by its label instead.
+
+It is driven headlessly through Puppeteer rather than the user's browser:
+repeatedly reloading a WebGL app crashed Chrome's GPU process enough times that
+Chrome disabled WebGL browser-wide, after which the app died at boot with
+`THREE.WebGLRenderer: Error creating WebGL context`. A separate headless
+Chromium launched with `--enable-unsafe-swiftshader --use-angle=swiftshader`
+has its own GPU process and boots fine.
+
+## No engine schema change is needed
+
+`sideWalls` rows are already keyed `(siding, widthBand, length bracket,
+heightFt)` and the combo path already looks the wall up with
+`inBracket(enclosedDepthFt, r.length)`. Short-run rows drop straight into
+`lib/pricing/data/tejasmex.json`. The reason no such row exists yet is that no
+building is shorter than 20ft, so a whole-building measurement can never
+produce a side wall under 20ft — a combo's storage is the only configuration
+that exposes one.
