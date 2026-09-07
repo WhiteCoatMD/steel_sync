@@ -3,7 +3,33 @@
 
 // ─── Enums & Literals ───────────────────────────────────────
 
-export type BuildingType = 'carport' | 'garage' | 'barn' | 'shop' | 'warehouse' | 'rv-cover';
+/**
+ * No 'warehouse' member: it was one of four labels over the same product.
+ * Garage, barn, shop and warehouse are priced and drawn identically — type
+ * feeds only "is it enclosed" and "does it get walls" — and none of them was
+ * sold as its own thing (owner, 2026-09-04). Dropping it from the union means
+ * a config cannot express it at all, rather than the designer merely happening
+ * not to offer it. The parser still understands the WORD and maps it to a
+ * garage, because customers say it regardless.
+ *
+ * Declared as a VALUE, not just a type. Anything crossing into the app from
+ * outside — an LLM parse, a saved design, a request body — has to be checked
+ * against the list at runtime, and a hand-maintained second copy of it is a
+ * copy that drifts (which is how a retired 'warehouse' could still arrive from
+ * a model and be copied straight through). The type is derived from this array
+ * so the two cannot disagree.
+ */
+export const BUILDING_TYPES = [
+  'carport', 'garage', 'barn', 'shop', 'rv-cover',
+  'combo',
+] as const;
+
+export type BuildingType = (typeof BUILDING_TYPES)[number];
+
+/** Runtime guard for the union above. */
+export function isBuildingType(v: unknown): v is BuildingType {
+  return typeof v === 'string' && (BUILDING_TYPES as readonly string[]).includes(v);
+}
 
 export type RoofStyle = 'regular' | 'aframe' | 'vertical';
 
@@ -52,6 +78,19 @@ export interface BuildingDimensions {
     walls: PanelDirection;
     roof: PanelDirection;
   };
+  /**
+   * How deep the enclosed area runs. Present only on a combo.
+   *
+   * The building stays ONE box: this says where the dividing wall falls, not
+   * that there are two buildings. `end` is the gable end the enclosure is
+   * anchored to and the enclosure runs INWARD from it, so
+   * `{ end: 'front', enclosedDepthFt: 10 }` on a 30ft building encloses 0-10ft
+   * measured from the front and leaves 10-30ft open.
+   *
+   * "Depth" rather than "length" because that is what a dealer calls it, and
+   * the building already has a lengthFt that this is not.
+   */
+  combo?: { enclosedDepthFt: number; end: 'front' | 'back' };
 }
 
 // ─── Colors ─────────────────────────────────────────────────

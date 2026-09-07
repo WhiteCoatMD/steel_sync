@@ -381,3 +381,57 @@ describe('a dealer on placeholder pricing does not get quoted', () => {
     expect(out.message).toContain('Call us on 555.');
   });
 });
+
+/**
+ * "Combo" is TejasMex's own catalogue name and customers say it, so a model
+ * reading an inbound message can put `type: 'combo'` in front of the pricing
+ * engine — with no dividing wall position, because nothing in the message
+ * carries one.
+ *
+ * That building has no split, so it encloses nothing, so the engine prices no
+ * walls at all: a complete, sendable quote at the OPEN-CARPORT price, short by
+ * the entire wall package. Before combos existed the same config priced as a
+ * full garage — over, never under. The adapter now refuses it, and the refusal
+ * has to survive the whole unattended path, not just the unit under it.
+ */
+describe('a combo the model could not place a dividing wall on is never quoted', () => {
+  const comboAsk = ai({ type: 'combo', widthFt: 24, lengthFt: 30, legHeightFt: 9, roofStyle: 'vertical' });
+
+  it('hands off instead of sending a price', () => {
+    const out = decideAutoQuote(comboAsk, RULES);
+    expect(out.kind).toBe('handoff');
+    expect(canSendPrice(out)).toBe(false);
+    // And for the right reason: the walls it could not place, not some
+    // unrelated gap that happens to stop the quote today.
+    if (out.kind !== 'handoff') throw new Error('expected a handoff');
+    expect(out.reasons.join(' ')).toMatch(/wall/i);
+  });
+
+  it('puts no number in front of the customer', () => {
+    expect(decideAutoQuote(comboAsk, RULES).message).not.toMatch(/\$[\d,]+/);
+  });
+
+  // The carport price is the specific wrong number this guards against: it is
+  // the one the engine would produce if the refusal were dropped.
+  it('does not send the open-carport price for it', () => {
+    const carport = decideAutoQuote(
+      ai({ type: 'carport', widthFt: 24, lengthFt: 30, legHeightFt: 9, roofStyle: 'vertical' }),
+      RULES,
+    );
+    if (carport.kind !== 'quote') throw new Error('expected the carport to quote');
+    const out = decideAutoQuote(comboAsk, RULES);
+    expect(out.message).not.toContain(`$${carport.pricing.total.toLocaleString()}`);
+  });
+});
+
+/**
+ * The same boundary one field over: a type we do not model at all.
+ */
+describe('a building type we do not model does not reach the engine', () => {
+  it('prices the default rather than a type nothing downstream understands', () => {
+    // 'warehouse' is retired from the union.
+    const c = configFromAI(ai({ type: 'warehouse', widthFt: 24, lengthFt: 30, legHeightFt: 9 }));
+    expect(c.building.type).toBe(createDefaultConfig('tejasmex').building.type);
+    expect(c.building.widthFt).toBe(24);
+  });
+});

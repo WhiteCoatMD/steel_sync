@@ -13,6 +13,15 @@
 // its wallFrame-derived position are reflections of each other on front/back.
 // Do not assume the two agree until ThreeScene is ported onto this frame.
 //
+// A COMBO has walls over only part of its frame. `lengthFt` stays the frame's
+// full extent — the roofline, the eave trim and a lean-to all run the whole
+// building whether or not there is a wall under them — and `runStartFt` /
+// `runLengthFt` carry the stretch that actually carries wall. On every other
+// type, and on both gable walls, the run IS the whole wall, so a consumer that
+// wants "where can an opening go" reads the run unconditionally and needs no
+// combo branch. This is the disagreement the store used to work around: it
+// asked `comboSpan` itself because the frame would not answer.
+//
 // Building origin (0,0,0) is the front-left corner at ground level.
 //   front wall: Z = 0, faces -Z      back wall:  Z = L, faces +Z
 //   left wall:  X = 0, faces -X      right wall: X = W, faces +X
@@ -22,6 +31,7 @@
 // customer means by "3 feet from the left edge".
 
 import type { BuildingDimensions, WallId } from './types';
+import { comboSpan, sideWallAuthoredRun } from './combo';
 
 export type Vec3 = [number, number, number];
 
@@ -33,8 +43,16 @@ export interface WallFrame {
   along: Vec3;
   /** Unit outward normal, pointing away from the building interior. */
   normal: Vec3;
-  /** Wall extent in feet along `along`. */
+  /** Frame extent in feet along `along` — the whole building, combo or not. */
   lengthFt: number;
+  /**
+   * First position along `along` that carries wall. 0 everywhere except a
+   * combo's two side walls, where the open half has no wall to sit an
+   * opening in.
+   */
+  runStartFt: number;
+  /** Extent of actual wall from `runStartFt`. Equals `lengthFt` unless combo. */
+  runLengthFt: number;
   /** Eave height at this wall. */
   eaveHeightFt: number;
   /** front/back carry a triangular gable top. */
@@ -50,19 +68,29 @@ export function wallFrame(wall: WallId, b: BuildingDimensions): WallFrame {
   const L = b.lengthFt;
   const h = b.legHeightFt;
 
+  const side = (w: 'left' | 'right') => sideWallAuthoredRun(w, comboSpan(b), L);
+
   switch (wall) {
     case 'front':
       return { wall, origin: [W, 0, 0], along: [-1, 0, 0], normal: [0, 0, -1],
-               lengthFt: W, eaveHeightFt: h, isGable: true, rotationY: Math.PI };
+               lengthFt: W, runStartFt: 0, runLengthFt: W,
+               eaveHeightFt: h, isGable: true, rotationY: Math.PI };
     case 'back':
       return { wall, origin: [0, 0, L], along: [1, 0, 0], normal: [0, 0, 1],
-               lengthFt: W, eaveHeightFt: h, isGable: true, rotationY: 0 };
-    case 'left':
+               lengthFt: W, runStartFt: 0, runLengthFt: W,
+               eaveHeightFt: h, isGable: true, rotationY: 0 };
+    case 'left': {
+      const run = side('left');
       return { wall, origin: [0, 0, 0], along: [0, 0, 1], normal: [-1, 0, 0],
-               lengthFt: L, eaveHeightFt: h, isGable: false, rotationY: -HALF_PI };
-    case 'right':
+               lengthFt: L, runStartFt: run.startFt, runLengthFt: run.runLengthFt,
+               eaveHeightFt: h, isGable: false, rotationY: -HALF_PI };
+    }
+    case 'right': {
+      const run = side('right');
       return { wall, origin: [W, 0, L], along: [0, 0, -1], normal: [1, 0, 0],
-               lengthFt: L, eaveHeightFt: h, isGable: false, rotationY: HALF_PI };
+               lengthFt: L, runStartFt: run.startFt, runLengthFt: run.runLengthFt,
+               eaveHeightFt: h, isGable: false, rotationY: HALF_PI };
+    }
   }
 }
 

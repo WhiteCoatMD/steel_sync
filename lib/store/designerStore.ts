@@ -12,12 +12,20 @@ import type {
   LeanTo,
   Opening,
   RoofStyle,
+  WallId,
 } from '../building/types';
 import { ROOF_PANEL_DIRECTION, ROOF_PITCH_DEFAULTS } from '../building/types';
 import { createDefaultConfig, DEFAULT_PRICING_RULES, findColor } from '../building/defaultConfig';
 import { calculatePrice } from '../pricing/calculatePrice';
 import { wallFrame } from '../building/wallFrame';
 import { largestFittingSize } from '../building/openingSizes';
+import {
+  clampComboDepth,
+  comboDepthOptions,
+  isComboType,
+  COMBO_DEPTH_STEP_FT,
+  COMBO_DEFAULT_END,
+} from '../building/combo';
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -41,6 +49,27 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
 }
 
 /**
+ * The stretch of wall an opening may occupy, in the coordinates its
+ * `positionFt` is authored in.
+ *
+ * `wallFrame` answers this now — see the combo note there. It used to report a
+ * combo's side walls as running the whole building, so this function asked
+ * `comboSpan` itself; the two then had to be kept in step by hand. On a combo
+ * only part of the frame carries a wall, and an opening placed out in the open
+ * carport half is priced (the adapter pushes its componentKey like any other)
+ * and then never drawn, so the customer is charged for a door that is not on
+ * the building. Reachable straight from the UI: 30ft combo, 10ft enclosure,
+ * drag a roll-up down the left wall.
+ *
+ * Both writes — position and size — go through this one function, and a
+ * garage or carport's run is its whole wall at 0, exactly as before.
+ */
+function openingRun(wall: WallId, building: BuildingDimensions): { startFt: number; runLengthFt: number } {
+  const f = wallFrame(wall, building);
+  return { startFt: f.runStartFt, runLengthFt: f.runLengthFt };
+}
+
+/**
  * Clamp an opening's positionFt to its wall's extent, mirroring
  * clampLeanToLength above. Applied on every write (position, size, or wall
  * change) so the stored config never holds an opening hanging off the end of
@@ -57,9 +86,9 @@ function clampLeanToLength(leanTo: LeanTo, building: BuildingDimensions): LeanTo
  * concept of "clamped") never got checked post-clamp.
  */
 function clampOpeningPosition(opening: Opening, building: BuildingDimensions): Opening {
-  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
-  const maxPositionFt = Math.max(0, wallLengthFt - opening.widthFt);
-  const positionFt = Math.min(Math.max(opening.positionFt, 0), maxPositionFt);
+  const { startFt, runLengthFt } = openingRun(opening.wall, building);
+  const maxPositionFt = Math.max(startFt, startFt + runLengthFt - opening.widthFt);
+  const positionFt = Math.min(Math.max(opening.positionFt, startFt), maxPositionFt);
   if (positionFt === opening.positionFt) return opening;
   return { ...opening, positionFt };
 }
@@ -74,7 +103,11 @@ function clampOpeningPosition(opening: Opening, building: BuildingDimensions): O
  * quoting an estimate.
  */
 function resizeOpeningToFit(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
-  const wallLengthFt = wallFrame(opening.wall, building).lengthFt;
+  // The RUN, not the frame's length: on a combo a 12ft door does not fit a
+  // 10ft enclosure just because the frame it hangs on is 30ft long. This also
+  // covers the previously-deferred case of a door rendering past the end of
+  // the wall it is on.
+  const wallLengthFt = openingRun(opening.wall, building).runLengthFt;
   const fitsAlready = opening.heightFt <= building.legHeightFt && opening.widthFt <= wallLengthFt;
   if (fitsAlready) return opening;
 
@@ -101,6 +134,36 @@ function resizeOpeningToFit(opening: Opening, building: BuildingDimensions, rule
 /** Compose the size-fit and position clamps applied after any opening write. */
 function clampOpening(opening: Opening, building: BuildingDimensions, rules: DealerPricingRules): Opening {
   return clampOpeningPosition(resizeOpeningToFit(opening, building, rules), building);
+}
+
+/**
+ * Keep the combo split consistent with the building it sits in.
+ *
+ * Three things go wrong without this. Choosing "combo" leaves no split at all,
+ * so the building prices as unpriceable the moment it is picked. Shortening a
+ * 30ft building with a 25ft enclosure to 20ft leaves an enclosure longer than
+ * the building. And switching away to a garage leaves a dividing wall behind on
+ * a type that has no business carrying one.
+ */
+function normaliseCombo(b: BuildingDimensions): BuildingDimensions {
+  if (!isComboType(b.type)) {
+    if (!b.combo) return b;
+    const { combo: _dropped, ...rest } = b;
+    return rest as BuildingDimensions;
+  }
+  const options = comboDepthOptions(b.lengthFt);
+  const fallback = options.length
+    ? options[Math.max(0, Math.floor(options.length / 2))]
+    : COMBO_DEPTH_STEP_FT;
+  const current = b.combo?.enclosedDepthFt;
+  return {
+    ...b,
+    combo: {
+      end: b.combo?.end ?? COMBO_DEFAULT_END,
+      enclosedDepthFt:
+        typeof current === 'number' ? clampComboDepth(current, b.lengthFt) : fallback,
+    },
+  };
 }
 
 /**
@@ -203,7 +266,7 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
     }
 
     const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
-    const nextBuilding = { ...config.building, ...updates };
+    const nextBuilding = normaliseCombo({ ...config.building, ...updates });
     const next: BuildingConfig = {
       ...config,
       building: nextBuilding,
@@ -250,9 +313,14 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
   addOpening: (opening) => {
     const { config, dealerSettings } = get();
     if (!config) return;
+    const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
     const next: BuildingConfig = {
       ...config,
-      openings: [...config.openings, opening],
+      // Clamped on the way IN as well as on every later write. The sidebar's
+      // "add a window" places one 10ft down the left wall, which on a combo
+      // with a 10ft enclosure is already out over the open half — priced and
+      // never drawn — before the customer touches it.
+      openings: [...config.openings, clampOpening(opening, config.building, rules)],
     };
     set({ config: withPricing(next, dealerSettings) });
   },
@@ -315,7 +383,13 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
 
     // Apply building dimensions/type
     if (ai.building) {
-      next.building = { ...next.building, ...ai.building };
+      // Same normalisation updateBuilding applies: this merge can turn a
+      // building into a combo with no split, shrink it below an existing
+      // enclosed depth, or leave a dividing wall behind after switching away
+      // from combo. Without this, "make it 20ft long" on a 30ft combo with a
+      // 25ft enclosure leaves a 25ft enclosure inside a 20ft building —
+      // unpriceable and nonsense to draw.
+      next.building = normaliseCombo({ ...next.building, ...ai.building });
       // Same re-clamp updateBuilding does: an AI result can shrink widthFt or
       // lengthFt below an existing lean-to's stored length, and this path is
       // live via /api/ai-config. Without it the config quotes a lean-to
@@ -395,13 +469,27 @@ export const useDesignerStore = create<DesignerStore>((set, get) => ({
       const dealerId = config?.dealerId ?? dealerSettings?.id ?? 'default';
 
       const base = createDefaultConfig(dealerId);
-      const building = { ...base.building, ...parsed.building };
+      // A share link may predate the combo feature or be hand-edited, so
+      // normalise the restored building the same way updateBuilding and
+      // applyAIConfig do: give a combo with no split a usable one, clamp an
+      // enclosed depth back inside a shorter building, and strip a stray
+      // `combo` field off a non-combo type.
+      const building = normaliseCombo({ ...base.building, ...parsed.building });
       const leanTos: LeanTo[] = Array.isArray(parsed.leanTos) ? parsed.leanTos : base.leanTos;
+      const openings: Opening[] = Array.isArray(parsed.openings) ? parsed.openings : base.openings;
+      const rules = dealerSettings?.pricing ?? DEFAULT_PRICING_RULES;
       const restored: BuildingConfig = {
         ...base,
         building,
         colors: { ...base.colors, ...parsed.colors },
-        openings: Array.isArray(parsed.openings) ? parsed.openings : base.openings,
+        // Clamped for the same reason the lean-tos below are, and for one more
+        // that arrived with combos: a side-wall opening restored verbatim can
+        // sit in the open carport half, where the adapter still prices its
+        // component key but the renderer has no wall to draw it in. The
+        // customer is then charged for a door that is not on the building.
+        // Every other write path clamps; a link made before combos existed, or
+        // edited by hand, is the only way one still gets in.
+        openings: openings.map(o => clampOpening(o, building, rules)),
         // Restored verbatim, an encoded lean-to could overrun its wall and
         // reopen the quote/geometry mismatch a6d0c8c closed — buildLeanTo()
         // renders the clamped extent while the config (and therefore the

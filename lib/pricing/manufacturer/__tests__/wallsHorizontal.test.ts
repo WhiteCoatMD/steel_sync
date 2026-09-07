@@ -28,7 +28,7 @@ const build = (r: Row, siding: 'horizontal' | 'vertical' = 'horizontal') => ({
   roofStyle: 'vertical' as const,
   surface: 'concrete' as const,
   engineered: true,
-  enclosed: true,
+  enclosedDepthFt: r.l,
   siding,
 });
 
@@ -56,7 +56,7 @@ describe('the building that started this', () => {
   const garage = {
     widthFt: 24, lengthFt: 30, legHeightFt: 11,
     roofStyle: 'vertical' as const, surface: 'concrete' as const,
-    engineered: false, enclosed: true,
+    engineered: false, enclosedDepthFt: 30,
     componentKeys: ['garage-door-6-gable', 'walk-in-door-36-80-res'],
   };
 
@@ -66,16 +66,22 @@ describe('the building that started this', () => {
     expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1553);
   });
 
+  // The vendor raised VERTICAL siding on 2026-09-06; horizontal did not move,
+  // which is why the horizontal figures above are untouched. Re-measured that
+  // day: side 910 -> 1000 (+90 for the [26,30] bracket), end 1977 -> 2652
+  // (+675 for width 24). See walls.test.ts for how this was established.
   it('still prices vertical siding for a customer who asks for it', () => {
     const q = quoteFromTable({ ...garage, siding: 'vertical' }, table);
     expect(q.unpriceable).toBeUndefined();
-    expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(910);
-    expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(1977);
+    expect(q.lines.find(l => /^Left Side/.test(l.label))?.amount).toBe(1000);
+    expect(q.lines.find(l => /^Front End/.test(l.label))?.amount).toBe(2652);
   });
 
-  it('costs $1,500 more on vertical, which is what was being overcharged', () => {
+  it('costs more on vertical, which is what was being overcharged', () => {
     const h = quoteFromTable({ ...garage, siding: 'horizontal' }, table);
     const v = quoteFromTable({ ...garage, siding: 'vertical' }, table);
-    expect(v.subtotal - h.subtotal).toBe(1500);
+    // $1,500 when this test was written; $3,030 since the rise
+    // (2 x 90 side + 2 x 675 end on top).
+    expect(v.subtotal - h.subtotal).toBe(1500 + 2 * 90 + 2 * 675);
   });
 });

@@ -1,9 +1,10 @@
 import { getSql } from './index';
 import { DEFAULT_PRICING_RULES, STANDARD_COLORS } from '../building/defaultConfig';
+import { BUILDING_TYPES } from '../building/types';
 import type { BuildingType, DealerPricingRules, DealerSettings } from '../building/types';
 
-const ALL_BUILDING_TYPES: BuildingType[] =
-  ['carport', 'garage', 'barn', 'shop', 'warehouse', 'rv-cover'];
+/** Every type in the union, copied so callers cannot mutate the shared list. */
+const ALL_BUILDING_TYPES: BuildingType[] = [...BUILDING_TYPES];
 
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);

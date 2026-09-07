@@ -39,10 +39,16 @@ export function roofSlopeAngle(b: BuildingDimensions): number {
   return Math.atan2(rise, run);
 }
 
-/** Check if an opening fits on its wall */
+/**
+ * Check if an opening fits on its wall.
+ *
+ * Against the wall's RUN, not the frame's length: a combo's side wall spans
+ * the whole building but only carries wall over the enclosed part, and an
+ * opening out in the open half fits nothing.
+ */
 export function openingFitsOnWall(o: Opening, b: BuildingDimensions): boolean {
-  const wLen = wallFrame(o.wall, b).lengthFt;
-  return o.positionFt >= 0
-    && o.positionFt + o.widthFt <= wLen
+  const { runStartFt, runLengthFt } = wallFrame(o.wall, b);
+  return o.positionFt >= runStartFt
+    && o.positionFt + o.widthFt <= runStartFt + runLengthFt
     && o.heightFt <= b.legHeightFt;
 }

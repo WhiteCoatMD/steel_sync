@@ -5,9 +5,7 @@
 import type { BuildingConfig, PricingResult, PricingLineItem } from '../../building/types';
 import type { ManufacturerTable, ManufacturerQuote } from './types';
 import { quoteFromTable, type ManufacturerQuoteInput } from './engine';
-
-/** Building types that are open structures, i.e. have no priced walls. */
-const OPEN_BUILDING_TYPES = new Set(['carport', 'rv-cover']);
+import { comboSpan, enclosedDepthFt, isComboType } from '../../building/combo';
 
 /**
  * Resolve one opening to a manufacturer component key.
@@ -95,8 +93,25 @@ export function toQuoteInput(
   table: ManufacturerTable,
 ): { input: ManufacturerQuoteInput; unresolvedOpenings: string[] } {
   const b = config.building;
+  // Refusals raised HERE rather than by the engine, which only ever sees the
+  // numbers this function derives. `priceWithManufacturer` hands them to
+  // `toPricingResult` as `extraUnpriceable`, so they land in the same
+  // `unpriceable` list the engine's own refusals do and every caller that
+  // already declines to send an unpriceable quote declines to send these.
   const unresolvedOpenings: string[] = [];
   const componentKeys: string[] = [];
+
+  // A combo whose dividing wall is missing or out of range encloses nothing, so
+  // `enclosedDepthFt` is 0 and the engine skips its whole wall block — which is
+  // the ONLY place walls are ever reported unpriceable. Left alone, the quote
+  // comes back complete and sendable at the open-carport price, under by the
+  // entire wall package. It must refuse instead: a combo we cannot place the
+  // divider on is not a carport.
+  if (isComboType(b.type) && comboSpan(b) == null) {
+    unresolvedOpenings.push(
+      `combo has no valid dividing wall position (enclosedDepthFt ${b.combo?.enclosedDepthFt ?? 'unset'} on a ${b.lengthFt}ft building)`,
+    );
+  }
 
   for (const o of config.openings ?? []) {
     const key = componentKeyFor(o, table);
@@ -128,10 +143,11 @@ export function toQuoteInput(
       siding: b.panelDirection?.walls ?? 'horizontal',
       componentKeys,
       ...(declaredOverhang != null ? { roofOverhangFtPerEnd: declaredOverhang } : {}),
-      // Enclosed types are now priced from the measured wall tables. Outside the
+      // Enclosed types are priced from the measured wall tables. Outside the
       // measured envelope the engine reports it rather than quoting the (much
-      // lower) open-carport price.
-      enclosed: !OPEN_BUILDING_TYPES.has(b.type),
+      // lower) open-carport price. A combo encloses only part of its length,
+      // which is why this is a depth and not a flag.
+      enclosedDepthFt: enclosedDepthFt(b),
       // Dimensions, not just a count: the refusal names what a human must price.
       leanTos: (config.leanTos ?? []).map(lt => ({
         wall: lt.wall,

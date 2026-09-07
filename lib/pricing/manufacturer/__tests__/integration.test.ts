@@ -88,7 +88,9 @@ describe('it refuses to quote what it cannot price', () => {
     cfg.building = { ...cfg.building, type: 'garage' };
     const p = calculatePrice(cfg, TEJASMEX_RULES);
     expect(p.unpriceable).toBeUndefined();
-    expect(p.total).toBe(8128); // live estimate for 24x25x9 fully enclosed
+    // Live estimate for 24x25x9 fully enclosed: 8128 on 2026-08-27, 9568 after
+    // the vendor raised vertical siding on 2026-09-06.
+    expect(p.total).toBe(9568);
     expect(p.total).toBeGreaterThan(calculatePrice(referenceCarport(), TEJASMEX_RULES).total);
   });
 

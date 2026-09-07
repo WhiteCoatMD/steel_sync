@@ -1,4 +1,4 @@
-import type { BuildingType } from '../building/types';
+import { isBuildingType, type BuildingType } from '../building/types';
 
 /**
  * Decides whether an AI-parsed request is safe to quote automatically, or
@@ -119,6 +119,14 @@ export function sanitizeBuilding(
     if (k.endsWith('Ft')) {
       if (typeof v !== 'number' || !Number.isFinite(v)) continue;
     }
+    // The building TYPE decides whether the thing gets walls at all, which is
+    // the single biggest lever on the price, and it was copied through
+    // unchecked — a model naming a type we do not model (a retired
+    // 'warehouse', an invented 'shed') put a value in the config that no
+    // downstream lookup understands. Dropping it leaves the default in place,
+    // which is a building we can actually price, and the customer's own words
+    // are still read by `classifyType`.
+    if (k === 'type' && !isBuildingType(v)) continue;
     out[k] = v;
   }
   return out;

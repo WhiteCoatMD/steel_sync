@@ -8,6 +8,7 @@ import { useDesignerStore } from '@/lib/store/designerStore';
 import { buildBuilding, type BuildingResult } from '@/lib/building/buildBuilding';
 import type { Opening, BuildingConfig, BuildingDimensions } from '@/lib/building/types';
 import { buildRoofProfile } from '@/lib/building/roof';
+import { comboSpan, sideWallRun, sideWallOpeningPositionFt, sideWallOpeningAuthoredPositionFt, dividerZFt, type ComboSpan, COMBO_DEFAULT_END, isMisconfiguredCombo } from '@/lib/building/combo';
 
 // ═══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -334,14 +335,39 @@ function BuildingModel() {
   const wallPanelDir = config.building.panelDirection.walls;
   const roofPanelDir = config.building.panelDirection.roof;
   const wainscotHex = config.colors.wainscot?.hex ?? null;
-  const isOpen = config.building.type === 'carport' || config.building.type === 'rv-cover';
+  // A combo is neither open nor fully enclosed: it has walls over part of its
+  // length. comboSpan is null for every other type, so they behave exactly
+  // as before — a garage still gets four walls, a carport still gets none.
+  const span = useMemo(() => comboSpan(config.building), [config.building]);
+  /**
+   * A combo we cannot place the dividing wall on draws as a bare frame, not as
+   * a garage.
+   *
+   * comboSpan returns null for two different things — "not a combo" and "a
+   * combo with no usable split" — and this file used to read both as the
+   * first, so a configuration the pricing engine refuses to put a number on
+   * appeared on screen as a finished four-walled building. The screen and the
+   * quote now say the same thing: we do not know what this is.
+   *
+   * Unreachable through the designer, which guarantees a valid split on every
+   * path. It takes a hand-edited share link — which is exactly when the picture
+   * should not look confident.
+   */
+  const broken = useMemo(() => isMisconfiguredCombo(config.building), [config.building]);
+  const isOpen =
+    config.building.type === 'carport' || config.building.type === 'rv-cover' || broken;
+  // The frame runs the full length whatever is bolted to it. A carport draws
+  // it because there is nothing else to draw; a combo draws it for the same
+  // reason over its open half — the walls cover it where they exist. A
+  // garage's walls already cover the whole frame, so it is unchanged.
+  const showFrame = isOpen || span != null;
 
   return (
     <group position={[-d.width / 2, 0, -d.length / 2]}>
       <SlabMesh result={result} />
-      {isOpen && <FrameMeshes result={result} />}
-      {!isOpen && <SideWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
-      {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} />}
+      {showFrame && <FrameMeshes result={result} />}
+      {!isOpen && <SideWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} span={span} />}
+      {!isOpen && <GableWalls result={result} color={config.colors.walls.hex} openings={config.openings} panelDir={wallPanelDir} wainscotColor={wainscotHex} span={span} end={config.building.combo?.end ?? null} />}
       <RoofMeshes result={result} color={config.colors.roof.hex} panelDir={roofPanelDir} building={config.building} />
       <TrimMeshes result={result} color={config.colors.trim.hex} />
       <LeanToMeshes result={result} />
@@ -479,21 +505,58 @@ function WallGirtMeshes({ result }: { result: BuildingResult }) {
 // SIDE WALLS (left + right)
 // ═══════════════════════════════════════════════════════════════
 
-function SideWalls({ result, color, openings, panelDir, wainscotColor }: {
+function SideWalls({ result, color, openings, panelDir, wainscotColor, span }: {
   result: BuildingResult; color: string; openings: Opening[];
   panelDir: 'horizontal' | 'vertical'; wainscotColor: string | null;
+  span: ComboSpan | null;
 }) {
   const { width: W, length: L, height: H } = result.dimensions;
-  const leftOps = useMemo(() => openings.filter(o => o.wall === 'left'), [openings]);
-  const rightOps = useMemo(() => openings.filter(o => o.wall === 'right'), [openings]);
+
+  const left = sideWallRun('left', span, L);
+  const right = sideWallRun('right', span, L);
+
+  // sideWallOpeningPositionFt returns null for an opening outside the
+  // enclosed span (no wall there for it to sit in) and otherwise the
+  // opening re-based onto that wall's own local origin.
+  const leftOps = useMemo(
+    () => openings
+      .filter(o => o.wall === 'left')
+      .flatMap((o): Opening[] => {
+        const positionFt = sideWallOpeningPositionFt('left', o.positionFt, span, L);
+        return positionFt == null ? [] : [{ ...o, positionFt }];
+      }),
+    [openings, span, L],
+  );
+  const rightOps = useMemo(
+    () => openings
+      .filter(o => o.wall === 'right')
+      .flatMap((o): Opening[] => {
+        const positionFt = sideWallOpeningPositionFt('right', o.positionFt, span, L);
+        return positionFt == null ? [] : [{ ...o, positionFt }];
+      }),
+    [openings, span, L],
+  );
+
+  // A drag reports a position local to this (possibly shortened, possibly
+  // re-based) wall. The store keeps the authored positionFt, so a drag must
+  // go back through the inverse of the conversion above before it is
+  // written — the same conversion, run backwards, not a fresh `local.x`.
+  const leftToAuthored = useMemo(
+    () => (localPositionFt: number) => sideWallOpeningAuthoredPositionFt('left', localPositionFt, span, L),
+    [span, L],
+  );
+  const rightToAuthored = useMemo(
+    () => (localPositionFt: number) => sideWallOpeningAuthoredPositionFt('right', localPositionFt, span, L),
+    [span, L],
+  );
 
   return (
     <group>
-      <group position={[0, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <SegmentedWall wallLength={L} wallHeight={H} color={color} openings={leftOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+      <group position={[0, 0, left.originZFt]} rotation={[0, -Math.PI / 2, 0]}>
+        <SegmentedWall wallLength={left.runLengthFt} wallHeight={H} color={color} openings={leftOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} toAuthoredPositionFt={leftToAuthored} />
       </group>
-      <group position={[W, 0, L]} rotation={[0, Math.PI / 2, 0]}>
-        <SegmentedWall wallLength={L} wallHeight={H} color={color} openings={rightOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+      <group position={[W, 0, right.originZFt]} rotation={[0, Math.PI / 2, 0]}>
+        <SegmentedWall wallLength={right.runLengthFt} wallHeight={H} color={color} openings={rightOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} toAuthoredPositionFt={rightToAuthored} />
       </group>
     </group>
   );
@@ -503,24 +566,63 @@ function SideWalls({ result, color, openings, panelDir, wainscotColor }: {
 // GABLE WALLS (front + back)
 // ═══════════════════════════════════════════════════════════════
 
-function GableWalls({ result, color, openings, panelDir, wainscotColor }: {
+function GableWalls({ result, color, openings, panelDir, wainscotColor, span, end }: {
   result: BuildingResult; color: string; openings: Opening[];
   panelDir: 'horizontal' | 'vertical'; wainscotColor: string | null;
+  span: ComboSpan | null;
+  end: 'front' | 'back' | null;
 }) {
   const { width: W, length: L, height: H, rise } = result.dimensions;
   const frontOps = useMemo(() => openings.filter(o => o.wall === 'front'), [openings]);
   const backOps = useMemo(() => openings.filter(o => o.wall === 'back'), [openings]);
 
+  // Resolve the anchor end ONCE. comboSpan and dividerZFt both fall back to
+  // COMBO_DEFAULT_END for a missing one, so comparing `end` raw here would put
+  // the walls at a different end from the span they are drawn against.
+  const enclosedAtBack = (end ?? COMBO_DEFAULT_END) === 'back';
+
+  // Not a combo: both ends, exactly as before. A combo walls only the
+  // enclosed end — the other end is open carport with no gable wall.
+  const showFront = span == null || !enclosedAtBack;
+  const showBack = span == null || enclosedAtBack;
+  const dividerAt = dividerZFt(span, end);
+
   return (
     <group>
-      <group>
-        <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={frontOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
-        <GableTriangle width={W} height={H} rise={rise} color={color} side="front" />
-      </group>
-      <group position={[W, 0, L]} rotation={[0, Math.PI, 0]}>
-        <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={backOps} zOff={WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
-        <GableTriangle width={W} height={H} rise={rise} color={color} side="back" />
-      </group>
+      {showFront && (
+        <group>
+          <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={frontOps} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+          <GableTriangle width={W} height={H} rise={rise} color={color} side="front" />
+        </group>
+      )}
+      {showBack && (
+        <group position={[W, 0, L]} rotation={[0, Math.PI, 0]}>
+          <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={backOps} zOff={WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+          <GableTriangle width={W} height={H} rise={rise} color={color} side="back" />
+        </group>
+      )}
+      {/* The divider closes the inner face of the enclosure. It carries no
+          openings: a door in the wall between a garage and its own carport
+          is not a product. */}
+      {/* The divider closes the enclosure's INNER face, and which face that is
+          depends on the anchor end. A rear-anchored enclosure — the default —
+          is closed on its front face, so the divider takes the front wall's
+          frame: unrotated, with the panel offset and the gable pitched the
+          other way. Drawn in the back wall's frame regardless, it sat an inch
+          on the open side of the line with its gable facing into the garage. */}
+      {dividerAt != null && (
+        enclosedAtBack ? (
+          <group position={[0, 0, dividerAt]}>
+            <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={[]} zOff={-WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+            <GableTriangle width={W} height={H} rise={rise} color={color} side="front" />
+          </group>
+        ) : (
+          <group position={[W, 0, dividerAt]} rotation={[0, Math.PI, 0]}>
+            <SegmentedWall wallLength={W} wallHeight={H} color={color} openings={[]} zOff={WALL_THICKNESS} panelDir={panelDir} wainscotColor={wainscotColor} />
+            <GableTriangle width={W} height={H} rise={rise} color={color} side="back" />
+          </group>
+        )
+      )}
     </group>
   );
 }
@@ -634,10 +736,18 @@ function WallSegMesh({ seg, zOff, color, panelDir, wainscotColor }: {
   return <PanelPanel x={seg.x} y={seg.y} w={seg.w} h={seg.h} zOff={zOff} color={color} panelDir={panelDir} />;
 }
 
-function SegmentedWall({ wallLength, wallHeight, color, openings, zOff, panelDir, wainscotColor }: {
+function SegmentedWall({ wallLength, wallHeight, color, openings, zOff, panelDir, wainscotColor, toAuthoredPositionFt }: {
   wallLength: number; wallHeight: number; color: string;
   openings: Opening[]; zOff: number; panelDir: 'horizontal' | 'vertical';
   wainscotColor: string | null;
+  /**
+   * Converts a position local to THIS wall (what a drag over its mesh
+   * reports) into the authored `positionFt` to write back to the store.
+   * Only the two combo-shortened side walls need this — the gable walls and
+   * the divider are never re-based, so their local position already IS the
+   * authored one.
+   */
+  toAuthoredPositionFt?: (localPositionFt: number) => number;
 }) {
   const SILL_HEIGHT = 3.5; // window sill at 3.5ft (42")
 
@@ -696,7 +806,9 @@ function SegmentedWall({ wallLength, wallHeight, color, openings, zOff, panelDir
           const op = s.config?.openings.find((o: Opening) => o.id === s.selectedOpeningId);
           if (!op) return;
           const newPos = Math.max(0, Math.min(wallLength - op.widthFt, local.x - op.widthFt / 2));
-          s.updateOpening(op.id, { positionFt: Math.round(newPos * 2) / 2 }); // snap to 0.5ft
+          const snapped = Math.round(newPos * 2) / 2; // snap to 0.5ft, still local to this wall
+          const authoredPositionFt = toAuthoredPositionFt ? toAuthoredPositionFt(snapped) : snapped;
+          s.updateOpening(op.id, { positionFt: authoredPositionFt });
         }}
         onPointerUp={() => {
           useDesignerStore.setState({ isDraggingOpening: false });

@@ -55,9 +55,21 @@ export function buildWallPanels(
   wall: WallId,
   openings: Opening[],
 ): WallPanelResult {
-  const wLen = wallFrame(wall, config).lengthFt;
+  // Panel strips are wall-LOCAL, so they tile the run and are re-based onto
+  // it: on a combo the left wall's local 0 is the divider, not the building's
+  // front corner. Openings out in the open half are dropped rather than
+  // shifted — there is no wall there for them to cut through. This is the same
+  // filter-and-rebase the renderer applies in SideWalls, so the panels this
+  // returns describe the wall that is actually drawn.
+  const { runStartFt, runLengthFt } = wallFrame(wall, config);
+  const wLen = runLengthFt;
   const wH = config.legHeightFt;
-  const wallOpenings = openings.filter(o => o.wall === wall);
+  const wallOpenings = openings
+    .filter(o => o.wall === wall)
+    .flatMap((o): Opening[] => {
+      const positionFt = o.positionFt - runStartFt;
+      return positionFt < 0 || positionFt >= runLengthFt ? [] : [{ ...o, positionFt }];
+    });
 
   const panels = segmentWall(wLen, wH, wallOpenings);
   const cutouts: OpeningCutout[] = wallOpenings.map(o => ({

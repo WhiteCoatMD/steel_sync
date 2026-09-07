@@ -7,6 +7,7 @@ import {
   isAutoQuotable,
   sanitizeBuilding,
 } from '../quoteReadiness';
+import { BUILDING_TYPES } from '../../building/types';
 
 /**
  * The pricing engine never guesses a PRICE. Nothing enforced the equivalent one
@@ -125,5 +126,29 @@ describe('sanitizeBuilding keeps a missing field from corrupting a good default'
     expect(sanitizeBuilding(null)).toEqual({});
     expect(sanitizeBuilding('nope')).toEqual({});
     expect(sanitizeBuilding(undefined)).toEqual({});
+  });
+
+  /**
+   * This is the join between a model's free-text output and the pricing
+   * engine, and `type` is the field with the most price in it: it decides
+   * whether the building gets walls at all. It was copied through unchecked,
+   * so a type nothing downstream models — a retired 'warehouse', an invented
+   * 'shed' — reached the config and every lookup keyed on it silently missed.
+   */
+  it('drops a building type that is not one we model', () => {
+    // 'warehouse' was retired from the union on 2026-09-04; the WORD is still
+    // understood by classifyType, which is where it belongs.
+    expect(sanitizeBuilding({ type: 'warehouse', widthFt: 24 })).toEqual({ widthFt: 24 });
+    expect(sanitizeBuilding({ type: 'shed' })).toEqual({});
+    expect(sanitizeBuilding({ type: 42 })).toEqual({});
+    // Dropped, not blanked: the default survives the merge.
+    expect({ ...{ type: 'garage' }, ...sanitizeBuilding({ type: 'warehouse' }) })
+      .toEqual({ type: 'garage' });
+  });
+
+  it('keeps every type we do model', () => {
+    for (const type of BUILDING_TYPES) {
+      expect(sanitizeBuilding({ type })).toEqual({ type });
+    }
   });
 });

@@ -49,7 +49,7 @@ export const SYSTEM_PROMPT = `You are a metal building configurator assistant. P
 
 {
   "building": {
-    "type": "garage" | "carport" | "barn" | "shop" | "warehouse" | "rv-cover",
+    "type": "garage" | "carport" | "barn" | "shop" | "rv-cover",
     "widthFt": number (12-60),
     "lengthFt": number (20-100),
     "legHeightFt": number (6-16),

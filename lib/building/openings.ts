@@ -50,13 +50,18 @@ export function validateOpening(
   building: BuildingDimensions,
 ): OpeningValidation {
   const errors: string[] = [];
-  const wLen = wallFrame(opening.wall, building).lengthFt;
+  // The RUN, not the frame length — see wallFrame.ts. On a combo the side
+  // wall's frame is the whole building but the wall itself covers only the
+  // enclosed span, so an opening out in the carport half is off the wall.
+  const { runStartFt, runLengthFt } = wallFrame(opening.wall, building);
+  const wLen = runLengthFt;
+  const runEndFt = runStartFt + runLengthFt;
   const wH = building.legHeightFt;
 
-  if (opening.positionFt < 0) {
+  if (opening.positionFt < runStartFt) {
     errors.push('Opening starts before wall edge');
   }
-  if (opening.positionFt + opening.widthFt > wLen) {
+  if (opening.positionFt + opening.widthFt > runEndFt) {
     errors.push(`Opening extends past wall (wall is ${wLen}ft, opening ends at ${opening.positionFt + opening.widthFt}ft)`);
   }
   if (opening.heightFt > wH) {
@@ -171,12 +176,16 @@ export function findOpenSlot(
   building: BuildingDimensions,
   margin = 1,
 ): number | null {
-  const wLen = wallFrame(wall, building).lengthFt;
+  // Slots are hunted along the wall's RUN. On a combo that run starts partway
+  // down the frame, so the cursor starts there rather than at the building's
+  // front corner — otherwise the first "free" slot is out in the carport.
+  const { runStartFt, runLengthFt } = wallFrame(wall, building);
+  const wLen = runStartFt + runLengthFt;
   const wallOpenings = existing
     .filter(o => o.wall === wall)
     .sort((a, b) => a.positionFt - b.positionFt);
 
-  let cursor = margin;
+  let cursor = runStartFt + margin;
 
   for (const o of wallOpenings) {
     const gapEnd = o.positionFt - margin;

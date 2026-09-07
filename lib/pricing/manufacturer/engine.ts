@@ -40,8 +40,16 @@ export interface ManufacturerQuoteInput {
   componentKeys?: string[];
   /** Overrides the manufacturer's standard overhang. Per END, in feet. */
   roofOverhangFtPerEnd?: number;
-  /** Any wall enclosure. Priced from the measured wall tables. */
-  enclosed?: boolean;
+  /**
+   * How many feet of the building are enclosed. Walls are priced over this
+   * length, not the building's.
+   *
+   * This was a boolean, which could only say "all of it" or "none of it" and so
+   * could not express a combo — one frame with a dividing wall part way along
+   * it. As a number every type is the same case: an open building encloses 0,
+   * a garage encloses its whole length, a combo encloses some of it.
+   */
+  enclosedDepthFt?: number;
   /**
    * Wall panel orientation. This, not roof style, is what moves the wall price:
    * the vendor's wall rows carry a horizontal and a vertical price column and no
@@ -176,7 +184,7 @@ export function quoteFromTable(
     engineered = false,
     legType = 'standard-legs',
     componentKeys = [],
-    enclosed = false,
+    enclosedDepthFt = 0,
     siding = 'horizontal',
     leanTos = [],
     leanToCount = leanTos.length,
@@ -366,6 +374,7 @@ export function quoteFromTable(
   //
   // Prices are already CHARGED amounts (the surcharge does not touch walls), so
   // they bypass push() and go in at face value.
+  const enclosed = enclosedDepthFt > 0;
   if (enclosed) {
     // Wall price does NOT vary with roof style - the vendor's own wall rows carry
     // no style key at all, only a horizontal and a vertical price column. What it
@@ -378,7 +387,10 @@ export function quoteFromTable(
       r =>
         r.siding === siding &&
         inBracket(widthFt, r.widthBand) &&
-        inBracket(lengthFt, r.length) &&
+        // The DEPTH, not the building length: a combo's side walls only run the
+        // enclosed part. For every other type this is the length, so nothing
+        // about their price changes.
+        inBracket(enclosedDepthFt, r.length) &&
         r.heightFt === legHeightFt,
     );
     const end = table.endWalls?.find(
@@ -386,17 +398,75 @@ export function quoteFromTable(
     );
 
     if (side && end) {
-      // Two of each: left/right run the length, front/back close the ends.
+      // Four walls either way, but they are not the same four.
+      //
+      // Fully enclosed: left/right run the length, front/back close the ends.
+      //
+      // A combo (only part of the length enclosed): the side walls run the
+      // ENCLOSURE, not the building, and of the two end walls one is the
+      // closed outer gable end and the other is the interior dividing wall.
+      // These lines are what a dealer reads in the designer's breakdown and in
+      // the quote reply, so labelling all four "Fully Enclosed" told them a
+      // 10ft wall was a 30ft one and called the divider a back end.
+      //
+      // Compared against the REQUESTED length, not the normalised one: a
+      // genuinely full-length 18ft garage encloses 18 of a length normalised
+      // up to 20, and is not a combo.
+      //
+      // Whether the divider really costs a full end wall is the one open
+      // assumption in combo pricing, and it is named in the line so a dealer
+      // can see it -- see
+      // docs/superpowers/notes/2026-09-04-combo-pricing-verification.md.
+      const partiallyEnclosed = enclosedDepthFt < requestedLengthFt;
+
+      const sideLabel = partiallyEnclosed
+        ? `Enclosed ${enclosedDepthFt}ft of ${requestedLengthFt}ft`
+        : 'Fully Enclosed';
       for (const label of ['Left Side', 'Right Side']) {
-        lines.push({ label: `${label}: Fully Enclosed`, category: 'wall', listAmount: side.price, amount: side.price });
+        lines.push({ label: `${label}: ${sideLabel}`, category: 'wall', listAmount: side.price, amount: side.price });
       }
-      for (const label of ['Front End', 'Back End']) {
-        lines.push({ label: `${label}: Fully Enclosed`, category: 'wall', listAmount: end.price, amount: end.price });
+
+      const endLabels = partiallyEnclosed
+        ? ['Closed End: Fully Enclosed', 'Dividing Wall: Interior, priced as an end wall']
+        : ['Front End: Fully Enclosed', 'Back End: Fully Enclosed'];
+      for (const label of endLabels) {
+        lines.push({ label, category: 'wall', listAmount: end.price, amount: end.price });
+      }
+      // An enclosed building can carry a charge that our four walls cannot
+      // express, because it scales with the FRAME rather than the enclosure. At
+      // 12ft legs a 30ft combo is short by the same amount with 5ft of storage
+      // as with 25ft, and that amount is exactly what a 30ft GARAGE is short by
+      // -- so it follows the building's length, and is looked up with
+      // lengthFt, never enclosedDepthFt.
+      //
+      // Measured at every length and both width bands. Nothing exists below
+      // 12ft legs, where the walls alone already reproduce the vendor to the
+      // dollar, so most buildings never touch this.
+      const surcharge = table.enclosedSurcharge?.find(
+        r =>
+          inBracket(widthFt, r.widthBand) &&
+          inBracket(lengthFt, r.length) &&
+          r.heightFt === legHeightFt,
+      );
+      if (surcharge && !surcharge.measuredLegTypes.includes(legType)) {
+        // Measured on standard legs only. A double-legged frame is a different
+        // building, so its surcharge is unknown rather than zero — and quoting
+        // it without one would under-charge by several hundred dollars.
+        unpriceable.push(
+          `tall-wall surcharge is unmeasured for ${legType} at ${widthFt}x${lengthFt}x${legHeightFt}ft`,
+        );
+      } else if (surcharge) {
+        lines.push({
+          label: `Tall Wall Surcharge: ${legHeightFt}ft legs on a ${lengthFt}ft enclosed building`,
+          category: 'wall',
+          listAmount: surcharge.price,
+          amount: surcharge.price,
+        });
       }
     } else {
       if (!side) {
         unpriceable.push(
-          `no measured side-wall price for width ${widthFt} x length ${lengthFt} at ${legHeightFt}ft`,
+          `no measured side-wall price for width ${widthFt} x enclosed depth ${enclosedDepthFt} at ${legHeightFt}ft`,
         );
       }
       if (!end) {
