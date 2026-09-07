@@ -35,13 +35,19 @@ const rows = measured as unknown as MeasuredRow[];
  *
  * The difference is a per-bracket side correction and a per-width end
  * correction, both measured against the live app on 2026-09-06 and both applied
- * below rather than edited into the snapshot. They are checked independently by
- * lib/pricing/__tests__/vendorParity.test.ts, which asserts 284 totals read off
- * the vendor that day. Four of this file's own rows were re-measured directly
- * to confirm the correction reproduces them exactly:
+ * below rather than edited into the snapshot.
+ *
+ * EVERY ROW HERE IS NOW BACKED BY A DIRECT MEASUREMENT, so the correction is
+ * corroborated rather than assumed. lib/pricing/__tests__/vendorParity.test.ts
+ * asserts 593 totals read off the vendor that day, and between its length
+ * sweeps at width 24, its leg-height sweeps and its single anchors it covers
+ * every configuration in this file except the double-legged ones, which are
+ * refused rather than quoted. Spot-checks against the snapshot, all exact:
  *
  *   20x25x9  7004 -> 8354      24x30x9  9235 -> 10765
  *   30x35x8 13770 -> 15480     24x60x6 13468 -> 15808
+ *   24x21x9  8083 -> 9523      24x22x9  8128 -> 9568
+ *   18x25x9  6443 -> 7793      26x25x9 10344 -> 11874
  *
  * See docs/superpowers/notes/2026-09-04-combo-pricing-verification.md.
  */

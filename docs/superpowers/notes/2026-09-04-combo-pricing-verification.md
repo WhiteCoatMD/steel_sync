@@ -803,3 +803,86 @@ file, where the provenance is visible, rather than editing today's prices into a
 file whose name says 2026-08-27. Four of their own rows were re-measured
 directly to confirm the correction reproduces them exactly: 20x25x9, 24x30x9,
 30x35x8 and 24x60x6.
+
+---
+
+# Every parameter measured — 2026-09-06, later
+
+The corrections above were right, and they are no longer inferred anywhere.
+
+## The residual grid
+
+The corrections are already in the table, so re-running the extractor now
+reports the RESIDUAL: how much more correction each cell needs. Every cell
+should read zero, and any cell that does not is a value that was got wrong.
+
+**All 70 sellable width x leg-height cells measured on both sidings. All zero.**
+
+| width | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|
+| 12 .. 30 (all ten) | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+That closes the three gaps that were open when the first fix landed:
+
+1. The end correction had been measured at 9ft legs for eight of the ten widths
+   and applied to the other six heights. All 70 cells are now measured.
+2. The side correction per length bracket had been measured at 6, 7 and 12ft
+   legs and applied at 8, 9, 10 and 11. Now measured at every height in both
+   bands.
+3. The historical datasets' expectations had been derived. Every row is now
+   covered by a direct measurement -- see below.
+
+`vendorParity.test.ts` asserts **593 vendor totals**, all read on 2026-09-06.
+
+## How the grid is filled cheaply
+
+Two sweep shapes do the work, because a single boot dominates the cost:
+
+- a LENGTH sweep walks all nine length brackets in one page (`vlen.mjs`)
+- a LEG-HEIGHT sweep walks all seven heights in one page (`vhgt.mjs`)
+
+Band [12,24] is swept at width **24** rather than 20 on purpose: it pins the
+band and simultaneously re-measures the 24-wide rows that make up most of
+`walls-measured.json`.
+
+A garage sweep with no matching combo sweep is still usable: the side correction
+per bracket is known, so each of the nine lengths yields the END correction at
+that width and height, and all nine must agree. That is a stronger check than
+the single anchor it replaced, and it is what turned the width-24 sweeps into
+confirmation of six previously-inferred cells.
+
+## The historical snapshots are corroborated, not just transformed
+
+Length sweeps step 20, 25, 30 ... 60, so three odd lengths in
+`walls-measured.json` are never visited, and two widths sit where the height
+sweeps took length 30. Those five were measured individually. Every one
+reproduces the snapshot plus the measured correction exactly:
+
+| config | 2026-08-27 | predicted | measured |
+|---|---:|---:|---:|
+| 24x21x9 | 8083 | 9523 | 9523 |
+| 24x22x9 | 8128 | 9568 | 9568 |
+| 24x23x9 | 8128 | 9568 | 9568 |
+| 18x25x9 | 6443 | 7793 | 7793 |
+| 26x25x9 | 10344 | 11874 | 11874 |
+
+So every row of that file is now backed by a direct reading, except the five
+double-legged ones, which are refused rather than quoted.
+
+## Incidental confirmations
+
+- Widths 14, 16 and 18 return identical totals at every leg height, which
+  re-derives the "end walls key on the BAND, not the exact width" property
+  `walls2.test.ts` asserts -- measured fresh rather than inherited.
+- Width 24 at 6ft legs, a size never measured before, matched the engine at all
+  nine lengths on its first reading.
+
+## What is still not covered, and deliberately so
+
+- Enclosed buildings **above 30ft wide** or **above 12ft legs**: no measured
+  wall prices, refused rather than quoted. Unchanged, pre-existing.
+- **Double legs at 12ft legs enclosed**: the tall-wall surcharge was measured on
+  standard legs only, so the build is refused. The app never sends a leg type,
+  so nothing reaches this in practice.
+- One dealer (`?dealer=Columbia`) and one manufacturer. Everything here is that
+  price book on 2026-09-06.
